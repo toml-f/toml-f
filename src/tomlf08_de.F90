@@ -69,7 +69,7 @@ module tomlf08_de
    end type token_t
 
    !> TOML builder
-   type :: deserializer_t
+   type :: toml_deserializer_t
       character(len=:), pointer :: conf
       type(line_t) :: line
       integer :: len
@@ -126,7 +126,7 @@ subroutine toml_parse_string(table, conf)
    type(toml_table_t), allocatable, intent(out) :: table
    character(len=*), intent(in), target :: conf
    character(len=:), pointer :: ptr
-   type(deserializer_t), target :: de
+   type(toml_deserializer_t), target :: de
 
    !> connect deserializer to configuration
    de%line%ptr => conf
@@ -135,9 +135,6 @@ subroutine toml_parse_string(table, conf)
 
    !> first token is an artifical newline
    de%tok = new_token(NEWLINE, ptr, 0)
-
-   print'(a)', ptr
-   print'(a)', '---'
 
    !> create a new table
    allocate(de%root)
@@ -185,7 +182,7 @@ subroutine parse_select(de)
       integer :: top = 0
       type(tablenode_t) :: node(10) = tablenode_t()
    end type tablepath_t
-   type(deserializer_t), intent(inout) :: de
+   type(toml_deserializer_t), intent(inout) :: de
    logical :: llb
    type(token_t) :: top
    character(len=:), allocatable :: key
@@ -254,7 +251,7 @@ subroutine parse_select(de)
 contains
 
 subroutine walk_tablepath(de, path)
-   type(deserializer_t), intent(inout), target :: de
+   type(toml_deserializer_t), intent(inout), target :: de
    type(tablepath_t), intent(inout), target :: path
    type(toml_table_t), pointer :: table, ptr
    type(toml_array_t), pointer :: array
@@ -287,7 +284,7 @@ subroutine walk_tablepath(de, path)
 end subroutine walk_tablepath
 
 subroutine fill_tablepath(de, path)
-   type(deserializer_t), intent(inout) :: de
+   type(toml_deserializer_t), intent(inout) :: de
    type(tablepath_t), intent(inout) :: path
    !> clear path
    path = tablepath_t()
@@ -330,7 +327,7 @@ end subroutine fill_tablepath
 end subroutine parse_select
 
 recursive subroutine parse_keyval(de, table)
-   type(deserializer_t), intent(inout) :: de
+   type(toml_deserializer_t), intent(inout) :: de
    type(toml_table_t), intent(inout) :: table
    type(token_t) :: key
    type(toml_keyval_t), pointer :: vptr
@@ -404,7 +401,7 @@ recursive subroutine parse_keyval(de, table)
 end subroutine parse_keyval
 
 recursive subroutine parse_array(de, array)
-   type(deserializer_t), intent(inout) :: de
+   type(toml_deserializer_t), intent(inout) :: de
    type(toml_array_t), intent(inout) :: array
    integer(toml_kind_t) :: akind
    class(toml_value_t), pointer :: ptr
@@ -509,7 +506,7 @@ recursive subroutine parse_array(de, array)
 end subroutine parse_array
 
 subroutine parse_table(de, table)
-   type(deserializer_t), intent(inout) :: de
+   type(toml_deserializer_t), intent(inout) :: de
    type(toml_table_t), intent(inout) :: table
 
    call eat_token(de, LBRACE, .true.)
@@ -591,7 +588,7 @@ subroutine string_from_token(str, tok)
 end subroutine string_from_token
 
 subroutine eat_token(de, tok, dot_is_special)
-   type(deserializer_t), intent(inout) :: de
+   type(toml_deserializer_t), intent(inout) :: de
    integer(tokentype_t), intent(in) :: tok
    logical, intent(in) :: dot_is_special
    @:ASSERT(de%tok%tok == tok)
@@ -599,7 +596,7 @@ subroutine eat_token(de, tok, dot_is_special)
 end subroutine
 
 subroutine skip_newlines(de, dot_is_special)
-   type(deserializer_t), intent(inout) :: de
+   type(toml_deserializer_t), intent(inout) :: de
    logical, intent(in) :: dot_is_special
    do while(de%tok%tok == NEWLINE)
       call next_token(de, dot_is_special)
@@ -607,7 +604,7 @@ subroutine skip_newlines(de, dot_is_special)
 end subroutine skip_newlines
 
 subroutine next_token(de, dot_is_special)
-   type(deserializer_t), intent(inout) :: de
+   type(toml_deserializer_t), intent(inout) :: de
    logical, intent(in) :: dot_is_special
    character(len=:), pointer :: ptr
    integer :: i
@@ -671,7 +668,7 @@ subroutine next_token(de, dot_is_special)
 contains
 
 subroutine scan_string(de, ptr, dot_is_special)
-   type(deserializer_t), intent(inout) :: de
+   type(toml_deserializer_t), intent(inout) :: de
    character(len=:), pointer, intent(inout) :: ptr
    logical, intent(in) :: dot_is_special
    character(len=:), pointer :: orig

@@ -75,6 +75,8 @@ module tomlf08_type
       procedure :: get_kind => array_get_kind
       !> Return value kind for in case of value elements.
       procedure :: get_type => array_get_type
+      !> Accept a visitor to transverse the data structure.
+      procedure :: accept => array_accept
    end type
 
    !> TOML table.
@@ -104,6 +106,8 @@ module tomlf08_type
       !> Creates a pointer to ${toml_type}$ at given key.
       procedure, private :: get_${toml_type}$_ptr => table_get_${toml_type}$_ptr
       #:endfor
+      !> Accept a visitor to transverse the data structure.
+      procedure :: accept => table_accept
    end type
 
    !> TOML timestamp value type.
@@ -124,7 +128,37 @@ module tomlf08_type
       #:endfor
    end interface
 
+   type, abstract :: toml_visitor_t
+   contains
+      #:for toml_type in toml_types
+      generic :: visit => visit_${toml_type}$
+      procedure(visitor_visit_${toml_type}$), deferred :: visit_${toml_type}$
+      #:endfor
+   end type toml_visitor_t
+
+   abstract interface
+   #:for toml_type in toml_types
+   recursive subroutine visitor_visit_${toml_type}$(visitor, ${toml_type}$)
+   import toml_visitor_t, toml_${toml_type}$_t
+   class(toml_visitor_t), intent(inout) :: visitor
+   class(toml_${toml_type}$_t), intent(inout) :: ${toml_type}$
+   end subroutine visitor_visit_${toml_type}$
+   #:endfor
+   end interface
+
 contains
+
+subroutine table_accept(self, visitor)
+   class(toml_table_t), intent(inout) :: self
+   class(toml_visitor_t), intent(inout) :: visitor
+   call visitor%visit(self)
+end subroutine table_accept
+
+subroutine array_accept(self, visitor)
+   class(toml_array_t), intent(inout) :: self
+   class(toml_visitor_t), intent(inout) :: visitor
+   call visitor%visit(self)
+end subroutine array_accept
 
 #:for toml_type in toml_types
 pure subroutine resize_${toml_type}$(self, n)

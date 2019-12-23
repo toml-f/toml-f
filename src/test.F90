@@ -7,6 +7,7 @@ program tester
    character(len=:), allocatable :: argument
    integer :: unit
    type(toml_table_t), allocatable :: table
+   type(toml_serializer_t) :: ser
    logical :: stat, exist
    real(TOML_FLOAT_KIND) :: dum
 
@@ -19,12 +20,12 @@ program tester
          inquire(file=argument, exist=exist)
          if (exist) then
             open(newunit=unit, file=argument)
-            print'(a)', argument
+            print'("#",1x,a)', argument
             if (allocated(table)) deallocate(table)
             call toml_parse(table, unit)
             close(unit)
             if (allocated(table)) then
-               call print_table(output_unit, table)
+               call table%accept(ser)
                call table%destroy
             end if
          end if
