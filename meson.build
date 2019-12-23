@@ -59,10 +59,5 @@ tomlf_lib = library(meson.project_name(), srcs,
                     version: meson.project_version(),
                     install: true)
 tomlf_dep = declare_dependency(link_with: tomlf_lib)
-if get_option('default_library') == 'static'
-  install_headers(meson.current_build_dir()/'@0@@sta'.format(meson.project_name())/'tomlf08.mod')
-else
-  install_headers(meson.current_build_dir()/'@0@@sha'.format(meson.project_name())/'tomlf08.mod')
-endif
 
 executable(meson.project_name(), files('src/test.F90'), link_with: tomlf_lib)

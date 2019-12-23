@@ -1,0 +1,27 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  linux-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+    - run: sudo apt install -yq --no-install-recommends gfortran ninja-build
+    - run: pip3 install meson fypp
+    - run: meson setup build_gcc --buildtype release
+    - run: ninja -C build_gcc
+
+  osx-build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+    - run: brew install gcc ninja
+    - run: pip3 install meson fypp
+    - run: meson setup build_gcc --buildtype release
+    - run: ninja -C build_gcc
