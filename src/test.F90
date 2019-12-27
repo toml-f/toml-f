@@ -5,11 +5,10 @@ program tester
    implicit none
    integer :: iarg, length
    character(len=:), allocatable :: argument
-   integer :: unit
    type(toml_table_t), allocatable :: table
    type(toml_serializer_t) :: ser
-   logical :: stat, exist
-   real(TOML_FLOAT_KIND) :: dum
+   integer :: unit
+   logical :: exist
 
    if (command_argument_count() > 0) then
       do iarg = 1, command_argument_count()

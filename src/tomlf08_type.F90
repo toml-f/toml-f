@@ -187,7 +187,7 @@ pure subroutine resize_${toml_type}$(self, n)
       self(:this_size) = tmp(:this_size)
       deallocate(tmp)
    end if
-end subroutine
+end subroutine resize_${toml_type}$
 #:endfor
 
 subroutine resize_gen(self, n)
@@ -221,7 +221,7 @@ subroutine resize_gen(self, n)
       end select
       deallocate(tmp)
    end if
-end subroutine
+end subroutine resize_gen
 
 #:for toml_type in toml_types
 !> Find position of table at a given key.
@@ -237,7 +237,7 @@ subroutine table_get_${toml_type}$_pos(self, key, pos)
    do concurrent(i = 1:self%n${toml_type}$)
       if (self%${toml_type}$(i)%key == key) pos = i
    end do
-end subroutine
+end subroutine table_get_${toml_type}$_pos
 
 !> Return a pointer to the table at key in a TOML table.
 subroutine table_get_${toml_type}$_ptr(self, key, ptr)
@@ -251,7 +251,7 @@ subroutine table_get_${toml_type}$_ptr(self, key, ptr)
    nullify(ptr)
    call table_get_${toml_type}$_pos(self, key, pos)
    if (pos > 0) ptr => self%${toml_type}$(pos)
-end subroutine
+end subroutine table_get_${toml_type}$_ptr
 #:endfor
 
 logical function table_has_key(self, key) result(has_key)
@@ -264,7 +264,7 @@ logical function table_has_key(self, key) result(has_key)
    has_key = pos > 0
    if (has_key) return
    #:endfor
-end function
+end function table_has_key
 
 #:for toml_type in toml_types
 subroutine table_push_back_${toml_type}$(self, key, ptr, stat)
@@ -302,7 +302,7 @@ subroutine table_push_back_${toml_type}$(self, key, ptr, stat)
    self%${toml_type}$(self%n${toml_type}$)%key = key
    ptr => self%${toml_type}$(self%n${toml_type}$)
    if (present(stat)) stat = 0
-end subroutine
+end subroutine table_push_back_${toml_type}$
 #:endfor
 
 #:for toml_type in toml_types
@@ -327,13 +327,13 @@ subroutine array_new_${toml_type}$(self, size, stat)
    self%kind = ${toml_type}$_KIND
    self%type = INVALID_TYPE
    if (present(stat)) stat = 0
-end subroutine
+end subroutine array_new_${toml_type}$
 #:endfor
 
 integer(toml_kind_t) function array_get_kind(self) result(akind)
    class(toml_array_t), intent(in) :: self
    akind = self%kind
-end function
+end function array_get_kind
 
 integer(toml_type_t) function array_get_type(self) result(atype)
    class(toml_array_t), intent(in) :: self
@@ -344,7 +344,7 @@ integer(toml_type_t) function array_get_type(self) result(atype)
    else
       atype = self%type
    end if
-end function
+end function array_get_type
 
 subroutine array_push_back(self, ptr, stat)
    class(toml_array_t), intent(inout), target :: self
@@ -359,7 +359,7 @@ subroutine array_push_back(self, ptr, stat)
    self%nelem = self%nelem + 1
    ptr => self%elem(self%nelem)
    if (present(stat)) stat = 0
-end subroutine
+end subroutine array_push_back
 
 #:for toml_type in toml_types
 subroutine array_push_back_${toml_type}$(self, ptr, stat)
@@ -380,7 +380,7 @@ subroutine array_push_back_${toml_type}$(self, ptr, stat)
    class default
       if (present(stat)) stat = 1
    end select
-end subroutine
+end subroutine array_push_back_${toml_type}$
 #:endfor
 
 !> Deconstructor for TOML key-value.
@@ -422,6 +422,6 @@ recursive subroutine table_destroy(self)
       deallocate(self%${toml_type}$)
    end if
    #:endfor
-end subroutine
+end subroutine table_destroy
 
 end module tomlf08_type
