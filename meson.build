@@ -1,6 +1,6 @@
 # This file is part of toml-f.
 #
-# Copyright (C) 2019 Sebastian Ehlert
+# Copyright (C) 2019-2020 Sebastian Ehlert
 #
 # toml-f is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 project('toml-f',
         'fortran',
         version: '0.1',
+        license: 'GPL3',
         meson_version: '>= 0.49')
 
 fc = meson.get_compiler('fortran')
@@ -42,11 +43,11 @@ endif
 srcs = []
 srcs_fypp = []
 
-srcs += files('src/tomlf08.F90')
-srcs += files('src/tomlf08_constants.F90')
+srcs += files('src/tomlf08.f90')
+srcs += files('src/tomlf08_constants.f90')
 srcs_fypp += files('src/tomlf08_type.F90')
-srcs += files('src/tomlf08_utils.F90')
-srcs += files('src/tomlf08_ser.F90')
+srcs += files('src/tomlf08_utils.f90')
+srcs += files('src/tomlf08_ser.f90')
 srcs_fypp += files('src/tomlf08_de.F90')
 
 fypp = find_program('fypp', 'fypp.py', required: true)
@@ -58,6 +59,11 @@ endforeach
 tomlf_lib = library(meson.project_name(), srcs,
                     version: meson.project_version(),
                     install: true)
-tomlf_dep = declare_dependency(link_with: tomlf_lib)
 
-executable(meson.project_name(), files('src/test.F90'), link_with: tomlf_lib)
+tomlf_inc = tomlf_lib.private_dir_include()
+tomlf_dep = declare_dependency(link_with: tomlf_lib,
+                               include_directories: tomlf_inc)
+
+executable(meson.project_name(), files('src/test.f90'), dependencies: tomlf_dep)
+
+subdir('testing')

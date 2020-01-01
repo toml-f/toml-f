@@ -1,6 +1,6 @@
 ! This file is part of toml-f.
 !
-! Copyright (C) 2019 Sebastian Ehlert
+! Copyright (C) 2019-2020 Sebastian Ehlert
 !
 ! toml-f is free software: you can redistribute it and/or modify it under
 ! the terms of the GNU General Public License as published by
@@ -21,16 +21,16 @@ module tomlf08_ser
    use tomlf08_type
    implicit none
    private
-   public :: toml_serializer_t
+   public :: toml_serializer
 
    !> Wrapper for a deferred length character instances in an array.
-   type :: key_t
+   type :: key
       !> TOML key.
       character(len=:), allocatable :: key
    end type
 
    !> TOML serializer to produduce a TOML file from a datastructure.
-   type, extends(toml_visitor_t) :: toml_serializer_t
+   type, extends(toml_visitor) :: toml_serializer
       private
       !> Unit for output.
       integer, public :: unit = output_unit
@@ -41,7 +41,7 @@ module tomlf08_ser
       !> Top of the key stack.
       integer :: top = 0
       !> Key stack to create table headers.
-      type(key_t), allocatable :: stack(:)
+      type(key), allocatable :: stack(:)
       !> Close the output unit in deconstructor.
       logical :: close_unit = .false.
    contains
@@ -55,15 +55,15 @@ module tomlf08_ser
       procedure :: destroy => ser_destroy
       !> Automatic deconstructor for the serializer to close still open units.
       final :: ser_final
-   end type toml_serializer_t
+   end type toml_serializer
 
    !> Constructors for the TOML serializer.
-   interface toml_serializer_t
+   interface toml_serializer
       !> Construct a serializer from a IO unit.
       module procedure :: ser_new_from_unit
       !> Construct a serializer from a file name and create unit on-the-fly.
       module procedure :: ser_new_from_file
-   end interface toml_serializer_t
+   end interface toml_serializer
 
    !> Dynamic array interface.
    interface resize
@@ -74,13 +74,13 @@ module tomlf08_ser
 contains
 
 !> Construct a TOML serializer from a IO unit.
-type(toml_serializer_t) function ser_new_from_unit(unit) result(self)
+type(toml_serializer) function ser_new_from_unit(unit) result(self)
    integer, intent(in) :: unit
    self%unit = unit
 end function ser_new_from_unit
 
 !> Construct a TOML serializer from a file name and create unit on-the-fly.
-type(toml_serializer_t) function ser_new_from_file(file) result(self)
+type(toml_serializer) function ser_new_from_file(file) result(self)
    character(len=*), intent(in) :: file
    integer :: unit
    open(file=file, newunit=unit)
@@ -92,7 +92,7 @@ end function ser_new_from_file
 !  Stack should be already deallocated and all units at default values.
 subroutine ser_destroy(self)
    !> Serializer instance.
-   class(toml_serializer_t), intent(inout) :: self
+   class(toml_serializer), intent(inout) :: self
    logical :: opened
    if (self%unit /= output_unit .and. self%unit /= error_unit) then
       inquire(unit=self%unit, opened=opened)
@@ -109,16 +109,17 @@ end subroutine ser_destroy
 !> Automatic deconstructor for the serializer.
 subroutine ser_final(self)
    !> Serializer instance.
-   type(toml_serializer_t), intent(inout) :: self
+   type(toml_serializer), intent(inout) :: self
    call self%destroy
 end subroutine ser_final
 
 !> Serializer transversing a table, usual entry point for serialization.
 recursive subroutine ser_visit_table(visitor, table)
+   use tomlf08_constants, only: TABLE_KIND
    !> Serializer instance.
-   class(toml_serializer_t), intent(inout) :: visitor
+   class(toml_serializer), intent(inout) :: visitor
    !> TOML table.
-   class(toml_table_t), intent(inout) :: table
+   class(toml_table), intent(in) :: table
    integer :: i
    if (.not.allocated(visitor%stack)) then
       allocate(visitor%stack(10))
@@ -173,23 +174,23 @@ end subroutine ser_visit_table
 !> Serializer transversing an array.
 recursive subroutine ser_visit_array(visitor, array)
    !> Serializer instance.
-   class(toml_serializer_t), intent(inout) :: visitor
+   class(toml_serializer), intent(inout) :: visitor
    !> TOML array.
-   class(toml_array_t), intent(inout) :: array
+   class(toml_array), intent(in) :: array
    integer :: i, j
    if (visitor%inline_array) write(visitor%unit, '(1x,"[")', advance='no')
    select type(elem => array%elem)
-   class is(toml_keyval_t)
+   class is(toml_keyval)
       do i = 1, array%nelem
          write(visitor%unit, '(1x,a)', advance='no') elem(i)%val
          if (i /= array%nelem) write(visitor%unit, '(",")', advance='no')
       end do
-   class is(toml_array_t)
+   class is(toml_array)
       do i = 1, array%nelem
          call visitor%visit(elem(i))
          if (i /= array%nelem) write(visitor%unit, '(",")', advance='no')
       end do
-   class is(toml_table_t)
+   class is(toml_table)
       if (visitor%inline_array) then
          do i = 1, array%nelem
             write(visitor%unit, '(1x,"{")', advance='no')
@@ -215,9 +216,9 @@ end subroutine ser_visit_array
 !> Serializer visiting a key-value pair.
 subroutine ser_visit_keyval(visitor, keyval)
    !> Serializer instance.
-   class(toml_serializer_t), intent(inout) :: visitor
+   class(toml_serializer), intent(inout) :: visitor
    !> TOML Key-value pair.
-   class(toml_keyval_t), intent(inout) :: keyval
+   class(toml_keyval), intent(in) :: keyval
    if (visitor%inline_array) then
       write(visitor%unit, '(1x,a,1x,"=",1x,a,",")', advance='no') &
          &  keyval%key, keyval%val
@@ -227,9 +228,9 @@ subroutine ser_visit_keyval(visitor, keyval)
 end subroutine ser_visit_keyval
 
 subroutine ser_resize_stack(stack, n)
-   type(key_t), allocatable, intent(inout) :: stack(:)
+   type(key), allocatable, intent(inout) :: stack(:)
    integer, intent(in), optional :: n
-   type(key_t), allocatable :: tmp(:)
+   type(key), allocatable :: tmp(:)
    integer :: this_size, new_size
    if (allocated(stack)) then
       this_size = size(stack, 1)

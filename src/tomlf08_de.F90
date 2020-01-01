@@ -1,6 +1,6 @@
 ! This file is part of toml-f.
 !
-! Copyright (C) 2019 Sebastian Ehlert
+! Copyright (C) 2019-2020 Sebastian Ehlert
 !
 ! toml-f is free software: you can redistribute it and/or modify it under
 ! the terms of the GNU General Public License as published by
@@ -43,43 +43,43 @@ module tomlf08_de
          & LLBRACKET, RRBRACKET, STRING, EOF
    end enum
    !> Kind parameter for token type enums.
-   integer, parameter :: tokentype_t = kind(INVALID)
+   integer, parameter :: tokentype = kind(INVALID)
 
-   type :: line_t
+   type :: de_line
       integer :: pos = 0
       integer :: num = 0
       character(len=:), pointer :: ptr => null()
-   end type line_t
+   end type de_line
 
-   type :: error_t
+   type :: de_error
       integer :: lineno
       character(len=:), allocatable :: message
-   end type error_t
+   end type de_error
 
-   interface error_t
+   interface de_error
       module procedure :: error_with_line
    end interface
 
    !> TOML token.
-   type :: token_t
+   type :: token
       sequence
-      integer(tokentype_t) :: tok = INVALID
+      integer(tokentype) :: tok = INVALID
       character(len=:), pointer :: ptr => null()
       integer :: len = 0
-   end type token_t
+   end type token
 
    !> TOML builder
-   type :: toml_deserializer_t
+   type :: toml_deserializer
       character(len=:), pointer :: conf
-      type(line_t) :: line
+      type(de_line) :: line
       integer :: len
       integer :: lineno
 
-      type(token_t) :: tok
-      type(toml_table_t), allocatable :: root
-      type(toml_table_t), pointer :: curtab => null()
+      type(token) :: tok
+      type(toml_table), allocatable :: root
+      type(toml_table), pointer :: curtab => null()
 
-      type(error_t), allocatable :: error
+      type(de_error), allocatable :: error
    end type
 
 contains
@@ -87,7 +87,7 @@ contains
 !> Parse a TOML input from a given IO unit.
 subroutine toml_parse_unit(table, unit, iostat)
    use iso_fortran_env
-   type(toml_table_t), allocatable, intent(out) :: table
+   type(toml_table), allocatable, intent(out) :: table
    integer, intent(in) :: unit
    integer, intent(out), optional :: iostat
    character(len=:), allocatable :: conf
@@ -123,10 +123,10 @@ end subroutine toml_parse_unit
 
 subroutine toml_parse_string(table, conf)
    use iso_fortran_env, only: error_unit
-   type(toml_table_t), allocatable, intent(out) :: table
+   type(toml_table), allocatable, intent(out) :: table
    character(len=*), intent(in), target :: conf
    character(len=:), pointer :: ptr
-   type(toml_deserializer_t), target :: de
+   type(toml_deserializer), target :: de
 
    !> connect deserializer to configuration
    de%line%ptr => conf
@@ -174,21 +174,21 @@ subroutine toml_parse_string(table, conf)
 end subroutine toml_parse_string
 
 subroutine parse_select(de)
-   type :: tablenode_t
+   type :: tablenode
       character(len=:), allocatable :: key
-      type(token_t) :: tok = token_t()
+      type(token) :: tok = token()
    end type
-   type :: tablepath_t
+   type :: tablepath
       integer :: top = 0
-      type(tablenode_t) :: node(10) = tablenode_t()
-   end type tablepath_t
-   type(toml_deserializer_t), intent(inout) :: de
+      type(tablenode) :: node(10) = tablenode()
+   end type tablepath
+   type(toml_deserializer), intent(inout) :: de
    logical :: llb
-   type(token_t) :: top
+   type(token) :: top
    character(len=:), allocatable :: key
-   type(toml_table_t), pointer :: table
-   type(toml_array_t), pointer :: array
-   type(tablepath_t) :: path
+   type(toml_table), pointer :: table
+   type(toml_array), pointer :: array
+   type(tablepath) :: path
 
    llb = de%tok%tok == LLBRACKET
 
@@ -251,10 +251,10 @@ subroutine parse_select(de)
 contains
 
 subroutine walk_tablepath(de, path)
-   type(toml_deserializer_t), intent(inout), target :: de
-   type(tablepath_t), intent(inout), target :: path
-   type(toml_table_t), pointer :: table, ptr
-   type(toml_array_t), pointer :: array
+   type(toml_deserializer), intent(inout), target :: de
+   type(tablepath), intent(inout), target :: path
+   type(toml_table), pointer :: table, ptr
+   type(toml_array), pointer :: array
    character(len=:), pointer :: key
    integer :: i
    table => de%root
@@ -271,7 +271,7 @@ subroutine walk_tablepath(de, path)
             @:ASSERT(array%get_kind() == TABLE_KIND)
             @:ASSERT(array%nelem > 0)
             select type(elem => array%elem(array%nelem))
-            type is(toml_table_t); ptr => elem
+            type is(toml_table); ptr => elem
             end select
          end if
       else
@@ -284,10 +284,10 @@ subroutine walk_tablepath(de, path)
 end subroutine walk_tablepath
 
 subroutine fill_tablepath(de, path)
-   type(toml_deserializer_t), intent(inout) :: de
-   type(tablepath_t), intent(inout) :: path
+   type(toml_deserializer), intent(inout) :: de
+   type(tablepath), intent(inout) :: path
    !> clear path
-   path = tablepath_t()
+   path = tablepath()
    do
       if (path%top >= 10) then
          de%error = vendor_error(de%line, "table path is too deep, max. allowed is 10.")
@@ -327,12 +327,12 @@ end subroutine fill_tablepath
 end subroutine parse_select
 
 recursive subroutine parse_keyval(de, table)
-   type(toml_deserializer_t), intent(inout) :: de
-   type(toml_table_t), intent(inout) :: table
-   type(token_t) :: key
-   type(toml_keyval_t), pointer :: vptr
-   type(toml_array_t), pointer :: aptr
-   type(toml_table_t), pointer :: tptr
+   type(toml_deserializer), intent(inout) :: de
+   type(toml_table), intent(inout) :: table
+   type(token) :: key
+   type(toml_keyval), pointer :: vptr
+   type(toml_array), pointer :: aptr
+   type(toml_table), pointer :: tptr
    character(len=:), allocatable :: new_key, this_key
 
    key = de%tok
@@ -401,10 +401,10 @@ recursive subroutine parse_keyval(de, table)
 end subroutine parse_keyval
 
 recursive subroutine parse_array(de, array)
-   type(toml_deserializer_t), intent(inout) :: de
-   type(toml_array_t), intent(inout) :: array
-   integer(toml_kind_t) :: akind
-   class(toml_value_t), pointer :: ptr
+   type(toml_deserializer), intent(inout) :: de
+   type(toml_array), intent(inout) :: array
+   integer(toml_kind) :: akind
+   class(toml_value), pointer :: ptr
    logical :: first
    first = .true.
    call eat_token(de, LBRACKET, .false., .false.)
@@ -428,7 +428,7 @@ recursive subroutine parse_array(de, array)
          ! create new element in array
          call array%push_back(ptr)
          select type(ptr)
-         type is(toml_keyval_t)
+         type is(toml_keyval)
             ! copy raw value from token to value
             ptr%val = de%tok%ptr(:de%tok%len)
             if (first) then
@@ -457,7 +457,7 @@ recursive subroutine parse_array(de, array)
          ! create new array in array
          call array%push_back(ptr)
          select type(ptr)
-         type is(toml_array_t)
+         type is(toml_array)
             call parse_array(de, ptr)
             if (allocated(de%error)) return
          class default
@@ -476,7 +476,7 @@ recursive subroutine parse_array(de, array)
          ! create new table in array
          call array%push_back(ptr)
          select type(ptr)
-         type is(toml_table_t)
+         type is(toml_table)
             call parse_table(de, ptr)
             if (allocated(de%error)) return
          class default
@@ -506,8 +506,8 @@ recursive subroutine parse_array(de, array)
 end subroutine parse_array
 
 subroutine parse_table(de, table)
-   type(toml_deserializer_t), intent(inout) :: de
-   type(toml_table_t), intent(inout) :: table
+   type(toml_deserializer), intent(inout) :: de
+   type(toml_table), intent(inout) :: table
 
    call eat_token(de, LBRACE, .true., .false.)
    do
@@ -548,13 +548,13 @@ end subroutine parse_table
 
 subroutine key_from_token(key, tok)
    character(len=:), allocatable, intent(out) :: key
-   type(token_t), intent(in) :: tok
+   type(token), intent(in) :: tok
    call string_from_token(key, tok)
 end subroutine key_from_token
 
 subroutine string_from_token(str, tok)
    character(len=:), allocatable, intent(out) :: str
-   type(token_t), intent(in) :: tok
+   type(token), intent(in) :: tok
    logical :: multiline, verbatim
    character(len=:), pointer :: start
    integer :: len
@@ -588,8 +588,8 @@ subroutine string_from_token(str, tok)
 end subroutine string_from_token
 
 subroutine eat_token(de, tok, dot_is_special, double_bracket)
-   type(toml_deserializer_t), intent(inout) :: de
-   integer(tokentype_t), intent(in) :: tok
+   type(toml_deserializer), intent(inout) :: de
+   integer(tokentype), intent(in) :: tok
    logical, intent(in) :: dot_is_special
    logical, intent(in) :: double_bracket
    @:ASSERT(de%tok%tok == tok)
@@ -597,7 +597,7 @@ subroutine eat_token(de, tok, dot_is_special, double_bracket)
 end subroutine
 
 subroutine skip_newlines(de, dot_is_special, double_bracket)
-   type(toml_deserializer_t), intent(inout) :: de
+   type(toml_deserializer), intent(inout) :: de
    logical, intent(in) :: dot_is_special
    logical, intent(in) :: double_bracket
    do while(de%tok%tok == NEWLINE)
@@ -606,7 +606,7 @@ subroutine skip_newlines(de, dot_is_special, double_bracket)
 end subroutine skip_newlines
 
 subroutine next_token(de, dot_is_special, double_bracket)
-   type(toml_deserializer_t), intent(inout) :: de
+   type(toml_deserializer), intent(inout) :: de
    logical, intent(in) :: dot_is_special
    logical, intent(in) :: double_bracket
    character(len=:), pointer :: ptr
@@ -671,7 +671,7 @@ subroutine next_token(de, dot_is_special, double_bracket)
 contains
 
 subroutine scan_string(de, ptr, dot_is_special)
-   type(toml_deserializer_t), intent(inout) :: de
+   type(toml_deserializer), intent(inout) :: de
    character(len=:), pointer, intent(inout) :: ptr
    logical, intent(in) :: dot_is_special
    character(len=:), pointer :: orig
@@ -832,8 +832,8 @@ end subroutine scan_string
 end subroutine next_token
 
 !> custom constructor to get pointer assignment right
-type(token_t) function new_token(tok, ptr, len)
-   integer(tokentype_t), intent(in) :: tok
+type(token) function new_token(tok, ptr, len)
+   integer(tokentype), intent(in) :: tok
    character(len=:), pointer, intent(in) :: ptr
    integer, intent(in) :: len
    new_token%tok = tok
@@ -842,31 +842,31 @@ type(token_t) function new_token(tok, ptr, len)
 end function new_token
 
 !> Create a syntax error from a given line and a message.
-type(error_t) elemental function syntax_error(line, message)
-   type(line_t), intent(in) :: line
+type(de_error) elemental function syntax_error(line, message)
+   type(de_line), intent(in) :: line
    character(len=*), intent(in) :: message
-   syntax_error = error_t(line%num, message)
+   syntax_error = de_error(line%num, message)
 end function syntax_error
 
 !> Create a syntax error because of an already existing key.
-type(error_t) elemental function key_exists_error(line, key)
-   type(line_t), intent(in) :: line
+type(de_error) elemental function key_exists_error(line, key)
+   type(de_line), intent(in) :: line
    character(len=*), intent(in) :: key
-   key_exists_error = error_t(line%num, "key "//key//" already exists")
+   key_exists_error = de_error(line%num, "key "//key//" already exists")
 end function key_exists_error
 
 !> We screwed up, explain why we couldn't solve this issue.
-type(error_t) elemental function vendor_error(line, excuse)
-   type(line_t), intent(in) :: line
+type(de_error) elemental function vendor_error(line, excuse)
+   type(de_line), intent(in) :: line
    character(len=*), intent(in) :: excuse
-   vendor_error = error_t(line%num, excuse)
+   vendor_error = de_error(line%num, excuse)
 end function vendor_error
 
 !> Wrapper for error constructor to include full line and pointer to token.
-type(error_t) function error_with_line(line, message)
-   type(line_t), intent(in) :: line
+type(de_error) function error_with_line(line, message)
+   type(de_line), intent(in) :: line
    character(len=*), intent(in) :: message
-   error_with_line = error_t(line%num, message // TOML_NEWLINE // &
+   error_with_line = de_error(line%num, message // TOML_NEWLINE // &
       & '   | '// line%ptr(1:index(line%ptr, TOML_NEWLINE)-1) // TOML_NEWLINE // &
       & '   |' // repeat('-', line%pos) // '^')
 end function error_with_line

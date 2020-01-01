@@ -1,6 +1,6 @@
 ! This file is part of toml-f.
 !
-! Copyright (C) 2019 Sebastian Ehlert
+! Copyright (C) 2019-2020 Sebastian Ehlert
 !
 ! toml-f is free software: you can redistribute it and/or modify it under
 ! the terms of the GNU General Public License as published by
@@ -50,12 +50,73 @@ module tomlf08_constants
    enum, bind(C)
       enumerator :: INVALID_KIND, KEYVAL_KIND, ARRAY_KIND, TABLE_KIND
    end enum
-   integer, parameter :: toml_kind_t = kind(INVALID_KIND)
+   integer, parameter :: toml_kind = kind(INVALID_KIND)
 
    enum, bind(C)
       enumerator :: INVALID_TYPE, INTEGER_TYPE, FLOAT_TYPE, BOOL_TYPE, &
          & STRING_TYPE, TIMESTAMP_TYPE
    end enum
-   integer, parameter :: toml_type_t = kind(INVALID_TYPE)
+   integer, parameter :: toml_type = kind(INVALID_TYPE)
+
+   type :: toml_time
+      integer :: hour = 0
+      integer :: minute = 0
+      integer :: second = 0
+      integer :: millisec = 0
+   contains
+      generic :: assignment(=) => to_string
+      procedure, pass(rhs) :: to_string => time_to_string
+   end type
+
+   type :: toml_date
+      integer :: year = 0
+      integer :: month = 0
+      integer :: day = 0
+   contains
+      generic :: assignment(=) => to_string
+      procedure, pass(rhs) :: to_string => date_to_string
+   end type
+
+   !> TOML timestamp value type.
+   type :: toml_datetime
+      type(toml_date), allocatable :: date
+      type(toml_time), allocatable :: time
+   contains
+      generic :: assignment(=) => to_string
+      procedure, pass(rhs) :: to_string => datetime_to_string
+   end type
+
+contains
+
+subroutine date_to_string(lhs, rhs)
+   character(len=:), allocatable, intent(out) :: lhs
+   class(toml_date), intent(in) :: rhs
+   allocate(character(len=10) :: lhs)
+   write(lhs, '(i4.4,"-",i2.2,"-",i2.2)') &
+      &  rhs%year, rhs%month, rhs%day
+end subroutine date_to_string
+
+subroutine time_to_string(lhs, rhs)
+   character(len=:), allocatable, intent(out) :: lhs
+   class(toml_time), intent(in) :: rhs
+   allocate(character(len=12) :: lhs)
+   write(lhs, '(i2.2,":",i2.2,":",i2.2,".",i3.3)') &
+      &  rhs%hour, rhs%minute, rhs%second, rhs%millisec
+end subroutine time_to_string
+
+subroutine datetime_to_string(lhs, rhs)
+   character(len=:), allocatable, intent(out) :: lhs
+   class(toml_datetime), intent(in) :: rhs
+   character(len=:), allocatable :: temporary
+   if (allocated(rhs%date)) then
+      call rhs%date%to_string(lhs)
+      if (allocated(rhs%time)) then
+         call rhs%time%to_string(temporary)
+         lhs = lhs // ' ' // temporary
+      end if
+   else
+      if (allocated(rhs%time)) lhs = rhs%time
+   end if
+end subroutine datetime_to_string
 
 end module tomlf08_constants

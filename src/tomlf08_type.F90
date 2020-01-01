@@ -1,6 +1,6 @@
 ! This file is part of toml-f.
 !
-! Copyright (C) 2019 Sebastian Ehlert
+! Copyright (C) 2019-2020 Sebastian Ehlert
 !
 ! toml-f is free software: you can redistribute it and/or modify it under
 ! the terms of the GNU General Public License as published by
@@ -15,51 +15,79 @@
 ! You should have received a copy of the GNU General Public License
 ! along with toml-f.  If not, see <https://www.gnu.org/licenses/>.
 
+#:set toml_types = ("keyval", "array", "table")
+#:set toml_float_kinds = ("real32", "real64")
+#:set toml_integer_kinds = ("int16", "int32", "int64")
+#:set toml_bool_kinds = toml_integer_kinds
+#:set toml_timestamp_kinds = ("date", "time", "datetime")
 !> Constants and type definitions for the TOML serializer and deserializer.
 module tomlf08_type
    use tomlf08_constants
+   use iso_fortran_env
    implicit none
+   private
 
-   #:set toml_types = ("keyval", "array", "table")
+   public :: toml_value
+   #:for toml_type in toml_types
+   public :: toml_${toml_type}$
+   #:endfor
+   public :: toml_visitor
 
    !> Abstact TOML value.
-   type, abstract :: toml_value_t
+   type, abstract :: toml_value
       !> Key to this value.
       character(len=:), allocatable :: key
    contains
       !> Deconstructor to deallocate this TOML value.
       procedure(deconstructor), deferred :: destroy
+      !> Accept a visitor to transverse the data structure.
+      procedure(acceptor), deferred :: accept
    end type
 
-   !> Binding for the deconstructor interface, might be recursive.
-   abstract interface
-   !> Recursive deconstructor to deallocate the data structure.
-   recursive subroutine deconstructor(self)
-      import toml_value_t
-      !> Instance of the TOML value to deallocate.
-      class(toml_value_t), intent(inout) :: self
-   end subroutine
-   end interface
-
    !> TOML key-value pair.
-   type, extends(toml_value_t) :: toml_keyval_t
+   type, extends(toml_value) :: toml_keyval
       !> The raw value.
       character(len=:), allocatable :: val
    contains
+      generic :: get_value => get_string
+      !> Convert raw value to real.
+      procedure, private :: get_string => keyval_get_string
+      #:for vtype in toml_float_kinds
+      generic :: get_value => get_float_${vtype}$
+      !> Convert raw value to real.
+      procedure, private :: get_float_${vtype}$ => keyval_get_float_${vtype}$
+      #:endfor
+      #:for vtype in toml_integer_kinds
+      generic :: get_value => get_integer_${vtype}$
+      !> Convert raw value to integer.
+      procedure, private :: get_integer_${vtype}$ => keyval_get_integer_${vtype}$
+      #:endfor
+      #:for vtype in toml_bool_kinds
+      generic :: get_value => get_bool_${vtype}$
+      !> Convert raw value to logical.
+      procedure, private :: get_bool_${vtype}$ => keyval_get_bool_${vtype}$
+      #:endfor
+      #:for vtype in toml_timestamp_kinds
+      generic :: get_value => get_timestamp_${vtype}$
+      !> Convert raw value to time stamp
+      procedure, private :: get_timestamp_${vtype}$ => keyval_get_timestamp_${vtype}$
+      #:endfor
       !> Deconstructor to free the TOML key-value pair.
       procedure :: destroy => keyval_destroy
-   end type
+      !> Accept a visitor to transverse the data structure.
+      procedure :: accept => keyval_accept
+   end type toml_keyval
 
    !> TOML array
-   type, extends(toml_value_t) :: toml_array_t
+   type, extends(toml_value) :: toml_array
       !> element kind
-      integer(toml_kind_t) :: kind = INVALID_KIND
+      integer(toml_kind) :: kind = INVALID_KIND
       !> for value kind
-      integer(toml_type_t) :: type = INVALID_TYPE
+      integer(toml_type) :: type = INVALID_TYPE
       !> number of elements
       integer :: nelem = 0
       !> polymorphic array
-      class(toml_value_t), allocatable :: elem(:)
+      class(toml_value), allocatable :: elem(:)
    contains
       !> Deconstructor to deallocate the TOML array.
       procedure :: destroy => array_destroy
@@ -77,17 +105,17 @@ module tomlf08_type
       procedure :: get_type => array_get_type
       !> Accept a visitor to transverse the data structure.
       procedure :: accept => array_accept
-   end type
+   end type toml_array
 
    !> TOML table.
-   type, extends(toml_value_t) :: toml_table_t
+   type, extends(toml_value) :: toml_table
       !> Table was created implicitly.
       logical :: implicit = .false.
       #:for toml_type in toml_types
       !> Number of ${toml_type}$s in this table.
       integer :: n${toml_type}$ = 0
       !> Stack for ${toml_type}$s in this table.
-      type(toml_${toml_type}$_t), allocatable :: ${toml_type}$(:)
+      type(toml_${toml_type}$), allocatable :: ${toml_type}$(:)
       #:endfor
    contains
       !> Deconstructor for the TOML table instance.
@@ -108,18 +136,14 @@ module tomlf08_type
       #:endfor
       !> Accept a visitor to transverse the data structure.
       procedure :: accept => table_accept
-   end type
+   end type toml_table
 
-   !> TOML timestamp value type.
-   type :: toml_timestamp_t
-      integer :: year = 0
-      integer :: month = 0
-      integer :: day = 0
-      integer :: hour = 0
-      integer :: minute = 0
-      integer :: second = 0
-      integer :: millisec = 0
-   end type
+   #:for toml_type in toml_types
+   !> Constructor interface for ${toml_type}.
+   interface toml_${toml_type}$
+      module procedure :: new_${toml_type}$
+   end interface
+   #:endfor
 
    !> Overloaded interface for TOML types.
    interface resize
@@ -128,44 +152,54 @@ module tomlf08_type
       #:endfor
    end interface
 
-   type, abstract :: toml_visitor_t
+   type, abstract :: toml_visitor
    contains
       #:for toml_type in toml_types
       generic :: visit => visit_${toml_type}$
       procedure(visitor_visit_${toml_type}$), deferred :: visit_${toml_type}$
       #:endfor
-   end type toml_visitor_t
+   end type toml_visitor
 
    abstract interface
    #:for toml_type in toml_types
    recursive subroutine visitor_visit_${toml_type}$(visitor, ${toml_type}$)
-   import toml_visitor_t, toml_${toml_type}$_t
-   class(toml_visitor_t), intent(inout) :: visitor
-   class(toml_${toml_type}$_t), intent(inout) :: ${toml_type}$
+   import toml_visitor, toml_${toml_type}$
+   class(toml_visitor), intent(inout) :: visitor
+   class(toml_${toml_type}$), intent(in) :: ${toml_type}$
    end subroutine visitor_visit_${toml_type}$
    #:endfor
+   !> Binding for the deconstructor interface, might be recursive.
+   recursive subroutine deconstructor(self)
+      import toml_value
+      !> Instance of the TOML value to deallocate.
+      class(toml_value), intent(inout) :: self
+   end subroutine
+   !> Accept a visitor to transverse the data structure.
+   recursive subroutine acceptor(self, visitor)
+      import toml_value, toml_visitor
+      !> Instance of the TOML value.
+      class(toml_value), intent(in) :: self
+      !> Visitor for this value.
+      class(toml_visitor), intent(inout) :: visitor
+   end subroutine
    end interface
 
 contains
 
-subroutine table_accept(self, visitor)
-   class(toml_table_t), intent(inout) :: self
-   class(toml_visitor_t), intent(inout) :: visitor
+#:for toml_type in toml_types
+subroutine ${toml_type}$_accept(self, visitor)
+   class(toml_${toml_type}$), intent(in) :: self
+   class(toml_visitor), intent(inout) :: visitor
    call visitor%visit(self)
-end subroutine table_accept
-
-subroutine array_accept(self, visitor)
-   class(toml_array_t), intent(inout) :: self
-   class(toml_visitor_t), intent(inout) :: visitor
-   call visitor%visit(self)
-end subroutine array_accept
+end subroutine ${toml_type}$_accept
+#:endfor
 
 #:for toml_type in toml_types
 pure subroutine resize_${toml_type}$(self, n)
    !> Stack of ${toml_type}$s.
-   type(toml_${toml_type}$_t), allocatable, intent(inout) :: self(:)
+   type(toml_${toml_type}$), allocatable, intent(inout) :: self(:)
    integer, intent(in), optional :: n
-   type(toml_${toml_type}$_t), allocatable :: tmp(:)
+   type(toml_${toml_type}$), allocatable :: tmp(:)
    integer :: this_size, new_size
    if (allocated(self)) then
       this_size = size(self, 1)
@@ -191,9 +225,9 @@ end subroutine resize_${toml_type}$
 #:endfor
 
 subroutine resize_gen(self, n)
-   class(toml_value_t), allocatable, intent(inout) :: self(:)
+   class(toml_value), allocatable, intent(inout) :: self(:)
    integer, intent(in), optional :: n
-   class(toml_value_t), allocatable :: tmp(:)
+   class(toml_value), allocatable :: tmp(:)
    integer :: this_size, new_size
    if (allocated(self)) then
       this_size = size(self, 1)
@@ -213,9 +247,9 @@ subroutine resize_gen(self, n)
       ! we know the type, but we still have to convince the compiler that we now
       select type(self)
       #:for toml_type in toml_types
-      type is (toml_${toml_type}$_t)
+      type is (toml_${toml_type}$)
          select type(tmp)
-         type is (toml_${toml_type}$_t); self(:this_size) = tmp(:this_size)
+         type is (toml_${toml_type}$); self(:this_size) = tmp(:this_size)
          end select
       #:endfor
       end select
@@ -227,7 +261,7 @@ end subroutine resize_gen
 !> Find position of table at a given key.
 subroutine table_get_${toml_type}$_pos(self, key, pos)
    !> Root TOML table.
-   class(toml_table_t), intent(in) :: self
+   class(toml_table), intent(in) :: self
    !> Key of table.
    character(len=*), intent(in) :: key
    !> Pointer to table at given key.
@@ -242,11 +276,11 @@ end subroutine table_get_${toml_type}$_pos
 !> Return a pointer to the table at key in a TOML table.
 subroutine table_get_${toml_type}$_ptr(self, key, ptr)
    !> Root TOML table.
-   class(toml_table_t), intent(in), target :: self
+   class(toml_table), intent(in), target :: self
    !> Key of table.
    character(len=*), intent(in) :: key
    !> Pointer to table at given key.
-   type(toml_${toml_type}$_t), pointer, intent(out) :: ptr
+   type(toml_${toml_type}$), pointer, intent(out) :: ptr
    integer :: pos
    nullify(ptr)
    call table_get_${toml_type}$_pos(self, key, pos)
@@ -255,7 +289,7 @@ end subroutine table_get_${toml_type}$_ptr
 #:endfor
 
 logical function table_has_key(self, key) result(has_key)
-   class(toml_table_t), intent(in) :: self
+   class(toml_table), intent(in) :: self
    character(len=*), intent(in) :: key
    integer :: pos
    has_key = .false.
@@ -268,9 +302,9 @@ end function table_has_key
 
 #:for toml_type in toml_types
 subroutine table_push_back_${toml_type}$(self, key, ptr, stat)
-   class(toml_table_t), intent(inout), target :: self
+   class(toml_table), intent(inout), target :: self
    character(len=*), intent(in) :: key
-   type(toml_${toml_type}$_t), pointer, intent(out) :: ptr
+   type(toml_${toml_type}$), pointer, intent(out) :: ptr
    integer, intent(out), optional :: stat
    nullify(ptr)
    #:if (toml_type == "table")
@@ -309,7 +343,7 @@ end subroutine table_push_back_${toml_type}$
 !> Allocate a new TOML array for ${toml_type}$ elements.
 subroutine array_new_${toml_type}$(self, size, stat)
    !> TOML array instance.
-   class(toml_array_t), intent(inout) :: self
+   class(toml_array), intent(inout) :: self
    !> Size of the initial TOML array.
    integer, intent(in), optional :: size
    !> Status of the constructor.
@@ -319,9 +353,9 @@ subroutine array_new_${toml_type}$(self, size, stat)
       return
    end if
    if (present(size)) then
-      allocate(toml_${toml_type}$_t :: self%elem(size))
+      allocate(toml_${toml_type}$ :: self%elem(size))
    else
-      allocate(toml_${toml_type}$_t :: self%elem(10))
+      allocate(toml_${toml_type}$ :: self%elem(10))
    end if
    self%nelem = 0
    self%kind = ${toml_type}$_KIND
@@ -330,13 +364,13 @@ subroutine array_new_${toml_type}$(self, size, stat)
 end subroutine array_new_${toml_type}$
 #:endfor
 
-integer(toml_kind_t) function array_get_kind(self) result(akind)
-   class(toml_array_t), intent(in) :: self
+integer(toml_kind) function array_get_kind(self) result(akind)
+   class(toml_array), intent(in) :: self
    akind = self%kind
 end function array_get_kind
 
-integer(toml_type_t) function array_get_type(self) result(atype)
-   class(toml_array_t), intent(in) :: self
+integer(toml_type) function array_get_type(self) result(atype)
+   class(toml_array), intent(in) :: self
    if (self%kind /= KEYVAL_KIND) then
       atype = INVALID_TYPE
    else if (self%nelem == 0) then
@@ -347,8 +381,8 @@ integer(toml_type_t) function array_get_type(self) result(atype)
 end function array_get_type
 
 subroutine array_push_back(self, ptr, stat)
-   class(toml_array_t), intent(inout), target :: self
-   class(toml_value_t), pointer, intent(out) :: ptr
+   class(toml_array), intent(inout), target :: self
+   class(toml_value), pointer, intent(out) :: ptr
    integer, intent(out), optional :: stat
    nullify(ptr)
    if (.not.allocated(self%elem)) then
@@ -363,8 +397,8 @@ end subroutine array_push_back
 
 #:for toml_type in toml_types
 subroutine array_push_back_${toml_type}$(self, ptr, stat)
-   class(toml_array_t), intent(inout), target :: self
-   type(toml_${toml_type}$_t), pointer, intent(out) :: ptr
+   class(toml_array), intent(inout), target :: self
+   type(toml_${toml_type}$), pointer, intent(out) :: ptr
    integer, intent(out), optional :: stat
    nullify(ptr)
    if (.not.allocated(self%elem)) then
@@ -374,7 +408,7 @@ subroutine array_push_back_${toml_type}$(self, ptr, stat)
    if (self%nelem >= size(self%elem, 1)) call resize_gen(self%elem)
    self%nelem = self%nelem + 1
    select type(elem => self%elem(self%nelem))
-   type is(toml_${toml_type}$_t)
+   type is(toml_${toml_type}$)
       ptr => elem
       if (present(stat)) stat = 0
    class default
@@ -386,7 +420,7 @@ end subroutine array_push_back_${toml_type}$
 !> Deconstructor for TOML key-value.
 subroutine keyval_destroy(self)
    !> TOML key-value instance.
-   class(toml_keyval_t), intent(inout) :: self
+   class(toml_keyval), intent(inout) :: self
    if (allocated(self%key)) deallocate(self%key)
    if (allocated(self%val)) deallocate(self%val)
 end subroutine
@@ -394,7 +428,7 @@ end subroutine
 !> Deconstructor for TOML arrays.
 recursive subroutine array_destroy(self)
    !> TOML array instance.
-   class(toml_array_t), intent(inout) :: self
+   class(toml_array), intent(inout) :: self
    integer :: ii
    if (allocated(self%key)) deallocate(self%key)
    do ii = 1, self%nelem
@@ -409,7 +443,7 @@ end subroutine array_destroy
 !> Deconstructor for TOML table.
 recursive subroutine table_destroy(self)
    !> TOML table instance.
-   class(toml_table_t), intent(inout) :: self
+   class(toml_table), intent(inout) :: self
    integer :: ii
    if (allocated(self%key)) deallocate(self%key)
    self%implicit = .false.
@@ -423,5 +457,122 @@ recursive subroutine table_destroy(self)
    end if
    #:endfor
 end subroutine table_destroy
+
+#:for vtype in toml_float_kinds
+subroutine keyval_get_float_${vtype}$(self, value, status)
+   use tomlf08_utils
+   class(toml_keyval), intent(in) :: self
+   real(${vtype}$), intent(out) :: value
+   logical, intent(out), optional :: status
+   logical :: stat
+   real(TOML_FLOAT_KIND) :: dummy
+   stat = toml_raw_to_float(self%val, dummy)
+   if (stat) value = real(dummy, ${vtype}$)
+   if (present(status)) status = stat
+end subroutine keyval_get_float_${vtype}$
+#:endfor
+
+#:for vtype in toml_integer_kinds
+subroutine keyval_get_integer_${vtype}$(self, value, status)
+   use tomlf08_utils
+   class(toml_keyval), intent(in) :: self
+   integer(${vtype}$), intent(out) :: value
+   logical, intent(out), optional :: status
+   logical :: stat
+   integer(TOML_INTEGER_KIND) :: dummy
+   stat = toml_raw_to_integer(self%val, dummy)
+   if (stat) value = int(dummy, ${vtype}$)
+   if (present(status)) status = stat
+end subroutine keyval_get_integer_${vtype}$
+#:endfor
+
+#:for vtype in toml_bool_kinds
+subroutine keyval_get_bool_${vtype}$(self, value, status)
+   use tomlf08_utils
+   class(toml_keyval), intent(in) :: self
+   logical(${vtype}$), intent(out) :: value
+   logical, intent(out), optional :: status
+   logical :: stat
+   logical(TOML_BOOL_KIND) :: dummy
+   stat = toml_raw_to_bool(self%val, dummy)
+   if (stat) value = dummy
+   if (present(status)) status = stat
+end subroutine keyval_get_bool_${vtype}$
+#:endfor
+
+#:for vtype in toml_timestamp_kinds
+subroutine keyval_get_timestamp_${vtype}$(self, value, status)
+   use tomlf08_utils
+   class(toml_keyval), intent(in) :: self
+   type(toml_${vtype}$), intent(out) :: value
+   logical, intent(out), optional :: status
+   logical :: stat
+   type(toml_datetime) :: dummy
+   stat = toml_raw_to_timestamp(self%val, dummy)
+   #:if (vtype == "datetime")
+   if (stat) value = dummy
+   #:else
+   stat = stat .and. allocated(dummy%${vtype}$)
+   if (stat) value = dummy%${vtype}$
+   #:endif
+   if (present(status)) status = stat
+end subroutine keyval_get_timestamp_${vtype}$
+#:endfor
+
+subroutine keyval_get_string(self, value, status)
+   use tomlf08_utils
+   class(toml_keyval), intent(in) :: self
+   character(len=:), allocatable, intent(out) :: value
+   logical, intent(out), optional :: status
+   logical :: stat
+   stat = toml_raw_verify_string(self%val)
+   if (stat) value = self%val
+   if (present(status)) status = stat
+end subroutine keyval_get_string
+
+type(toml_keyval) function new_keyval(key, raw)
+   character(len=*), intent(in), optional :: key
+   character(len=*), intent(in) :: raw
+   if (present(key)) new_keyval%key = key
+   new_keyval%val = raw
+end function new_keyval
+
+type(toml_table) function new_table(key, values, tables, arrays)
+   character(len=*), intent(in), optional :: key
+   type(toml_keyval), intent(in), optional :: values(:)
+   type(toml_table), intent(in), optional :: tables(:)
+   type(toml_array), intent(in), optional :: arrays(:)
+   if (present(key)) new_table%key = key
+   if (present(values)) then
+      new_table%nkeyval = size(values, 1)
+      new_table%keyval = values
+   end if
+   if (present(arrays)) then
+      new_table%narray = size(arrays, 1)
+      new_table%array = arrays
+   end if
+   if (present(tables)) then
+      new_table%ntable = size(tables, 1)
+      new_table%table = tables
+   end if
+end function new_table
+
+type(toml_array) function new_array(key, values)
+   use tomlf08_utils
+   character(len=*), intent(in), optional :: key
+   class(toml_value), intent(in), optional :: values(:)
+   if (present(key)) new_array%key = key
+   select type(values)
+   #:for toml_type in toml_types
+   class is(toml_${toml_type}$)
+      new_array%kind = ${toml_type}$_KIND
+      #:if (toml_type == "keyval")
+      new_array%type = toml_get_value_type(values(1)%val)
+      #:endif
+      new_array%nelem = size(values, 1)
+   #:endfor
+   end select
+   new_array%elem = values
+end function new_array
 
 end module tomlf08_type

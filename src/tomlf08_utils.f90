@@ -1,6 +1,6 @@
 ! This file is part of toml-f.
 !
-! Copyright (C) 2019 Sebastian Ehlert
+! Copyright (C) 2019-2020 Sebastian Ehlert
 !
 ! toml-f is free software: you can redistribute it and/or modify it under
 ! the terms of the GNU General Public License as published by
@@ -17,14 +17,14 @@
 
 !> Utilities to work with TOML data types.
 module tomlf08_utils
-   use tomlf08_type
+   use tomlf08_constants
    implicit none
 
 contains
 
-integer(toml_type_t) function toml_get_value_type(raw) result(vtype)
+integer(toml_type) function toml_get_value_type(raw) result(vtype)
    character(len=*), intent(in) :: raw
-   if (raw(1:1) == TOML_SQUOTE .or. raw(1:1) == TOML_DQUOTE) then
+   if (toml_raw_verify_string(raw)) then
       vtype = STRING_TYPE
       return
    end if
@@ -50,6 +50,11 @@ end function
 logical function toml_raw_to_string(raw, str) result(stat)
    character(len=*), intent(in) :: raw
    character(len=:), allocatable, intent(out) :: str
+end function
+
+logical elemental function toml_raw_verify_string(raw) result(stat)
+   character(len=*), intent(in) :: raw
+   stat = raw(1:1) == TOML_SQUOTE .or. raw(1:1) == TOML_DQUOTE
 end function
 
 logical function toml_raw_to_float(raw, num) result(stat)
@@ -205,32 +210,34 @@ end function
 
 logical function toml_raw_to_timestamp(raw, timestamp) result(stat)
    character(len=*), intent(in) :: raw
-   type(toml_timestamp_t), intent(out) :: timestamp
+   type(toml_datetime), intent(out) :: timestamp
    integer :: err, dot_pos, first
    stat = toml_raw_verify_timestamp(raw)
    first = 1
    if (toml_raw_verify_date(raw)) then
-      read(raw(1:4), *, iostat=err) timestamp%year
+      allocate(timestamp%date, source=toml_date())
+      read(raw(1:4), *, iostat=err) timestamp%date%year
       stat = err == 0
-      read(raw(6:7), *, iostat=err) timestamp%month
+      read(raw(6:7), *, iostat=err) timestamp%date%month
       stat = stat .and. err == 0
-      read(raw(9:10), *, iostat=err) timestamp%day
+      read(raw(9:10), *, iostat=err) timestamp%date%day
       stat = stat .and. err == 0
       if (.not.stat .or. len(raw) == 10) return
       first = 12
    end if
 
    if (toml_raw_verify_date(raw(first:))) then
-      read(raw(first:first+1), *, iostat=err) timestamp%hour
+      allocate(timestamp%time, source=toml_time())
+      read(raw(first:first+1), *, iostat=err) timestamp%time%hour
       stat = err == 0
-      read(raw(first+3:first+4), *, iostat=err) timestamp%day
+      read(raw(first+3:first+4), *, iostat=err) timestamp%time%minute
       stat = stat .and. err == 0
-      read(raw(first+6:first+7), *, iostat=err) timestamp%second
+      read(raw(first+6:first+7), *, iostat=err) timestamp%time%second
       stat = stat .and. err == 0
       if (len(raw(first:)) > 8) then
          dot_pos = index(raw, '.')
          if (dot_pos > 0) then
-            read(raw(dot_pos+1:dot_pos+3), *, iostat=err) timestamp%millisec
+            read(raw(dot_pos+1:dot_pos+3), *, iostat=err) timestamp%time%millisec
             stat = stat .and. err == 0
          end if
       end if

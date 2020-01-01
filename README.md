@@ -1,9 +1,12 @@
-# TOML parser written in Fortran
+# TOML parser for Fortran projects
 
 [![Build Status](https://travis-ci.com/awvwgk/toml-f.svg?branch=master)](https://travis-ci.com/awvwgk/toml-f)
 [![Build Status](https://github.com/awvwgk/toml-f/workflows/CI/badge.svg)](https://github.com/awvwgk/toml-f/actions)
 
 A TOML parser implementation for data serialization and deserialization in Fortran.
+
+- the [TOML standard](https://github.com/toml-lang/toml)
+- currently supported [TOML v0.5 specification](https://github.com/toml-lang/toml/blob/v0.5.0/README.md)
 
 ## Installation
 

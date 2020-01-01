@@ -5,8 +5,8 @@ program tester
    implicit none
    integer :: iarg, length
    character(len=:), allocatable :: argument
-   type(toml_table_t), allocatable :: table
-   type(toml_serializer_t) :: ser
+   type(toml_table), allocatable :: table
+   type(toml_serializer) :: ser
    integer :: unit
    logical :: exist
 
