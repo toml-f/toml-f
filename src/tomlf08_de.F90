@@ -550,43 +550,13 @@ end subroutine parse_table
 subroutine key_from_token(key, tok)
    character(len=:), allocatable, intent(out) :: key
    type(token), intent(in) :: tok
-   call string_from_token(key, tok)
-end subroutine key_from_token
-
-subroutine string_from_token(str, tok)
-   character(len=:), allocatable, intent(out) :: str
-   type(token), intent(in) :: tok
-   logical :: multiline, verbatim
-   character(len=:), pointer :: start
-   integer :: len
-   start => tok%ptr
-   len = tok%len
-   verbatim = tok%ptr(1:1) == TOML_SQUOTE
-   if (tok%ptr(1:1) == TOML_DQUOTE .or. verbatim) then
-      multiline = verify(tok%ptr(1:3), TOML_DQUOTE) == 0 &
-         &   .or. verify(tok%ptr(1:3), TOML_SQUOTE) == 0
-      if (multiline) then
-         start => start(4:)
-         len = len - 6
-      else
-         start => start(2:)
-         len = len - 2
-      end if
-      if (verbatim) then
-         str = start(:len)
-      else
-         str = start(:len) ! FIXME
-      end if
-
-      if (scan(str, TOML_NEWLINE) > 0) then
-         deallocate(str)
-      end if
-
+   if (toml_raw_to_string(tok%ptr(:tok%len), key)) then
+      if (index(key, TOML_NEWLINE) > 0) deallocate(key)
    else
-      str = start(:len)
+      key = tok%ptr(:tok%len)
+      if (verify(key, TOML_BAREKEY) > 0) deallocate(key)
    end if
-   nullify(start)
-end subroutine string_from_token
+end subroutine key_from_token
 
 subroutine eat_token(de, tok, dot_is_special, double_bracket)
    type(toml_deserializer), intent(inout) :: de

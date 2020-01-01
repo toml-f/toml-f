@@ -50,7 +50,95 @@ end function
 logical function toml_raw_to_string(raw, str) result(stat)
    character(len=*), intent(in) :: raw
    character(len=:), allocatable, intent(out) :: str
+   character(len=:), allocatable :: tmp
+   logical :: multiline
+   logical :: verbatim
+   stat = toml_raw_verify_string(raw)
+   if (stat) then
+      verbatim = raw(1:1) == TOML_SQUOTE
+      multiline = verify(raw(1:3), TOML_DQUOTE) == 0 &
+         &   .or. verify(raw(1:3), TOML_SQUOTE) == 0
+      if (multiline) then
+         tmp = raw(4:len(raw)-3)
+         !call toml_normalize_multiline(tmp)
+      else
+         tmp = raw(2:len(raw)-1)
+      end if
+      if (.not.verbatim) call toml_normalize_string(tmp)
+      call move_alloc(tmp, str)
+   end if
 end function
+
+subroutine toml_normalize_multiline(str)
+   character(len=:), allocatable, intent(inout) :: str
+   character(len=:), allocatable :: tmp
+   integer :: i, j, bsl
+   ! if there are no newlines, we are done here
+   if (scan(str, TOML_NEWLINE) == 0) return
+   ! check for leading newlines
+   i = verify(str, TOML_NEWLINE)
+   ! for the case everything is newline, we will go with an empty string
+   if (i == 0) then
+      str = ''
+      return
+   end if
+   tmp = ''
+   do while (i < len(str))
+      ! find next backslash character
+      bsl = index(str(i:), '\') - 1
+      if (bsl < 0) then
+         tmp = tmp // str(i:)
+         i = len(str)
+      else
+         j = verify(str(i+bsl+1:), TOML_WHITESPACE//TOML_NEWLINE) - 1
+         if (j == 0) then
+            tmp = tmp // str(i:i+bsl)
+            i = i + bsl + 1
+         else
+            tmp = tmp // str(i:i+bsl-1)
+            i = i + j
+         end if
+      end if
+   end do
+   call move_alloc(tmp, str)
+end subroutine toml_normalize_multiline
+
+subroutine toml_normalize_string(str)
+   character(len=:), allocatable, intent(inout) :: str
+   character(len=:), allocatable :: tmp
+   character :: ch
+   integer :: i, ii
+   logical :: escape
+   escape = .false.
+   tmp = ''
+   do i = 1, len(str)
+      ch = str(i:i)
+      ii = ichar(ch)
+      if (escape) then
+         escape = .false.
+         select case(ch)
+         case('b'); tmp = tmp // TOML_BACKSPACE
+         case('t'); tmp = tmp // TOML_TABULATOR
+         case('n'); tmp = tmp // TOML_NEWLINE
+         case('f'); tmp = tmp // TOML_FORMFEED
+         case('r'); tmp = tmp // TOML_CARRIAGE_RETURN
+         case('"', '\'); tmp = tmp // ch
+         case('u'); tmp = tmp // '\u' ! FIXME
+         case('U'); tmp = tmp // '\U' ! FIXME
+         end select
+      else
+         if (ch == '\') then
+            escape = .true.
+         else
+            ! check for illegal control characters
+            if ((z'00' <= ii .and. ii <= z'08') .or. &
+               &(z'0B' <= ii .and. ii <= z'1f') .or. ii == z'7f') return
+            tmp = tmp // ch
+         end if
+      end if
+   end do
+   call move_alloc(tmp, str)
+end subroutine toml_normalize_string
 
 logical elemental function toml_raw_verify_string(raw) result(stat)
    character(len=*), intent(in) :: raw

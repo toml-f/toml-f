@@ -38,6 +38,8 @@ module tomlf08_type
       !> Key to this value.
       character(len=:), allocatable :: key
    contains
+      !> Return key.
+      procedure :: get_key => toml_get_key
       !> Deconstructor to deallocate this TOML value.
       procedure(deconstructor), deferred :: destroy
       !> Accept a visitor to transverse the data structure.
@@ -525,8 +527,7 @@ subroutine keyval_get_string(self, value, status)
    character(len=:), allocatable, intent(out) :: value
    logical, intent(out), optional :: status
    logical :: stat
-   stat = toml_raw_verify_string(self%val)
-   if (stat) value = self%val
+   stat = toml_raw_to_string(self%val, value)
    if (present(status)) status = stat
 end subroutine keyval_get_string
 
@@ -574,5 +575,36 @@ type(toml_array) function new_array(key, values)
    end select
    new_array%elem = values
 end function new_array
+
+subroutine toml_get_key(self, key)
+   class(toml_value), intent(in) :: self
+   character(len=:), allocatable, intent(out) :: key
+   if (verify(self%key, TOML_BAREKEY) == 0) then
+      key = self%key
+   else
+      call toml_escape_string(self%key, key)
+      key = '"' // key // '"'
+   end if
+end subroutine toml_get_key
+
+subroutine toml_escape_string(raw, escaped)
+   use tomlf08_constants
+   character(len=*), intent(in) :: raw
+   character(len=:), allocatable, intent(out) :: escaped
+   integer :: i
+   escaped = ''
+   do i = 1, len(raw)
+      select case(raw(i:i))
+      case default; escaped = escaped // raw(i:i)
+      case('\'); escaped = escaped // '\\'
+      case('"'); escaped = escaped // '\"'
+      case(TOML_NEWLINE); escaped = escaped // '\n'
+      case(TOML_FORMFEED); escaped = escaped // '\f'
+      case(TOML_CARRIAGE_RETURN); escaped = escaped // '\r'
+      case(TOML_TABULATOR); escaped = escaped // '\t'
+      case(TOML_BACKSPACE); escaped = escaped // '\b'
+      end select
+   end do
+end subroutine toml_escape_string
 
 end module tomlf08_type

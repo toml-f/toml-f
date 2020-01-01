@@ -119,7 +119,7 @@ recursive subroutine ser_visit_table(visitor, table)
    visitor%depth = visitor%depth + 1
    do i = 1, table%nkeyval
       call visitor%visit(table%keyval(i))
-      if (i /= table%nkeyval .or. table%narray > 0) &
+      if (i /= table%nkeyval .or. table%narray > 0 .or. table%ntable > 0) &
          & write(visitor%unit, '(",")', advance='no')
    end do
    do i = 1, table%narray
@@ -166,6 +166,7 @@ recursive subroutine ser_visit_array(visitor, array)
    visitor%depth = visitor%depth + 1
    do i = 1, array%nelem
       call array%elem(i)%accept(visitor)
+      if (i /= array%nelem) write(visitor%unit, '(",")', advance='no')
    end do
    visitor%depth = visitor%depth - 1
    call visitor%indent
@@ -195,7 +196,8 @@ subroutine ser_visit_keyval(visitor, keyval)
    end if
    select case(toml_get_value_type(keyval%val))
    case(STRING_TYPE)
-      call escape_string(keyval%val, str)
+      call keyval%get_value(key)
+      call escape_string(key, str)
       write(visitor%unit, '(a,a,a)', advance='no') &
          &  '{"type": "string", "value": "', str, '"}'
    case(BOOL_TYPE)
@@ -219,6 +221,7 @@ subroutine ser_visit_keyval(visitor, keyval)
 end subroutine ser_visit_keyval
 
 subroutine escape_string(raw, escaped)
+   use tomlf08_constants
    character(len=*), intent(in) :: raw
    character(len=:), allocatable, intent(out) :: escaped
    integer :: i
@@ -226,7 +229,13 @@ subroutine escape_string(raw, escaped)
    do i = 1, len(raw)
       select case(raw(i:i))
       case default; escaped = escaped // raw(i:i)
+      case('\'); escaped = escaped // '\\'
       case('"'); escaped = escaped // '\"'
+      case(TOML_NEWLINE); escaped = escaped // '\n'
+      case(TOML_FORMFEED); escaped = escaped // '\f'
+      case(TOML_CARRIAGE_RETURN); escaped = escaped // '\r'
+      case(TOML_TABULATOR); escaped = escaped // '\t'
+      case(TOML_BACKSPACE); escaped = escaped // '\b'
       end select
    end do
 end subroutine escape_string
@@ -248,6 +257,10 @@ program toml2json
    ser%indentation = "  "
 
    if (command_argument_count() > 0) then
+      if (command_argument_count() > 1) then
+         ser%depth = ser%depth + 1
+         write(ser%unit, '("[")', advance='no')
+      end if
       do iarg = 1, command_argument_count()
          if (allocated(argument)) deallocate(argument)
          call get_command_argument(iarg, length=length)
@@ -261,15 +274,24 @@ program toml2json
             close(unit)
             if (allocated(table)) then
                call table%accept(ser)
+               if (iarg /= command_argument_count()) write(ser%unit, '(",")', advance='no')
                call table%destroy
+            else
+               error stop
             end if
          end if
       end do
+      if (command_argument_count() > 1) then
+         if (allocated(ser%indentation)) write(ser%unit, '(a)')
+         write(ser%unit, '("]")')
+      end if
    else
       call toml_parse(table, input_unit)
       if (allocated(table)) then
          call table%accept(ser)
          call table%destroy
+      else
+         error stop
       end if
    end if
    if (allocated(argument)) deallocate(argument)

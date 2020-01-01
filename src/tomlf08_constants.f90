@@ -32,7 +32,11 @@ module tomlf08_constants
    character(len=*), parameter :: TOML_SQUOTE = "'"
    !> Double quotes denote strings (with escape character possible)
    character(len=*), parameter :: TOML_DQUOTE = '"'
-   character(len=*), parameter :: TOML_NEWLINE = new_line('a')
+   character(len=*), parameter :: TOML_NEWLINE = new_line('a') ! \n
+   character(len=*), parameter :: TOML_TABULATOR = achar(9) ! \t
+   character(len=*), parameter :: TOML_FORMFEED = achar(12) ! \f
+   character(len=*), parameter :: TOML_CARRIAGE_RETURN = achar(13) ! \r
+   character(len=*), parameter :: TOML_BACKSPACE = achar(8) ! \b
    character(len=*), parameter :: TOML_LOWERCASE = 'abcdefghijklmnopqrstuvwxyz'
    character(len=*), parameter :: TOML_UPPERCASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
    character(len=*), parameter :: TOML_LETTERS = TOML_LOWERCASE//TOML_UPPERCASE
@@ -120,7 +124,7 @@ subroutine datetime_to_string(lhs, rhs)
       call rhs%date%to_string(lhs)
       if (allocated(rhs%time)) then
          call rhs%time%to_string(temporary)
-         lhs = lhs // ' ' // temporary
+         lhs = lhs // 'T' // temporary
       end if
    else
       if (allocated(rhs%time)) lhs = rhs%time

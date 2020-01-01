@@ -120,6 +120,7 @@ recursive subroutine ser_visit_table(visitor, table)
    class(toml_serializer), intent(inout) :: visitor
    !> TOML table.
    class(toml_table), intent(in) :: table
+   character(len=:), allocatable :: key
    integer :: i
    if (.not.allocated(visitor%stack)) then
       allocate(visitor%stack(10))
@@ -142,7 +143,8 @@ recursive subroutine ser_visit_table(visitor, table)
    end do
    do i = 1, table%narray
       if (visitor%inline_array) then
-         write(visitor%unit, '(1x,a,1x,"=")', advance='no') table%array(i)%key
+         call table%array(i)%get_key(key)
+         write(visitor%unit, '(1x,a,1x,"=")', advance='no') key
          call visitor%visit(table%array(i))
          write(visitor%unit, '(",")', advance='no')
       else
@@ -150,7 +152,8 @@ recursive subroutine ser_visit_table(visitor, table)
             call visitor%visit(table%array(i))
          else
             visitor%inline_array = .true.
-            write(visitor%unit, '(a,1x,"=")', advance='no') table%array(i)%key
+            call table%array(i)%get_key(key)
+            write(visitor%unit, '(a,1x,"=")', advance='no') key
             call visitor%visit(table%array(i))
             visitor%inline_array = .false.
             write(visitor%unit, '(a)')
@@ -161,7 +164,8 @@ recursive subroutine ser_visit_table(visitor, table)
    do i = 1, table%ntable
       if (size(visitor%stack, 1) <= visitor%top) call resize(visitor%stack)
       visitor%top = visitor%top + 1
-      visitor%stack(visitor%top)%key = table%table(i)%key
+      call table%table(i)%get_key(key)
+      visitor%stack(visitor%top)%key = key
       call visitor%visit(table%table(i))
       deallocate(visitor%stack(visitor%top)%key)
       visitor%top = visitor%top - 1
@@ -177,6 +181,7 @@ recursive subroutine ser_visit_array(visitor, array)
    class(toml_serializer), intent(inout) :: visitor
    !> TOML array.
    class(toml_array), intent(in) :: array
+   character(len=:), allocatable :: key
    integer :: i, j
    if (visitor%inline_array) write(visitor%unit, '(1x,"[")', advance='no')
    select type(elem => array%elem)
@@ -203,7 +208,8 @@ recursive subroutine ser_visit_array(visitor, array)
             visitor%array_of_tables = .true.
             if (size(visitor%stack, 1) <= visitor%top) call resize(visitor%stack)
             visitor%top = visitor%top + 1
-            visitor%stack(visitor%top)%key = array%key
+            call array%get_key(key)
+            visitor%stack(visitor%top)%key = key
             call visitor%visit(elem(i))
             deallocate(visitor%stack(visitor%top)%key)
             visitor%top = visitor%top - 1
@@ -219,11 +225,13 @@ subroutine ser_visit_keyval(visitor, keyval)
    class(toml_serializer), intent(inout) :: visitor
    !> TOML Key-value pair.
    class(toml_keyval), intent(in) :: keyval
+   character(len=:), allocatable :: key
+   call keyval%get_key(key)
    if (visitor%inline_array) then
       write(visitor%unit, '(1x,a,1x,"=",1x,a,",")', advance='no') &
-         &  keyval%key, keyval%val
+         &  key, keyval%val
    else
-      write(visitor%unit, '(a,1x,"=",1x,a)') keyval%key, keyval%val
+      write(visitor%unit, '(a,1x,"=",1x,a)') key, keyval%val
    end if
 end subroutine ser_visit_keyval
 

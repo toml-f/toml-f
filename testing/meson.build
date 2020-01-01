@@ -15,6 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with toml-f.  If not, see <https://www.gnu.org/licenses/>.
 
-executable('@0@-json'.format(meson.project_name()),
-           files('tomlf08_json.f90'),
-           dependencies: tomlf_dep)
+toml2json = executable('@0@-json'.format(meson.project_name()),
+                       files('tomlf08_json.f90'),
+                       dependencies: tomlf_dep)
+
+testenv = environment()
+testenv.set('GOPATH', meson.current_build_dir())
+
+if find_program('go', required: false).found()
+  test('Decoder', find_program('decoder-test.sh'), args: toml2json, env: testenv)
+  #test('Encoder', find_program('encoder-test.sh'), args: json2toml, env: testenv)
+endif
