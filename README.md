@@ -23,6 +23,84 @@ meson setup build_gcc
 ninja -C build_gcc
 ```
 
+## Usage
+
+To make use this library use the `tomlf08` module in your projects.
+An example program to load and dump a TOML file would look like this:
+
+```fortran
+use tomlf08
+implicit none
+type(toml_table), allocatable :: table
+character(len=:), allocatable :: input_string
+type(toml_serializer) :: ser
+
+input_string = &
+   & '# This is a TOML document.' // TOML_NEWLINE // &
+   & 'title = "TOML Example"' // TOML_NEWLINE // &
+   & '[owner]' // TOML_NEWLINE // &
+   & 'name = "Tom Preston-Werner"' // TOML_NEWLINE // &
+   & 'dob = 1979-05-27T07:32:00-08:00 # First class dates' // TOML_NEWLINE // &
+   & '[database]' // TOML_NEWLINE // &
+   & 'server = "192.168.1.1"' // TOML_NEWLINE // &
+   & 'ports = [ 8001, 8001, 8002 ]' // TOML_NEWLINE // &
+   & 'connection_max = 5000' // TOML_NEWLINE // &
+   & 'enabled = true' // TOML_NEWLINE // &
+   & '[servers]' // TOML_NEWLINE // &
+   & '  # Indentation (tabs and/or spaces) is allowed but not required' // TOML_NEWLINE // &
+   & '  [servers.alpha]' // TOML_NEWLINE // &
+   & '  ip = "10.0.0.1"' // TOML_NEWLINE // &
+   & '  dc = "eqdc10"' // TOML_NEWLINE // &
+   & '  [servers.beta]' // TOML_NEWLINE // &
+   & '  ip = "10.0.0.2"' // TOML_NEWLINE // &
+   & '  dc = "eqdc10"' // TOML_NEWLINE // &
+   & '[clients]' // TOML_NEWLINE // &
+   & 'data = [ ["gamma", "delta"], [1, 2] ]' // TOML_NEWLINE // &
+   & '# Line breaks are OK when inside arrays' // TOML_NEWLINE // &
+   & 'hosts = [' // TOML_NEWLINE // &
+   & '  "alpha",' // TOML_NEWLINE // &
+   & '  "omega"' // TOML_NEWLINE // &
+   & ']'
+
+call toml_parse(table, input_string)
+if (allocated(table)) then
+   call table%accept(ser)
+   call table%destroy  ! not necessary
+end if
+end
+```
+
+Here the TOML file is provided as string, notice that you have to add a
+newline character either by the parameter `TOML_NEWLINE` or by using the
+intrinsic function `new_line('a')` to get the correct newline characters.
+
+Alternatively a file can be loaded from any connected, formatted unit using
+the same overloaded function. For the standard input the intrinsic `input_unit`
+should be passed. If the TOML file is successfully parsed the table will
+be allocated and can be written to the standard output by passing the
+`toml_serializer` as visitor to the table.
+
+### as subproject
+
+`meson` based projects can use `toml-f` as subproject with this wrap-file:
+
+```
+[wrap-git]
+directory = toml-f
+url = https://github.com/awvwgk/toml-f.git
+revision = head
+```
+
+Despite looking similar to a TOML file the wrap-file is not valid TOML.
+
+Place this file in your `subprojects` directory and add
+
+```meson
+tomlf_dep = dependency('toml-f', ['toml-f', 'tomlf_dep'])
+```
+
+to your `meson.build` file.
+
 ## License
 
 `toml-f` is free software: you can redistribute it and/or modify it under

@@ -40,7 +40,7 @@ module tomlf08_de
    enum, bind(C)
       enumerator :: INVALID, &
          & DOT, COMMA, EQUAL, LBRACE, RBRACE, NEWLINE, LBRACKET, RBRACKET, &
-         & LLBRACKET, RRBRACKET, STRING, EOF
+         & LLBRACKET, RRBRACKET, STRING
    end enum
    !> Kind parameter for token type enums.
    integer, parameter :: tokentype = kind(INVALID)
@@ -74,6 +74,7 @@ module tomlf08_de
       type(de_line) :: line
       integer :: len
       integer :: lineno
+      logical :: finished = .false.
 
       type(token) :: tok
       type(toml_table), allocatable :: root
@@ -140,7 +141,7 @@ subroutine toml_parse_string(table, conf)
    allocate(de%root)
    de%curtab => de%root
 
-   do while(de%tok%tok /= EOF)
+   do while(.not.de%finished)
       select case(de%tok%tok)
       case(NEWLINE)
          call next_token(de, .true., .true.)
@@ -611,6 +612,7 @@ subroutine next_token(de, dot_is_special, double_bracket)
    logical, intent(in) :: double_bracket
    character(len=:), pointer :: ptr
    integer :: i
+   if (de%finished) return
    ptr => de%tok%ptr
 
    !> consume token
@@ -666,7 +668,8 @@ subroutine next_token(de, dot_is_special, double_bracket)
    end do
 
    !> return with EOF token
-   de%tok = new_token(EOF, ptr(1:0), 0)
+   de%finished = .true.
+   de%tok = new_token(NEWLINE, ptr(1:0), 0)
 
 contains
 
