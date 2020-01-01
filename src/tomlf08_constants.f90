@@ -62,7 +62,8 @@ module tomlf08_constants
       integer :: hour = 0
       integer :: minute = 0
       integer :: second = 0
-      integer :: millisec = 0
+      integer, allocatable :: millisec
+      character(len=:), allocatable :: zone
    contains
       generic :: assignment(=) => to_string
       procedure, pass(rhs) :: to_string => time_to_string
@@ -99,9 +100,16 @@ end subroutine date_to_string
 subroutine time_to_string(lhs, rhs)
    character(len=:), allocatable, intent(out) :: lhs
    class(toml_time), intent(in) :: rhs
-   allocate(character(len=12) :: lhs)
-   write(lhs, '(i2.2,":",i2.2,":",i2.2,".",i3.3)') &
-      &  rhs%hour, rhs%minute, rhs%second, rhs%millisec
+   if (allocated(rhs%millisec)) then
+      allocate(character(len=12) :: lhs)
+      write(lhs, '(i2.2,":",i2.2,":",i2.2,".",i3.3)') &
+         &  rhs%hour, rhs%minute, rhs%second, rhs%millisec
+   else
+      allocate(character(len=8) :: lhs)
+      write(lhs, '(i2.2,":",i2.2,":",i2.2)') &
+         &  rhs%hour, rhs%minute, rhs%second
+   end if
+   if (allocated(rhs%zone)) lhs = lhs // trim(rhs%zone)
 end subroutine time_to_string
 
 subroutine datetime_to_string(lhs, rhs)

@@ -29,6 +29,10 @@ module tomlf08_json
       integer, public :: unit = output_unit
       !> Close the output unit in deconstructor.
       logical :: close_unit = .false.
+      !> Indentation.
+      character(len=:), allocatable :: indentation
+      !> Current depth in the tree.
+      integer :: depth = 0
    contains
       !> Hook to visit a table node.
       procedure :: visit_table => ser_visit_table
@@ -36,6 +40,8 @@ module tomlf08_json
       procedure :: visit_array => ser_visit_array
       !> Hook to visit a key-value pair.
       procedure :: visit_keyval => ser_visit_keyval
+      !> Indent if necessary
+      procedure :: indent => ser_indent
       !> Deconstructor for the serializer.
       procedure :: destroy => ser_destroy
       !> Automatic deconstructor for the serializer to close still open units.
@@ -89,17 +95,28 @@ subroutine ser_final(self)
    call self%destroy
 end subroutine ser_final
 
+subroutine ser_indent(self)
+   class(json_serializer), intent(inout) :: self
+   if (allocated(self%indentation) .and. self%depth > 0) then
+      write(self%unit, '(/,a)', advance='no') repeat(self%indentation, self%depth)
+   end if
+end subroutine ser_indent
+
 !> Serializer transversing a table, usual entry point for serialization.
 recursive subroutine ser_visit_table(visitor, table)
    !> Serializer instance.
    class(json_serializer), intent(inout) :: visitor
    !> TOML table.
    class(toml_table), intent(in) :: table
+   character(len=:), allocatable :: key
    integer :: i
+   call visitor%indent
    if (allocated(table%key)) then
-      write(visitor%unit, '("""",a,""":")', advance='no') table%key
+      call escape_string(table%key, key)
+      write(visitor%unit, '("""",a,""": ")', advance='no') key
    end if
    write(visitor%unit, '("{")', advance='no')
+   visitor%depth = visitor%depth + 1
    do i = 1, table%nkeyval
       call visitor%visit(table%keyval(i))
       if (i /= table%nkeyval .or. table%narray > 0) &
@@ -114,24 +131,50 @@ recursive subroutine ser_visit_table(visitor, table)
       call visitor%visit(table%table(i))
       if (i /= table%ntable) write(visitor%unit, '(",")', advance='no')
    end do
-   write(visitor%unit, '("}")', advance='no')
+   visitor%depth = visitor%depth - 1
+   call visitor%indent
+   if (visitor%depth == 0) then
+      if (allocated(visitor%indentation)) write(visitor%unit, '(a)')
+      write(visitor%unit, '("}")')
+   else
+      write(visitor%unit, '("}")', advance='no')
+   endif
 end subroutine ser_visit_table
 
 !> Serializer transversing an array.
 recursive subroutine ser_visit_array(visitor, array)
+   use tomlf08_constants
    !> Serializer instance.
    class(json_serializer), intent(inout) :: visitor
    !> TOML array.
    class(toml_array), intent(in) :: array
+   character(len=:), allocatable :: key
    integer :: i
+   call visitor%indent
    if (allocated(array%key)) then
-      write(visitor%unit, '("""",a,""":")', advance='no') array%key
+      call escape_string(array%key, key)
+      write(visitor%unit, '("""",a,""": ")', advance='no') key
+   end if
+   if (array%get_kind() == TABLE_KIND) then
+      write(visitor%unit, '("{")', advance='no')
+      visitor%depth = visitor%depth + 1
+      call visitor%indent
+      write(visitor%unit, '(a)', advance='no') &
+         &  '"type": "array", "value": '
    end if
    write(visitor%unit, '("[")', advance='no')
+   visitor%depth = visitor%depth + 1
    do i = 1, array%nelem
       call array%elem(i)%accept(visitor)
    end do
+   visitor%depth = visitor%depth - 1
+   call visitor%indent
    write(visitor%unit, '("]")', advance='no')
+   if (array%get_kind() == TABLE_KIND) then
+      visitor%depth = visitor%depth - 1
+      call visitor%indent
+      write(visitor%unit, '("}")', advance='no')
+   end if
 end subroutine ser_visit_array
 
 !> Serializer visiting a key-value pair.
@@ -141,27 +184,52 @@ subroutine ser_visit_keyval(visitor, keyval)
    class(json_serializer), intent(inout) :: visitor
    !> TOML Key-value pair.
    class(toml_keyval), intent(in) :: keyval
+   character(len=:), allocatable :: str
+   character(len=:), allocatable :: key
+   type(toml_datetime) :: ts
+   integer :: stat
+   call visitor%indent
    if (allocated(keyval%key)) then
-      write(visitor%unit, '("""",a,""":")', advance='no') keyval%key
+      call escape_string(keyval%key, key)
+      write(visitor%unit, '("""",a,""": ")', advance='no') key
    end if
    select case(toml_get_value_type(keyval%val))
    case(STRING_TYPE)
-      write(visitor%unit, '(a,1x,a,1x,a)', advance='no') &
-         &  '{"type": "string", "value": "', keyval%val, '"}'
+      call escape_string(keyval%val, str)
+      write(visitor%unit, '(a,a,a)', advance='no') &
+         &  '{"type": "string", "value": "', str, '"}'
    case(BOOL_TYPE)
-      write(visitor%unit, '(a,1x,a,1x,a)', advance='no') &
+      write(visitor%unit, '(a,a,a)', advance='no') &
          &  '{"type": "bool", "value": "', keyval%val, '"}'
    case(INTEGER_TYPE)
-      write(visitor%unit, '(a,1x,i0,1x,a)', advance='no') &
+      write(visitor%unit, '(a,a,a)', advance='no') &
          &  '{"type": "integer", "value": "', keyval%val, '"}'
    case(FLOAT_TYPE)
-      write(visitor%unit, '(a,1x,g0,1x,a)', advance='no') &
+      write(visitor%unit, '(a,a,a)', advance='no') &
          &  '{"type": "float", "value": "', keyval%val, '"}'
    case(TIMESTAMP_TYPE)
-      write(visitor%unit, '(a,1x,a,1x,a)', advance='no') &
-         &  '{"type": "datetime", "value": "', keyval%val, '"}'
+      call keyval%get_value(ts)
+      write(visitor%unit, '(a)', advance='no') '{"type": "'
+      if (allocated(ts%date)) write(visitor%unit, '(a)', advance='no') 'date'
+      if (allocated(ts%time)) write(visitor%unit, '(a)', advance='no') 'time'
+      call ts%to_string(str)
+      write(visitor%unit, '(a,a,a)', advance='no') &
+         &  '", "value": "', str, '"}'
    end select
 end subroutine ser_visit_keyval
+
+subroutine escape_string(raw, escaped)
+   character(len=*), intent(in) :: raw
+   character(len=:), allocatable, intent(out) :: escaped
+   integer :: i
+   escaped = ''
+   do i = 1, len(raw)
+      select case(raw(i:i))
+      case default; escaped = escaped // raw(i:i)
+      case('"'); escaped = escaped // '\"'
+      end select
+   end do
+end subroutine escape_string
 
 end module tomlf08_json
 
@@ -176,6 +244,8 @@ program toml2json
    type(json_serializer) :: ser
    integer :: unit
    logical :: exist
+
+   ser%indentation = "  "
 
    if (command_argument_count() > 0) then
       do iarg = 1, command_argument_count()
