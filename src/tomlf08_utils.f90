@@ -140,6 +140,25 @@ subroutine toml_normalize_string(str)
    call move_alloc(tmp, str)
 end subroutine toml_normalize_string
 
+subroutine toml_escape_string(raw, escaped)
+   character(len=*), intent(in) :: raw
+   character(len=:), allocatable, intent(out) :: escaped
+   integer :: i
+   escaped = ''
+   do i = 1, len(raw)
+      select case(raw(i:i))
+      case default; escaped = escaped // raw(i:i)
+      case('\'); escaped = escaped // '\\'
+      case('"'); escaped = escaped // '\"'
+      case(TOML_NEWLINE); escaped = escaped // '\n'
+      case(TOML_FORMFEED); escaped = escaped // '\f'
+      case(TOML_CARRIAGE_RETURN); escaped = escaped // '\r'
+      case(TOML_TABULATOR); escaped = escaped // '\t'
+      case(TOML_BACKSPACE); escaped = escaped // '\b'
+      end select
+   end do
+end subroutine toml_escape_string
+
 logical elemental function toml_raw_verify_string(raw) result(stat)
    character(len=*), intent(in) :: raw
    stat = raw(1:1) == TOML_SQUOTE .or. raw(1:1) == TOML_DQUOTE

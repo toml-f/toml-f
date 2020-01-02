@@ -8,6 +8,8 @@ A TOML parser implementation for data serialization and deserialization in Fortr
 - the [TOML standard](https://github.com/toml-lang/toml)
 - currently supported [TOML v0.5 specification](https://github.com/toml-lang/toml/blob/v0.5.0/README.md)
 
+<img src="./assets/toml-f.png" alt="TOML-Fortran" width="240">
+
 ## Installation
 
 To build this project from the source code in this repository you need to have
@@ -21,6 +23,31 @@ Setup a build with
 ```bash
 meson setup build_gcc
 ninja -C build_gcc
+```
+
+### Testing
+
+To start the testsuite (requires a `go` installation) run
+
+```bash
+ninja -C build_gcc test
+```
+
+which will currently *fail*.
+
+### Documentation
+
+To build the documentation with `ford` run
+
+```bash
+ninja -C build_gcc docs
+```
+
+The resulting documentation can be found at `./build_gcc/docs`.
+Alternatively it can be build directly with `ford` by running
+
+```bash
+ford -o ./docs docs.md
 ```
 
 ## Usage
@@ -103,12 +130,12 @@ to your `meson.build` file.
 
 ## License
 
-`toml-f` is free software: you can redistribute it and/or modify it under
+TOML-Fortran is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-`toml-f` is distributed in the hope that it will be useful,
+TOML-Fortran is distributed in the hope that it will be useful,
 but without any warranty; without even the implied warranty of
 merchantability or fitness for a particular purpose.  See the
 GNU General Public License for more details.

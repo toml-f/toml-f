@@ -577,34 +577,15 @@ type(toml_array) function new_array(key, values)
 end function new_array
 
 subroutine toml_get_key(self, key)
+   use tomlf08_utils
    class(toml_value), intent(in) :: self
    character(len=:), allocatable, intent(out) :: key
-   if (verify(self%key, TOML_BAREKEY) == 0) then
+   if (verify(self%key, TOML_BAREKEY) == 0 .and. len(self%key) > 0) then
       key = self%key
    else
       call toml_escape_string(self%key, key)
       key = '"' // key // '"'
    end if
 end subroutine toml_get_key
-
-subroutine toml_escape_string(raw, escaped)
-   use tomlf08_constants
-   character(len=*), intent(in) :: raw
-   character(len=:), allocatable, intent(out) :: escaped
-   integer :: i
-   escaped = ''
-   do i = 1, len(raw)
-      select case(raw(i:i))
-      case default; escaped = escaped // raw(i:i)
-      case('\'); escaped = escaped // '\\'
-      case('"'); escaped = escaped // '\"'
-      case(TOML_NEWLINE); escaped = escaped // '\n'
-      case(TOML_FORMFEED); escaped = escaped // '\f'
-      case(TOML_CARRIAGE_RETURN); escaped = escaped // '\r'
-      case(TOML_TABULATOR); escaped = escaped // '\t'
-      case(TOML_BACKSPACE); escaped = escaped // '\b'
-      end select
-   end do
-end subroutine toml_escape_string
 
 end module tomlf08_type

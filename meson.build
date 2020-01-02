@@ -66,4 +66,10 @@ tomlf_dep = declare_dependency(link_with: tomlf_lib,
 
 executable(meson.project_name(), files('src/test.f90'), dependencies: tomlf_dep)
 
+ford = find_program('ford', 'ford.py', required: false)
+if ford.found()
+  run_target('docs', command: [ford, '-o', meson.current_build_dir()/'docs',
+                               '-r', meson.project_version(), 'docs.md'])
+endif
+
 subdir('testing')
