@@ -60,7 +60,7 @@ logical function toml_raw_to_string(raw, str) result(stat)
          &   .or. verify(raw(1:3), TOML_SQUOTE) == 0
       if (multiline) then
          tmp = raw(4:len(raw)-3)
-         !call toml_normalize_multiline(tmp)
+         call toml_normalize_multiline(tmp)
       else
          tmp = raw(2:len(raw)-1)
       end if
@@ -91,12 +91,15 @@ subroutine toml_normalize_multiline(str)
          i = len(str)
       else
          j = verify(str(i+bsl+1:), TOML_WHITESPACE//TOML_NEWLINE) - 1
-         if (j == 0) then
+         if (j < 0) then
+            tmp = tmp // str(i:i+bsl)
+            i = len(str)
+         else if (j == 0) then
             tmp = tmp // str(i:i+bsl)
             i = i + bsl + 1
          else
             tmp = tmp // str(i:i+bsl-1)
-            i = i + j
+            i = i + bsl + j + 1
          end if
       end if
    end do

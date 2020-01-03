@@ -155,7 +155,7 @@ recursive subroutine ser_visit_array(visitor, array)
       call escape_string(array%key, key)
       write(visitor%unit, '("""",a,""": ")', advance='no') key
    end if
-   if (array%get_kind() == TABLE_KIND) then
+   if (array%get_kind() /= TABLE_KIND) then
       write(visitor%unit, '("{")', advance='no')
       visitor%depth = visitor%depth + 1
       call visitor%indent
@@ -171,7 +171,7 @@ recursive subroutine ser_visit_array(visitor, array)
    visitor%depth = visitor%depth - 1
    call visitor%indent
    write(visitor%unit, '("]")', advance='no')
-   if (array%get_kind() == TABLE_KIND) then
+   if (array%get_kind() /= TABLE_KIND) then
       visitor%depth = visitor%depth - 1
       call visitor%indent
       write(visitor%unit, '("}")', advance='no')
@@ -180,6 +180,7 @@ end subroutine ser_visit_array
 
 !> Serializer visiting a key-value pair.
 subroutine ser_visit_keyval(visitor, keyval)
+   use tomlf08_constants
    use tomlf08_utils
    !> Serializer instance.
    class(json_serializer), intent(inout) :: visitor
@@ -188,6 +189,8 @@ subroutine ser_visit_keyval(visitor, keyval)
    character(len=:), allocatable :: str
    character(len=:), allocatable :: key
    type(toml_datetime) :: ts
+   integer(TOML_INTEGER_KIND) :: idummy
+   real(TOML_FLOAT_KIND) :: fdummy
    integer :: stat
    call visitor%indent
    if (allocated(keyval%key)) then
@@ -204,11 +207,13 @@ subroutine ser_visit_keyval(visitor, keyval)
       write(visitor%unit, '(a,a,a)', advance='no') &
          &  '{"type": "bool", "value": "', keyval%val, '"}'
    case(INTEGER_TYPE)
-      write(visitor%unit, '(a,a,a)', advance='no') &
-         &  '{"type": "integer", "value": "', keyval%val, '"}'
+      call keyval%get_value(idummy)
+      write(visitor%unit, '(a,i0,a)', advance='no') &
+         &  '{"type": "integer", "value": "', idummy, '"}'
    case(FLOAT_TYPE)
-      write(visitor%unit, '(a,a,a)', advance='no') &
-         &  '{"type": "float", "value": "', keyval%val, '"}'
+      call keyval%get_value(fdummy)
+      write(visitor%unit, '(a,g0,a)', advance='no') &
+         &  '{"type": "float", "value": "', fdummy, '"}'
    case(TIMESTAMP_TYPE)
       call keyval%get_value(ts)
       write(visitor%unit, '(a)', advance='no') '{"type": "'
