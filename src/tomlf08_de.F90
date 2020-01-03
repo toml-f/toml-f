@@ -150,8 +150,9 @@ subroutine toml_parse_string(table, conf)
          if (allocated(de%error)) exit
          if (de%tok%tok /=  NEWLINE) then
             de%error = syntax_error(de%line, "extra chars after value")
+            exit
          end if
-         call eat_token(de, NEWLINE, .true., .true.)
+         call next_token(de, .true., .true.)
       case(LBRACKET)
          call parse_select(de)
          if (allocated(de%error)) exit
@@ -194,9 +195,11 @@ subroutine parse_select(de)
    llb = de%tok%tok == LLBRACKET
 
    if (llb) then
-      call eat_token(de, LLBRACKET, .true., .true.)
+      @:ASSERT(de%tok%tok == LLBRACKET)
+      call next_token(de, .true., .true.)
    else
-      call eat_token(de, LBRACKET, .true., .true.)
+      @:ASSERT(de%tok%tok == LBRACKET)
+      call next_token(de, .true., .true.)
    end if
 
    call fill_tablepath(de, path)
@@ -235,13 +238,13 @@ subroutine parse_select(de)
          de%error = syntax_error(de%line, "expects ]]")
          return
       end if
-      call eat_token(de, RRBRACKET, .true., .true.)
+      call next_token(de, .true., .true.)
    else
       if (de%tok%tok /= RBRACKET) then
          de%error = syntax_error(de%line, "expects ]")
          return
       end if
-      call eat_token(de, RBRACKET, .true., .true.)
+      call next_token(de, .true., .true.)
    end if
 
    if (de%tok%tok /= NEWLINE) then
@@ -307,7 +310,7 @@ subroutine fill_tablepath(de, path)
          return
       end if
 
-      call eat_token(de, STRING, .true., .true.)
+      call next_token(de, .true., .true.)
 
       if (de%tok%tok == RBRACKET .or. de%tok%tok == RRBRACKET) exit
 
@@ -316,7 +319,7 @@ subroutine fill_tablepath(de, path)
          return
       end if
 
-      call eat_token(de, DOT, .true., .true.)
+      call next_token(de, .true., .true.)
    end do
 
    if (path%top <= 0) then
@@ -337,7 +340,8 @@ recursive subroutine parse_keyval(de, table)
    character(len=:), allocatable :: new_key, this_key
 
    key = de%tok
-   call eat_token(de, STRING, .true., .false.)
+   @:ASSERT(de%tok%tok == STRING)
+   call next_token(de, .true., .false.)
 
    if (de%tok%tok == DOT) then
       ! create new key from token
@@ -348,7 +352,11 @@ recursive subroutine parse_keyval(de, table)
       end if
       deallocate(this_key)
       call next_token(de, .true., .false.)
-      call parse_keyval(de, tptr)
+      if (de%tok%tok == STRING) then
+         call parse_keyval(de, tptr)
+      else
+         de%error = syntax_error(de%line, "invalid key")
+      end if
       return
    end if
 
@@ -408,9 +416,12 @@ recursive subroutine parse_array(de, array)
    class(toml_value), pointer :: ptr
    logical :: first
    first = .true.
-   call eat_token(de, LBRACKET, .false., .false.)
+   @:ASSERT(de%tok%tok == LBRACKET)
+   call next_token(de, .false., .false.)
    do
-      call skip_newlines(de, .false., .false.)
+      do while(de%tok%tok == NEWLINE)
+         call next_token(de, .false., .false.)
+      end do
       if (de%tok%tok == RBRACKET) exit
 
       ! obtain kind of array
@@ -445,7 +456,8 @@ recursive subroutine parse_array(de, array)
             de%error = vendor_error(de%line, "internal error")
             return
          end select
-         call eat_token(de, STRING, .false., .false.)
+         @:ASSERT(de%tok%tok == STRING)
+         call next_token(de, .false., .false.)
       case(LBRACKET) ! [ [array], [array] ...]
          if (akind == INVALID_KIND) then
             call array%new_array
@@ -489,10 +501,12 @@ recursive subroutine parse_array(de, array)
          return
       end select
 
-      call skip_newlines(de, .false., .false.)
+      do while(de%tok%tok == NEWLINE)
+         call next_token(de, .false., .false.)
+      end do
 
       if (de%tok%tok == COMMA) then
-         call eat_token(de, COMMA, .false., .false.)
+         call next_token(de, .false., .false.)
          cycle
       end if
       exit
@@ -503,14 +517,15 @@ recursive subroutine parse_array(de, array)
       return
    end if
 
-   call eat_token(de, RBRACKET, .true., .false.)
+   call next_token(de, .true., .false.)
 end subroutine parse_array
 
 subroutine parse_table(de, table)
    type(toml_deserializer), intent(inout) :: de
    type(toml_table), intent(inout) :: table
 
-   call eat_token(de, LBRACE, .true., .false.)
+   @:ASSERT(de%tok%tok == LBRACE)
+   call next_token(de, .true., .false.)
    do
       if (de%tok%tok == NEWLINE) then
          de%error = syntax_error(de%line, "newline not allowed in inline table")
@@ -533,7 +548,7 @@ subroutine parse_table(de, table)
       end if
 
       if (de%tok%tok == COMMA) then
-         call eat_token(de, COMMA, .true., .false.)
+         call next_token(de, .true., .false.)
          cycle
       end if
       exit
@@ -544,7 +559,7 @@ subroutine parse_table(de, table)
       return
    end if
 
-   call eat_token(de, RBRACE, .true., .false.)
+   call next_token(de, .true., .false.)
 end subroutine parse_table
 
 subroutine key_from_token(key, tok)
@@ -557,24 +572,6 @@ subroutine key_from_token(key, tok)
       if (verify(key, TOML_BAREKEY) > 0) deallocate(key)
    end if
 end subroutine key_from_token
-
-subroutine eat_token(de, tok, dot_is_special, double_bracket)
-   type(toml_deserializer), intent(inout) :: de
-   integer(tokentype), intent(in) :: tok
-   logical, intent(in) :: dot_is_special
-   logical, intent(in) :: double_bracket
-   @:ASSERT(de%tok%tok == tok)
-   call next_token(de, dot_is_special, double_bracket)
-end subroutine
-
-subroutine skip_newlines(de, dot_is_special, double_bracket)
-   type(toml_deserializer), intent(inout) :: de
-   logical, intent(in) :: dot_is_special
-   logical, intent(in) :: double_bracket
-   do while(de%tok%tok == NEWLINE)
-      call next_token(de, dot_is_special, double_bracket)
-   end do
-end subroutine skip_newlines
 
 subroutine next_token(de, dot_is_special, double_bracket)
    type(toml_deserializer), intent(inout) :: de
