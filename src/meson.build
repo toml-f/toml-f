@@ -1,0 +1,36 @@
+# This file is part of toml-f.
+#
+# Copyright (C) 2019-2020 Sebastian Ehlert
+#
+# Licensed under either of Apache License, Version 2.0 or MIT license
+# at your option; you may not use this file except in compliance with
+# the License.
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+subdir('de')
+subdir('structure')
+subdir('type')
+subdir('utils')
+
+srcs += files(
+  'build.f90',
+  'constants.f90',
+  'datetime.f90',
+  'de.f90',
+  'error.f90',
+  'ser.f90',
+  'structure.f90',
+  'type.f90',
+  'utils.f90',
+)
+
+srcs += configure_file(
+  input: files('version.f90'),
+  output: 'version.f90',
+  configuration: config,
+)

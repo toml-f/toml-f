@@ -1,7 +1,8 @@
-program tester
+program tomlf_example
    use iso_fortran_env
-   !use tomlc99
-   use tomlf08
+   use tomlf_de, only : toml_parse
+   use tomlf_ser, only : toml_serializer
+   use tomlf_type, only : toml_table
    implicit none
    integer :: iarg, length
    character(len=:), allocatable :: argument
@@ -32,4 +33,4 @@ program tester
    end if
    if (allocated(argument)) deallocate(argument)
 
-end program
+end program tomlf_example

@@ -1,0 +1,25 @@
+= TOML parser for Fortran projects
+
+image:https://img.shields.io/badge/license-MIT%7CApache%202.0-blue["License", link="LICENSE-Apache"]
+
+
+== Contributing
+
+See the link:CONTRIBUTING.adoc[contributing guidelines] on how to get involved
+in TOML-Fortran.
+
+
+== License
+
+TOML-Fortran is free software: you can redistribute it and/or modify it under
+the terms of the link:LICENSE-Apache[Apache License, Version 2.0] or
+link:LICENSE-MIT[MIT license] at your option.
+
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an _as is_ basis, without warranties or
+conditions of any kind, either express or implied. See the License for the
+specific language governing permissions and limitations under the License.
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in TOML-Fortran by you, as defined in the Apache-2.0 license, shall
+be dual licensed as above, without any additional terms or conditions. 
