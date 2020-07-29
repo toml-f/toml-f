@@ -12,17 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-tests = [
+executable(
   'example',
-]
+  files('example.f90'),
+  dependencies: tomlf_dep,
+)
 
-foreach t : tests
-  test(
-    t,
-    executable(
-      t,
-      files('@0@.f90'.format(t)),
-      dependencies: tomlf_dep,
-    ),
-  )
-endforeach
+test(
+  'fpm',
+  executable(
+    'fpm',
+    files('fpm.f90'),
+    dependencies: tomlf_dep,
+  ),
+  args: files('../fpm.toml'),
+)

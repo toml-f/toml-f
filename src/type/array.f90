@@ -26,6 +26,9 @@ module tomlf_type_array
    !> TOML array
    type, extends(toml_value) :: toml_array
 
+      !> Is an inline array rather than an array of tables
+      logical :: inline = .true.
+
       !> Storage unit for TOML values of this array
       class(toml_ordered), allocatable :: list
 

@@ -77,7 +77,7 @@ subroutine next_token(de, dot_is_token)
    do i = 1, de%tok%len
       de%line%pos = de%line%pos + 1
       if (ptr(i:i) == TOML_NEWLINE) then
-         de%line%ptr => ptr(i:i)
+         de%line%ptr => ptr(min(i+1, len(ptr)):)
          de%line%num = de%line%num+1
          de%line%pos = 1
       end if

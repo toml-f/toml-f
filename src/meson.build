@@ -18,6 +18,7 @@ subdir('type')
 subdir('utils')
 
 srcs += files(
+  'all.f90',
   'build.f90',
   'constants.f90',
   'datetime.f90',
@@ -25,6 +26,7 @@ srcs += files(
   'error.f90',
   'ser.f90',
   'structure.f90',
+  'tomlf.f90',
   'type.f90',
   'utils.f90',
 )

@@ -191,7 +191,7 @@ subroutine visit_table(visitor, table)
             call ptr%get_key(key)
             write(visitor%unit, '(1x,a,1x,"=")', advance='no') key
             call ptr%accept(visitor)
-            write(visitor%unit, '(",")', advance='no')
+            if (i /= n) write(visitor%unit, '(",")', advance='no')
          else
             if (is_array_of_tables(ptr)) then
                call ptr%accept(visitor)

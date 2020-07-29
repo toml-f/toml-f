@@ -1,8 +1,6 @@
 program tomlf_example
    use iso_fortran_env
-   use tomlf_de, only : toml_parse
-   use tomlf_ser, only : toml_serializer
-   use tomlf_type, only : toml_table
+   use tomlf
    implicit none
    integer :: iarg, length
    character(len=:), allocatable :: argument

@@ -17,14 +17,33 @@ module tomlf_constants
    implicit none
    private
 
+   !> Single precision real numbers
+   integer, public, parameter :: tf_sp = selected_real_kind(6)
+
+   !> Double precision real numbers
+   integer, public, parameter :: tf_dp = selected_real_kind(15)
+
+   !> Char length for integers
+   integer, public, parameter :: tf_i1 = selected_int_kind(2)
+
+   !> Short length for integers
+   integer, public, parameter :: tf_i2 = selected_int_kind(4)
+
+   !> Length of default integers
+   integer, public, parameter :: tf_i4 = selected_int_kind(9)
+
+   !> Long length for integers
+   integer, public, parameter :: tf_i8 = selected_int_kind(18)
+
+
    !> Default character kind
    integer, public, parameter :: tfc = selected_char_kind('DEFAULT')
 
    !> Default float precision, IEEE 754 binary64 values expected
-   integer, public, parameter :: tfr = selected_real_kind(15)
+   integer, public, parameter :: tfr = tf_dp
 
    !> Default integer precision, 64 bit (signed long) range expected
-   integer, public, parameter :: tfi = selected_int_kind(18)
+   integer, public, parameter :: tfi = tf_i8
 
    !> Default output channel
    integer, public, parameter :: tfout = output_unit
@@ -61,6 +80,34 @@ module tomlf_constants
 
    !> Actual enumerator with TOML escape characters
    type(enum_escape), public, parameter :: toml_escape = enum_escape()
+
+
+   !> Possible kinds of TOML values in key-value pairs
+   type :: enum_type
+
+      !> Invalid type
+      integer :: invalid = 100
+
+      !> String type
+      integer :: string = 101
+
+      !> Boolean type
+      integer :: boolean = 102
+
+      !> Integer type
+      integer :: int = 103
+
+      !> Float type
+      integer :: float = 104
+
+      !> Datetime type
+      integer :: datetime = 105
+
+   end type enum_type
+
+   !> Actual enumerator with TOML value types
+   type(enum_type), public, parameter :: toml_type = enum_type()
+
 
    !> Single quotes denote literal strings
    character(kind=tfc, len=*), public, parameter :: TOML_SQUOTE = "'"

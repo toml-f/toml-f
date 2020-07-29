@@ -14,7 +14,7 @@
 
 !> Central registry for error codes
 module tomlf_error
-   use tomlf_constants, only : tfc
+   use tomlf_constants, only : tfc, TOML_NEWLINE
    implicit none
    private
 
@@ -107,6 +107,10 @@ subroutine syntax_error(error, context, message, stat)
       error%message = "Syntax error"
    end if
 
+   if (present(context)) then
+      call add_context(error%message, context)
+   end if
+
 end subroutine syntax_error
 
 
@@ -137,6 +141,10 @@ subroutine duplicate_key_error(error, context, key, stat)
       error%message = "Duplicate key ("//key//") found"
    else
       error%message = "Duplicate key found"
+   end if
+
+   if (present(context)) then
+      call add_context(error%message, context)
    end if
 
 end subroutine duplicate_key_error
@@ -173,7 +181,42 @@ subroutine vendor_error(error, context, message, stat)
       error%message = "Internal error"
    end if
 
+   if (present(context)) then
+      call add_context(error%message, context)
+   end if
+
 end subroutine vendor_error
+
+
+!> Put an existing error message into a more useful context
+subroutine add_context(message, context)
+
+   !> A detailed message describing the error, requiring some more context
+   character(len=:), allocatable, intent(inout) :: message
+
+   !> Current context producing the error
+   type(toml_context), intent(in) :: context
+
+   character(len=20) :: num
+   integer :: line_break
+
+   if (context%num > 0) then
+      write(num, '("line",1x,i0,":")') context%num
+      message = num(1:len_trim(num)+1) // message
+   end if
+
+   if (associated(context%ptr)) then
+      line_break = index(context%ptr, TOML_NEWLINE)-1
+      if (line_break < 0) line_break = len(context%ptr)
+      message = message // TOML_NEWLINE // &
+         & '   | '// context%ptr(1:line_break) // TOML_NEWLINE // &
+         & '   |'
+      if (context%pos > 0 .and. context%pos <= line_break) then
+         message = message // repeat('-', context%pos) // '^'
+      end if
+   end if
+
+end subroutine add_context
 
 
 end module tomlf_error

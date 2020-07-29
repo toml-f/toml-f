@@ -25,46 +25,58 @@ module tomlf_utils
    public :: toml_raw_verify_string, toml_raw_verify_float, toml_raw_verify_bool
    public :: toml_raw_verify_integer, toml_raw_verify_timestamp
    public :: toml_raw_verify_date, toml_raw_verify_time
+   public :: toml_escape_string, toml_get_value_type
 
 
 contains
 
 
-!integer(toml_type) function toml_get_value_type(raw) result(vtype)
-!   character(len=*), intent(in) :: raw
-!   if (toml_raw_verify_string(raw)) then
-!      vtype = STRING_TYPE
-!      return
-!   end if
-!   if (toml_raw_verify_bool(raw)) then
-!      vtype = BOOL_TYPE
-!      return
-!   end if
-!   if (toml_raw_verify_integer(raw)) then
-!      vtype = INTEGER_TYPE
-!      return
-!   end if
-!   if (toml_raw_verify_float(raw)) then
-!      vtype = FLOAT_TYPE
-!      return
-!   end if
-!   if (toml_raw_verify_timestamp(raw)) then
-!      vtype = TIMESTAMP_TYPE
-!      return
-!   end if
-!   vtype = INVALID_TYPE
-!end function
+!> Determine TOML value type
+function toml_get_value_type(raw) result(vtype)
+
+   !> Raw representation of TOML string
+   character(kind=tfc, len=*), intent(in) :: raw
+
+   !> Value type
+   integer :: vtype
+
+   if (toml_raw_verify_string(raw)) then
+      vtype = toml_type%string
+      return
+   end if
+   if (toml_raw_verify_bool(raw)) then
+      vtype = toml_type%boolean
+      return
+   end if
+   if (toml_raw_verify_integer(raw)) then
+      vtype = toml_type%int
+      return
+   end if
+   if (toml_raw_verify_float(raw)) then
+      vtype = toml_type%float
+      return
+   end if
+   if (toml_raw_verify_timestamp(raw)) then
+      vtype = toml_type%datetime
+      return
+   end if
+   vtype = toml_type%invalid
+
+end function
 
 
-
-
+!> Escape all special characters in a TOML string
 subroutine toml_escape_string(raw, escaped)
-   character(len=*), intent(in) :: raw
-   character(len=:), allocatable, intent(out) :: escaped
+
+   !> Raw representation of TOML string
+   character(kind=tfc, len=*), intent(in) :: raw
+
+   !> Escaped view of the TOML string
+   character(kind=tfc, len=:), allocatable, intent(out) :: escaped
 
    integer :: i
 
-   escaped = ''
+   escaped = '"'
    do i = 1, len(raw)
       select case(raw(i:i))
       case default; escaped = escaped // raw(i:i)
@@ -77,6 +89,7 @@ subroutine toml_escape_string(raw, escaped)
       case(TOML_BACKSPACE); escaped = escaped // '\b'
       end select
    end do
+   escaped = escaped // '"'
 
 end subroutine toml_escape_string
 

@@ -15,7 +15,7 @@
 project(
   'toml-f',
   'fortran',
-  version: '0.2',
+  version: '0.2.0',
   license: ['MIT', 'Apache-2.0'],
   meson_version: '>=0.49',
   default_options: [
@@ -23,15 +23,16 @@ project(
     'default_library=both',
   ]
 )
-
 install = not meson.is_subproject()
-config = configuration_data({
-  'version': meson.project_version(),
-})
 
+# General configuration information
+subdir('meson')
+
+# Collect source of the project
 srcs = []
 subdir('src')
 
+# TOML-Fortran library target
 tomlf_lib = library(
   meson.project_name(),
   sources: srcs,
@@ -39,10 +40,12 @@ tomlf_lib = library(
   install: install,
 )
 
+# Export dependency for other projects and test suite
 tomlf_inc = tomlf_lib.private_dir_include()
 tomlf_dep = declare_dependency(
   link_with: tomlf_lib,
   include_directories: tomlf_inc,
 )
 
+# Load the testsuite
 subdir('test')

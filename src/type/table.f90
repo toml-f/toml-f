@@ -33,6 +33,9 @@ module tomlf_type_table
       !> Table was implictly created
       logical :: implicit = .false.
 
+      !> Is an inline table and is therefore non-extendable
+      logical :: inline = .false.
+
       !> Storage unit for TOML values of this table
       class(toml_structure), allocatable :: list
 

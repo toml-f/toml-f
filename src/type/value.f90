@@ -14,8 +14,8 @@
 
 !> Class definitions for basic data types used for handling TOML
 module tomlf_type_value
-   use tomlf_constants, only : tfc
-   !use tomlf_utils, only : is_toml_barekey, toml_escape_key
+   use tomlf_constants, only : tfc, TOML_BAREKEY
+   use tomlf_utils, only : toml_escape_string
    implicit none
    private
 
@@ -115,11 +115,11 @@ subroutine get_key(self, key)
    character(kind=tfc, len=:), allocatable :: key
 
    if (allocated(self%key)) then
-      !if (is_toml_barekey(self%key)) then
+      if (verify(self%key, TOML_BAREKEY) == 0 .and. len(self%key) > 0) then
          key = self%key
-      !else
-         !call toml_escape_string(self%key, key)
-      !end if
+      else
+         call toml_escape_string(self%key, key)
+      end if
    end if
 
 end subroutine get_key

@@ -30,7 +30,7 @@
 !  case of a stream processing.
 module tomlf_de_tokenizer
    use tomlf_build, only : add_array, add_table, add_keyval
-   use tomlf_constants, only : toml_escape, tfc, TOML_BAREKEY
+   use tomlf_constants, only : toml_escape, tfc, TOML_BAREKEY, toml_type
    use tomlf_error, only : toml_stat, toml_error, toml_context, &
       & syntax_error, duplicate_key_error, vendor_error
    use tomlf_utils
@@ -215,6 +215,10 @@ recursive subroutine parse_keyval(de, table)
       call key_from_token(this_key, key)
       call get_table(table, this_key, tptr)
       deallocate(this_key)
+      if (tptr%inline) then
+         call syntax_error(de%error, de%line, "Cannot add keys to inline tables")
+         return
+      end if
       call de%next(.true.)
       if (de%tok%tok == toml_tokentype%string) then
          call de%parse_keyval(tptr)
@@ -242,14 +246,14 @@ recursive subroutine parse_keyval(de, table)
    case(toml_tokentype%string) ! key = "value"
       call add_keyval(table, new_key, vptr)
       if (.not.associated(vptr)) then
-         call syntax_error(de%error, de%line, "key already exist in table")
+         call duplicate_key_error(de%error, de%line, new_key)
          return
       end if
       vptr%raw = de%tok%ptr(:de%tok%len)
-!      if (toml_get_value_type(vptr%val) == INVALID_TYPE) then
-!         de%error = syntax_error(de%line, "unknown value type")
-!         return
-!      end if
+      if (toml_get_value_type(vptr%raw) == toml_type%invalid) then
+         call syntax_error(de%error, de%line, "unknown value type")
+         return
+      end if
       call de%next(.true.)
    case(toml_tokentype%lbracket) ! key = [ array ]
       call add_array(table, new_key, aptr)
@@ -257,6 +261,7 @@ recursive subroutine parse_keyval(de, table)
          call duplicate_key_error(de%error, de%line, new_key)
          return
       end if
+      aptr%inline = .true.
       call de%parse_array(aptr)
       if (allocated(de%error)) return
    case(toml_tokentype%lbrace) ! key = { table }
@@ -266,6 +271,7 @@ recursive subroutine parse_keyval(de, table)
          return
       end if
       call de%parse_table(tptr)
+      tptr%inline = .true.
       if (allocated(de%error)) return
    case default
       call syntax_error(de%error, de%line, "unexpected token")
@@ -298,7 +304,7 @@ subroutine parse_select(de)
 
    llb = de%tok%tok == toml_tokentype%lbracket
 
-   if (llb) then
+   if (llb .or. de%tok%tok == toml_tokentype%whitespace) then
       call de%next(.true.)
    end if
 
@@ -320,10 +326,16 @@ subroutine parse_select(de)
          class is(toml_array)
             array => ptr
          class default
-            call syntax_error(de%error, de%line, "array mismatch")
+            call duplicate_key_error(de%error, de%line, key)
+            return
          end select
       else
          call add_array(de%current, key, array)
+         array%inline = .false.
+      end if
+      if (array%inline) then
+         call syntax_error(de%error, de%line, "Cannot use inline array in array of tables")
+         return
       end if
       call add_table(array, table)
    else
@@ -332,7 +344,7 @@ subroutine parse_select(de)
    end if
 
    if (.not.associated(table)) then
-      call vendor_error(de%error)
+      call syntax_error(de%error, de%line, "Cannot add table in this context")
       return
    end if
    de%current => table
@@ -515,11 +527,9 @@ recursive subroutine parse_array(de, array)
    !> TOML array to be filled
    type(toml_array), intent(inout) :: array
 
-   class(toml_value), allocatable :: ptr
-   type(toml_table), allocatable :: tbl
-   type(toml_keyval), allocatable :: val
-   type(toml_array), allocatable :: arr
-   integer :: stat
+   type(toml_table), pointer :: tbl
+   type(toml_keyval), pointer :: val
+   type(toml_array), pointer :: arr
 
    !@:assert(de%tok%tok == toml_tokentype%lbracket)
 
@@ -528,7 +538,9 @@ recursive subroutine parse_array(de, array)
       do while(de%tok%tok == toml_tokentype%newline)
          call de%next(.false.)
       end do
-      if (de%tok%tok == toml_tokentype%rbracket) exit
+      if (de%tok%tok == toml_tokentype%rbracket) then
+         exit
+      end if
 
       select case(de%tok%tok)
       case default
@@ -536,30 +548,24 @@ recursive subroutine parse_array(de, array)
          return
 
       case(toml_tokentype%string) ! [ value, value ... ]
-         allocate(val)
+         call add_keyval(array, val)
          val%raw = de%tok%ptr(:de%tok%len)
-         call move_alloc(val, ptr)
+
+         call de%next(.false.)
 
       case(toml_tokentype%lbracket) ! [ [array], [array] ...]
-         allocate(arr)
+         call add_array(array, arr)
+         arr%inline = .true.
          call de%parse_array(arr)
-         if (allocated(de%error)) then
-            call arr%destroy
-            return
-         end if
-         call move_alloc(arr, ptr)
+         if (allocated(de%error)) return
 
       case(toml_tokentype%lbrace) ! [ {table}, {table} ... ]
-         allocate(tbl)
+         call add_table(array, tbl)
+         tbl%inline = .true.
          call de%parse_table(tbl)
-         if (allocated(de%error)) then
-            call tbl%destroy
-            return
-         end if
-         call move_alloc(tbl, ptr)
+         if (allocated(de%error)) return
 
       end select
-      call array%push_back(ptr, stat)
 
       do while(de%tok%tok == toml_tokentype%newline)
          call de%next(.false.)

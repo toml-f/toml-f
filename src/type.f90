@@ -12,7 +12,20 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-!> Collection of the central datatypes to define TOML datastructures
+!> Collection of the central datatypes to define TOML data structures
+!
+!  All TOML data types should inherit from an abstract value allowing to generate
+!  a generic interface to deal with all more specialized TOML data types, while
+!  the abstract value is interesting for developing algorithms in TOML-Fortran,
+!  the user of TOML-Fortran will usually only care about TOML tables.
+!
+!  The TOML types defined here should implement the TOML data structures (mostly)
+!  without taking the actual implementation of the data structures into account.
+!  This is done by providing a bare minimum interface using type bound procedures
+!  to minimize the interdependencies between the datatypes.
+!
+!  To make the data types extendable a visitor pattern allows access to the TOML
+!  data types and can be used to implement further algorithms.
 module tomlf_type
    use tomlf_type_array, only : toml_array, new_array, new, len
    use tomlf_type_keyval, only : toml_keyval, new_keyval, new
