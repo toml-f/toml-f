@@ -1,49 +1,49 @@
-= TOML parser for Fortran projects
+# TOML parser for Fortran projects
 
-image:https://img.shields.io/badge/license-MIT%7CApache%202.0-blue["License", link="LICENSE-Apache"]
-image:https://travis-ci.com/awvwgk/toml-f.svg?branch=master["Build Status", link="https://travis-ci.com/awvwgk/toml-f"]
-image:https://github.com/awvwgk/toml-f/workflows/CI/badge.svg["Build Status", link="https://github.com/awvwgk/toml-f/actions"]
+[![License](https://img.shields.io/badge/license-MIT%7CApache%202.0-blue)](LICENSE-Apache)
+[![Build](https://travis-ci.com/awvwgk/toml-f.svg?branch=master)](https://travis-ci.com/awvwgk/toml-f)
+[![Build](https://github.com/awvwgk/toml-f/workflows/CI/badge.svg)](https://github.com/awvwgk/toml-f/actions)
 
 A TOML parser implementation for data serialization and deserialization in Fortran.
 
-- the link:https://toml.io[TOML standard]
-- currently supported link:https://toml.io/en/v1.0.0-rc.1[TOML v1.0.0-rc1 specification]
+- the [TOML standard](https://toml.io)
+- currently supported [TOML v1.0.0-rc1 specification](https://toml.io/en/v1.0.0-rc.1)
 
-image:./assets/toml-f.png["TOML-Fortran"]
+<div align="center">
+<img src="./assets/toml-f.png" alt="TOML-Fortran" width="220">
+</div>
 
 
-== Installation
+## Installation
 
 To build this project from the source code in this repository you need to have
 - a Fortran compiler supporting Fortran 2008
-- link:https://mesonbuild.com[`meson`] version 0.49 or newer
-- a build-system backend, *i.e.* link:https://ninja-build-org[`ninja`] version 1.7 or newer
+- [`meson`](https://mesonbuild.com) version 0.49 or newer
+- a build-system backend, *i.e.* [`ninja`](https://ninja-build.org) version 1.7 or newer
 
 Setup a build with
 
-[source]
-----
-meson setup build
+```
+FC=gfortran meson setup build_gcc
 meson compile -C build
-----
+```
 
 
-=== Testing
+### Testing
 
 _Work in progress_
 
 
-=== Documentation
+### Documentation
 
 To build the documentation with `ford` run
 
-[source]
-----
+```
 ford -o ./docs docs.md
-----
+```
 
 
-== Usage
+## Usage
 
 To make use this library use the `tomlf` module in your projects,
 for the complete public API use `tomlf_all`, you can access the indiviual modules
@@ -52,8 +52,7 @@ versions.
 
 An example program to load and dump a TOML file would look like this:
 
-[source,fortran]
-----
+```fortran
 use tomlf
 implicit none
 type(toml_table), allocatable :: table
@@ -93,7 +92,7 @@ if (allocated(table)) then
    call table%destroy  ! not necessary
 end if
 end
-----
+```
 
 Here the TOML file is provided as string, notice that you have to add a
 newline character either by the parameter `TOML_NEWLINE` or by using the
@@ -106,17 +105,17 @@ be allocated and can be written to the standard output by passing the
 `toml_serializer` as visitor to the table.
 
 
-== Contributing
+## Contributing
 
-See the link:CONTRIBUTING.adoc[contributing guidelines] on how to get involved
+See the [contributing guidelines](CONTRIBUTING.md) on how to get involved
 in TOML-Fortran.
 
 
-== License
+## License
 
 TOML-Fortran is free software: you can redistribute it and/or modify it under
-the terms of the link:LICENSE-Apache[Apache License, Version 2.0] or
-link:LICENSE-MIT[MIT license] at your option.
+the terms of the [Apache License, Version 2.0](LICENSE-Apache) or
+[MIT license](LICENSE-MIT) at your option.
 
 Unless required by applicable law or agreed to in writing, software distributed
 under the License is distributed on an _as is_ basis, without warranties or

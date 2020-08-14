@@ -1,6 +1,6 @@
 # This file is part of toml-f.
 #
-# Copyright 2019-2020 Sebastian Ehlert
+# Copyright (C) 2019-2020 Sebastian Ehlert
 #
 # Licensed under either of Apache License, Version 2.0 or MIT license
 # at your option; you may not use this file except in compliance with
@@ -12,18 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-executable(
-  'example',
-  files('example.f90'),
-  dependencies: tomlf_dep,
-)
+fc = meson.get_compiler('fortran')
+fc_id = fc.get_id()
 
-test(
-  'fpm',
-  executable(
-    'fpm',
-    files('fpm.f90'),
-    dependencies: tomlf_dep,
-  ),
-  args: files('../fpm.toml'),
-)
+if fc_id == 'gcc'
+  add_project_arguments(
+    '-ffree-line-length-none',
+    '-fbacktrace',
+    language: 'fortran',
+  )
+elif fc_id == 'intel'
+  add_project_arguments(
+    '-traceback',
+    language: 'fortran',
+  )
+elif fc_id == 'pgi'
+  add_project_arguments(
+    '-Mbackslash',
+    '-Mallocatable=03',
+    '-traceback',
+    language: 'fortran',
+  )
+endif

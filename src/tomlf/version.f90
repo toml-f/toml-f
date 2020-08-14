@@ -12,9 +12,7 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-!> Version information on TOML-Fortran @version@
-!
-!  This file must be configured with configure_file using meson or CMake
+!> Version information on TOML-Fortran
 module tomlf_version
    implicit none
    private
@@ -23,16 +21,16 @@ module tomlf_version
 
 
    !> String representation of the TOML-Fortran version
-   character(len=*), parameter :: tomlf_version_string = "@version_str@"
+   character(len=*), parameter :: tomlf_version_string = "0.2.0"
 
    !> Major version number of the above TOML-Fortran version
-   integer, parameter :: major = @version_major@
+   integer, parameter :: major = 0
 
    !> Minor version number of the above TOML-Fortran version
-   integer, parameter :: minor = @version_minor@
+   integer, parameter :: minor = 2
 
    !> Patch version number of the above TOML-Fortran version
-   integer, parameter :: patch = @version_patch@
+   integer, parameter :: patch = 0
 
    !> Compact numeric representation of the TOML-Fortran version
    integer, parameter :: tomlf_version_compact = major*10000 + minor*100 + patch

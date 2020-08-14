@@ -45,7 +45,7 @@ module tomlf_datetime
    end type
 
 
-   !> TOML timestamp value type
+   !> TOML datatime value type
    type :: toml_datetime
       type(toml_date), allocatable :: date
       type(toml_time), allocatable :: time

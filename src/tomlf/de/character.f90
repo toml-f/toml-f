@@ -175,26 +175,31 @@ contains
                call syntax_error(de%error, de%line, "expect hex char")
                return
             end if
+            if (ptr(i:i) == TOML_DQUOTE) then
+               if (qcount < 6) then
+                  qcount = qcount + 1
+               else
+                  call syntax_error(de%error, de%line, "too many quotation marks")
+                  return
+               end if
+            else
+               if (qcount >= 3) then
+                  ptr => ptr(i:)
+                  exit
+               end if
+               qcount = 0
+            end if
             if (ptr(i:i) == '\') then
                escape = .true.
                cycle
             end if
-            if (ptr(i:i) == TOML_DQUOTE) then
-               qcount = qcount + 1
-            else
-               qcount = 0
-            end if
-            if (qcount == 3) then
-               ptr => ptr(i:)
-               exit
-            end if
          end do
-         if (qcount /= 3) then
+         if (qcount < 3) then
             call syntax_error(de%error, de%line, "unterminated triple-quote")
             return
          end if
 
-         de%tok = new_token(toml_tokentype%string, orig, len(orig)-len(ptr)+1)
+         de%tok = new_token(toml_tokentype%string, orig, len(orig)-len(ptr))
          return
       end if
    end if

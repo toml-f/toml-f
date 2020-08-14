@@ -4,4 +4,3 @@ license = ["Apache-2.0", "MIT"]
 
 [library]
 source-dir = "src"
-build-script = "./build.sh"

@@ -29,13 +29,12 @@
 !  can easily create the context, while it might be incomplete or missing in
 !  case of a stream processing.
 module tomlf_de_tokenizer
-   use tomlf_build, only : add_array, add_table, add_keyval
    use tomlf_constants, only : toml_escape, tfc, TOML_BAREKEY, toml_type
    use tomlf_error, only : toml_stat, toml_error, toml_context, &
       & syntax_error, duplicate_key_error, vendor_error
    use tomlf_utils
    use tomlf_type, only : toml_value, toml_key, toml_table, toml_array, &
-      & toml_keyval, new_table, len
+      & toml_keyval, new_table, add_array, add_table, add_keyval, len
    implicit none
    private
 
@@ -170,6 +169,7 @@ subroutine parse_root(de)
       select case(de%tok%tok)
       case default
          call syntax_error(de%error, de%line, "syntax error")
+         exit
 
       case(toml_tokentype%newline)
          call de%next(.true.)
@@ -179,6 +179,7 @@ subroutine parse_root(de)
          if (allocated(de%error)) exit
          if (de%tok%tok /= toml_tokentype%newline) then
             call syntax_error(de%error, de%line, "extra characters after value present")
+            exit
          end if
 
       case(toml_tokentype%lbracket)
@@ -234,6 +235,7 @@ recursive subroutine parse_keyval(de, table)
    end if
 
    call de%next(.false.)
+   if (allocated(de%error)) return
 
    ! create new key from token
    call key_from_token(new_key, key)
@@ -243,6 +245,10 @@ recursive subroutine parse_keyval(de, table)
    end if
 
    select case(de%tok%tok)
+   case default
+      call syntax_error(de%error, de%line, "unexpected token")
+      return
+
    case(toml_tokentype%string) ! key = "value"
       call add_keyval(table, new_key, vptr)
       if (.not.associated(vptr)) then
@@ -255,6 +261,8 @@ recursive subroutine parse_keyval(de, table)
          return
       end if
       call de%next(.true.)
+      if (allocated(de%error)) return
+
    case(toml_tokentype%lbracket) ! key = [ array ]
       call add_array(table, new_key, aptr)
       if (.not.associated(aptr)) then
@@ -264,6 +272,7 @@ recursive subroutine parse_keyval(de, table)
       aptr%inline = .true.
       call de%parse_array(aptr)
       if (allocated(de%error)) return
+
    case(toml_tokentype%lbrace) ! key = { table }
       call add_table(table, new_key, tptr)
       if (.not.associated(tptr)) then
@@ -273,10 +282,9 @@ recursive subroutine parse_keyval(de, table)
       call de%parse_table(tptr)
       tptr%inline = .true.
       if (allocated(de%error)) return
-   case default
-      call syntax_error(de%error, de%line, "unexpected token")
-      return
+
    end select
+
 end subroutine parse_keyval
 
 
@@ -715,6 +723,7 @@ subroutine next(de, dot_is_token, whitespace_is_precious)
    call de%next_token(dot_is_token)
    if (skip_whitespace) then
       do while(de%tok%tok == toml_tokentype%whitespace)
+         if (allocated(de%error)) exit
          call de%next_token(dot_is_token)
       end do
    end if

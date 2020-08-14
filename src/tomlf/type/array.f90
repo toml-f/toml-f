@@ -46,6 +46,12 @@ module tomlf_type_array
    end type toml_array
 
 
+   !> Create standard constructor
+   interface toml_array
+      module procedure :: new_array_func
+   end interface toml_array
+
+
    !> Overloaded constructor for TOML values
    interface new
       module procedure :: new_array
@@ -70,6 +76,17 @@ subroutine new_array(self)
    call new_ordered(self%list)
 
 end subroutine new_array
+
+
+!> Default constructor for TOML array type
+function new_array_func() result(self)
+
+   !> Instance of the TOML array
+   type(toml_array) :: self
+
+   call new_array(self)
+
+end function new_array_func
 
 
 !> Get number of TOML values in the array

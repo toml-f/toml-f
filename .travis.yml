@@ -31,5 +31,4 @@ install:
   - pip3 install meson fypp
 
 script:
-  - meson build_gcc --buildtype release
-  - ninja -C build_gcc
+  - meson build --buildtype=release && ninja -C build

@@ -19,14 +19,14 @@ project(
   license: ['MIT', 'Apache-2.0'],
   meson_version: '>=0.49',
   default_options: [
-    'buildtype=release',
+    'buildtype=debugoptimized',
     'default_library=both',
   ]
 )
 install = not meson.is_subproject()
 
 # General configuration information
-subdir('meson')
+subdir('config')
 
 # Collect source of the project
 srcs = []
@@ -47,5 +47,10 @@ tomlf_dep = declare_dependency(
   include_directories: tomlf_inc,
 )
 
-# Load the testsuite
-subdir('test')
+if install
+  pkg = import('pkgconfig')
+  pkg.generate(
+    tomlf_lib,
+    description: 'A TOML parser implementation for data serialization and deserialization in Fortran',
+  )
+endif

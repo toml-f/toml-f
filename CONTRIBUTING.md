@@ -1,4 +1,4 @@
-= Contributing to TOML-Fortran
+# Contributing to TOML-Fortran
 
 First off, thank you for considering contributing to TOML-Fortran.
 Please take a moment to review this guidelines to make the contribution process
@@ -10,7 +10,7 @@ In return, they should return this respect by addressing your problem,
 evaluating changes, and helping you handle your pull requests.
 
 
-== Reporting a Bug
+## Reporting a Bug
 
 A bug is a _demonstratable problem_ caused by the code in this repository.
 Good bug reports are extremely valuable for us - thank you!
@@ -36,7 +36,7 @@ answer at least these questions:
 All these details will help people to fix any potential bugs.
 
 
-== Suggesting a New Feature
+## Suggesting a New Feature
 
 Feature requests are welcome. But take a moment to find out if your idea fits
 the scope and goals of the project. It is up to you to provide a strong
@@ -44,7 +44,7 @@ argument to convince the project's developers of the benefits of this feature.
 Please provide as much detail and context as possible.
 
 
-== Implementing a New Feature
+## Implementing a New Feature
 
 Contributions are welcome via GitHub pull requests.
 
@@ -56,26 +56,25 @@ Contributions are welcome via GitHub pull requests.
 - Be willing to accept criticism and work on improving your code.
 
 
-=== For New Contributors
+### For New Contributors
 
 If you never created a pull request before, welcome :tada:.
 You can learn how from
-link:https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github[this great tutorial].
+[this great tutorial](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github).
 
 Don't know where to start?
 You can start by looking through these
-link:https://github.com/grimme-lab/xtb/issues?q=label%3A%22help+wanted%22+is%3Aissue+is%3Aopen[help-wanted issues].
+[help-wanted issues](https://github.com/awvwgk/toml-f/issues?q=label%3A%22help+wanted%22+is%3Aissue+is%3Aopen).
 
 
-== Sign Your Work
+## Sign Your Work
 
 The sign-off is a simple line at the end of the explanation for a commit. All 
 commits needs to be signed. Your signature certifies that you wrote the patch or
 otherwise have the right to contribute the material. The rules are pretty simple,
-if you can certify the below (from link:https://developercertificate.org/[developercertificate.org]):
+if you can certify the below (from [developercertificate.org](https://developercertificate.org/)):
 
-[source]
-----
+```
 Developer Certificate of Origin
 Version 1.1
 
@@ -112,14 +111,13 @@ By making a contribution to this project, I certify that:
     personal information I submit with it, including my sign-off) is
     maintained indefinitely and may be redistributed consistent with
     this project or the open source license(s) involved.
-----
+```
 
 Then you just add a line to every git commit message:
 
-[source]
-----
+```
 Signed-off-by: Joe Smith <joe.smith@example.com>
-----
+```
 
 Use your real name (sorry, no pseudonyms or anonymous contributions.)
 

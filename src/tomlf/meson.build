@@ -12,8 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-subdir('tomlf')
+subdir('de')
+subdir('structure')
+subdir('type')
+subdir('utils')
 
 srcs += files(
-  'tomlf.f90',
+  'all.f90',
+  'build.f90',
+  'constants.f90',
+  'datetime.f90',
+  'de.f90',
+  'error.f90',
+  'ser.f90',
+  'structure.f90',
+  'type.f90',
+  'utils.f90',
+  'version.f90',
 )

@@ -62,6 +62,12 @@ module tomlf_type_table
    end type toml_table
 
 
+   !> Create standard constructor
+   interface toml_table
+      module procedure :: new_table_func
+   end interface toml_table
+
+
    !> Overloaded constructor for TOML values
    interface new
       module procedure :: new_table
@@ -80,6 +86,17 @@ subroutine new_table(self)
    call new_structure(self%list)
 
 end subroutine new_table
+
+
+!> Default constructor for TOML table type
+function new_table_func() result(self)
+
+   !> Instance of the TOML table
+   type(toml_table) :: self
+
+   call new_table(self)
+
+end function new_table_func
 
 
 !> Get the TOML value associated with the respective key
