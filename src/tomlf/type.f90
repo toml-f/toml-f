@@ -76,7 +76,7 @@ subroutine add_table_to_table(table, key, ptr, stat)
    character(kind=tfc, len=*), intent(in) :: key
 
    !> Pointer to the newly created table
-   type(toml_table), pointer, intent(out) :: ptr
+   class(toml_table), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat
@@ -126,7 +126,7 @@ subroutine add_array_to_table(table, key, ptr, stat)
    character(kind=tfc, len=*), intent(in) :: key
 
    !> Pointer to the newly created array
-   type(toml_array), pointer, intent(out) :: ptr
+   class(toml_array), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat
@@ -176,7 +176,7 @@ subroutine add_keyval_to_table(table, key, ptr, stat)
    character(kind=tfc, len=*), intent(in) :: key
 
    !> Pointer to the newly created key-value pair
-   type(toml_keyval), pointer, intent(out) :: ptr
+   class(toml_keyval), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat
@@ -223,7 +223,7 @@ subroutine add_table_to_array(array, ptr, stat)
    class(toml_array), intent(inout) :: array
 
    !> Pointer to the newly created table
-   type(toml_table), pointer, intent(out) :: ptr
+   class(toml_table), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat
@@ -269,7 +269,7 @@ subroutine add_array_to_array(array, ptr, stat)
    class(toml_array), intent(inout) :: array
 
    !> Pointer to the newly created array
-   type(toml_array), pointer, intent(out) :: ptr
+   class(toml_array), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat
@@ -316,7 +316,7 @@ subroutine add_keyval_to_array(array, ptr, stat)
    class(toml_array), intent(inout) :: array
 
    !> Pointer to the newly created key-value pair
-   type(toml_keyval), pointer, intent(out) :: ptr
+   class(toml_keyval), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat

@@ -20,8 +20,19 @@ module tomlf_utils_convert
    implicit none
    private
 
+   public :: convert_raw
    public :: toml_raw_to_string, toml_raw_to_float, toml_raw_to_bool
    public :: toml_raw_to_integer, toml_raw_to_timestamp
+
+
+   !> Overloaded conversion interface
+   interface convert_raw
+      module procedure :: toml_raw_to_string
+      module procedure :: toml_raw_to_float
+      module procedure :: toml_raw_to_bool
+      module procedure :: toml_raw_to_integer
+      module procedure :: toml_raw_to_timestamp
+   end interface convert_raw
 
 
 contains
@@ -144,7 +155,7 @@ function toml_raw_to_timestamp(raw, timestamp) result(stat)
    stat = toml_raw_verify_timestamp(raw)
    first = 1
    if (toml_raw_verify_date(raw)) then
-      allocate(timestamp%date, source=toml_date())
+      timestamp%date = toml_date()
       read(raw(1:4), *, iostat=err) timestamp%date%year
       stat = err == 0
       read(raw(6:7), *, iostat=err) timestamp%date%month
@@ -156,7 +167,7 @@ function toml_raw_to_timestamp(raw, timestamp) result(stat)
    end if
 
    if (toml_raw_verify_time(raw(first:))) then
-      allocate(timestamp%time, source=toml_time())
+      timestamp%time = toml_time()
       read(raw(first:first+1), *, iostat=err) timestamp%time%hour
       stat = err == 0
       read(raw(first+3:first+4), *, iostat=err) timestamp%time%minute
@@ -165,7 +176,7 @@ function toml_raw_to_timestamp(raw, timestamp) result(stat)
       stat = stat .and. err == 0
       if (len(raw(first:)) > 8) then
          dot_pos = index(raw, '.')
-         if (dot_pos == 9) then
+         if (dot_pos > 0) then
             allocate(timestamp%time%millisec, source=0)
             read(raw(dot_pos+1:dot_pos+3), *, iostat=err) timestamp%time%millisec
             stat = stat .and. err == 0
@@ -201,7 +212,7 @@ logical function toml_raw_to_string(raw, str) result(stat)
       call move_alloc(tmp, str)
    end if
 
-end function
+end function toml_raw_to_string
 
 
 subroutine toml_normalize_multiline(str)

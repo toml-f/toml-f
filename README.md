@@ -1,13 +1,13 @@
 # TOML parser for Fortran projects
 
 [![License](https://img.shields.io/badge/license-MIT%7CApache%202.0-blue)](LICENSE-Apache)
-[![Build](https://travis-ci.com/awvwgk/toml-f.svg?branch=master)](https://travis-ci.com/awvwgk/toml-f)
-[![Build](https://github.com/awvwgk/toml-f/workflows/CI/badge.svg)](https://github.com/awvwgk/toml-f/actions)
+[![Build](https://travis-ci.com/toml-f/toml-f.svg?branch=master)](https://travis-ci.com/toml-f/toml-f)
+[![Build](https://github.com/toml-f/toml-f/workflows/CI/badge.svg)](https://github.com/toml-f/toml-f/actions)
 
 A TOML parser implementation for data serialization and deserialization in Fortran.
 
 - the [TOML standard](https://toml.io)
-- currently supported [TOML v1.0.0-rc1 specification](https://toml.io/en/v1.0.0-rc.1)
+- currently supported [TOML v1.0.0-rc2 specification](https://toml.io/en/v1.0.0-rc.2)
 
 <div align="center">
 <img src="./assets/toml-f.png" alt="TOML-Fortran" width="220">
@@ -18,7 +18,7 @@ A TOML parser implementation for data serialization and deserialization in Fortr
 
 To build this project from the source code in this repository you need to have
 - a Fortran compiler supporting Fortran 2008
-- [`meson`](https://mesonbuild.com) version 0.49 or newer
+- [`meson`](https://mesonbuild.com) version 0.53 or newer
 - a build-system backend, *i.e.* [`ninja`](https://ninja-build.org) version 1.7 or newer
 
 Setup a build with
@@ -31,7 +31,16 @@ meson compile -C build
 
 ### Testing
 
-_Work in progress_
+We employ a [validator suite](https://github.com/BurntSushi/toml-test) to test the standard compliance of this implementation.
+To use this testing a go installation is required.
+The installation of the validator suite will be handled by `meson` automatically without installing into the users go workspace.
+Run the tests with
+
+```
+meson test -C build --benchmark --print-errorlogs
+```
+
+The decoder test will currently fail, due to the implementation not yet supporting Unicode escape sequences.
 
 
 ### Documentation
@@ -46,9 +55,7 @@ ford -o ./docs docs.md
 ## Usage
 
 To make use this library use the `tomlf` module in your projects,
-for the complete public API use `tomlf_all`, you can access the indiviual modules
-but those are not considered part of the public API and might change between
-versions.
+for the complete public API use `tomlf_all`, you can access the indiviual modules but those are not considered part of the public API and might change between versions.
 
 An example program to load and dump a TOML file would look like this:
 
@@ -94,34 +101,21 @@ end if
 end
 ```
 
-Here the TOML file is provided as string, notice that you have to add a
-newline character either by the parameter `TOML_NEWLINE` or by using the
-intrinsic function `new_line("a")` to get the correct newline characters.
+Here the TOML file is provided as string, notice that you have to add a newline character either by the parameter `TOML_NEWLINE` or by using the intrinsic function `new_line("a")` to get the correct newline characters.
 
-Alternatively, a file can be loaded from any connected, formatted unit using
-the same overloaded function. For the standard input the intrinsic `input_unit`
-should be passed. If the TOML file is successfully parsed the table will
-be allocated and can be written to the standard output by passing the
-`toml_serializer` as visitor to the table.
+Alternatively, a file can be loaded from any connected, formatted unit using the same overloaded function. For the standard input the intrinsic `input_unit` should be passed.
+If the TOML file is successfully parsed the table will be allocated and can be written to the standard output by passing the `toml_serializer` as visitor to the table.
 
 
 ## Contributing
 
-See the [contributing guidelines](CONTRIBUTING.md) on how to get involved
-in TOML-Fortran.
+See the [contributing guidelines](CONTRIBUTING.md) on how to get involved in TOML-Fortran.
 
 
 ## License
 
-TOML-Fortran is free software: you can redistribute it and/or modify it under
-the terms of the [Apache License, Version 2.0](LICENSE-Apache) or
-[MIT license](LICENSE-MIT) at your option.
+TOML-Fortran is free software: you can redistribute it and/or modify it under the terms of the [Apache License, Version 2.0](LICENSE-Apache) or [MIT license](LICENSE-MIT) at your option.
 
-Unless required by applicable law or agreed to in writing, software distributed
-under the License is distributed on an _as is_ basis, without warranties or
-conditions of any kind, either express or implied. See the License for the
-specific language governing permissions and limitations under the License.
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an _as is_ basis, without warranties or conditions of any kind, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
-Unless you explicitly state otherwise, any contribution intentionally submitted
-for inclusion in TOML-Fortran by you, as defined in the Apache-2.0 license, shall
-be dual licensed as above, without any additional terms or conditions. 
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in TOML-Fortran by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.

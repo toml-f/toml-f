@@ -64,7 +64,7 @@ You can learn how from
 
 Don't know where to start?
 You can start by looking through these
-[help-wanted issues](https://github.com/awvwgk/toml-f/issues?q=label%3A%22help+wanted%22+is%3Aissue+is%3Aopen).
+[help-wanted issues](https://github.com/toml-f/toml-f/issues?q=label%3A%22help+wanted%22+is%3Aissue+is%3Aopen).
 
 
 ## Sign Your Work

@@ -1,0 +1,10 @@
+name = "toml-f-dep"
+version = "0.0.0"
+
+[dependencies]
+toml-f = {git = "../.."}
+
+[[executable]]
+name = "example"
+source-dir = "app"
+main = "main.f90"

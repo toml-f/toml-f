@@ -17,13 +17,13 @@ project(
   'fortran',
   version: '0.2.0',
   license: ['MIT', 'Apache-2.0'],
-  meson_version: '>=0.49',
+  meson_version: '>=0.53',
   default_options: [
     'buildtype=debugoptimized',
     'default_library=both',
-  ]
+  ],
 )
-install = not meson.is_subproject()
+install = not (meson.is_subproject() and get_option('default_library') == 'static')
 
 # General configuration information
 subdir('config')
@@ -54,3 +54,7 @@ if install
     description: 'A TOML parser implementation for data serialization and deserialization in Fortran',
   )
 endif
+
+# add the testsuite
+fpm_toml = files('fpm.toml')
+subdir('test')

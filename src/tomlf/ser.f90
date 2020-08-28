@@ -161,10 +161,14 @@ subroutine visit_table(visitor, table)
    character(kind=tfc, len=:), allocatable :: key
    integer :: i, n
 
+   call table%get_keys(list)
+
+   n = size(list, 1)
+
    if (.not.allocated(visitor%stack)) then
       call resize(visitor%stack)
    else
-      if (.not.visitor%inline_array) then
+      if (.not.(visitor%inline_array .or. table%implicit)) then
          write(visitor%unit, '("[")', advance='no')
          if (visitor%array_of_tables) write(visitor%unit, '("[")', advance='no')
          do i = 1, visitor%top-1
@@ -178,9 +182,6 @@ subroutine visit_table(visitor, table)
       end if
    end if
 
-   call table%get_keys(list)
-
-   n = size(list, 1)
    do i = 1, n
       call table%get(list(i)%key, ptr)
       select type(ptr)
@@ -232,11 +233,13 @@ function is_array_of_tables(array) result(only_tables)
    logical :: only_tables
 
    class(toml_value), pointer :: ptr
-   integer :: i
+   integer :: i, n
 
-   only_tables = .true.
 
-   do i = 1, len(array)
+   n = len(array)
+   only_tables = n > 0
+
+   do i = 1, n
       call array%get(i, ptr)
       select type(ptr)
       class is(toml_table)

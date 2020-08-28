@@ -129,13 +129,9 @@ module tomlf_de_tokenizer
       procedure, private :: next
 
       !> Return next token
-      procedure(next_token), deferred, private :: next_token
+      procedure(next_token), deferred :: next_token
 
    end type toml_tokenizer
-
-
-   type toml_line
-   end type toml_line
 
 
    abstract interface
@@ -202,9 +198,9 @@ recursive subroutine parse_keyval(de, table)
    type(toml_table), intent(inout) :: table
 
    type(toml_token) :: key
-   type(toml_keyval), pointer :: vptr
-   type(toml_array), pointer :: aptr
-   type(toml_table), pointer :: tptr
+   class(toml_keyval), pointer :: vptr
+   class(toml_array), pointer :: aptr
+   class(toml_table), pointer :: tptr
    character(kind=tfc, len=:), allocatable :: new_key, this_key
 
    key = de%tok
@@ -294,8 +290,8 @@ subroutine parse_select(de)
    !> Instance of the TOML deserializer
    class(toml_tokenizer), intent(inout), target :: de
 
-   type(toml_array), pointer :: array
-   type(toml_table), pointer :: table
+   class(toml_array), pointer :: array
+   class(toml_table), pointer :: table
    class(toml_value), pointer :: ptr
    character(kind=tfc, len=:), allocatable :: key
    logical :: llb
@@ -348,7 +344,23 @@ subroutine parse_select(de)
       call add_table(array, table)
    else
       ! [key.key.top]
-      call add_table(de%current, key, table)
+      call de%current%get(key, ptr)
+      if (associated(ptr)) then
+         select type(ptr)
+         class is(toml_table)
+            if (ptr%implicit) then
+               table => ptr
+            else
+               call duplicate_key_error(de%error, de%line, key)
+               return
+            end if
+         class default
+            call duplicate_key_error(de%error, de%line, key)
+            return
+         end select
+      else
+         call add_table(de%current, key, table)
+      end if
    end if
 
    if (.not.associated(table)) then
@@ -443,7 +455,7 @@ contains
       !> Stack of all keys in the table header
       type(toml_key), intent(in), target :: stack(:)
 
-      type(toml_table), pointer :: table, tmp_tbl
+      class(toml_table), pointer :: table, tmp_tbl
       character(kind=tfc, len=:), pointer :: key
       class(toml_value), pointer :: ptr, tmp
       integer :: i
@@ -535,9 +547,9 @@ recursive subroutine parse_array(de, array)
    !> TOML array to be filled
    type(toml_array), intent(inout) :: array
 
-   type(toml_table), pointer :: tbl
-   type(toml_keyval), pointer :: val
-   type(toml_array), pointer :: arr
+   class(toml_table), pointer :: tbl
+   class(toml_keyval), pointer :: val
+   class(toml_array), pointer :: arr
 
    !@:assert(de%tok%tok == toml_tokentype%lbracket)
 
@@ -674,7 +686,7 @@ subroutine get_table(table, key, ptr, stat)
    character(kind=tfc, len=*), intent(in) :: key
 
    !> Pointer to the newly created table
-   type(toml_table), pointer, intent(out) :: ptr
+   class(toml_table), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat

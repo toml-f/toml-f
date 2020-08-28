@@ -20,6 +20,7 @@ module tomlf_utils
    implicit none
    private
 
+   public :: convert_raw
    public :: toml_raw_to_string, toml_raw_to_float, toml_raw_to_bool
    public :: toml_raw_to_integer, toml_raw_to_timestamp
    public :: toml_raw_verify_string, toml_raw_verify_float, toml_raw_verify_bool

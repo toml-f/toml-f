@@ -5,23 +5,34 @@ jobs:
   linux-build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - uses: actions/setup-python@v1
       with:
         python-version: '3.x'
     - run: sudo apt install -yq --no-install-recommends gfortran ninja-build
-    - run: pip3 install meson fypp
-    - run: meson setup build_gcc --buildtype release
-    - run: ninja -C build_gcc
+    - run: pip3 install meson
+    - run: meson setup build_gcc
+    - run: meson test -C build_gcc --print-errorlogs
 
   osx-build:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - uses: actions/setup-python@v1
       with:
         python-version: '3.x'
     - run: brew install gcc ninja
-    - run: pip3 install meson fypp
-    - run: meson setup build_gcc --buildtype release
-    - run: ninja -C build_gcc
+    - run: pip3 install meson
+    - run: meson setup build_gcc
+    - run: meson test -C build_gcc --print-errorlogs
+
+  win-build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+    - run: pip3 install meson ninja
+    - run: meson setup build_gcc
+    - run: meson test -C build_gcc --print-errorlogs

@@ -1,34 +1,45 @@
 language: python
 python:
-  - 3.7
+- 3.7
 
 # Build matrix: Run different versions of GCC and tests in parallel
 jobs:
   include:
-    - os: linux
-      dist: bionic
-      addons:
-        apt:
-          packages:
-            - ninja-build
-            - gfortran-7
-            - python-pip
-      env:
-        - FC=gfortran-7
+  - os: linux
+    dist: bionic
+    addons:
+      apt:
+        packages:
+        - ninja-build
+        - gfortran-5
+        - python-pip
+    env:
+    - FC=gfortran-5
 
-    - os: linux
-      dist: bionic
-      addons:
-        apt:
-          packages:
-            - ninja-build
-            - gfortran-8
-            - python-pip
-      env:
-        - FC=gfortran-8
+  - os: linux
+    dist: bionic
+    addons:
+      apt:
+        packages:
+          - ninja-build
+          - gfortran-6
+          - python-pip
+    env:
+    - FC=gfortran-6
+
+  - os: linux
+    dist: bionic
+    addons:
+      apt:
+        packages:
+        - ninja-build
+        - gfortran-7
+        - python-pip
+    env:
+    - FC=gfortran-7
 
 install:
-  - pip3 install meson fypp
+- pip3 install meson
 
 script:
-  - meson build --buildtype=release && ninja -C build
+- meson build && meson test -C build --print-errorlogs && DESTDIR=$PWD/_dist meson install -C build

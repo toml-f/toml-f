@@ -71,10 +71,13 @@ pure function toml_raw_verify_float(raw) result(stat)
    dot_pos = index(raw, '.')
    exp_pos = scan(raw, 'Ee')
    if (dot_pos > 0 .and. exp_pos > 0 .and. dot_pos > exp_pos) return
-   ! check for leading underscores
-   if (raw(first:first) == '_') return
-   ! check for leading dots
-   if (first == dot_pos) return
+   ! check for leading or trailing underscores
+   if (raw(first:first) == '_' .or. raw(len(raw):) == '_') return
+   ! check for leading or trailing dots
+   if (first == dot_pos .or. len(raw) == dot_pos) return
+   if (dot_pos > 0) then
+      if (raw(dot_pos+1:dot_pos+1) == '_' .or. raw(dot_pos-1:dot_pos-1) == '_') return
+   end if
    ! zero must be followed by a dot or exponent
    if (raw(first:first) == '0' .and. len(raw(first:)) > 1) then
       if (first+1 /= dot_pos .and. first+1 /= exp_pos) return

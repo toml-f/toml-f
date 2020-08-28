@@ -17,6 +17,7 @@ module tomlf
    use tomlf_de, only : toml_parse
    use tomlf_ser, only : toml_serializer
    use tomlf_type, only : toml_table
+   use tomlf_version, only : tomlf_version_string, tomlf_version_compact
    implicit none
    public
 
