@@ -12,22 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-subdir('build')
-subdir('de')
-subdir('structure')
-subdir('type')
-subdir('utils')
+ex1_srcs = []
+subdir('app')
+subdir('src')
 
-srcs += files(
-  'all.f90',
-  'build.f90',
-  'constants.f90',
-  'datetime.f90',
-  'de.f90',
-  'error.f90',
-  'ser.f90',
-  'structure.f90',
-  'type.f90',
-  'utils.f90',
-  'version.f90',
+example1 = executable(
+  'example',
+  sources: ex1_srcs,
+  dependencies: tomlf_dep,
 )
+
+if os != 'windows'
+  test('example-1.1', example1, args: files('package-1.toml'))
+  test('example-1.2', example1, args: files('package-2.toml'))
+endif

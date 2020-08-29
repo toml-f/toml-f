@@ -12,14 +12,16 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-!> Example executable to read and emit a TOML document
+!> Example application to show the usage of TOML-Fortran to read, modify and
+!  parse TOML data structures.
 program tomlf_example
-   use tomlf
+   use, intrinsic :: iso_fortran_env, only : error_unit, output_unit
+   use pkg
    implicit none
    integer :: iarg, length
    character(len=:), allocatable :: argument
-   type(toml_table), allocatable :: table
-   type(toml_serializer) :: ser
+   type(package_data) :: pkg_data
+   type(error_data), allocatable :: error
    integer :: unit
    logical :: exist
 
@@ -35,14 +37,15 @@ program tomlf_example
          end if
          if (exist) then
             open(newunit=unit, file=argument)
-            print'("#",1x,a)', argument
-            if (allocated(table)) deallocate(table)
-            call toml_parse(table, unit)
-            close(unit)
-            if (allocated(table)) then
-               call table%accept(ser)
-               call table%destroy
+            write(output_unit, '(a, 1x, a, 1x, a)') &
+               "Collecting meta data from", argument, "..."
+            call get_package_data(pkg_data, argument, error)
+            if (allocated(error)) then
+               write(error_unit, '(a, 1x, a, /, a)') &
+                  & "Error while processing", argument, error%message
+               error stop 1
             end if
+            call pkg_data%info(output_unit)
          end if
       end do
    end if

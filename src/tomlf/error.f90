@@ -19,7 +19,7 @@ module tomlf_error
    private
 
    public :: toml_stat, toml_error, toml_context
-   public :: syntax_error, duplicate_key_error, vendor_error
+   public :: syntax_error, duplicate_key_error, io_error, vendor_error
 
 
    !> Possible TOML-Fortran error codes
@@ -41,6 +41,9 @@ module tomlf_error
 
       !> Syntax error
       integer :: invalid_syntax = 2
+
+      !> IO error
+      integer :: io_failure = 3
 
    end type enum_stat
 
@@ -148,6 +151,27 @@ subroutine duplicate_key_error(error, context, key, stat)
    end if
 
 end subroutine duplicate_key_error
+
+
+!> IO runtime error
+subroutine io_error(error, message)
+
+   !> Instance of the TOML error
+   type(toml_error), allocatable, intent(out) :: error
+
+   !> A detailed message describing the error and (optionally) offering advice
+   character(kind=tfc, len=*), intent(in), optional :: message
+
+   allocate(error)
+   error%stat = toml_stat%io_failure
+
+   if (present(message)) then
+      error%message = message
+   else
+      error%message = "IO runtime error"
+   end if
+
+end subroutine io_error
 
 
 !> A shortcoming in the implementation or an internal error occured, rather

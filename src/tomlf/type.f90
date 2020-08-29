@@ -40,6 +40,7 @@ module tomlf_type
    public :: toml_key
    public :: new, new_table, new_array, new_keyval, len
    public :: add_table, add_array, add_keyval
+   public :: is_array_of_tables
 
 
    !> Interface to build new tables
@@ -398,6 +399,36 @@ subroutine new_keyval_(self)
    call move_alloc(val, self)
 
 end subroutine new_keyval_
+
+
+!> Determine if array contains only tables
+function is_array_of_tables(array) result(only_tables)
+
+   !> TOML value to visit
+   class(toml_array), intent(inout) :: array
+
+   !> Array contains only tables
+   logical :: only_tables
+
+   class(toml_value), pointer :: ptr
+   integer :: i, n
+
+
+   n = len(array)
+   only_tables = n > 0
+
+   do i = 1, n
+      call array%get(i, ptr)
+      select type(ptr)
+      class is(toml_table)
+         cycle
+      class default
+         only_tables = .false.
+         exit
+      end select
+   end do
+
+end function is_array_of_tables
 
 
 end module tomlf_type

@@ -1,0 +1,12 @@
+# A simple package file oriented on the fpm format for packaging
+name = "simple"
+# Version numbers can be complicated, this is using a semantic version after
+# an version epoch (maybe due to a versioning style change) and an build number
+version = "1:1.2.0-1"
+# In case of dual licensed packages we can either provide an array or use the
+# an logical or between the SPDX identifiers, the packager will allow arrays
+# for convenience and convert to SPDX identifiers with or internally
+license = ["Apache-2.0", "MIT"]
+
+[source]
+git = "https://github.com/toml-f/toml-f"

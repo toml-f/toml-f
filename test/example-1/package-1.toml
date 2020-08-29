@@ -1,0 +1,36 @@
+# Package file example oriented at the conda-build meta.yaml for the DFTB+ project
+name = "dftbplus"
+version = "20.1"
+license = "LGPL-3.0-or-later"
+
+# Requests an older version of this made-up package format to trigger a converion
+# on the TOML datastructure to match the actual format
+pkg_version = 1
+
+# This table will be moved to dependencies
+[requirements]
+lapack.version = "*"
+blas.version = "*"
+
+[requirements.mpi]
+version = "*"
+variant = "openmpi"
+
+[requirements.scalapack]
+version = "*"
+
+# Source can either be a single table or an array of tables, the packager support
+# both formats by checking for the type of the respective source node
+[[source]]
+url = "https://github.com/dftbplus/dftbplus/archive/20.1.tar.gz"
+sha256 = "a155ca927c804234587c61c4938d154f31578c816b0ce20eaee3b5d7e39d91dc"
+
+[[source]]
+url = "https://github.com/dftbplus/mpifx/archive/dftbplus-20.1.tar.gz"
+sha256 = "321808573bc7f7719a34516723bd9514ddb6db508a74b572a52794f7bc864f93"
+folder = "external/mpifx/origin"
+
+[[source]]
+url = "https://github.com/dftbplus/scalapackfx/archive/dftbplus-20.1.tar.gz"
+sha256 = "23797a2ac8c495a4bd9cc9445f14a8aca7eee0ce585f86b9e575b1e2a4b68cb6"
+folder = "external/scalapackfx/origin"

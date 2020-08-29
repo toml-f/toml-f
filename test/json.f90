@@ -16,9 +16,9 @@
 module tftest_json
    use tomlf_constants
    use tomlf_datetime
-   use tomlf_utils, only : convert_raw, toml_get_value_type
    use tomlf_type, only : toml_value, toml_visitor, toml_key, toml_table, &
-      & toml_array, toml_keyval, len
+      & toml_array, toml_keyval, is_array_of_tables, len
+   use tomlf_utils, only : convert_raw, toml_get_value_type
    implicit none
    private
 
@@ -265,35 +265,6 @@ subroutine escape_string(raw, escaped)
    end do
 
 end subroutine escape_string
-
-
-!> Determine if array contains only tables
-function is_array_of_tables(array) result(only_tables)
-
-   !> TOML value to visit
-   class(toml_array), intent(inout) :: array
-
-   !> Array contains only tables
-   logical :: only_tables
-
-   class(toml_value), pointer :: ptr
-   integer :: i, n
-
-   n = len(array)
-   only_tables = n > 0
-
-   do i = 1, n
-      call array%get(i, ptr)
-      select type(ptr)
-      class is(toml_table)
-         cycle
-      class default
-         only_tables = .false.
-         exit
-      end select
-   end do
-
-end function is_array_of_tables
 
 
 end module tftest_json

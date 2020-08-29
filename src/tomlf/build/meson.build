@@ -12,22 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-subdir('build')
-subdir('de')
-subdir('structure')
-subdir('type')
-subdir('utils')
-
 srcs += files(
-  'all.f90',
-  'build.f90',
-  'constants.f90',
-  'datetime.f90',
-  'de.f90',
-  'error.f90',
-  'ser.f90',
-  'structure.f90',
-  'type.f90',
-  'utils.f90',
-  'version.f90',
+  'array.f90',
+  'keyval.f90',
+  'table.f90',
 )

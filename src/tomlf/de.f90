@@ -15,6 +15,7 @@
 module tomlf_de
    use tomlf_constants, only : TOML_NEWLINE
    use tomlf_de_character, only : toml_character_tokenizer, new
+   use tomlf_error, only : toml_error, io_error
    use tomlf_type, only : toml_table
    implicit none
    private
@@ -32,51 +33,56 @@ contains
 
 
 !> Parse a TOML input from a given IO unit.
-subroutine toml_parse_unit(table, unit, iostat)
+subroutine toml_parse_unit(table, unit, error)
    use iso_fortran_env
    use tomlf_constants, only: TOML_NEWLINE
    type(toml_table), allocatable, intent(out) :: table
    integer, intent(in) :: unit
-   integer, intent(out), optional :: iostat
+   type(toml_error), allocatable, intent(out), optional :: error
    character(len=:), allocatable :: conf
    integer, parameter :: bufsize = 512
    character(len=bufsize) :: buffer
+   character(len=bufsize) :: error_msg
    integer :: size
-   integer :: error
+   integer :: stat
    allocate(character(len=0) :: conf)
    do 
-      read(unit, '(a)', advance='no', iostat=error, size=size) buffer
-      if (error > 0) exit
+      read(unit, '(a)', advance='no', iostat=stat, iomsg=error_msg, size=size) &
+         & buffer
+      if (stat > 0) exit
       conf = conf // buffer(:size)
-      if (error < 0) then
-         if (is_iostat_eor(error)) then
-            error = 0
+      if (stat < 0) then
+         if (is_iostat_eor(stat)) then
+            stat = 0
             conf = conf // TOML_NEWLINE
          end if
-         if (is_iostat_end(error)) then
-            error = 0
+         if (is_iostat_end(stat)) then
+            stat = 0
             exit
          end if
       end if
    end do
 
-   if (error /= 0) then
-      if (present(iostat)) iostat = error
+   if (stat /= 0) then
+      if (present(error)) then
+         call io_error(error, trim(error_msg))
+      else
+         write(error_unit, '(a, /, a)') "IO runtime error", trim(error_msg)
+      end if
       return
    end if
 
-   call toml_parse_string(table, conf)
-
-   if (.not.allocated(table) .and. present(iostat)) iostat = 1
+   call toml_parse_string(table, conf, error)
 
 end subroutine toml_parse_unit
 
 
 !> Wrapper to parse a TOML string.
-subroutine toml_parse_string(table, conf)
+subroutine toml_parse_string(table, conf, error)
    use iso_fortran_env, only: error_unit
    type(toml_table), allocatable, intent(out) :: table
    character(len=*), intent(in), target :: conf
+   type(toml_error), allocatable, intent(out), optional :: error
    type(toml_character_tokenizer) :: de
 
    !> connect deserializer to configuration
@@ -85,7 +91,11 @@ subroutine toml_parse_string(table, conf)
    call de%parse
 
    if (allocated(de%error)) then
-      write(error_unit, '(a)') de%error%message
+      if (present(error)) then
+         call move_alloc(de%error, error)
+      else
+         write(error_unit, '(a)') de%error%message
+      end if
       return
    end if
 

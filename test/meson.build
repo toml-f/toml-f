@@ -44,6 +44,9 @@ if go_exe.found()
     'GOPATH': meson.current_build_dir(),
   })
 
+  # Explicitly specify the validator test directories
+  validator_testdir = meson.current_build_dir()/'src'/'github.com'/'toml-f'/'toml-test'/'tests'
+
   # First, we need to fetch the validator tests from upstream
   get_toml_test = run_command(
     go_exe,
@@ -58,10 +61,12 @@ if go_exe.found()
     # Finally, create the decoder test
     benchmark(
       'decoder',
-      find_program('toml-test', dirs: meson.current_build_dir() / 'bin'),
-      args: toml2json_exe,
+      find_program('toml-test', dirs: meson.current_build_dir()/'bin'),
+      args: ['-testdir', validator_testdir, toml2json_exe],
       env: validator_env,
     )
   endif
 endif
 
+# Additional examples are compiled and tested to keep them working
+#subdir('example-1')
