@@ -69,4 +69,4 @@ if go_exe.found()
 endif
 
 # Additional examples are compiled and tested to keep them working
-#subdir('example-1')
+subdir('example-1')

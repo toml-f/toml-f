@@ -45,7 +45,7 @@ subroutine convert(table, format_version, error)
    type(error_data), allocatable, intent(out) :: error
 
    class(toml_table), pointer :: child
-   class(toml_value), allocatable :: node
+   class(toml_table), allocatable :: node
    integer :: stat
 
    if (format_version == 1) then
