@@ -52,7 +52,7 @@ subroutine read_config_file(table, config, error)
       return
    end if
 
-   open(file=config, newunit=unit)
+   open(file=config, newunit=unit, status='old')
    call toml_parse(table, unit, parse_error)
    close(unit)
 

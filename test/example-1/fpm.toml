@@ -2,7 +2,7 @@ name = "toml-f-dep"
 version = "0.0.0"
 
 [dependencies]
-toml-f = {git = "../.."}
+toml-f = {path = "../.."}
 
 [[executable]]
 name = "example"

@@ -22,7 +22,6 @@ program tomlf_example
    character(len=:), allocatable :: argument
    type(package_data) :: pkg_data
    type(error_data), allocatable :: error
-   integer :: unit
    logical :: exist
 
    if (command_argument_count() > 0) then
@@ -33,10 +32,6 @@ program tomlf_example
          exist = length > 0
          if (exist) then
             call get_command_argument(iarg, argument)
-            inquire(file=argument, exist=exist)
-         end if
-         if (exist) then
-            open(newunit=unit, file=argument)
             write(output_unit, '(a, 1x, a, 1x, a)') &
                "Collecting meta data from", argument, "..."
             call get_package_data(pkg_data, argument, error)

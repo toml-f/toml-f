@@ -66,8 +66,8 @@ subroutine new_package_data(self, table, error)
    !> Error status of the operation
    type(error_data), allocatable, intent(out) :: error
 
-   class(toml_table), pointer :: child, node
-   class(toml_array), pointer :: children
+   type(toml_table), pointer :: child, node
+   type(toml_array), pointer :: children
    type(toml_key), allocatable :: list(:)
    character(len=:), allocatable :: license
    integer :: stat, idep, isrc, ilic, nlic

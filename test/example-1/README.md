@@ -10,7 +10,6 @@ toml-f = { git = "https://github.com/toml-f/toml-f" }
 For more details checkout the packaging information in the `fpm` repository.
 
 This example project will build a simple executable to read and process TOML documents using the TOML-Fortran dependency provided from the project root, serving both as example and a simple integration test.
-Note that dirty worktrees cannot be tested as `fpm` will clone the current head of the worktree as dependency, once you update the root project make sure to delete the `fpm` build directory to force it to reload the TOML-Fortran dependency.
 
 Test this example by running it from `fpm` on one of the provided example TOML documents:
 

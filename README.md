@@ -24,7 +24,7 @@ To build this project from the source code in this repository you need to have
 Setup a build with
 
 ```
-FC=gfortran meson setup build_gcc
+FC=gfortran meson setup build
 meson compile -C build
 ```
 
