@@ -57,7 +57,7 @@ subroutine get_elem_table(array, pos, ptr, stat)
    integer, intent(in) :: pos
 
    !> Pointer to child table
-   class(toml_table), pointer, intent(out) :: ptr
+   type(toml_table), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat
@@ -92,7 +92,7 @@ subroutine get_elem_array(array, pos, ptr, stat)
    integer, intent(in) :: pos
 
    !> Pointer to child array
-   class(toml_array), pointer, intent(out) :: ptr
+   type(toml_array), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat
@@ -127,7 +127,7 @@ subroutine get_elem_keyval(array, pos, ptr, stat)
    integer, intent(in) :: pos
 
    !> Pointer to child value
-   class(toml_keyval), pointer, intent(out) :: ptr
+   type(toml_keyval), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat

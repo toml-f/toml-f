@@ -70,7 +70,7 @@ subroutine get_child_table(table, key, ptr, requested, stat)
    character(kind=tfc, len=*), intent(in) :: key
 
    !> Pointer to child table
-   class(toml_table), pointer, intent(out) :: ptr
+   type(toml_table), pointer, intent(out) :: ptr
 
    !> Child value must be present
    logical, intent(in), optional :: requested
@@ -117,7 +117,7 @@ subroutine get_child_array(table, key, ptr, requested, stat)
    character(kind=tfc, len=*), intent(in) :: key
 
    !> Pointer to child array
-   class(toml_array), pointer, intent(out) :: ptr
+   type(toml_array), pointer, intent(out) :: ptr
 
    !> Child value must be present
    logical, intent(in), optional :: requested
@@ -164,7 +164,7 @@ subroutine get_child_keyval(table, key, ptr, requested, stat)
    character(kind=tfc, len=*), intent(in) :: key
 
    !> Pointer to child value
-   class(toml_keyval), pointer, intent(out) :: ptr
+   type(toml_keyval), pointer, intent(out) :: ptr
 
    !> Child value must be present
    logical, intent(in), optional :: requested

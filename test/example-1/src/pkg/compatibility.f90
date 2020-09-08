@@ -44,8 +44,9 @@ subroutine convert(table, format_version, error)
    !> Error status of the operation
    type(error_data), allocatable, intent(out) :: error
 
-   class(toml_table), pointer :: child
-   class(toml_table), allocatable :: node
+   type(toml_table), pointer :: child
+   type(toml_table), allocatable :: tmp
+   class(toml_value), allocatable :: node
    integer :: stat
 
    if (format_version == 1) then
@@ -54,11 +55,12 @@ subroutine convert(table, format_version, error)
       call get_value(table, "requirements", child, requested=.false.)
       if (associated(child)) then
          ! deepcopy the complete dependencies table
-         node = child
-         node%key = "dependencies"
+         tmp = child
+         tmp%key = "dependencies"
          ! delete the old entry
          call table%delete("requirements")
          ! move the allocation of the adjusted copy into the table:w
+         call move_alloc(tmp, node)
          call table%push_back(node, stat)
          if (stat /= toml_stat%success) then
             call fatal_error(error, "Conversion failed, could migrate requirements table to dependencies table")

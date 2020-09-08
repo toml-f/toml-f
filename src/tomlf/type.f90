@@ -77,7 +77,7 @@ subroutine add_table_to_table(table, key, ptr, stat)
    character(kind=tfc, len=*), intent(in) :: key
 
    !> Pointer to the newly created table
-   class(toml_table), pointer, intent(out) :: ptr
+   type(toml_table), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat
@@ -127,7 +127,7 @@ subroutine add_array_to_table(table, key, ptr, stat)
    character(kind=tfc, len=*), intent(in) :: key
 
    !> Pointer to the newly created array
-   class(toml_array), pointer, intent(out) :: ptr
+   type(toml_array), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat
@@ -177,7 +177,7 @@ subroutine add_keyval_to_table(table, key, ptr, stat)
    character(kind=tfc, len=*), intent(in) :: key
 
    !> Pointer to the newly created key-value pair
-   class(toml_keyval), pointer, intent(out) :: ptr
+   type(toml_keyval), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat
@@ -224,7 +224,7 @@ subroutine add_table_to_array(array, ptr, stat)
    class(toml_array), intent(inout) :: array
 
    !> Pointer to the newly created table
-   class(toml_table), pointer, intent(out) :: ptr
+   type(toml_table), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat
@@ -270,7 +270,7 @@ subroutine add_array_to_array(array, ptr, stat)
    class(toml_array), intent(inout) :: array
 
    !> Pointer to the newly created array
-   class(toml_array), pointer, intent(out) :: ptr
+   type(toml_array), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat
@@ -317,7 +317,7 @@ subroutine add_keyval_to_array(array, ptr, stat)
    class(toml_array), intent(inout) :: array
 
    !> Pointer to the newly created key-value pair
-   class(toml_keyval), pointer, intent(out) :: ptr
+   type(toml_keyval), pointer, intent(out) :: ptr
 
    !> Status of operation
    integer, intent(out), optional :: stat
@@ -420,7 +420,7 @@ function is_array_of_tables(array) result(only_tables)
    do i = 1, n
       call array%get(i, ptr)
       select type(ptr)
-      class is(toml_table)
+      type is(toml_table)
          cycle
       class default
          only_tables = .false.
