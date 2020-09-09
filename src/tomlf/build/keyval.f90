@@ -279,7 +279,7 @@ subroutine set_value_float_sp(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   character(kind=tfc, len=buffersize), allocatable :: tmp
+   character(kind=tfc, len=buffersize) :: tmp
    integer :: istat
 
    write(tmp, '(es30.6)', iostat=istat) val
@@ -305,7 +305,7 @@ subroutine set_value_float_dp(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   character(kind=tfc, len=buffersize), allocatable :: tmp
+   character(kind=tfc, len=buffersize) :: tmp
    integer :: istat
 
    write(tmp, '(es30.16)', iostat=istat) val
@@ -331,7 +331,7 @@ subroutine set_value_integer_i1(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   character(kind=tfc, len=buffersize), allocatable :: tmp
+   character(kind=tfc, len=buffersize) :: tmp
    integer :: istat
 
    write(tmp, '(i0)', iostat=istat) val
@@ -357,7 +357,7 @@ subroutine set_value_integer_i2(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   character(kind=tfc, len=buffersize), allocatable :: tmp
+   character(kind=tfc, len=buffersize) :: tmp
    integer :: istat
 
    write(tmp, '(i0)', iostat=istat) val
@@ -383,7 +383,7 @@ subroutine set_value_integer_i4(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   character(kind=tfc, len=buffersize), allocatable :: tmp
+   character(kind=tfc, len=buffersize) :: tmp
    integer :: istat
 
    write(tmp, '(i0)', iostat=istat) val
@@ -409,7 +409,7 @@ subroutine set_value_integer_i8(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   character(kind=tfc, len=buffersize), allocatable :: tmp
+   character(kind=tfc, len=buffersize) :: tmp
    integer :: istat
 
    write(tmp, '(i0)', iostat=istat) val
