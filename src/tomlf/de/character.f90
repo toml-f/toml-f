@@ -176,7 +176,7 @@ contains
                return
             end if
             if (ptr(i:i) == TOML_DQUOTE) then
-               if (qcount < 6) then
+               if (qcount < 5) then
                   qcount = qcount + 1
                else
                   call syntax_error(de%error, de%line, "too many quotation marks")

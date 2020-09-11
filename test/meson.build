@@ -44,6 +44,9 @@ if go_exe.found()
     'GOPATH': meson.current_build_dir(),
   })
 
+  compliance_prj = subproject('toml-tests')
+  compliance_testdir = compliance_prj.get_variable('compliance_tests')
+
   # Explicitly specify the validator test directories
   validator_testdir = meson.current_build_dir()/'src'/'github.com'/'toml-f'/'toml-test'/'tests'
 
@@ -59,6 +62,20 @@ if go_exe.found()
   # make it dependent on the success of the go get command
   if get_toml_test.returncode() == 0
     # Finally, create the decoder test
+    # The decoder test contains the tests from the BurntSushi/toml-test suite
+    # and the following changes
+    # - the TOML 0.4 specific mixed type arrays tests are removed
+    # - the Unicode specific tests are removed, since toml-f doesn't supports them
+    # - additional tests for TOML 0.5 and TOML 1.0 specific features are added
+    # - additional coverage tests are added
+    test(
+      'decoder',
+      find_program('toml-test', dirs: meson.current_build_dir()/'bin'),
+      args: ['-testdir', compliance_testdir, toml2json_exe],
+      env: validator_env,
+    )
+    # This is the original BurntSushi/toml-test suite
+    # -> this will currently fail due to the missing Unicode support in toml-f
     benchmark(
       'decoder',
       find_program('toml-test', dirs: meson.current_build_dir()/'bin'),

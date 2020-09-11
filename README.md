@@ -3,6 +3,7 @@
 [![License](https://img.shields.io/badge/license-MIT%7CApache%202.0-blue)](LICENSE-Apache)
 [![Build](https://travis-ci.com/toml-f/toml-f.svg?branch=master)](https://travis-ci.com/toml-f/toml-f)
 [![Build](https://github.com/toml-f/toml-f/workflows/CI/badge.svg)](https://github.com/toml-f/toml-f/actions)
+[![codecov](https://codecov.io/gh/toml-f/toml-f/branch/master/graph/badge.svg)](https://codecov.io/gh/toml-f/toml-f)
 
 A TOML parser implementation for data serialization and deserialization in Fortran.
 
