@@ -83,7 +83,7 @@ subroutine visit_keyval(visitor, keyval)
    type(toml_datetime) :: ts
    integer(tfi) :: idummy
    real(tfr) :: fdummy
-   logical :: stat
+   logical :: stat, ldummy
 
    call indent(visitor)
 
@@ -105,8 +105,14 @@ subroutine visit_keyval(visitor, keyval)
          &  '{"type": "string", "value": "', str, '"}'
 
    case(toml_type%boolean)
-      write(visitor%unit, '(a,a,a)', advance='no') &
-         &  '{"type": "bool", "value": "', keyval%raw, '"}'
+      stat = convert_raw(keyval%raw, ldummy)
+      if (ldummy) then
+         write(visitor%unit, '(a)', advance='no') &
+            &  '{"type": "bool", "value": "true"}'
+      else
+         write(visitor%unit, '(a)', advance='no') &
+            &  '{"type": "bool", "value": "false"}'
+      end if
 
    case(toml_type%int)
       stat = convert_raw(keyval%raw, idummy)

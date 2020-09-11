@@ -42,4 +42,7 @@ install:
 - pip3 install meson
 
 script:
-- meson build && meson test -C build --print-errorlogs && DESTDIR=$PWD/_dist meson install -C build
+- meson build -Db_coverage=true && meson test -C build --print-errorlogs && DESTDIR=$PWD/_dist meson install -C build
+
+after_success:
+- bash <(curl -s https://codecov.io/bash) -f "!^#test#*"

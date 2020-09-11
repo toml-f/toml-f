@@ -70,6 +70,7 @@ pure function toml_raw_verify_float(raw) result(stat)
    ! position of dot and exponent
    dot_pos = index(raw, '.')
    exp_pos = scan(raw, 'Ee')
+   if (dot_pos == 0 .and. exp_pos == 0) return
    if (dot_pos > 0 .and. exp_pos > 0 .and. dot_pos > exp_pos) return
    ! check for leading or trailing underscores
    if (raw(first:first) == '_' .or. raw(len(raw):) == '_') return

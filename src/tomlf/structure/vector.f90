@@ -255,11 +255,12 @@ subroutine resize(list, n)
    type(toml_node), allocatable, target :: tmp(:)
    integer :: i
 
+
    if (allocated(list)) then
       call move_alloc(list, tmp)
       allocate(list(n))
 
-      do i = 1, n
+      do i = 1, min(size(tmp), n)
          if (allocated(tmp(i)%val)) then
             call move_alloc(tmp(i)%val, list(i)%val)
          end if
@@ -268,6 +269,7 @@ subroutine resize(list, n)
       do i = n+1, size(tmp)
          if (allocated(tmp(i)%val)) then
             call tmp(i)%val%destroy
+            deallocate(tmp(i)%val)
          end if
       end do
 
