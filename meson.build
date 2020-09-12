@@ -47,7 +47,19 @@ tomlf_dep = declare_dependency(
   include_directories: tomlf_inc,
 )
 
+# Package the license files
+tomlf_lic = files(
+  'LICENSE-MIT',
+  'LICENSE-Apache',
+)
+
 if install
+  # Distribute the license files in share/licences/<name>
+  install_data(
+    tomlf_lic,
+    install_dir: get_option('datadir')/'licences'/meson.project_name()
+  )
+
   pkg = import('pkgconfig')
   pkg.generate(
     tomlf_lib,
