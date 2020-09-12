@@ -54,10 +54,10 @@ tomlf_lic = files(
 )
 
 if install
-  # Distribute the license files in share/licences/<name>
+  # Distribute the license files in share/licenses/<name>
   install_data(
     tomlf_lic,
-    install_dir: get_option('datadir')/'licences'/meson.project_name()
+    install_dir: get_option('datadir')/'licenses'/meson.project_name()
   )
 
   pkg = import('pkgconfig')
