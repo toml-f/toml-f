@@ -11,8 +11,9 @@ jobs:
         python-version: '3.x'
     - run: sudo apt install -yq --no-install-recommends gfortran ninja-build
     - run: pip3 install meson
-    - run: meson setup build_gcc
+    - run: meson setup build_gcc --prefix=$PWD/_dist
     - run: meson test -C build_gcc --print-errorlogs
+    - run: meson install -C build_gcc
 
   osx-build:
     runs-on: macos-latest
@@ -23,8 +24,9 @@ jobs:
         python-version: '3.x'
     - run: brew install gcc ninja
     - run: pip3 install meson
-    - run: meson setup build_gcc
+    - run: meson setup build_gcc --prefix=$PWD/_dist
     - run: meson test -C build_gcc --print-errorlogs
+    - run: meson install -C build_gcc
 
   win-build:
     runs-on: windows-latest
@@ -34,5 +36,6 @@ jobs:
       with:
         python-version: '3.x'
     - run: pip3 install meson ninja
-    - run: meson setup build_gcc
+    - run: meson setup build_gcc --prefix=$(get-location)\_dist
     - run: meson test -C build_gcc --print-errorlogs
+    - run: meson install -C build_gcc

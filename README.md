@@ -7,8 +7,8 @@
 
 A TOML parser implementation for data serialization and deserialization in Fortran.
 
-- the [TOML standard](https://toml.io)
-- currently supported [TOML v1.0.0-rc2 specification](https://toml.io/en/v1.0.0-rc.2)
+* the [TOML standard](https://toml.io)
+* currently supported [TOML v1.0.0-rc2 specification](https://toml.io/en/v1.0.0-rc.2)
 
 <div align="center">
 <img src="./assets/toml-f.png" alt="TOML-Fortran" width="220">
@@ -25,23 +25,36 @@ To build this project from the source code in this repository you need to have
 Setup a build with
 
 ```
-FC=gfortran meson setup build
-meson compile -C build
+meson setup _build
 ```
+
+You can select the Fortran compiler by the `FC` environment variable, currently this project supports GCC and Intel compilers.
+To compile the project run
+
+```
+meson compile -C _build
+```
+
+To use `toml-f` in your project, have a look at the [example integration with meson](https://github.com/toml-f/tf-meson-example).
 
 
 ### Testing
 
 We employ a [validator suite](https://github.com/BurntSushi/toml-test) to test the standard compliance of this implementation.
-To use this testing a go installation is required.
-The installation of the validator suite will be handled by `meson` automatically without installing into the users go workspace.
+To use this testing a `go` installation is required.
+The installation of the validator suite will be handled by `meson` automatically without installing into the users `go` workspace.
 Run the tests with
 
 ```
-meson test -C build --benchmark --print-errorlogs
+meson test -C _build --print-errorlogs
 ```
 
-The decoder test will currently fail, due to the implementation not yet supporting Unicode escape sequences.
+To run the full decoder test add the benchmark argument.
+This test will currently fail, due to the implementation not yet supporting Unicode escape sequences.
+
+```
+meson test -C _build --benchmark --print-errorlogs
+```
 
 
 ### Documentation
