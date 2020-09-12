@@ -7,8 +7,8 @@
 
 A TOML parser implementation for data serialization and deserialization in Fortran.
 
-* [TOML standard](https://toml.io)
-* [supported TOML v1.0.0-rc2 specification](https://toml.io/en/v1.0.0-rc.2)
+* the [TOML standard](https://toml.io)
+* currently supported [TOML v1.0.0-rc2 specification](https://toml.io/en/v1.0.0-rc.2)
 
 <div align="center">
 <img src="./assets/toml-f.png" alt="TOML-Fortran" width="220">
@@ -35,7 +35,7 @@ To compile the project run
 meson compile -C _build
 ```
 
-To use `toml-f` in your project, have a look at the [example integration with meson](https://github.com/toml-f/tf-example-meson).
+To use `toml-f` in your project, have a look at the [example integration with meson](https://github.com/toml-f/tf-meson-example).
 
 
 ### Testing
