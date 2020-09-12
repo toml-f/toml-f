@@ -37,7 +37,7 @@ toml2json_exe = executable(
 
 # We will run a TOML decoder validator, in case we find a go installation
 go_exe = find_program('go', required: false)
-if go_exe.found()
+if not meson.is_subproject() and go_exe.found()
   # Obviously, we don't want to write into the users go-workspace, therefore,
   # we will create our own local workspace by overwriting the GOPATH variable
   validator_env = environment({
