@@ -36,6 +36,6 @@ jobs:
       with:
         python-version: '3.x'
     - run: pip3 install meson ninja
-    - run: meson setup build_gcc --prefix=%cd%\_dist
+    - run: meson setup build_gcc --prefix=$(get-location)\_dist
     - run: meson test -C build_gcc --print-errorlogs
     - run: meson install -C build_gcc
