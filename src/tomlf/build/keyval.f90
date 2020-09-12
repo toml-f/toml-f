@@ -458,7 +458,15 @@ subroutine set_value_string(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   self%raw = val
+   if (toml_raw_verify_string(val)) then
+      self%raw = val
+   else
+      if (index(val, TOML_NEWLINE) > 0) then
+         self%raw = '"""' // val // '"""'
+      else
+         self%raw = '"' // val // '"'
+      end if
+   end if
 
    if (present(stat)) stat = toml_stat%success
 

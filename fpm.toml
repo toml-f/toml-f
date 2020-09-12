@@ -1,6 +1,6 @@
 name = "toml-f"
 version = "0.2.0"
-license = ["Apache-2.0", "MIT"]
+license = "Apache-2.0 OR MIT"
 
 [library]
 source-dir = "src"
