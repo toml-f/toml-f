@@ -1,0 +1,24 @@
+name: docs
+on:
+  push:
+    branches:
+    - 'master'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+    - run: sudo apt install -yq --no-install-recommends graphviz
+    - run: pip install ford
+    - run: ford -o ./docs docs.md
+    - uses: JamesIves/github-pages-deploy-action@3.6.1
+      if: ${{ github.repository == 'toml-f/toml-f' }}
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: docs
+        CLEAN: true
