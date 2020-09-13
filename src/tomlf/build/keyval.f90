@@ -18,12 +18,13 @@
 !  and construct them in a convenient way.
 module tomlf_build_keyval
    use tomlf_constants, only : tfc, tfi, tfr, tf_i1, tf_i2, tf_i4, tf_i8, &
-      & tf_sp, tf_dp
+      & tf_sp, tf_dp, TOML_NEWLINE
    use tomlf_error, only : toml_stat
    use tomlf_type, only : toml_value, toml_table, toml_array, toml_keyval, &
       & new_table, new_array, new_keyval, add_table, add_array, add_keyval, len
    use tomlf_utils, only : toml_raw_to_string, toml_raw_to_float, &
-      & toml_raw_to_bool, toml_raw_to_integer, toml_raw_to_timestamp
+      & toml_raw_to_bool, toml_raw_to_integer, toml_raw_to_timestamp, &
+      & toml_raw_verify_string
    implicit none
    private
 
@@ -284,7 +285,7 @@ subroutine set_value_float_sp(self, val, stat)
 
    write(tmp, '(es30.6)', iostat=istat) val
    if (istat == 0) then
-      self%raw = trim(tmp)
+      self%raw = trim(adjustl(tmp))
       if (present(stat)) stat = toml_stat%success
    else
       if (present(stat)) stat = toml_stat%fatal
@@ -310,7 +311,7 @@ subroutine set_value_float_dp(self, val, stat)
 
    write(tmp, '(es30.16)', iostat=istat) val
    if (istat == 0) then
-      self%raw = trim(tmp)
+      self%raw = trim(adjustl(tmp))
       if (present(stat)) stat = toml_stat%success
    else
       if (present(stat)) stat = toml_stat%fatal
@@ -336,7 +337,7 @@ subroutine set_value_integer_i1(self, val, stat)
 
    write(tmp, '(i0)', iostat=istat) val
    if (istat == 0) then
-      self%raw = trim(tmp)
+      self%raw = trim(adjustl(tmp))
       if (present(stat)) stat = toml_stat%success
    else
       if (present(stat)) stat = toml_stat%fatal
@@ -362,7 +363,7 @@ subroutine set_value_integer_i2(self, val, stat)
 
    write(tmp, '(i0)', iostat=istat) val
    if (istat == 0) then
-      self%raw = trim(tmp)
+      self%raw = trim(adjustl(tmp))
       if (present(stat)) stat = toml_stat%success
    else
       if (present(stat)) stat = toml_stat%fatal
@@ -388,7 +389,7 @@ subroutine set_value_integer_i4(self, val, stat)
 
    write(tmp, '(i0)', iostat=istat) val
    if (istat == 0) then
-      self%raw = trim(tmp)
+      self%raw = trim(adjustl(tmp))
       if (present(stat)) stat = toml_stat%success
    else
       if (present(stat)) stat = toml_stat%fatal
@@ -414,7 +415,7 @@ subroutine set_value_integer_i8(self, val, stat)
 
    write(tmp, '(i0)', iostat=istat) val
    if (istat == 0) then
-      self%raw = trim(tmp)
+      self%raw = trim(adjustl(tmp))
       if (present(stat)) stat = toml_stat%success
    else
       if (present(stat)) stat = toml_stat%fatal
@@ -458,7 +459,15 @@ subroutine set_value_string(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   self%raw = val
+   if (toml_raw_verify_string(val)) then
+      self%raw = val
+   else
+      if (index(val, TOML_NEWLINE) > 0) then
+         self%raw = '"""' // val // '"""'
+      else
+         self%raw = '"' // val // '"'
+      end if
+   end if
 
    if (present(stat)) stat = toml_stat%success
 

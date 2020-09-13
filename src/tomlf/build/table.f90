@@ -225,16 +225,12 @@ subroutine get_child_value_float_sp(table, key, val, default, stat)
    call get_value(table, key, ptr, present(default), stat)
 
    if (associated(ptr)) then
-      call get_value(ptr, val, stat)
-   end if
-
-   if (associated(ptr)) then
       if (allocated(ptr%raw)) then
          call get_value(ptr, val, stat)
       else
          if (present(default)) then
-            !call set_value(ptr, default)
-            val = default
+            call set_value(ptr, default)
+            call get_value(ptr, val)
          else
             if (present(stat)) stat = toml_stat%fatal
          end if
@@ -267,16 +263,12 @@ subroutine get_child_value_float_dp(table, key, val, default, stat)
    call get_value(table, key, ptr, present(default), stat)
 
    if (associated(ptr)) then
-      call get_value(ptr, val, stat)
-   end if
-
-   if (associated(ptr)) then
       if (allocated(ptr%raw)) then
          call get_value(ptr, val, stat)
       else
          if (present(default)) then
-            !call set_value(ptr, default)
-            val = default
+            call set_value(ptr, default)
+            call get_value(ptr, val)
          else
             if (present(stat)) stat = toml_stat%fatal
          end if
@@ -309,16 +301,12 @@ subroutine get_child_value_integer_i1(table, key, val, default, stat)
    call get_value(table, key, ptr, present(default), stat)
 
    if (associated(ptr)) then
-      call get_value(ptr, val, stat)
-   end if
-
-   if (associated(ptr)) then
       if (allocated(ptr%raw)) then
          call get_value(ptr, val, stat)
       else
          if (present(default)) then
-            !call set_value(ptr, default)
-            val = default
+            call set_value(ptr, default)
+            call get_value(ptr, val)
          else
             if (present(stat)) stat = toml_stat%fatal
          end if
@@ -351,16 +339,12 @@ subroutine get_child_value_integer_i2(table, key, val, default, stat)
    call get_value(table, key, ptr, present(default), stat)
 
    if (associated(ptr)) then
-      call get_value(ptr, val, stat)
-   end if
-
-   if (associated(ptr)) then
       if (allocated(ptr%raw)) then
          call get_value(ptr, val, stat)
       else
          if (present(default)) then
-            !call set_value(ptr, default)
-            val = default
+            call set_value(ptr, default)
+            call get_value(ptr, val)
          else
             if (present(stat)) stat = toml_stat%fatal
          end if
@@ -398,7 +382,7 @@ subroutine get_child_value_integer_i4(table, key, val, default, stat)
       else
          if (present(default)) then
             call set_value(ptr, default)
-            val = default
+            call get_value(ptr, val)
          else
             if (present(stat)) stat = toml_stat%fatal
          end if
@@ -435,8 +419,8 @@ subroutine get_child_value_integer_i8(table, key, val, default, stat)
          call get_value(ptr, val, stat)
       else
          if (present(default)) then
-            !call set_value(ptr, default)
-            val = default
+            call set_value(ptr, default)
+            call get_value(ptr, val)
          else
             if (present(stat)) stat = toml_stat%fatal
          end if

@@ -10,7 +10,7 @@ media_dir: ./assets
 favicon: ./assets/toml-f-64x64.png
 preprocessor: fypp
 github: https://github.com/awvwgk
-project_github: https://github.com/awvwgk/toml-f
+project_github: https://github.com/toml-f/toml-f
 docmark: <
 predocmark: >
 source: true
@@ -30,20 +30,14 @@ md_extensions: markdown.extensions.toc
 
 A TOML parser implementation for data serialization and deserialization in Fortran.
 
-- the [TOML standard](https://github.com/toml-lang/toml)
-- currently supported [TOML v0.5 specification](https://github.com/toml-lang/toml/blob/v0.5.0/README.md)
+* the [TOML standard](https://toml.io)
+* currently supported [TOML v1.0.0-rc2 specification](https://toml.io/en/v1.0.0-rc.2)
+
 
 ## License
 
-TOML-Fortran is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+TOML-Fortran is free software: you can redistribute it and/or modify it under the terms of the Apache License, Version 2.0 or MIT license at your opinion.
 
-TOML-Fortran is distributed in the hope that it will be useful,
-but without any warranty; without even the implied warranty of
-merchantability or fitness for a particular purpose.  See the
-GNU General Public License for more details.
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an _as is_ basis, without warranties or conditions of any kind, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
-*[API]: Application Programming Interface: a set of routines, protocols, and tools for building software applications
-*[TOML]: Tom's Obvious, Minimal Language: a minimal configuration file format that's easy to read due to obvious semantics
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in TOML-Fortran by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
