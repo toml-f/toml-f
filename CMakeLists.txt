@@ -13,13 +13,13 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.9)
+get_directory_property(is-subproject PARENT_DIRECTORY)
 
 project(
   "toml-f"
   LANGUAGES "Fortran"
   VERSION "0.2.0"
 )
-enable_testing()
 
 # Follow GNU conventions for installing directories
 include(GNUInstallDirs)
@@ -27,14 +27,11 @@ include(GNUInstallDirs)
 # General configuration information
 add_subdirectory("config")
 
+# Collect source of the project
 set(srcs)
 add_subdirectory("src")
 
-set(
-  "${PROJECT_NAME}-mod"
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-mod"
-)
-
+# TOML-Fortran library target
 add_library(
   "${PROJECT_NAME}-lib"
   "${srcs}"
@@ -42,16 +39,52 @@ add_library(
 set_target_properties(
   "${PROJECT_NAME}-lib"
   PROPERTIES
+  POSITION_INDEPENDENT_CODE TRUE
   OUTPUT_NAME "${PROJECT_NAME}"
   VERSION "${PROJECT_VERSION}"
   SOVERSION "${PROJECT_VERSION_MAJOR}"
-  Fortran_MODULE_DIRECTORY "${PROJECT_NAME}-mod"
+)
+target_include_directories(
+  "${PROJECT_NAME}-lib"
+  INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-install(
-  TARGETS "${PROJECT_NAME}-lib"
-  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-  ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-  RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-  INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-)
+if(NOT is-subproject OR BUILD_SHARED_LIBS)
+  # Export targets for other projects
+  install(
+    TARGETS
+    "${PROJECT_NAME}-lib"
+    EXPORT
+    "${PROJECT_NAME}-config"
+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+  )
+
+  install(
+    EXPORT "${PROJECT_NAME}-config"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+  )
+
+  # Package license files
+  install(
+    FILES
+    "LICENSE-Apache"
+    "LICENSE-MIT"
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/licenses/${PROJECT_NAME}"
+  )
+else()
+  # Expose license files to parent project
+  set(
+    "${PROJECT_NAME}-lic"
+    "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE-Apache"
+    "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE-MIT"
+    PARENT_SCOPE
+  )
+endif()
+
+# add the testsuite
+enable_testing()
+set(fpm-toml "${CMAKE_CURRENT_SOURCE_DIR}/fpm.toml")
+add_subdirectory("test")
