@@ -12,12 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Check for consistency of the internal version number with the one defined
+# in the projects meson.build
 test(
   'version',
   executable('tftest-version', files('version.f90'), dependencies: tomlf_dep),
   args: meson.project_version(),
 )
 
+# Check if the version in the fpm.toml package file matches the internal version
 if os != 'windows'
   test(
     'fpm',
@@ -26,6 +29,15 @@ if os != 'windows'
   )
 endif
 
+# Unit testing
+test_srcs = files('tftest.f90')
+subdir('tftest')
+test(
+  'tftest',
+  executable('tftester', sources: test_srcs, dependencies: tomlf_dep),
+)
+
+# Serializer from TOML to a specific JSON format suitable for the validator suite
 toml2json_exe = executable(
   'toml2json',
   sources: files(

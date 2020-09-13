@@ -16,7 +16,7 @@ project(
   'toml-f',
   'fortran',
   version: '0.2.0',
-  license: ['MIT', 'Apache-2.0'],
+  license: 'MIT OR Apache-2.0',
   meson_version: '>=0.53',
   default_options: [
     'buildtype=debugoptimized',
@@ -68,5 +68,5 @@ if install
 endif
 
 # add the testsuite
-fpm_toml = files('fpm.toml')
+fpm_toml = meson.current_source_dir()/'fpm.toml'
 subdir('test')
