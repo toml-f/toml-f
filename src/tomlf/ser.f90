@@ -20,7 +20,7 @@ module tomlf_ser
    implicit none
    private
 
-   public :: toml_serializer
+   public :: toml_serializer, new_serializer, new
 
 
    !> TOML serializer to produduce a TOML document from a datastructure
@@ -49,11 +49,53 @@ module tomlf_ser
    end type toml_serializer
 
 
+   !> Create standard constructor
+   interface toml_serializer
+      module procedure :: new_serializer_func
+   end interface toml_serializer
+
+
+   !> Overloaded constructor for TOML serializers
+   interface new
+      module procedure :: new_serializer
+   end interface
+
+
    !> Initial size of the key path stack
    integer, parameter :: initial_size = 8
 
 
 contains
+
+
+!> Constructor to create new serializer instance
+subroutine new_serializer(self, unit)
+
+   !> Instance of the TOML serializer
+   type(toml_serializer), intent(out) :: self
+
+   !> Unit for IO
+   integer, intent(in), optional :: unit
+
+   if (present(unit)) then
+      self%unit = unit
+   end if
+
+end subroutine new_serializer
+
+
+!> Default constructor for TOML serializer
+function new_serializer_func(unit) result(self)
+
+   !> Unit for IO
+   integer, intent(in), optional :: unit
+
+   !> Instance of the TOML serializer
+   type(toml_serializer) :: self
+
+   call new_serializer(self, unit)
+
+end function new_serializer_func
 
 
 !> Visit a TOML value
@@ -158,12 +200,14 @@ subroutine visit_table(visitor, table)
 
    class(toml_value), pointer :: ptr
    type(toml_key), allocatable :: list(:)
+   logical, allocatable :: defer(:)
    character(kind=tfc, len=:), allocatable :: key
    integer :: i, n
 
    call table%get_keys(list)
 
    n = size(list, 1)
+   allocate(defer(n))
 
    if (.not.allocated(visitor%stack)) then
       call resize(visitor%stack)
@@ -183,6 +227,7 @@ subroutine visit_table(visitor, table)
    end if
 
    do i = 1, n
+      defer(i) = .false.
       call table%get(list(i)%key, ptr)
       select type(ptr)
       class is(toml_keyval)
@@ -195,7 +240,9 @@ subroutine visit_table(visitor, table)
             if (i /= n) write(visitor%unit, '(",")', advance='no')
          else
             if (is_array_of_tables(ptr)) then
-               call ptr%accept(visitor)
+               ! Array of tables open a new section
+               ! -> cannot serialize them before all key-value pairs are done
+               defer(i) = .true.
             else
                visitor%inline_array = .true.
                call ptr%get_key(key)
@@ -206,14 +253,46 @@ subroutine visit_table(visitor, table)
             end if
          end if
       class is(toml_table)
-         if (size(visitor%stack, 1) <= visitor%top) call resize(visitor%stack)
-         visitor%top = visitor%top + 1
-         call ptr%get_key(key)
-         visitor%stack(visitor%top)%key = key
-         call ptr%accept(visitor)
-         deallocate(visitor%stack(visitor%top)%key)
-         visitor%top = visitor%top - 1
+         ! Subtables open a new section
+         ! -> cannot serialize them before all key-value pairs are done
+         defer(i) = .true.
       end select
+   end do
+
+   do i = 1, n
+      if (defer(i)) then
+         call table%get(list(i)%key, ptr)
+         select type(ptr)
+         class is(toml_keyval)
+            call ptr%accept(visitor)
+         class is(toml_array)
+            if (visitor%inline_array) then
+               call ptr%get_key(key)
+               write(visitor%unit, '(1x,a,1x,"=")', advance='no') key
+               call ptr%accept(visitor)
+               if (i /= n) write(visitor%unit, '(",")', advance='no')
+            else
+               if (is_array_of_tables(ptr)) then
+                  call ptr%accept(visitor)
+               else
+                  visitor%inline_array = .true.
+                  call ptr%get_key(key)
+                  write(visitor%unit, '(a,1x,"=")', advance='no') key
+                  call ptr%accept(visitor)
+                  visitor%inline_array = .false.
+                  write(visitor%unit, '(a)')
+               end if
+            end if
+         class is(toml_table)
+            if (size(visitor%stack, 1) <= visitor%top) call resize(visitor%stack)
+            visitor%top = visitor%top + 1
+            call ptr%get_key(key)
+            visitor%stack(visitor%top)%key = key
+            call ptr%accept(visitor)
+            deallocate(visitor%stack(visitor%top)%key)
+            visitor%top = visitor%top - 1
+         end select
+      end if
    end do
 
    if (.not.visitor%inline_array .and. visitor%top == 0) then

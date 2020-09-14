@@ -33,6 +33,7 @@ module tftest_testsuite
       module procedure :: check_int_i4
       module procedure :: check_int_i8
       module procedure :: check_bool
+      module procedure :: check_string
    end interface check
 
 
@@ -443,11 +444,39 @@ subroutine check_bool(error, actual, expected, message, more)
       if (present(message)) then
          call test_failed(error, message, more)
       else
-         call test_failed(error, "Integer value missmatch", more)
+         call test_failed(error, "Logical value missmatch", more)
       end if
    end if
 
 end subroutine check_bool
+
+
+subroutine check_string(error, actual, expected, message, more)
+
+   !> Instance of the TOML error
+   type(toml_error), allocatable, intent(out) :: error
+
+   !> Found boolean value
+   character(kind=tfc, len=*), intent(in) :: actual
+
+   !> Expected boolean value
+   character(kind=tfc, len=*), intent(in) :: expected
+
+   !> A detailed message describing the error
+   character(kind=tfc, len=*), intent(in), optional :: message
+
+   !> Another line of error message
+   character(kind=tfc, len=*), intent(in), optional :: more
+
+   if (expected /= actual) then
+      if (present(message)) then
+         call test_failed(error, message, more)
+      else
+         call test_failed(error, "Character value missmatch", more)
+      end if
+   end if
+
+end subroutine check_string
 
 
 end module tftest_testsuite

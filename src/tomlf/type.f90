@@ -17,7 +17,8 @@
 !  All TOML data types should inherit from an abstract value allowing to generate
 !  a generic interface to deal with all more specialized TOML data types, while
 !  the abstract value is interesting for developing algorithms in TOML-Fortran,
-!  the user of TOML-Fortran will usually only care about TOML tables.
+!  the user of TOML-Fortran will usually only care about TOML tables and possibly
+!  arrays.
 !
 !  The TOML types defined here should implement the TOML data structures (mostly)
 !  without taking the actual implementation of the data structures into account.

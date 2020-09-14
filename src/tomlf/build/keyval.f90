@@ -12,10 +12,12 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-!> Functions to build a TOML data structures
+!> Functions to build a TOML values
 !
-!  The build module defines a high level interface to work with TOML data structures
-!  and construct them in a convenient way.
+!  The build module defines an interface to work with TOML values instead
+!  of accessing the raw value directly. Both setter and getter routines defined
+!  here are rarely needed in any user context, but serve as a basic building
+!  block to define uniform access methods for TOML tables and arrays.
 module tomlf_build_keyval
    use tomlf_constants, only : tfc, tfi, tfr, tf_i1, tf_i2, tf_i4, tf_i8, &
       & tf_sp, tf_dp, TOML_NEWLINE
@@ -31,7 +33,7 @@ module tomlf_build_keyval
    public :: get_value, set_value
 
 
-   !> Setter functions to manipulate TOML tables
+   !> Setter functions to manipulate TOML values
    interface set_value
       module procedure :: set_value_float_sp
       module procedure :: set_value_float_dp
@@ -44,7 +46,7 @@ module tomlf_build_keyval
    end interface set_value
 
 
-   !> Getter functions to manipulate TOML tables
+   !> Getter functions to manipulate TOML values
    interface get_value
       module procedure :: get_value_float_sp
       module procedure :: get_value_float_dp
