@@ -23,6 +23,7 @@ md_extensions: markdown.extensions.toc
 ---
 
 [![License](https://img.shields.io/badge/license-MIT%7CApache%202.0-blue)](https://github.com/toml-f/toml-f/blob/master/LICENSE-Apache)
+[![Release](https://img.shields.io/github/v/release/toml-f/toml-f)](https://github.com/toml-f/toml-f/releases/latest)
 [![Build](https://travis-ci.com/toml-f/toml-f.svg?branch=master)](https://travis-ci.com/toml-f/toml-f)
 [![Build](https://github.com/toml-f/toml-f/workflows/CI/badge.svg)](https://github.com/toml-f/toml-f/actions)
 [![docs](https://github.com/toml-f/toml-f/workflows/docs/badge.svg)](https://toml-f.github.io/toml-f)
