@@ -13,23 +13,23 @@
 ! limitations under the License.
 
 !> Functions to build TOML tables
-!
-!  The build module defines a high level interface to work with TOML tables
-!  and construct them in a convenient way.
-!
-!  The getter functions allow to both retrieve and set values, to easily
-!  support default values when reading from a TOML data structure.
-!  Using the getter function with a default value specified will request
-!  the respective setter function to add it to the table if it was not
-!  found in the first place.
-!
-!  This allows to build a TOML table using only the getter functions, which
-!  represents the finally read values for the applications.
-!
-!  Note that neither setter nor getter functions can overwrite existing
-!  TOML values for safety reasons, request the deletion on the respective
-!  key from the TOML table and than set it. The deletion of a subtable or
-!  array will recursively destroy the contained data nodes.
+!>
+!> The build module defines a high level interface to work with TOML tables
+!> and construct them in a convenient way.
+!>
+!> The getter functions allow to both retrieve and set values, to easily
+!> support default values when reading from a TOML data structure.
+!> Using the getter function with a default value specified will request
+!> the respective setter function to add it to the table if it was not
+!> found in the first place.
+!>
+!> This allows to build a TOML table using only the getter functions, which
+!> represents the finally read values for the applications.
+!>
+!> Note that neither setter nor getter functions can overwrite existing
+!> TOML values for safety reasons, request the deletion on the respective
+!> key from the TOML table and than set it. The deletion of a subtable or
+!> array will recursively destroy the contained data nodes.
 module tomlf_build_table
    use tomlf_build_keyval, only : get_value, set_value
    use tomlf_constants, only : tfc, tfi, tfr, tf_i1, tf_i2, tf_i4, tf_i8, &

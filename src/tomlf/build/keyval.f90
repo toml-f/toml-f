@@ -13,11 +13,11 @@
 ! limitations under the License.
 
 !> Functions to build a TOML values
-!
-!  The build module defines an interface to work with TOML values instead
-!  of accessing the raw value directly. Both setter and getter routines defined
-!  here are rarely needed in any user context, but serve as a basic building
-!  block to define uniform access methods for TOML tables and arrays.
+!>
+!> The build module defines an interface to work with TOML values instead
+!> of accessing the raw value directly. Both setter and getter routines defined
+!> here are rarely needed in any user context, but serve as a basic building
+!> block to define uniform access methods for TOML tables and arrays.
 module tomlf_build_keyval
    use tomlf_constants, only : tfc, tfi, tfr, tf_i1, tf_i2, tf_i4, tf_i8, &
       & tf_sp, tf_dp, TOML_NEWLINE

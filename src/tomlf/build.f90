@@ -13,9 +13,9 @@
 ! limitations under the License.
 
 !> Functions to build a TOML data structures
-!
-!  The build module defines a high level interface to work with TOML data structures
-!  and construct them in a convenient way.
+!>
+!> The build module defines a high level interface to work with TOML data structures
+!> and construct them in a convenient way.
 module tomlf_build
    use tomlf_build_array, only : get_value, set_value
    use tomlf_build_keyval, only : get_value, set_value

@@ -13,17 +13,17 @@
 ! limitations under the License.
 
 !> Abstraction layer for the actual storage of the data structure.
-!
-!  The structure implementations provide the actual storage for TOML values, with
-!  a generic enough interface to make the definition of the TOML data structures
-!  independent of the actual algorithm used for storing the TOML values.
-!
-!  Every data structure defined here should strive to only use allocatable
-!  data types and limit the use of pointer attributes as they interfer with
-!  the automatic memory management of Fortran. A well defined data structure
-!  in allocatables allows deep-copying of TOML values by assignment, data structures
-!  requiring pointer attributes have to define an assignment(=) interface to
-!  allow deep-copying of TOML values.
+!>
+!> The structure implementations provide the actual storage for TOML values, with
+!> a generic enough interface to make the definition of the TOML data structures
+!> independent of the actual algorithm used for storing the TOML values.
+!>
+!> Every data structure defined here should strive to only use allocatable
+!> data types and limit the use of pointer attributes as they interfer with
+!> the automatic memory management of Fortran. A well defined data structure
+!> in allocatables allows deep-copying of TOML values by assignment, data structures
+!> requiring pointer attributes have to define an assignment(=) interface to
+!> allow deep-copying of TOML values.
 module tomlf_structure
    use tomlf_structure_base, only : toml_structure, toml_ordered
    use tomlf_structure_vector, only : toml_vector, new_vector

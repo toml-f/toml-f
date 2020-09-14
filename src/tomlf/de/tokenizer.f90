@@ -13,21 +13,21 @@
 ! limitations under the License.
 
 !> Definition of the TOML tokens and the possible states of the tokenizer
-!
-!  The tokenizer implementation has to produce tokens from any input source
-!  and is usually only required for string tokens to provide an actual character
-!  representation.
-!
-!  The tokenization is partly dependent on the context, as the dot is not in
-!  all states actually a token, also due to the rather complex syntax of
-!  table headers, whitespace is precious and has to be reported as token.
-!
-!  Not required but usually helpful is the creation of a context, usually
-!  represented by the current line (or a chunk of lines for multiline strings),
-!  which can be passed to the error handler to create more detailed output.
-!  A tokenizer working with the complete TOML document as character sequence
-!  can easily create the context, while it might be incomplete or missing in
-!  case of a stream processing.
+!>
+!> The tokenizer implementation has to produce tokens from any input source
+!> and is usually only required for string tokens to provide an actual character
+!> representation.
+!>
+!> The tokenization is partly dependent on the context, as the dot is not in
+!> all states actually a token, also due to the rather complex syntax of
+!> table headers, whitespace is precious and has to be reported as token.
+!>
+!> Not required but usually helpful is the creation of a context, usually
+!> represented by the current line (or a chunk of lines for multiline strings),
+!> which can be passed to the error handler to create more detailed output.
+!> A tokenizer working with the complete TOML document as character sequence
+!> can easily create the context, while it might be incomplete or missing in
+!> case of a stream processing.
 module tomlf_de_tokenizer
    use tomlf_constants, only : toml_escape, tfc, TOML_BAREKEY, toml_type
    use tomlf_error, only : toml_stat, toml_error, toml_context, &

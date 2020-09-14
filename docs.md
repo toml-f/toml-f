@@ -3,6 +3,7 @@ project: TOML-Fortran
 summary: A TOML parser implementation for data serialization and deserialization in Fortran.
 favicon: ./assets/toml-f-64x64.png
 project_github: https://github.com/toml-f/toml-f
+project_download: https://github.com/toml-f/toml-f/releases
 author: Sebastian Ehlert
 github: https://github.com/awvwgk
 src_dir: ./src
@@ -66,6 +67,7 @@ We recommend to set the default library type of `toml-f` to static when linking 
 Note for library type both and shared `toml-f` will install itself along with your project.
 
 For more fine-tuned control you can access:
+
 - the library target with `tomlf_lib`
 - the private include dir of this target, containing the Fortran module files, with `tomlf_inc`
 - the license files of `toml-f` with `tomlf_lic`
