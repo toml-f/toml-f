@@ -18,7 +18,8 @@ module tomlf
    use tomlf_de, only : toml_parse
    use tomlf_error, only : toml_error, toml_stat
    use tomlf_ser, only : toml_serializer
-   use tomlf_type, only : toml_table, toml_array, toml_key, is_array_of_tables
+   use tomlf_type, only : toml_table, toml_array, toml_key, is_array_of_tables, &
+      & new_table, add_table, add_array, len
    use tomlf_version, only : tomlf_version_string, tomlf_version_compact
    implicit none
    public

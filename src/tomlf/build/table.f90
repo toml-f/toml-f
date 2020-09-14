@@ -509,8 +509,8 @@ subroutine get_child_value_string(table, key, val, default, stat)
          call get_value(ptr, val, stat)
       else
          if (present(default)) then
-            !call set_value(ptr, default)
-            val = default
+            call set_value(ptr, default)
+            call get_value(ptr, val)
          else
             if (present(stat)) stat = toml_stat%fatal
          end if
