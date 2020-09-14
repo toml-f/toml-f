@@ -13,9 +13,9 @@
 ! limitations under the License.
 
 !> Implementation of the TOML table data type.
-!
-!  Every TOML document contains at least one (root) table which holds key-value
-!  pairs, arrays and other tables.
+!>
+!> Every TOML document contains at least one (root) table which holds key-value
+!> pairs, arrays and other tables.
 module tomlf_type_table
    use tomlf_constants, only : tfc
    use tomlf_error, only : toml_stat

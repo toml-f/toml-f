@@ -13,9 +13,9 @@
 ! limitations under the License.
 
 !> Implementation of a basic storage structure as pointer list of pointers.
-!
-!  This implementation does purposely not use pointer attributes in the
-!  datastructure to make it safer to work with.
+!>
+!> This implementation does purposely not use pointer attributes in the
+!> datastructure to make it safer to work with.
 module tomlf_structure_vector
    use tomlf_constants, only : tfc
    use tomlf_structure_base, only : toml_ordered

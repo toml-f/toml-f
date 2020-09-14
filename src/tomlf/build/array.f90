@@ -12,41 +12,29 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-!> Functions to build TOML array
-!
-!  This build module defines a high level interface to work with TOML arrays
-!  and construct them in a convenient way.
-!
-!  The access to the array elements happens by position in the array, the indexing
-!  is one based, following the language convention of Fortran. All functions
-!  will only allow access of elements within the bounds of the array, specifying
-!  indices out-of-bounds should be save, as it only sets the status of operation.
-!  The getter functions allow access to other tables and arrays as well as
-!  convenient wrappers to retrieve value data
-!
-!  The setter functions are somewhat weaker compared to the setter functions
-!  available for TOML tables. To limit the potential havoc this routines can
-!  cause they can only access the array within its bounds. Setting a value to
-!  another value will overwrite it, while setting a value to a table or an array
-!  will fail, for safety reasons.
-!
-!  To (re)build an array appending to it is the best choice, tables and arrays
-!  should always be create by using the corresponding `add_table` and `add_array`
-!  function. While this can become cumbersome for values, the setter routines
-!  allow out-of-bound access to for the next element in an array and will indeed
-!  just append a new value to it.
-!
-!  Constructing a new array should work therefore with:
-!
-!  ```fortran
-!  type(toml_array) :: array
-!  integer :: ii, stat
-!  call new_array(array)
-!  do ii = 1, 10
-!     call set_value(array, ii, ii**2)
-!  end do
-!  print '(i0)', len(array)
-!  ```
+!> Functions to build TOML arrays.
+!>
+!> This build module defines a high level interface to work with TOML arrays
+!> and construct them in a convenient way.
+!>
+!> The access to the array elements happens by position in the array, the indexing
+!> is one based, following the language convention of Fortran. All functions
+!> will only allow access of elements within the bounds of the array, specifying
+!> indices out-of-bounds should be save, as it only sets the status of operation.
+!> The getter functions allow access to other tables and arrays as well as
+!> convenient wrappers to retrieve value data
+!>
+!> The setter functions are somewhat weaker compared to the setter functions
+!> available for TOML tables. To limit the potential havoc this routines can
+!> cause they can only access the array within its bounds. Setting a value to
+!> another value will overwrite it, while setting a value to a table or an array
+!> will fail, for safety reasons.
+!>
+!> To (re)build an array appending to it is the best choice, tables and arrays
+!> should always be create by using the corresponding `add_table` and `add_array`
+!> function. While this can become cumbersome for values, the setter routines
+!> allow out-of-bound access to for the next element in an array and will indeed
+!> just append a new value to it.
 module tomlf_build_array
    use tomlf_build_keyval, only : get_value, set_value
    use tomlf_constants, only : tfc, tfi, tfr, tf_i1, tf_i2, tf_i4, tf_i8, &

@@ -3,6 +3,7 @@ project: TOML-Fortran
 summary: A TOML parser implementation for data serialization and deserialization in Fortran.
 favicon: ./assets/toml-f-64x64.png
 project_github: https://github.com/toml-f/toml-f
+project_download: https://github.com/toml-f/toml-f/releases
 author: Sebastian Ehlert
 github: https://github.com/awvwgk
 src_dir: ./src
@@ -22,6 +23,7 @@ md_extensions: markdown.extensions.toc
 ---
 
 [![License](https://img.shields.io/badge/license-MIT%7CApache%202.0-blue)](https://github.com/toml-f/toml-f/blob/master/LICENSE-Apache)
+[![Release](https://img.shields.io/github/v/release/toml-f/toml-f)](https://github.com/toml-f/toml-f/releases/latest)
 [![Build](https://travis-ci.com/toml-f/toml-f.svg?branch=master)](https://travis-ci.com/toml-f/toml-f)
 [![Build](https://github.com/toml-f/toml-f/workflows/CI/badge.svg)](https://github.com/toml-f/toml-f/actions)
 [![docs](https://github.com/toml-f/toml-f/workflows/docs/badge.svg)](https://toml-f.github.io/toml-f)
@@ -66,6 +68,7 @@ We recommend to set the default library type of `toml-f` to static when linking 
 Note for library type both and shared `toml-f` will install itself along with your project.
 
 For more fine-tuned control you can access:
+
 - the library target with `tomlf_lib`
 - the private include dir of this target, containing the Fortran module files, with `tomlf_inc`
 - the license files of `toml-f` with `tomlf_lic`
