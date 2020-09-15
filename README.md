@@ -21,8 +21,8 @@ A TOML parser implementation for data serialization and deserialization in Fortr
 
 To build this project from the source code in this repository you need to have
 - a Fortran compiler supporting Fortran 2008
-- [`meson`](https://mesonbuild.com) version 0.53 or newer
-- a build-system backend, *i.e.* [`ninja`](https://ninja-build.org) version 1.7 or newer
+- [meson](https://mesonbuild.com) version 0.53 or newer
+- a build-system backend, *i.e.* [ninja](https://ninja-build.org) version 1.7 or newer
 
 Setup a build with
 
@@ -38,6 +38,20 @@ meson compile -C _build
 ```
 
 To use `toml-f` in your project, have a look at the [example integration with meson](https://github.com/toml-f/tf-meson-example).
+
+While meson is the preferred way to build this project it also offers CMake support.
+Configure the CMake build with
+
+```
+cmake -S. -B_build -GNinja
+```
+
+Similar to meson the compiler can be selected with the `FC` environment variable.
+You can build the project using
+
+```
+cmake --build _build
+```
 
 
 ### Testing
@@ -57,6 +71,9 @@ This test will currently fail, due to the implementation not yet supporting Unic
 ```
 meson test -C _build --benchmark --print-errorlogs
 ```
+
+The binary used for transcribing the TOML documents to the testing format is `_build/test/toml2json` and can be used to check on per test basis.
+The validation suite is currently not supported as unit test for CMake builds and requires a manual setup instead using the `toml2json` binary.
 
 
 ### Documentation
