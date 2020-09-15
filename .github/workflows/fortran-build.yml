@@ -9,11 +9,12 @@ jobs:
     - uses: actions/setup-python@v1
       with:
         python-version: '3.x'
-    - run: sudo apt install -yq --no-install-recommends gfortran ninja-build
-    - run: pip3 install meson
-    - run: meson setup build_gcc --prefix=$PWD/_dist
-    - run: meson test -C build_gcc --print-errorlogs
-    - run: meson install -C build_gcc
+    - run: sudo apt install -yq --no-install-recommends gfortran
+    - run: pip3 install cmake ninja
+    - run: cmake -S. -Bbuild_gcc -GNinja -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+    - run: ninja -C build_gcc all
+    - run: ninja -C build_gcc test
+    - run: ninja -C build_gcc install
 
   osx-build:
     runs-on: macos-latest
