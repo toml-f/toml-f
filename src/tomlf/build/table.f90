@@ -234,7 +234,7 @@ subroutine get_child_value_float_sp(table, key, val, default, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, present(default), stat)
 
@@ -272,7 +272,7 @@ subroutine get_child_value_float_dp(table, key, val, default, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, present(default), stat)
 
@@ -310,7 +310,7 @@ subroutine get_child_value_integer_i1(table, key, val, default, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, present(default), stat)
 
@@ -348,7 +348,7 @@ subroutine get_child_value_integer_i2(table, key, val, default, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, present(default), stat)
 
@@ -386,7 +386,7 @@ subroutine get_child_value_integer_i4(table, key, val, default, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, present(default), stat)
 
@@ -424,7 +424,7 @@ subroutine get_child_value_integer_i8(table, key, val, default, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, present(default), stat)
 
@@ -462,7 +462,7 @@ subroutine get_child_value_bool(table, key, val, default, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, present(default), stat)
 
@@ -500,7 +500,7 @@ subroutine get_child_value_string(table, key, val, default, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, present(default), stat)
 
@@ -535,7 +535,7 @@ subroutine set_child_value_float_sp(table, key, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, .true., stat)
 
@@ -565,7 +565,7 @@ subroutine set_child_value_float_dp(table, key, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, .true., stat)
 
@@ -595,7 +595,7 @@ subroutine set_child_value_integer_i1(table, key, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, .true., stat)
 
@@ -625,7 +625,7 @@ subroutine set_child_value_integer_i2(table, key, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, .true., stat)
 
@@ -655,7 +655,7 @@ subroutine set_child_value_integer_i4(table, key, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, .true., stat)
 
@@ -685,7 +685,7 @@ subroutine set_child_value_integer_i8(table, key, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, .true., stat)
 
@@ -715,7 +715,7 @@ subroutine set_child_value_bool(table, key, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, .true., stat)
 
@@ -745,7 +745,7 @@ subroutine set_child_value_string(table, key, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(table, key, ptr, .true., stat)
 

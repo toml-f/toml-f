@@ -53,12 +53,14 @@ You can build the project using
 cmake --build _build
 ```
 
+To include `toml-f` in your CMake project, check the [example integration with CMake](https://github.com/toml-f/tf-cmake-example).
+
 
 ### Testing
 
 We employ a [validator suite](https://github.com/BurntSushi/toml-test) to test the standard compliance of this implementation.
 To use this testing a `go` installation is required.
-The installation of the validator suite will be handled by `meson` automatically without installing into the users `go` workspace.
+The installation of the validator suite will be handled by meson automatically without installing into the users `go` workspace.
 Run the tests with
 
 ```
