@@ -53,8 +53,8 @@ module tomlf_build_array
    !> Setter functions to manipulate TOML arrays
    interface set_value
       module procedure :: set_elem_value_string
-      module procedure :: set_elem_value_real_sp
-      module procedure :: set_elem_value_real_dp
+      module procedure :: set_elem_value_float_sp
+      module procedure :: set_elem_value_float_dp
       module procedure :: set_elem_value_int_i1
       module procedure :: set_elem_value_int_i2
       module procedure :: set_elem_value_int_i4
@@ -69,8 +69,8 @@ module tomlf_build_array
       module procedure :: get_elem_array
       module procedure :: get_elem_keyval
       module procedure :: get_elem_value_string
-      module procedure :: get_elem_value_real_sp
-      module procedure :: get_elem_value_real_dp
+      module procedure :: get_elem_value_float_sp
+      module procedure :: get_elem_value_float_dp
       module procedure :: get_elem_value_int_i1
       module procedure :: get_elem_value_int_i2
       module procedure :: get_elem_value_int_i4
@@ -202,7 +202,7 @@ subroutine get_elem_value_string(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
@@ -216,7 +216,7 @@ end subroutine get_elem_value_string
 
 
 !> Retrieve TOML value as single precision floating point number
-subroutine get_elem_value_real_sp(array, pos, val, stat)
+subroutine get_elem_value_float_sp(array, pos, val, stat)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -230,7 +230,7 @@ subroutine get_elem_value_real_sp(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
@@ -240,11 +240,11 @@ subroutine get_elem_value_real_sp(array, pos, val, stat)
       if (present(stat)) stat = toml_stat%fatal
    end if
 
-end subroutine get_elem_value_real_sp
+end subroutine get_elem_value_float_sp
 
 
 !> Retrieve TOML value as double precision floating point number
-subroutine get_elem_value_real_dp(array, pos, val, stat)
+subroutine get_elem_value_float_dp(array, pos, val, stat)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -258,7 +258,7 @@ subroutine get_elem_value_real_dp(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
@@ -268,7 +268,7 @@ subroutine get_elem_value_real_dp(array, pos, val, stat)
       if (present(stat)) stat = toml_stat%fatal
    end if
 
-end subroutine get_elem_value_real_dp
+end subroutine get_elem_value_float_dp
 
 
 !> Retrieve TOML value as integer value
@@ -286,7 +286,7 @@ subroutine get_elem_value_int_i1(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
@@ -314,7 +314,7 @@ subroutine get_elem_value_int_i2(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
@@ -342,7 +342,7 @@ subroutine get_elem_value_int_i4(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
@@ -370,7 +370,7 @@ subroutine get_elem_value_int_i8(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
@@ -398,7 +398,7 @@ subroutine get_elem_value_bool(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
@@ -426,7 +426,7 @@ subroutine set_elem_value_string(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
@@ -446,7 +446,7 @@ end subroutine set_elem_value_string
 
 
 !> Retrieve TOML value as single precision floating point number
-subroutine set_elem_value_real_sp(array, pos, val, stat)
+subroutine set_elem_value_float_sp(array, pos, val, stat)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -460,7 +460,7 @@ subroutine set_elem_value_real_sp(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
@@ -476,11 +476,11 @@ subroutine set_elem_value_real_sp(array, pos, val, stat)
       if (present(stat)) stat = toml_stat%fatal
    end if
 
-end subroutine set_elem_value_real_sp
+end subroutine set_elem_value_float_sp
 
 
 !> Retrieve TOML value as double precision floating point number
-subroutine set_elem_value_real_dp(array, pos, val, stat)
+subroutine set_elem_value_float_dp(array, pos, val, stat)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -494,7 +494,7 @@ subroutine set_elem_value_real_dp(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
@@ -510,7 +510,7 @@ subroutine set_elem_value_real_dp(array, pos, val, stat)
       if (present(stat)) stat = toml_stat%fatal
    end if
 
-end subroutine set_elem_value_real_dp
+end subroutine set_elem_value_float_dp
 
 
 !> Retrieve TOML value as integer value
@@ -528,7 +528,7 @@ subroutine set_elem_value_int_i1(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
@@ -562,7 +562,7 @@ subroutine set_elem_value_int_i2(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
@@ -596,7 +596,7 @@ subroutine set_elem_value_int_i4(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
@@ -630,7 +630,7 @@ subroutine set_elem_value_int_i8(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
@@ -664,7 +664,7 @@ subroutine set_elem_value_bool(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   class(toml_keyval), pointer :: ptr
+   type(toml_keyval), pointer :: ptr
 
    call get_value(array, pos, ptr, stat)
 
