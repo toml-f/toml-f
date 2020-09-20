@@ -13,7 +13,7 @@
 ! limitations under the License.
 
 !> Implementation of a serializer for TOML values to JSON, used for testing only.
-module tftest_json
+module tftest_json_ser
    use tomlf_constants
    use tomlf_datetime
    use tomlf_type, only : toml_value, toml_visitor, toml_key, toml_table, &
@@ -273,4 +273,4 @@ subroutine escape_string(raw, escaped)
 end subroutine escape_string
 
 
-end module tftest_json
+end module tftest_json_ser

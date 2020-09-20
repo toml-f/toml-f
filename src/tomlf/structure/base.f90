@@ -51,6 +51,12 @@ module tomlf_structure_base
       !> Get number of TOML values in the structure
       procedure(get_len), deferred :: get_len
 
+      !> Remove the first element from the structure
+      procedure(shift), deferred :: shift
+
+      !> Remove the last element from the structure
+      procedure(pop), deferred :: pop
+
       !> Get TOML value at a given index
       procedure(get), deferred :: get
 
@@ -111,6 +117,32 @@ module tomlf_structure_base
          class(toml_value), allocatable, intent(inout) :: val
 
       end subroutine push_back
+
+
+      !> Remove the first element from the data structure
+      subroutine shift(self, val)
+         import :: toml_ordered, toml_value
+
+         !> Instance of the structure
+         class(toml_ordered), intent(inout), target :: self
+
+         !> TOML value to be retrieved
+         class(toml_value), allocatable, intent(out) :: val
+
+      end subroutine shift
+
+
+      !> Remove the last element from the data structure
+      subroutine pop(self, val)
+         import :: toml_ordered, toml_value
+
+         !> Instance of the structure
+         class(toml_ordered), intent(inout), target :: self
+
+         !> TOML value to be retrieved
+         class(toml_value), allocatable, intent(out) :: val
+
+      end subroutine pop
 
 
       !> Get list of all keys in the structure
