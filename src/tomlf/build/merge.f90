@@ -12,7 +12,14 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-!> Merge TOML data structures
+!> Merge TOML data structures.
+!>
+!> Merge policy:
+!> - copy key-value pair in case it is not present in table
+!> - copy subtable in case it is not present in table
+!> - copy array in case it is not present in table
+!> - merge subtable in case it is present in table
+!> - append array in case it is present in table
 module tomlf_build_merge
    use tomlf_constants, only : tfc
    use tomlf_type, only : toml_table, toml_array, toml_keyval, toml_value, &
@@ -45,12 +52,13 @@ recursive subroutine merge_table(lhs, rhs)
    n = size(list, 1)
 
    do i = 1, n
+      if (allocated(tmp)) deallocate(tmp)
       call rhs%get(list(i)%key, ptr1)
       has_key = lhs%has_key(list(i)%key)
       select type(ptr1)
       class is(toml_keyval)
          if (.not.has_key) then
-            tmp = ptr1
+            allocate(tmp, source=ptr1)
             call lhs%push_back(tmp, stat)
          end if
       class is(toml_array)
@@ -61,7 +69,7 @@ recursive subroutine merge_table(lhs, rhs)
                call merge_array(ptr2, ptr1)
             end select
          else
-            tmp = ptr1
+            allocate(tmp, source=ptr1)
             call lhs%push_back(tmp, stat)
          end if
       class is(toml_table)
@@ -72,7 +80,7 @@ recursive subroutine merge_table(lhs, rhs)
                call merge_table(ptr2, ptr1)
             end select
          else
-            tmp = ptr1
+            allocate(tmp, source=ptr1)
             call lhs%push_back(tmp, stat)
          end if
       end select
@@ -98,7 +106,8 @@ recursive subroutine merge_array(lhs, rhs)
 
    do i = 1, n
       call rhs%get(i, ptr)
-      tmp = ptr
+      if (allocated(tmp)) deallocate(tmp)
+      allocate(tmp, source=ptr)
       call lhs%push_back(tmp, stat)
    end do
 
