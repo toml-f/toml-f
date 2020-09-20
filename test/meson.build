@@ -41,8 +41,18 @@ test(
 toml2json_exe = executable(
   'toml2json',
   sources: files(
-    'json.f90',
+    'json_ser.f90',
     'toml2json.f90',
+  ),
+  dependencies: tomlf_dep,
+)
+
+# Deserializer for a specific JSON format suitable for the validator suite
+json2toml_exe = executable(
+  'json2toml',
+  sources: files(
+    'json_de.f90',
+    'json2toml.f90',
   ),
   dependencies: tomlf_dep,
 )
@@ -73,6 +83,7 @@ if not meson.is_subproject() and go_exe.found()
   # To make sure the command is actually used before we declare the test we
   # make it dependent on the success of the go get command
   if get_toml_test.returncode() == 0
+    toml_test = find_program('toml-test', dirs: meson.current_build_dir()/'bin')
     # Finally, create the decoder test
     # The decoder test contains the tests from the BurntSushi/toml-test suite
     # and the following changes
@@ -82,15 +93,21 @@ if not meson.is_subproject() and go_exe.found()
     # - additional coverage tests are added
     test(
       'decoder',
-      find_program('toml-test', dirs: meson.current_build_dir()/'bin'),
+      toml_test,
       args: ['-testdir', compliance_testdir, toml2json_exe],
+      env: validator_env,
+    )
+    test(
+      'encoder',
+      toml_test,
+      args: ['-encoder', '-testdir', validator_testdir, json2toml_exe],
       env: validator_env,
     )
     # This is the original BurntSushi/toml-test suite
     # -> this will currently fail due to the missing Unicode support in toml-f
     benchmark(
       'decoder',
-      find_program('toml-test', dirs: meson.current_build_dir()/'bin'),
+      toml_test,
       args: ['-testdir', validator_testdir, toml2json_exe],
       env: validator_env,
     )

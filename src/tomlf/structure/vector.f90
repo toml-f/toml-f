@@ -58,6 +58,12 @@ module tomlf_structure_vector
       !> Push back a TOML value to the structure
       procedure :: push_back
 
+      !> Remove the first element from the structure
+      procedure :: shift
+
+      !> Remove the last element from the structure
+      procedure :: pop
+
       !> Get list of all keys in the structure
       procedure :: get_keys
 
@@ -185,6 +191,45 @@ subroutine push_back(self, val)
    call move_alloc(val, self%lst(self%n)%val)
 
 end subroutine push_back
+
+
+!> Remove the first element from the data structure
+subroutine shift(self, val)
+
+   !> Instance of the structure
+   class(toml_vector), intent(inout), target :: self
+
+   !> TOML value to be retrieved
+   class(toml_value), allocatable, intent(out) :: val
+
+   integer :: i
+
+   if (self%n > 0) then
+      call move_alloc(self%lst(1)%val, val)
+      do i = 2, self%n
+         call move_alloc(self%lst(i)%val, self%lst(i-1)%val)
+      end do
+      self%n = self%n - 1
+   end if
+
+end subroutine shift
+
+
+!> Remove the last element from the data structure
+subroutine pop(self, val)
+
+   !> Instance of the structure
+   class(toml_vector), intent(inout), target :: self
+
+   !> TOML value to be retrieved
+   class(toml_value), allocatable, intent(out) :: val
+
+   if (self%n > 0) then
+      call move_alloc(self%lst(self%n)%val, val)
+      self%n = self%n - 1
+   end if
+
+end subroutine pop
 
 
 !> Get list of all keys in the structure

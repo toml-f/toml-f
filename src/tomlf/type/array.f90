@@ -40,6 +40,12 @@ module tomlf_type_array
       !> Append value to array
       procedure :: push_back
 
+      !> Remove the first element from the array
+      procedure :: shift
+
+      !> Remove the last element from the array
+      procedure :: pop
+
       !> Release allocation hold by TOML array
       procedure :: destroy
 
@@ -142,6 +148,34 @@ subroutine push_back(self, val, stat)
    stat = toml_stat%success
 
 end subroutine push_back
+
+
+!> Remove the first element from the data structure
+subroutine shift(self, val)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: self
+
+   !> TOML value to be retrieved
+   class(toml_value), allocatable, intent(out) :: val
+
+   call self%list%shift(val)
+
+end subroutine shift
+
+
+!> Remove the last element from the data structure
+subroutine pop(self, val)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: self
+
+   !> TOML value to be retrieved
+   class(toml_value), allocatable, intent(out) :: val
+
+   call self%list%pop(val)
+
+end subroutine pop
 
 
 !> Deconstructor to cleanup allocations (optional)
