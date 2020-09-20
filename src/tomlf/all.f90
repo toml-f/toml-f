@@ -16,9 +16,13 @@
 module tomlf_all
    use tomlf_build
    use tomlf_constants
+   use tomlf_datetime
    use tomlf_de
+   use tomlf_error
    use tomlf_ser
+   use tomlf_structure
    use tomlf_type
+   use tomlf_utils
    use tomlf_version
    implicit none
    public

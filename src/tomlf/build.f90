@@ -19,11 +19,12 @@
 module tomlf_build
    use tomlf_build_array, only : get_value, set_value
    use tomlf_build_keyval, only : get_value, set_value
+   use tomlf_build_merge, only : merge_table, merge_array
    use tomlf_build_table, only : get_value, set_value
    implicit none
    private
 
-   public :: get_value, set_value
+   public :: get_value, set_value, merge_table, merge_array
 
 
 end module tomlf_build

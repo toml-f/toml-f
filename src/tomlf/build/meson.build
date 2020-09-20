@@ -15,5 +15,6 @@
 srcs += files(
   'array.f90',
   'keyval.f90',
+  'merge.f90',
   'table.f90',
 )
