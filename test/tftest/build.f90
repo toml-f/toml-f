@@ -40,6 +40,7 @@ subroutine collect_build(testsuite)
       & new_unittest("array-int-i4", array_int_i4), &
       & new_unittest("array-int-i8", array_int_i8), &
       & new_unittest("array-bool", array_bool), &
+      & new_unittest("array-merge", table_merge), &
       & new_unittest("table-real-sp", table_real_sp), &
       & new_unittest("table-real-dp", table_real_dp), &
       & new_unittest("table-int-i1", table_int_i1), &
@@ -47,7 +48,8 @@ subroutine collect_build(testsuite)
       & new_unittest("table-int-i4", table_int_i4), &
       & new_unittest("table-int-i8", table_int_i8), &
       & new_unittest("table-bool", table_bool), &
-      & new_unittest("table-string", table_string)]
+      & new_unittest("table-string", table_string), &
+      & new_unittest("table-merge", array_merge)]
 
 end subroutine collect_build
 
@@ -324,7 +326,6 @@ subroutine table_string(error)
    type(toml_table) :: table
    character(len=:), allocatable :: val
    integer :: stat
-   type(toml_serializer) :: ser
 
    table = toml_table()
    call set_value(table, "string", "value", stat=stat)
@@ -337,7 +338,6 @@ subroutine table_string(error)
    call set_value(table, "string", """value""", stat=stat)
    call get_value(table, "string", val, stat=stat)
 
-   call table%accept(ser)
    call check(error, val, "value")
    if (allocated(error)) return
 
@@ -548,6 +548,91 @@ subroutine array_bool(error)
    if (allocated(error)) return
 
 end subroutine array_bool
+
+
+!> Merge two arrays
+subroutine array_merge(error)
+   use tomlf_type, only : toml_array, new_array, len
+
+   !> Error handling
+   type(toml_error), allocatable, intent(out) :: error
+
+   type(toml_array) :: array1, array2
+   integer :: val1, val2
+   integer :: ii
+   integer :: stat
+
+   array1 = toml_array()
+
+   do ii = 1, 4
+      call set_value(array1, ii, ii*ii, stat=stat)
+   end do
+
+   call new_array(array2)
+
+   do ii = 1, 6
+      call set_value(array2, ii, ii*ii, stat=stat)
+   end do
+
+   call merge_array(array1, array2)
+   call array2%destroy
+
+   call check(error, len(array1), 10)
+   if (allocated(error)) return
+
+   call get_value(array1, 2, val1, stat)
+   call get_value(array1, 6, val2, stat)
+
+   call check(error, val1, val2)
+   if (allocated(error)) return
+
+end subroutine array_merge
+
+
+!> Merge two tables
+subroutine table_merge(error)
+   use tomlf_type, only : toml_table, add_table, new_table, toml_key
+
+   !> Error handling
+   type(toml_error), allocatable, intent(out) :: error
+
+   type(toml_table) :: table1, table2
+   type(toml_table), pointer :: child
+   type(toml_key), allocatable :: list(:)
+   real :: val
+   integer :: stat
+
+   table1 = toml_table()
+
+   call set_value(table1, "first", 10, stat)
+   call set_value(table1, "second", "string", stat)
+   call set_value(table1, "third", 1.0e-7, stat)
+   call add_table(table1, "fourth", child, stat)
+   call set_value(child, "child", .true., stat)
+
+   call new_table(table2)
+
+   call set_value(table2, "val", 12, stat)
+   call set_value(table2, "key", "content", stat)
+   call set_value(table2, "entry", -1.0e-7, stat)
+   call set_value(table2, "third", .false., stat)
+   call add_table(table2, "section", child, stat)
+   call set_value(child, "sub", .false., stat)
+   call add_table(table2, "fourth", child, stat)
+
+   call merge_table(table1, table2)
+   call table2%destroy
+
+   call table1%get_keys(list)
+
+   call check(error, size(list), 8)
+   if (allocated(error)) return
+
+   call get_value(table1, "third", val, stat=stat)
+   call check(error, stat)
+   if (allocated(error)) return
+
+end subroutine table_merge
 
 
 end module tftest_build
