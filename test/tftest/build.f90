@@ -40,7 +40,7 @@ subroutine collect_build(testsuite)
       & new_unittest("array-int-i4", array_int_i4), &
       & new_unittest("array-int-i8", array_int_i8), &
       & new_unittest("array-bool", array_bool), &
-      & new_unittest("array-merge", table_merge), &
+      & new_unittest("array-merge", array_merge), &
       & new_unittest("table-real-sp", table_real_sp), &
       & new_unittest("table-real-dp", table_real_dp), &
       & new_unittest("table-int-i1", table_int_i1), &
@@ -49,7 +49,7 @@ subroutine collect_build(testsuite)
       & new_unittest("table-int-i8", table_int_i8), &
       & new_unittest("table-bool", table_bool), &
       & new_unittest("table-string", table_string), &
-      & new_unittest("table-merge", array_merge)]
+      & new_unittest("table-merge", table_merge)]
 
 end subroutine collect_build
 
