@@ -117,7 +117,7 @@ subroutine get_child_table(table, key, ptr, requested, stat)
       if (is_requested) then
          call add_table(table, key, ptr, stat)
       else
-         if (present(stat)) stat = toml_stat%fatal
+         if (present(stat)) stat = toml_stat%success
       end if
    end if
 
@@ -166,7 +166,7 @@ subroutine get_child_array(table, key, ptr, requested, stat)
       if (is_requested) then
          call add_array(table, key, ptr, stat)
       else
-         if (present(stat)) stat = toml_stat%fatal
+         if (present(stat)) stat = toml_stat%success
       end if
    end if
 
@@ -215,7 +215,7 @@ subroutine get_child_keyval(table, key, ptr, requested, stat)
       if (is_requested) then
          call add_keyval(table, key, ptr, stat)
       else
-         if (present(stat)) stat = toml_stat%fatal
+         if (present(stat)) stat = toml_stat%success
       end if
    end if
 
