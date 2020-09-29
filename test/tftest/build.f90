@@ -41,6 +41,7 @@ subroutine collect_build(testsuite)
       & new_unittest("array-int-i8", array_int_i8), &
       & new_unittest("array-bool", array_bool), &
       & new_unittest("array-merge", array_merge), &
+      & new_unittest("table-array", table_array), &
       & new_unittest("table-real-sp", table_real_sp), &
       & new_unittest("table-real-dp", table_real_dp), &
       & new_unittest("table-int-i1", table_int_i1), &
@@ -349,6 +350,64 @@ subroutine table_string(error)
    if (allocated(error)) return
 
 end subroutine table_string
+
+subroutine table_array(error)
+   use tomlf_type, only : toml_value, new_table, toml_table, add_table, new_array, &
+      & toml_array, add_array, len
+
+   !> Error handling
+   type(toml_error), allocatable, intent(out) :: error
+
+   type(toml_table) :: table
+   type(toml_table), pointer :: child
+   type(toml_array), pointer :: children
+   class(toml_value), allocatable :: val
+   integer :: i, stat
+
+   call new_table(table)
+   call get_value(table, "array-of-tables", children, requested=.false., stat=stat)
+   call check(error, stat, "Not finding a not required value shouldn't be an error")
+   if (allocated(error)) return
+
+   call add_array(table, "array-of-tables", children, stat)
+
+   do i = 1, 4
+      call add_table(children, child, stat)
+      call set_value(child, "val", i*i)
+   end do
+
+   call check(error, len(children), 4)
+   if (allocated(error)) return
+
+   call children%pop(val)
+
+   call check(error, len(children), 3)
+   if (allocated(error)) return
+
+   select type(val)
+   class default
+      call test_failed(error, "Popped value is not of table type")
+   class is (toml_table)
+      call get_value(val, "val", i)
+      call check(error, i, 16)
+   end select
+   if (allocated(error)) return
+
+   call children%shift(val)
+
+   call check(error, len(children), 2)
+   if (allocated(error)) return
+
+   select type(val)
+   class default
+      call test_failed(error, "Shifted value is not of table type")
+   class is (toml_table)
+      call get_value(val, "val", i)
+      call check(error, i, 1)
+   end select
+   if (allocated(error)) return
+
+end subroutine table_array
 
 
 !> Check double precision floating point numbers (default)
