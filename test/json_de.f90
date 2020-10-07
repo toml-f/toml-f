@@ -274,7 +274,7 @@ end subroutine parse_root
 
 
 !> Parse a JSON object as TOML table
-subroutine parse_table(de, table)
+recursive subroutine parse_table(de, table)
 
    !> Instance of the TOML deserializer
    class(json_deserializer), intent(inout), target :: de
@@ -400,7 +400,7 @@ end subroutine parse_keyval
 
 
 !> Parse a JSON array as TOML array
-subroutine parse_array(de, array)
+recursive subroutine parse_array(de, array)
 
    !> Instance of the TOML deserializer
    class(json_deserializer), intent(inout), target :: de
