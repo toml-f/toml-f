@@ -15,7 +15,6 @@
 !> Implementation of a deserializer for a specific JSON format
 module tftest_json_de
    use iso_fortran_env, only: error_unit
-   use tomlf_ser, only : toml_serializer
    use tomlf_build, only : get_value, set_value
    use tomlf_constants
    use tomlf_error, only : toml_stat, toml_error, toml_context, &
@@ -247,7 +246,6 @@ subroutine parse_root(de)
    !> Instance of the TOML deserializer
    class(json_deserializer), intent(inout), target :: de
    type(json_prune) :: pruner
-   type(toml_serializer) :: ser
 
    allocate(de%root)
    call new_table(de%root)
@@ -333,7 +331,7 @@ subroutine parse_keyval(de, table)
    type(toml_keyval), pointer :: vptr
    type(toml_array), pointer :: aptr
    type(toml_table), pointer :: tptr
-   character(kind=tfc, len=:), allocatable :: new_key, this_key
+   character(kind=tfc, len=:), allocatable :: new_key
 
    !print*, 'enter parse_keyval'
 
