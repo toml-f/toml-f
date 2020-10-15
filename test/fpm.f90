@@ -19,11 +19,12 @@ program tftest_fpm
    use tomlf_build
    implicit none
    integer :: length
-   character(len=:), allocatable :: argument
+   character(len=:), allocatable :: argument, version_string
    type(toml_table), allocatable :: table
    integer :: unit
    logical :: exist, match
 
+   call get_tomlf_version(string=version_string)
    if (abs(command_argument_count()) == 1) then
       call get_command_argument(1, length=length)
       allocate(character(len=length) :: argument)
@@ -47,13 +48,13 @@ program tftest_fpm
    end if
    call get_value(table, "version", argument)
 
-   match = argument == tomlf_version_string
+   match = argument == version_string
 
    if (.not.match) then
       write(error_unit, '(a)') &
          & "Internal version and provided version do not match!"
       write(error_unit, '(a, ":", 1x, a)') &
-         & "provided", argument, "internal", tomlf_version_string
+         & "provided", argument, "internal", version_string
       error stop
    end if
 

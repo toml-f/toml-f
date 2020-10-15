@@ -17,6 +17,7 @@ module tomlf_version
    implicit none
    private
 
+   public :: get_tomlf_version
    public :: tomlf_version_string, tomlf_version_compact
 
 
@@ -24,16 +25,51 @@ module tomlf_version
    character(len=*), parameter :: tomlf_version_string = "0.2.0"
 
    !> Major version number of the above TOML-Fortran version
-   integer, parameter :: major = 0
+   integer, parameter :: tomlf_major = 0
 
    !> Minor version number of the above TOML-Fortran version
-   integer, parameter :: minor = 2
+   integer, parameter :: tomlf_minor = 2
 
    !> Patch version number of the above TOML-Fortran version
-   integer, parameter :: patch = 0
+   integer, parameter :: tomlf_patch = 0
 
    !> Compact numeric representation of the TOML-Fortran version
-   integer, parameter :: tomlf_version_compact = major*10000 + minor*100 + patch
+   integer, parameter :: tomlf_version_compact = &
+      & tomlf_major*10000 + tomlf_minor*100 + tomlf_patch
+
+
+contains
+
+
+!> Getter function to retrieve TOML-Fortran version
+subroutine get_tomlf_version(major, minor, patch, string)
+
+   !> Major version number of the TOML-Fortran version
+   integer, intent(out), optional :: major
+
+   !> Minor version number of the TOML-Fortran version
+   integer, intent(out), optional :: minor
+
+   !> Patch version number of the TOML-Fortran version
+   integer, intent(out), optional :: patch
+
+   !> String representation of the TOML-Fortran version
+   character(len=:), allocatable, intent(out), optional :: string
+
+   if (present(major)) then
+      major = tomlf_major
+   end if
+   if (present(minor)) then
+      minor = tomlf_minor
+   end if
+   if (present(patch)) then
+      patch = tomlf_patch
+   end if
+   if (present(string)) then
+      string = tomlf_version_string
+   end if
+
+end subroutine get_tomlf_version
 
 
 end module tomlf_version
