@@ -17,16 +17,18 @@ program tftest_version
    use, intrinsic :: iso_fortran_env, only : output_unit, error_unit
    use tomlf
    implicit none
-   integer :: length
+   integer :: length, major, minor, patch
    logical :: match
    character(len=:), allocatable :: argument, version_string
 
-   call get_tomlf_version(string=version_string)
+   call get_tomlf_version(major, minor, patch, string=version_string)
    if (command_argument_count() == 1) then
       call get_command_argument(1, length=length)
       allocate(character(len=length) :: argument)
       call get_command_argument(1, argument)
       match = argument == version_string
+      write(version_string, '(*(i0:, "."))') major, minor, patch
+      match = argument == version_string .and. match
       if (.not.match) then
          write(error_unit, '(a)') &
             & "Internal version and provided version do not match!"
