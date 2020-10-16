@@ -19,6 +19,7 @@ project(
   "toml-f"
   LANGUAGES "Fortran"
   VERSION "0.2.0"
+  DESCRIPTION "A TOML parser implementation for data serialization and deserialization in Fortran"
 )
 
 # Follow GNU conventions for installing directories
@@ -43,30 +44,40 @@ set_target_properties(
   OUTPUT_NAME "${PROJECT_NAME}"
   VERSION "${PROJECT_VERSION}"
   SOVERSION "${PROJECT_VERSION_MAJOR}"
+  Fortran_MODULE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/include"
 )
 target_include_directories(
   "${PROJECT_NAME}-lib"
   INTERFACE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 if(NOT is-subproject OR BUILD_SHARED_LIBS)
   # Export targets for other projects
+  add_library("${PROJECT_NAME}" INTERFACE)
+  target_link_libraries("${PROJECT_NAME}" INTERFACE "${PROJECT_NAME}-lib")
   install(
     TARGETS
+    "${PROJECT_NAME}"
     "${PROJECT_NAME}-lib"
     EXPORT
-    "${PROJECT_NAME}-config"
+    "${PROJECT_NAME}-targets"
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
   )
-
   install(
-    EXPORT "${PROJECT_NAME}-config"
+    EXPORT
+    "${PROJECT_NAME}-targets"
+    NAMESPACE
+    "${PROJECT_NAME}::"
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
   )
-
+  install(
+    DIRECTORY
+    "${CMAKE_CURRENT_BINARY_DIR}/include/"
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+  )
   # Package license files
   install(
     FILES
