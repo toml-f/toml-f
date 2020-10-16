@@ -12,7 +12,6 @@ jobs:
     - uses: actions/setup-python@v1
       with:
         python-version: '3.x'
-    - run: sudo apt install -yq --no-install-recommends graphviz
     - run: pip install ford
     - run: ford -o ./docs docs.md
     - uses: JamesIves/github-pages-deploy-action@3.6.1
