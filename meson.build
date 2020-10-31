@@ -1,6 +1,5 @@
 # This file is part of toml-f.
-#
-# Copyright (C) 2019-2020 Sebastian Ehlert
+# SPDX-Identifier: Apache-2.0 OR MIT
 #
 # Licensed under either of Apache License, Version 2.0 or MIT license
 # at your option; you may not use this file except in compliance with
@@ -16,7 +15,7 @@ project(
   'toml-f',
   'fortran',
   version: '0.2.1',
-  license: 'MIT OR Apache-2.0',
+  license: 'Apache-2.0 OR MIT',
   meson_version: '>=0.53',
   default_options: [
     'buildtype=debugoptimized',

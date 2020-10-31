@@ -1,6 +1,5 @@
 ! This file is part of toml-f.
-!
-! Copyright 2019-2020 Sebastian Ehlert
+! SPDX-Identifier: Apache-2.0 OR MIT
 !
 ! Licensed under either of Apache License, Version 2.0 or MIT license
 ! at your option; you may not use this file except in compliance with

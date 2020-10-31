@@ -1,4 +1,5 @@
 ! This file is part of toml-f.
+! SPDX-Identifier: Apache-2.0 OR MIT
 !
 ! Copyright (C) 2019-2020 Sebastian Ehlert
 !
