@@ -4,3 +4,6 @@ license = "Apache-2.0 OR MIT"
 
 [library]
 source-dir = "src"
+
+[build]
+auto-tests = false
