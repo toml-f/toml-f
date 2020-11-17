@@ -14,7 +14,7 @@ jobs:
         python-version: '3.x'
     - run: pip install ford
     - run: ford -o ./docs docs.md
-    - uses: JamesIves/github-pages-deploy-action@3.6.1
+    - uses: JamesIves/github-pages-deploy-action@3.7.1
       if: ${{ github.repository == 'toml-f/toml-f' }}
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
