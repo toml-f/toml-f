@@ -33,6 +33,10 @@ module tomlf_datetime
       procedure, pass(rhs) :: to_string => time_to_string
    end type
 
+   interface toml_time
+      module procedure :: new_toml_time
+   end interface toml_time
+
 
    !> TOML date value (YYYY-MM-DD)
    type :: toml_date
@@ -97,6 +101,23 @@ subroutine datetime_to_string(lhs, rhs)
       if (allocated(rhs%time)) lhs = rhs%time
    end if
 end subroutine datetime_to_string
+
+
+!> Constructor for toml_time type, necessary due to PGI bug in NVHPC 20.7 and 20.9
+elemental function new_toml_time(hour, minute, second, millisec, zone) &
+      & result(self)
+   integer, intent(in), optional :: hour
+   integer, intent(in), optional :: minute
+   integer, intent(in), optional :: second
+   integer, intent(in), optional :: millisec
+   character(len=*), intent(in), optional :: zone
+   type(toml_time) :: self
+   if (present(hour)) self%hour = hour
+   if (present(minute)) self%minute = minute
+   if (present(second)) self%second = second
+   if (present(millisec)) self%millisec = millisec
+   if (present(zone)) self%zone = zone
+end function new_toml_time
 
 
 end module tomlf_datetime

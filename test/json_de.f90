@@ -554,7 +554,7 @@ subroutine next_token(de)
 
    ! return with EOF token
    de%finished = .true.
-   de%tok = new_token(json_tokentype%whitespace, ptr(1:0), 0)
+   de%tok = new_token(json_tokentype%whitespace, ptr, 0)
 
 end subroutine next_token
 

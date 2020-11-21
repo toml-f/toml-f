@@ -238,8 +238,16 @@ subroutine indent(self)
    !> Instance of the JSON serializer
    class(json_serializer), intent(inout) :: self
 
+   integer :: i
+
+   ! PGI internal compiler error in NVHPC 20.7 and 20.9 with
+   ! write(self%unit, '(/, a)', advance='no') repeat(self%indentation, self%depth)
+   ! causes: NVFORTRAN-F-0000-Internal compiler error. Errors in Lowering      16
    if (allocated(self%indentation) .and. self%depth > 0) then
-      write(self%unit, '(/,a)', advance='no') repeat(self%indentation, self%depth)
+      write(self%unit, '(/)', advance='no')
+      do i = 1, self%depth
+         write(self%unit, '(a)', advance='no') self%indentation
+      end do
    end if
 
 end subroutine indent

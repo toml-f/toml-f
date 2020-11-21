@@ -35,7 +35,7 @@ elif fc_id == 'intel'
     '-traceback',
     language: 'fortran',
   )
-elif fc_id == 'pgi'
+elif fc_id == 'pgi' or fc_id == 'nvidia_hpc'
   add_project_arguments(
     '-Mbackslash',
     '-Mallocatable=03',
