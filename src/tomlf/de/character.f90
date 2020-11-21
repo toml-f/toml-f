@@ -118,7 +118,7 @@ subroutine next_token(de, dot_is_token)
 
    !> return with EOF token
    de%finished = .true.
-   de%tok = new_token(toml_tokentype%newline, ptr(1:0), 0)
+   de%tok = new_token(toml_tokentype%newline, ptr, 0)
 
 contains
 
