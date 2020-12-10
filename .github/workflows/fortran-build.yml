@@ -65,7 +65,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-20.04]
 
     env:
       FC: ifort
@@ -89,7 +89,7 @@ jobs:
 
     - name: Install Intel oneAPI compiler
       run: |
-        sudo apt-get install intel-oneapi-ifort
+        sudo apt-get install intel-oneapi-compiler-fortran
         source /opt/intel/oneapi/setvars.sh
         printenv >> $GITHUB_ENV
 
