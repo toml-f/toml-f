@@ -10,7 +10,7 @@
 A TOML parser implementation for data serialization and deserialization in Fortran.
 
 * the [TOML standard](https://toml.io)
-* currently supported [TOML v1.0.0-rc2 specification](https://toml.io/en/v1.0.0-rc.2)
+* currently supported [TOML v1.0.0-rc3 specification](https://toml.io/en/v1.0.0-rc.3)
 
 <div align="center">
 <img src="./assets/toml-f.png" alt="TOML-Fortran" width="220">
