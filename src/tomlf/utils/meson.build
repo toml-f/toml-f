@@ -13,5 +13,6 @@
 
 srcs += files(
   'convert.f90',
+  'sort.f90',
   'verify.f90',
 )
