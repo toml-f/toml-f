@@ -352,7 +352,7 @@ end subroutine table_string
 
 subroutine table_array(error)
    use tomlf_type, only : toml_value, new_table, toml_table, add_table, new_array, &
-      & toml_array, add_array, len
+      & toml_array, toml_key, add_array, len
 
    !> Error handling
    type(toml_error), allocatable, intent(out) :: error
@@ -364,7 +364,8 @@ subroutine table_array(error)
    integer :: i, stat
 
    call new_table(table)
-   call get_value(table, "array-of-tables", children, requested=.false., stat=stat)
+   call get_value(table, toml_key("array-of-tables"), children, &
+      & requested=.false., stat=stat)
    call check(error, stat, "Not finding a not required value shouldn't be an error")
    if (allocated(error)) return
 
