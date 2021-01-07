@@ -57,7 +57,7 @@ end subroutine collect_build
 !> Check double precision floating point numbers (default)
 subroutine table_real_dp(error)
    use tomlf_constants, only : tf_dp
-   use tomlf_type, only : new_table, toml_table
+   use tomlf_type, only : new_table, toml_table, toml_key
 
    !> Error handling
    type(toml_error), allocatable, intent(out) :: error
@@ -75,8 +75,8 @@ subroutine table_real_dp(error)
    if (allocated(error)) return
 
    call table%delete("real")
-   call set_value(table, "real", in1, stat=stat)
-   call get_value(table, "real", val, stat=stat)
+   call set_value(table, toml_key("real"), in1, stat=stat)
+   call get_value(table, toml_key("real"), val, stat=stat)
 
    call check(error, val, in1)
    if (allocated(error)) return
@@ -97,7 +97,7 @@ end subroutine table_real_dp
 !  larger deviations here than just epsilon.
 subroutine table_real_sp(error)
    use tomlf_constants, only : tf_sp
-   use tomlf_type, only : new_table, toml_table
+   use tomlf_type, only : new_table, toml_table, toml_key
 
    !> Error handling
    type(toml_error), allocatable, intent(out) :: error
@@ -109,8 +109,8 @@ subroutine table_real_sp(error)
    integer :: stat
 
    call new_table(table)
-   call set_value(table, "real", in2, stat=stat)
-   call get_value(table, "real", val, stat=stat)
+   call set_value(table, toml_key("real"), in2, stat=stat)
+   call get_value(table, toml_key("real"), val, stat=stat)
 
    call check(error, val, in2, thr=thr, rel=.true.)
    if (allocated(error)) return
@@ -132,10 +132,10 @@ subroutine table_real_sp(error)
 end subroutine table_real_sp
 
 
-!> Check double precision floating point numbers (default)
+!> Check smallest integers (char)
 subroutine table_int_i1(error)
    use tomlf_constants, only : tf_i1
-   use tomlf_type, only : new_table, toml_table
+   use tomlf_type, only : new_table, toml_table, toml_key
 
    !> Error handling
    type(toml_error), allocatable, intent(out) :: error
@@ -146,7 +146,7 @@ subroutine table_int_i1(error)
    integer :: stat
 
    call new_table(table)
-   call set_value(table, "int", in2, stat=stat)
+   call set_value(table, toml_key("int"), in2, stat=stat)
    call get_value(table, "int", val, stat=stat)
 
    call check(error, val, in2)
@@ -154,7 +154,7 @@ subroutine table_int_i1(error)
 
    call table%delete("int")
    call set_value(table, "int", in1, stat=stat)
-   call get_value(table, "int", val, stat=stat)
+   call get_value(table, toml_key("int"), val, stat=stat)
 
    call check(error, val, in1)
    if (allocated(error)) return
@@ -169,7 +169,7 @@ subroutine table_int_i1(error)
 end subroutine table_int_i1
 
 
-!> Check double precision floating point numbers (default)
+!> Check short integers
 subroutine table_int_i2(error)
    use tomlf_constants, only : tf_i2
    use tomlf_type, only : new_table, toml_table
@@ -183,8 +183,8 @@ subroutine table_int_i2(error)
    integer :: stat
 
    call new_table(table)
-   call set_value(table, "int", in2, stat=stat)
-   call get_value(table, "int", val, stat=stat)
+   call set_value(table, toml_key("int"), in2, stat=stat)
+   call get_value(table, toml_key("int"), val, stat=stat)
 
    call check(error, val, in2)
    if (allocated(error)) return
@@ -206,10 +206,10 @@ subroutine table_int_i2(error)
 end subroutine table_int_i2
 
 
-!> Check double precision floating point numbers (default)
+!> Check default integers
 subroutine table_int_i4(error)
    use tomlf_constants, only : tf_i4
-   use tomlf_type, only : new_table, toml_table
+   use tomlf_type, only : new_table, toml_table, toml_key
 
    !> Error handling
    type(toml_error), allocatable, intent(out) :: error
@@ -227,8 +227,8 @@ subroutine table_int_i4(error)
    if (allocated(error)) return
 
    call table%delete("int")
-   call set_value(table, "int", in1, stat=stat)
-   call get_value(table, "int", val, stat=stat)
+   call set_value(table, toml_key("int"), in1, stat=stat)
+   call get_value(table, toml_key("int"), val, stat=stat)
 
    call check(error, val, in1)
    if (allocated(error)) return
@@ -243,10 +243,10 @@ subroutine table_int_i4(error)
 end subroutine table_int_i4
 
 
-!> Check double precision floating point numbers (default)
+!> Check long integers (default)
 subroutine table_int_i8(error)
    use tomlf_constants, only : tf_i8
-   use tomlf_type, only : new_table, toml_table
+   use tomlf_type, only : new_table, toml_table, toml_key
 
    !> Error handling
    type(toml_error), allocatable, intent(out) :: error
@@ -264,7 +264,7 @@ subroutine table_int_i8(error)
    if (allocated(error)) return
 
    call table%delete("int")
-   call set_value(table, "int", in1, stat=stat)
+   call set_value(table, toml_key("int"), in1, stat=stat)
    call get_value(table, "int", val, stat=stat)
 
    call check(error, val, in1)
@@ -272,7 +272,7 @@ subroutine table_int_i8(error)
 
    call table%destroy
    call new_table(table)
-   call get_value(table, "int", val, in3, stat=stat)
+   call get_value(table, toml_key("int"), val, in3, stat=stat)
 
    call check(error, val, in3)
    if (allocated(error)) return
@@ -280,9 +280,9 @@ subroutine table_int_i8(error)
 end subroutine table_int_i8
 
 
-!> Check double precision floating point numbers (default)
+!> Check logicals
 subroutine table_bool(error)
-   use tomlf_type, only : toml_table
+   use tomlf_type, only : toml_table, toml_key
 
    !> Error handling
    type(toml_error), allocatable, intent(out) :: error
@@ -293,8 +293,8 @@ subroutine table_bool(error)
    integer :: stat
 
    table = toml_table()
-   call set_value(table, "logic", true, stat=stat)
-   call get_value(table, "logic", val, stat=stat)
+   call set_value(table, toml_key("logic"), true, stat=stat)
+   call get_value(table, toml_key("logic"), val, stat=stat)
 
    call check(error, val, true)
    if (allocated(error)) return
@@ -316,9 +316,9 @@ subroutine table_bool(error)
 end subroutine table_bool
 
 
-!> Check double precision floating point numbers (default)
+!> Check strings
 subroutine table_string(error)
-   use tomlf_type, only : toml_table
+   use tomlf_type, only : toml_table, toml_key
 
    !> Error handling
    type(toml_error), allocatable, intent(out) :: error
@@ -328,7 +328,7 @@ subroutine table_string(error)
    integer :: stat
 
    table = toml_table()
-   call set_value(table, "string", "value", stat=stat)
+   call set_value(table, toml_key("string"), "value", stat=stat)
    call get_value(table, "string", val, stat=stat)
 
    call check(error, val, "value")
@@ -343,7 +343,7 @@ subroutine table_string(error)
 
    call table%destroy
    call new_table(table)
-   call get_value(table, "string", val, "'value'", stat=stat)
+   call get_value(table, toml_key("string"), val, "'value'", stat=stat)
 
    call check(error, val, "value")
    if (allocated(error)) return
@@ -352,7 +352,7 @@ end subroutine table_string
 
 subroutine table_array(error)
    use tomlf_type, only : toml_value, new_table, toml_table, add_table, new_array, &
-      & toml_array, add_array, len
+      & toml_array, toml_key, add_array, len
 
    !> Error handling
    type(toml_error), allocatable, intent(out) :: error
@@ -364,7 +364,8 @@ subroutine table_array(error)
    integer :: i, stat
 
    call new_table(table)
-   call get_value(table, "array-of-tables", children, requested=.false., stat=stat)
+   call get_value(table, toml_key("array-of-tables"), children, &
+      & requested=.false., stat=stat)
    call check(error, stat, "Not finding a not required value shouldn't be an error")
    if (allocated(error)) return
 
@@ -409,7 +410,7 @@ subroutine table_array(error)
 end subroutine table_array
 
 
-!> Check double precision floating point numbers (default)
+!> Check single precision floating point numbers
 subroutine array_real_sp(error)
    use tomlf_constants, only : tf_sp
    use tomlf_type, only : new_array, toml_array, len
@@ -465,7 +466,7 @@ subroutine array_real_dp(error)
 end subroutine array_real_dp
 
 
-!> Check double precision floating point numbers (default)
+!> Check smallest integers (char)
 subroutine array_int_i1(error)
    use tomlf_constants, only : tf_i1
    use tomlf_type, only : new_array, toml_array, len
@@ -494,7 +495,7 @@ subroutine array_int_i1(error)
 end subroutine array_int_i1
 
 
-!> Check double precision floating point numbers (default)
+!> Check short integers
 subroutine array_int_i2(error)
    use tomlf_constants, only : tf_i2
    use tomlf_type, only : new_array, toml_array, len
@@ -523,7 +524,7 @@ subroutine array_int_i2(error)
 end subroutine array_int_i2
 
 
-!> Check double precision floating point numbers (default)
+!> Check default integers
 subroutine array_int_i4(error)
    use tomlf_constants, only : tf_i4
    use tomlf_type, only : new_array, toml_array, len
@@ -552,7 +553,7 @@ subroutine array_int_i4(error)
 end subroutine array_int_i4
 
 
-!> Check double precision floating point numbers (default)
+!> Check long integers (default)
 subroutine array_int_i8(error)
    use tomlf_constants, only : tf_i8
    use tomlf_type, only : new_array, toml_array, len
@@ -581,7 +582,7 @@ subroutine array_int_i8(error)
 end subroutine array_int_i8
 
 
-!> Check double precision floating point numbers (default)
+!> Check logicals
 subroutine array_bool(error)
    use tomlf_type, only : toml_array, len
 

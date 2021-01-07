@@ -35,7 +35,8 @@ module tomlf_build_table
       & tf_sp, tf_dp
    use tomlf_error, only : toml_stat
    use tomlf_type, only : toml_value, toml_table, toml_array, toml_keyval, &
-      & new_table, new_array, new_keyval, add_table, add_array, add_keyval, len
+      & new_table, new_array, new_keyval, add_table, add_array, add_keyval, &
+      & toml_key, len
    implicit none
    private
 
@@ -52,6 +53,14 @@ module tomlf_build_table
       module procedure :: set_child_value_integer_i8
       module procedure :: set_child_value_bool
       module procedure :: set_child_value_string
+      module procedure :: set_key_value_float_sp
+      module procedure :: set_key_value_float_dp
+      module procedure :: set_key_value_integer_i1
+      module procedure :: set_key_value_integer_i2
+      module procedure :: set_key_value_integer_i4
+      module procedure :: set_key_value_integer_i8
+      module procedure :: set_key_value_bool
+      module procedure :: set_key_value_string
    end interface set_value
 
 
@@ -68,10 +77,431 @@ module tomlf_build_table
       module procedure :: get_child_value_integer_i8
       module procedure :: get_child_value_bool
       module procedure :: get_child_value_string
+      module procedure :: get_key_table
+      module procedure :: get_key_array
+      module procedure :: get_key_keyval
+      module procedure :: get_key_value_float_sp
+      module procedure :: get_key_value_float_dp
+      module procedure :: get_key_value_integer_i1
+      module procedure :: get_key_value_integer_i2
+      module procedure :: get_key_value_integer_i4
+      module procedure :: get_key_value_integer_i8
+      module procedure :: get_key_value_bool
+      module procedure :: get_key_value_string
    end interface get_value
 
 
 contains
+
+
+subroutine get_key_table(table, key, ptr, requested, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Pointer to child table
+   type(toml_table), pointer, intent(out) :: ptr
+
+   !> Child value must be present
+   logical, intent(in), optional :: requested
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call get_value(table, key%key, ptr, requested, stat)
+
+end subroutine get_key_table
+
+
+subroutine get_key_array(table, key, ptr, requested, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Pointer to child array
+   type(toml_array), pointer, intent(out) :: ptr
+
+   !> Child value must be present
+   logical, intent(in), optional :: requested
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call get_value(table, key%key, ptr, requested, stat)
+
+end subroutine get_key_array
+
+
+subroutine get_key_keyval(table, key, ptr, requested, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Pointer to child value
+   type(toml_keyval), pointer, intent(out) :: ptr
+
+   !> Child value must be present
+   logical, intent(in), optional :: requested
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call get_value(table, key%key, ptr, requested, stat)
+
+end subroutine get_key_keyval
+
+
+!> Retrieve TOML value as single precision float (might lose accuracy)
+subroutine get_key_value_float_sp(table, key, val, default, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Real value
+   real(tf_sp), intent(out) :: val
+
+   !> Default real value
+   real(tf_sp), intent(in), optional :: default
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call get_value(table, key%key, val, default, stat)
+
+end subroutine get_key_value_float_sp
+
+
+!> Retrieve TOML value as double precision float
+subroutine get_key_value_float_dp(table, key, val, default, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Real value
+   real(tf_dp), intent(out) :: val
+
+   !> Default real value
+   real(tf_dp), intent(in), optional :: default
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call get_value(table, key%key, val, default, stat)
+
+end subroutine get_key_value_float_dp
+
+
+!> Retrieve TOML value as one byte integer (might loose precision)
+subroutine get_key_value_integer_i1(table, key, val, default, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Integer value
+   integer(tf_i1), intent(out) :: val
+
+   !> Default integer value
+   integer(tf_i1), intent(in), optional :: default
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call get_value(table, key%key, val, default, stat)
+
+end subroutine get_key_value_integer_i1
+
+
+!> Retrieve TOML value as two byte integer (might loose precision)
+subroutine get_key_value_integer_i2(table, key, val, default, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Integer value
+   integer(tf_i2), intent(out) :: val
+
+   !> Default integer value
+   integer(tf_i2), intent(in), optional :: default
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call get_value(table, key%key, val, default, stat)
+
+end subroutine get_key_value_integer_i2
+
+
+!> Retrieve TOML value as four byte integer (might loose precision)
+subroutine get_key_value_integer_i4(table, key, val, default, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Integer value
+   integer(tf_i4), intent(out) :: val
+
+   !> Default integer value
+   integer(tf_i4), intent(in), optional :: default
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call get_value(table, key%key, val, default, stat)
+
+end subroutine get_key_value_integer_i4
+
+
+!> Retrieve TOML value as eight byte integer
+subroutine get_key_value_integer_i8(table, key, val, default, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Integer value
+   integer(tf_i8), intent(out) :: val
+
+   !> Default integer value
+   integer(tf_i8), intent(in), optional :: default
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call get_value(table, key%key, val, default, stat)
+
+end subroutine get_key_value_integer_i8
+
+
+!> Retrieve TOML value as logical
+subroutine get_key_value_bool(table, key, val, default, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Boolean value
+   logical, intent(out) :: val
+
+   !> Default boolean value
+   logical, intent(in), optional :: default
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call get_value(table, key%key, val, default, stat)
+
+end subroutine get_key_value_bool
+
+
+!> Retrieve TOML value as deferred-length character
+subroutine get_key_value_string(table, key, val, default, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> String value
+   character(kind=tfc, len=:), allocatable, intent(out) :: val
+
+   !> Default string value
+   character(kind=tfc, len=*), intent(in), optional :: default
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call get_value(table, key%key, val, default, stat)
+
+end subroutine get_key_value_string
+
+
+!> Set TOML value to single precision float
+subroutine set_key_value_float_sp(table, key, val, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Real value
+   real(tf_sp), intent(in) :: val
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call set_value(table, key%key, val, stat)
+
+end subroutine set_key_value_float_sp
+
+
+!> Set TOML value to double precision float
+subroutine set_key_value_float_dp(table, key, val, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Real value
+   real(tf_dp), intent(in) :: val
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call set_value(table, key%key, val, stat)
+
+end subroutine set_key_value_float_dp
+
+
+!> Set TOML value to one byte integer
+subroutine set_key_value_integer_i1(table, key, val, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Integer value
+   integer(tf_i1), intent(in) :: val
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call set_value(table, key%key, val, stat)
+
+end subroutine set_key_value_integer_i1
+
+
+!> Set TOML value to two byte integer
+subroutine set_key_value_integer_i2(table, key, val, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Integer value
+   integer(tf_i2), intent(in) :: val
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call set_value(table, key%key, val, stat)
+
+end subroutine set_key_value_integer_i2
+
+
+!> Set TOML value to four byte integer
+subroutine set_key_value_integer_i4(table, key, val, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Integer value
+   integer(tf_i4), intent(in) :: val
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call set_value(table, key%key, val, stat)
+
+end subroutine set_key_value_integer_i4
+
+
+!> Set TOML value to eight byte integer
+subroutine set_key_value_integer_i8(table, key, val, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Integer value
+   integer(tf_i8), intent(in) :: val
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call set_value(table, key%key, val, stat)
+
+end subroutine set_key_value_integer_i8
+
+
+!> Set TOML value to logical
+subroutine set_key_value_bool(table, key, val, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Boolean value
+   logical, intent(in) :: val
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call set_value(table, key%key, val, stat)
+
+end subroutine set_key_value_bool
+
+
+!> Set TOML value to deferred-length character
+subroutine set_key_value_string(table, key, val, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> String value
+   character(kind=tfc, len=*), intent(in) :: val
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call set_value(table, key%key, val, stat)
+
+end subroutine set_key_value_string
 
 
 subroutine get_child_table(table, key, ptr, requested, stat)
