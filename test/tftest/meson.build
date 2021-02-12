@@ -13,5 +13,6 @@
 
 test_srcs += files(
   'build.f90',
+  'sort.f90',
   'testsuite.f90',
 )

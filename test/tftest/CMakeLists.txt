@@ -16,6 +16,7 @@ set(dir "${CMAKE_CURRENT_SOURCE_DIR}")
 list(
   APPEND test-srcs
   "${dir}/build.f90"
+  "${dir}/sort.f90"
   "${dir}/testsuite.f90"
 )
 
