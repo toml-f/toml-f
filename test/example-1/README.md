@@ -14,8 +14,8 @@ This example project will build a simple executable to read and process TOML doc
 Test this example by running it from `fpm` on one of the provided example TOML documents:
 
 ```
-fpm run --args package-1.toml
-fpm run --args package-2.toml
+fpm run -- package-1.toml
+fpm run -- package-2.toml
 ```
 
 Note, this is an example project with a made-up package format, for the mere reason of demonstrating functionality, therefore, do not expect all design choices in this example to be sensible ones.
