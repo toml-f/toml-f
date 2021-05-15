@@ -20,21 +20,25 @@ A TOML parser implementation for data serialization and deserialization in Fortr
 ## Installation
 
 To build this project from the source code in this repository you need to have
-- a Fortran compiler supporting Fortran 2008
+
+- a Fortran compiler supporting Fortran 2008 (GCC 5 or newer or Intel Fortran)
 - One of the supported build systems
+
   - [meson](https://mesonbuild.com) version 0.53 or newer
-   - a build-system backend, *i.e.* [ninja](https://ninja-build.org) version 1.7 or newer
-  - [CMake](https://cmake.org/) version 3.9 or newer
-  - [Fortran package manager (fpm)](https://fpm.fortran-lang.org/index.html) version 0.2.0 or newer
+  - [CMake](https://cmake.org/) version 3.9 or newer and
+  - [Fortran package manager (fpm)](https://github.com/fortran-lang/fpm) version 0.2.0 or newer
+
 
 ### Meson
+
+To build this project with meson a build-system backend is required, *i.e.* [ninja](https://ninja-build.org) version 1.7 or newer.
 Setup a build with
 
 ```
 meson setup _build
 ```
 
-You can select the Fortran compiler by the `FC` environment variable, currently this project supports GCC and Intel compilers.
+You can select the Fortran compiler by the `FC` environment variable.
 To compile the project run
 
 ```
@@ -42,8 +46,6 @@ meson compile -C _build
 ```
 
 To use `toml-f` in your project, have a look at the [example integration with meson](https://github.com/toml-f/tf-meson-example).
-
-#### Testing
 
 We employ a [validator suite](https://github.com/BurntSushi/toml-test) to test the standard compliance of this implementation.
 To use this testing a `go` installation is required.
@@ -62,7 +64,6 @@ meson test -C _build --benchmark --print-errorlogs
 ```
 
 The binary used for transcribing the TOML documents to the testing format is `_build/test/toml2json` and can be used to check on per test basis.
-The validation suite is currently not supported as unit test for CMake builds and requires a manual setup instead using the `toml2json` binary.
 
 
 ### CMake
@@ -82,6 +83,8 @@ cmake --build _build
 ```
 
 To include `toml-f` in your CMake project, check the [example integration with CMake](https://github.com/toml-f/tf-cmake-example).
+The validation suite is currently not supported as unit test for CMake builds and requires a manual setup instead using the `toml2json` binary.
+
 
 ### Fortran package manager
 
@@ -89,17 +92,18 @@ The Fortran package manager [`fpm`](https://github.com/fortran-lang/fpm) support
 
 ```toml
 [dependencies]
-toml-f = { git = "https://github.com/toml-f/toml-f" }
+toml-f.git = "https://github.com/toml-f/toml-f"
 ```
 
 Then build and test normally.
 
-``` shell
+```
 fpm build
 fpm test
 ```
 
 A more detailed example is described in [example 1](test/example-1).
+
 
 ## Documentation
 
