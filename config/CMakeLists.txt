@@ -13,6 +13,12 @@
 
 option(BUILD_SHARED_LIBS "Whether the libraries built should be shared" FALSE)
 
+set(
+  module-dir
+  "${PROJECT_NAME}/${CMAKE_Fortran_COMPILER_ID}-${CMAKE_Fortran_COMPILER_VERSION}"
+)
+set(module-dir "${module-dir}" PARENT_SCOPE)
+
 # Set build type as CMake does not provide defaults
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(
