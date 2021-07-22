@@ -6,4 +6,4 @@ Name: @PROJECT_NAME@
 Description: @PROJECT_DESCRIPTION@
 Version: @PROJECT_VERSION@
 Libs: -L${libdir} -l@PROJECT_NAME@
-Cflags: -I${includedir}
+Cflags: -I${includedir} -I${includedir}/@module-dir@

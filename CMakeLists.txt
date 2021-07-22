@@ -17,7 +17,7 @@ get_directory_property(is-subproject PARENT_DIRECTORY)
 project(
   "toml-f"
   LANGUAGES "Fortran"
-  VERSION "0.2.1"
+  VERSION "0.2.2"
   DESCRIPTION "A TOML parser implementation for data serialization and deserialization in Fortran"
 )
 
@@ -47,9 +47,10 @@ set_target_properties(
 )
 target_include_directories(
   "${PROJECT_NAME}-lib"
-  INTERFACE
+  PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${module-dir}>
 )
 
 if(NOT is-subproject OR BUILD_SHARED_LIBS)
