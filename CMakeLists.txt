@@ -76,7 +76,7 @@ if(NOT is-subproject OR BUILD_SHARED_LIBS)
   install(
     DIRECTORY
     "${CMAKE_CURRENT_BINARY_DIR}/include/"
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${module-dir}"
   )
   # Package license files
   install(
