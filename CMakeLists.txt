@@ -43,15 +43,18 @@ set_target_properties(
   OUTPUT_NAME "${PROJECT_NAME}"
   VERSION "${PROJECT_VERSION}"
   SOVERSION "${PROJECT_VERSION_MAJOR}"
-  Fortran_MODULE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/include"
+  Fortran_MODULE_DIRECTORY "${PROJECT_BINARY_DIR}/include"
 )
 target_include_directories(
   "${PROJECT_NAME}-lib"
   PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${module-dir}>
 )
+if(NOT EXISTS "${PROJECT_BINARY_DIR}/include")
+   make_directory("${PROJECT_BINARY_DIR}/include")
+endif()
 
 # Export targets for other projects
 add_library("${PROJECT_NAME}" INTERFACE)
@@ -74,7 +77,7 @@ install(
 )
 install(
   DIRECTORY
-  "${CMAKE_CURRENT_BINARY_DIR}/include/"
+  "${PROJECT_BINARY_DIR}/include/"
   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${module-dir}"
 )
 # Package license files
@@ -87,5 +90,5 @@ install(
 
 # add the testsuite
 enable_testing()
-set(fpm-toml "${CMAKE_CURRENT_SOURCE_DIR}/fpm.toml")
+set(fpm-toml "${PROJECT_SOURCE_DIR}/fpm.toml")
 add_subdirectory("test")
