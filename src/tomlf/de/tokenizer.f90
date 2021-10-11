@@ -553,7 +553,7 @@ recursive subroutine parse_array(de, array)
    !@:assert(de%tok%tok == toml_tokentype%lbracket)
 
    call de%next(.false.)
-   do
+   do while(.not.allocated(de%error))
       do while(de%tok%tok == toml_tokentype%newline)
          call de%next(.false.)
       end do
