@@ -2,98 +2,70 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="190mm"
-   height="190mm"
-   viewBox="0 0 190 189.99999"
+   width="35.987347mm"
+   height="36mm"
+   viewBox="0 0 35.987345 36"
    version="1.1"
-   id="svg8"
-   inkscape:version="0.92.4 5da689c313, 2019-01-14"
+   id="svg5"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
    sodipodi:docname="toml-f-favicon.svg"
-   inkscape:export-filename="/home/awvwgk/projects/src/github.com/fort-toml/assets/toml-f-128x128.png"
-   inkscape:export-xdpi="17.11158"
-   inkscape:export-ydpi="17.11158">
-  <defs
-     id="defs2" />
+   inkscape:export-filename="/home/awvwgk/projects/src/git/toml-fortran/assets/toml-f-32x32.png"
+   inkscape:export-xdpi="22.585716"
+   inkscape:export-ydpi="22.585716"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
   <sodipodi:namedview
-     id="base"
+     id="namedview7"
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="473.66555"
-     inkscape:cy="389.9528"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:snap-bbox="true"
-     inkscape:bbox-paths="false"
-     inkscape:snap-bbox-edge-midpoints="false"
-     inkscape:snap-midpoints="true"
-     inkscape:snap-smooth-nodes="true"
-     inkscape:snap-intersection-paths="true"
-     inkscape:snap-bbox-midpoints="true"
-     inkscape:snap-nodes="false"
-     inkscape:window-width="1366"
-     inkscape:window-height="709"
+     inkscape:zoom="1.35012"
+     inkscape:cx="83.696262"
+     inkscape:cy="-107.7682"
+     inkscape:window-width="1920"
+     inkscape:window-height="1020"
      inkscape:window-x="0"
-     inkscape:window-y="25"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:bbox-nodes="true" />
-  <metadata
-     id="metadata5">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
+     inkscape:current-layer="text2102" />
+  <defs
+     id="defs2" />
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-191.70776,-207.0101)">
-    <rect
-       style="opacity:1;fill:#7e74cc;fill-opacity:1;stroke:none;stroke-width:4.02948427;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
-       id="rect817"
-       width="190"
-       height="190"
-       x="191.70776"
-       y="207.0101"
-       ry="13.848691" />
-    <text
-       id="text6438"
-       y="351.14429"
-       x="187.73276"
-       style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:4.93888855px;line-height:1.25;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Heavy';letter-spacing:0px;word-spacing:0px;fill:#dde0d9;fill-opacity:1;stroke:none;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:176.74165344px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Heavy';fill:#dde0d9;fill-opacity:1;stroke:none;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         y="351.14429"
-         x="187.73276"
-         id="tspan6436"
-         sodipodi:role="line">[  ]</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:162.63052368px;line-height:1.25;font-family:'Source code Pro';-inkscape-font-specification:'Source code Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       x="237.91861"
-       y="362.43625"
-       id="text6442"><tspan
-         sodipodi:role="line"
-         id="tspan6440"
-         x="237.91861"
-         y="362.43625"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:162.63052368px;font-family:'Source code Pro';-inkscape-font-specification:'Source code Pro Bold';stroke:none;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">T</tspan></text>
+     transform="translate(-110.18463,-66.885078)">
+    <g
+       aria-label="[T.f]"
+       id="text2102"
+       style="font-weight:600;font-size:25.4px;line-height:1.25;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Semi-Bold';stroke-width:0.265">
+      <path
+         d="m 110.18463,95.079077 h 5.461 v -2.0828 h -2.54 v -17.6784 h 2.54 v -2.0828 h -5.461 z"
+         style="letter-spacing:-0.529167px;fill:#4e52a3"
+         id="path153787" />
+      <path
+         d="m 120.7129,92.747444 h 3.0226 v -14.0716 h 4.7752 v -2.54 h -12.573 v 2.54 h 4.7752 z"
+         style="letter-spacing:-3.43958px;fill:#de955e;fill-opacity:1"
+         id="path153789" />
+      <path
+         d="m 127.31898,93.052244 c 0.8382,0 1.524,-0.6604 1.524,-1.6002 0,-0.9652 -0.6858,-1.6256 -1.524,-1.6256 -0.8382,0 -1.524,0.6604 -1.524,1.6256 0,0.9398 0.6858,1.6002 1.524,1.6002 z"
+         style="font-weight:normal;-inkscape-font-specification:'Source Sans Pro';letter-spacing:-0.529167px;fill:#4e52a3"
+         id="path153791" />
+      <path
+         d="m 130.42619,92.747444 h 2.794 l 2.032,-10.287 h 2.3622 l 0.4572,-2.2098 h -2.3368 l 0.2794,-1.4732 c 0.2794,-1.397 0.9144,-2.032 1.8796,-2.032 0.5334,0 1.0414,0.1524 1.3462,0.3556 l 0.9144,-1.9304 c -0.7112,-0.4064 -1.5494,-0.6604 -2.4892,-0.6604 -2.5146,0 -3.937,1.8288 -4.445,4.3688 l -0.254,1.3716 -1.651,0.1524 -0.4318,2.0574 h 1.6256 z"
+         style="font-style:italic;-inkscape-font-specification:'Source Sans Pro Semi-Bold Italic';letter-spacing:2.24896px;fill:#a34e9c"
+         id="path153793" />
+      <path
+         d="m 140.70153,95.079077 h 5.461 v -21.844 h -5.461 v 2.0828 h 2.54 v 17.6784 h -2.54 z"
+         style="letter-spacing:0.661458px;fill:#4e52a3"
+         id="path153795" />
+    </g>
   </g>
 </svg>
