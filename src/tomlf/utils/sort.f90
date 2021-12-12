@@ -58,7 +58,6 @@ contains
       integer  :: low, high, i
       type(toml_key), allocatable  :: sorted(:)
       integer, allocatable :: indexarray(:)
-      procedure(compare_less), pointer :: compare_func
 
       low = 1
       high = size(list)
@@ -68,12 +67,10 @@ contains
       allocate(indexarray(high), source=[(i, i=low, high)])
 
       if (present(compare)) then
-         compare_func => compare
+         call quicksort(sorted, indexarray, low, high, compare)
       else
-         compare_func => compare_keys_less
+         call quicksort(sorted, indexarray, low, high, compare_keys_less)
       end if
-
-      call quicksort(sorted, indexarray, low, high, compare_func)
 
       do i = low, high
          list(i) = sorted(indexarray(i))
