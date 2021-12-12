@@ -67,9 +67,9 @@ contains
       allocate(indexarray(high), source=[(i, i=low, high)])
 
       if (present(compare)) then
-        call quicksort(sorted, indexarray, low, high, compare)
+         call quicksort(sorted, indexarray, low, high, compare)
       else
-        call quicksort(sorted, indexarray, low, high, compare_keys_less)
+         call quicksort(sorted, indexarray, low, high, compare_keys_less)
       end if
 
       do i = low, high
