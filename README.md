@@ -4,6 +4,7 @@
 [![Release](https://img.shields.io/github/v/release/toml-f/toml-f)](https://github.com/toml-f/toml-f/releases/latest)
 [![Build](https://github.com/toml-f/toml-f/workflows/CI/badge.svg)](https://github.com/toml-f/toml-f/actions)
 [![docs](https://github.com/toml-f/toml-f/workflows/docs/badge.svg)](https://toml-f.github.io/toml-f)
+[![Documentation Status](https://readthedocs.org/projects/toml-f/badge/?version=latest)](https://toml-f.readthedocs.io)
 [![codecov](https://codecov.io/gh/toml-f/toml-f/branch/master/graph/badge.svg)](https://codecov.io/gh/toml-f/toml-f)
 
 A TOML parser implementation for data serialization and deserialization in Fortran.
