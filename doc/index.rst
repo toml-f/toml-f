@@ -40,5 +40,6 @@ A typical package manifest for Fortran package manager (`fpm <https://fpm.fortra
 
 .. toctree::
 
+   Tutorials <tutorial/index>
    How-Tos <how-to/index>
    Reference <https://toml-f.github.io/toml-f>

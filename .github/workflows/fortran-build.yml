@@ -12,8 +12,6 @@ jobs:
 
         include:
           - os: macos-latest
-            gcc-v: 5
-          - os: macos-latest
             gcc-v: 6
           - os: ubuntu-latest
             gcc-v: 7

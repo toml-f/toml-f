@@ -13,7 +13,7 @@
 
 project = "toml-f"
 author = "Sebastian Ehlert"
-copyright = f"2019-2021, {author}"
+copyright = f"2019-2022, {author}"
 
 version = "0.2.2"
 release = version
@@ -38,9 +38,7 @@ html_theme_options = {
     "path_to_docs": "doc",
 }
 
-html_css_files = [
-    "css/custom.css",
-]
+html_css_files = []
 html_static_path = ["_static"]
 templates_path = ["_templates"]
 

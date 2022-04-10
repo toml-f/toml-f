@@ -4,9 +4,10 @@ How-to guides
 This section contains practical guides for working with TOML Fortran.
 Each recipe is tailored for a specific problem and use case it is trying to solve.
 
-.. note:: Contributions are welcome!
+.. admonition:: Contributions are welcome!
+   :class: note
 
-   If you have wrote on TOML Fortran and want to contribute to the documentation,
+   If you have written on TOML Fortran and want to contribute to the documentation,
    feel free to fork the repository and submit a pull request.
 
 
