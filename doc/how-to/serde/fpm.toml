@@ -1,0 +1,4 @@
+name = "demo"
+
+[dependencies]
+toml-f.path = "../../.."
