@@ -25,6 +25,9 @@ msgid ""
 "Each recipe is tailored for a specific problem and use case it is trying "
 "to solve."
 msgstr ""
+"Dieser Abschnitt enthält praktische Anleitungen für die Arbeit mit TOML "
+"Fortran. Jede Rezepte ist für eine bestimmte Problem- und Nutzungs-Szenarien "
+"angepasst."
 
 #: ../how-to/index.rst:7
 msgid "Contributions are welcome!"
@@ -36,6 +39,9 @@ msgid ""
 "documentation, feel free to fork the repository and submit a pull "
 "request."
 msgstr ""
+"Wenn Du über TOML Fortran geschrieben hast und zur Dokumentation "
+"beigetreten möchtest, dann kannst Du das Repository forken und eine Pull "
+"Request öffnen."
 
 #: ../how-to/installation.rst:2
 msgid "Installing TOML Fortran"
@@ -59,7 +65,7 @@ msgid ":fab:`apple` :fab:`linux` :fab:`windows` Installing from conda-forge"
 msgstr ":fab:`apple` :fab:`linux` :fab:`windows` Installation von conda-forge"
 
 msgid "Conda"
-msgstr ""
+msgstr "Conda"
 
 #: ../how-to/installation.rst:20
 msgid ""
@@ -105,7 +111,7 @@ msgid ":fab:`freebsd` FreeBSD ports"
 msgstr ":fab:`freebsd` FreeBSD Ports"
 
 msgid "FreeBSD"
-msgstr ""
+msgstr "FreeBSD"
 
 #: ../how-to/installation.rst:74
 msgid "A port for FreeBSD is available"
@@ -439,17 +445,20 @@ msgstr ""
 
 #: ../how-to/integration.rst:4
 msgid "Using TOML Fortran"
-msgstr ""
+msgstr "TOML Fortran verwenden"
 
 #: ../how-to/integration.rst:6
 msgid ""
 "This tutorial shows how to integrate the TOML Fortran library with your "
 "build system and use it easily in your project."
 msgstr ""
+"Dieses Tutorial zeigt, wie sich die TOML Fortran-Bibliothek mit Deinem "
+"Build-System integrieren kannst und sie einfach in Dein Projekt verwendest."
+
 
 #: ../how-to/integration.rst:10
 msgid "Using the Fortran package manager"
-msgstr ""
+msgstr "Mit dem Fortran-Paket-Manager verwenden"
 
 #: ../how-to/integration.rst:12
 msgid ""
@@ -458,6 +467,10 @@ msgid ""
 "libraries. To enable TOML Fortran in your fpm project add the following "
 "entry to your package manifest:"
 msgstr ""
+"Der Fortran-Paket-Manager (`fpm <https://fpm.fortran-lang.org/de>`_) ist ein "
+"Werkzeug zum Erstellen von Fortran-Projekten und Verwaltung von Abhängigkeiten "
+"von Fortran-Bibliotheken. Um TOML Fortran in Deinem fpm-Projekt zu "
+"aktivieren, füge folgenden Eintrag in Deinen Paket-Manifest ein:"
 
 #: ../how-to/integration.rst:15
 msgid "fpm.toml"
@@ -469,16 +482,22 @@ msgid ""
 "you and build it as part of your project. The TOML Fortran modules become"
 " useable in your project."
 msgstr ""
+"Wenn Du Dein Projekt baust, wird fpm automatisch TOML Fortran für Dich "
+"herunterladen und als Teil Deines Projekts kompilieren. Die TOML Fortran-Module "
+"werden in Deinem Projekt dann verfügbar gemacht."
 
 #: ../how-to/integration.rst:26
 msgid "Integrate with meson"
-msgstr ""
+msgstr "Mit meson integrieren"
 
 #: ../how-to/integration.rst:28
 msgid ""
 "To allow meson to use TOML Fortran it is easiest to include it as "
 "subproject using a git wrap file placed in the ``subprojects`` directory."
 msgstr ""
+"Um TOML Fortran in meson zu verwenden, ist es am einfachsten, wenn Du es als "
+"Unterprojekt mit einer git-Wrap-Datei im ``subprojects``-Verzeichnis "
+"einbindest."
 
 #: ../how-to/integration.rst:30
 msgid "subprojects/toml-f.wrap"
@@ -491,6 +510,11 @@ msgid ""
 "dependency method can be used to access TOML Fortran using the wrap file "
 "to define a fallback which is built on-demand."
 msgstr ""
+"Die Revision kann angepasst werden, um eine bestimmte Release-Tag von TOML "
+"Fortran festzulegen und die Stabilität zu erhöhen. In den Meson Build-Dateien "
+"kannst Du dann TOML Fortran als Abhängigkeit verwenden, dank der Wrap-Datei, "
+"wird eine Fallback-Version definiert und TOML Fortran kann bei Bedarf "
+"mitzukompiliert werden."
 
 #: ../how-to/integration.rst:41
 msgid "meson.build"
@@ -501,10 +525,12 @@ msgid ""
 "Finally, you can add ``tomlf_dep`` as dependency to any of your targets "
 "and are done."
 msgstr ""
+"Damit kannst Du ``tomlf_dep`` als Abhängigkeit zu einem beliebigen "
+"Ziel hinzufügen und bist fertig."
 
 #: ../how-to/integration.rst:56
 msgid "Integrate with CMake"
-msgstr ""
+msgstr "Mit CMake integrieren"
 
 #: ../how-to/integration.rst:58
 msgid ""
@@ -513,6 +539,10 @@ msgid ""
 "as discovery of installed packages from both meson and CMake based "
 "builds."
 msgstr ""
+"Um TOML Fortran in CMake-basierten Projekten zu verwenden, ist es nützlich, "
+"ein eigenes find-Modul zu definieren, um TOML Fortran entweder bei Bedarf "
+"mitzukompiliert oder auch die Installation von installierten Paketen von "
+"sowohl meson als auch CMake-basierten Builds zu ermöglichen."
 
 #: ../how-to/integration.rst:68
 msgid ""
@@ -521,6 +551,10 @@ msgid ""
 "``find_package`` to obtain the ``toml-f::toml-f`` target and link against"
 " it."
 msgstr ""
+"In Deiner primären CMake-Build Datei musst Du das eigene find-Modul in "
+"Deinem ``CMAKE_MODULE_PATH`` einbinden, danach kannst Du ``find_package`` "
+"verwenden, um das ``toml-f::toml-f``-Ziel zu erhalten und dagegen zu "
+"verlinken."
 
 #: ../how-to/integration.rst:70
 msgid "CMakeLists.txt"
@@ -533,14 +567,18 @@ msgid ""
 " used in your project. Finally we need some boilerplate to define the "
 "custom find-module is documented below."
 msgstr ""
+"Beachte, dass wir auch die find-Module installieren, das ist wichtig, wenn "
+"Du Deine CMake-Projekte in der gleichen Weise wie TOML Fortran in anderen "
+"Projekt verwenden kannst. Zuletzt brauchst Du ein paar Zeilen Code, um das "
+"eigene find-Modul zu definieren, siehe unten."
 
 #: ../how-to/integration.rst:115
 msgid "Imported Targets"
-msgstr ""
+msgstr "Importierte Ziele"
 
 #: ../how-to/integration.rst:117
 msgid "This module provides the following imported target, if found:"
-msgstr ""
+msgstr "Dieses Modul stellt folgende importierte Ziele bereit, falls es gefunden wurde:"
 
 #: ../how-to/integration.rst:121
 msgid "``toml-f::toml-f``"
@@ -548,15 +586,15 @@ msgstr ""
 
 #: ../how-to/integration.rst:120
 msgid "The toml-f library"
-msgstr ""
+msgstr "Die toml-f Bibliothek"
 
 #: ../how-to/integration.rst:124
 msgid "Result Variables"
-msgstr ""
+msgstr "Ergebnisvariablen"
 
 #: ../how-to/integration.rst:126
 msgid "This module will define the following variables:"
-msgstr ""
+msgstr "Dieses Modul definiert folgende Variablen:"
 
 #: ../how-to/integration.rst:129
 msgid "``TOML_FORTRAN_FOUND``"
@@ -564,7 +602,7 @@ msgstr ""
 
 #: ../how-to/integration.rst:129
 msgid "True if the toml-f library is available"
-msgstr ""
+msgstr "Wahr wenn die toml-f Bibliothek verfügbar ist"
 
 #: ../how-to/integration.rst:133
 msgid "``TOML_FORTRAN_SOURCE_DIR``"
@@ -575,6 +613,8 @@ msgid ""
 "Path to the source directory of the toml-f project, only set if the "
 "project is included as source."
 msgstr ""
+"Pfad zum Quellverzeichnis des toml-f Projekts, nur gesetzt, wenn das "
+"Projekt als Quellcode eingebunden wird."
 
 #: ../how-to/integration.rst:137
 msgid "``TOML_FORTRAN_BINARY_DIR``"
@@ -585,16 +625,20 @@ msgid ""
 "Path to the binary directory of the toml-f project, only set if the "
 "project is included as source."
 msgstr ""
+"Pfad zum Buildverzeichnis des toml-f Projekts, nur gesetzt, wenn das "
+"Projekt als Quellcode eingebunden wird."
 
 #: ../how-to/integration.rst:140
 msgid "Cache variables"
-msgstr ""
+msgstr "Cachevariablen"
 
 #: ../how-to/integration.rst:142
 msgid ""
 "The following cache variables may be set to influence the library "
 "detection:"
 msgstr ""
+"Die folgenden Cachevariablen können gesetzt werden um die Einbindung "
+"der Bibliothek zu beeinflussen:"
 
 #: ../how-to/integration.rst:150
 msgid "``TOML_FORTRAN_FIND_METHOD``"
@@ -602,23 +646,23 @@ msgstr ""
 
 #: ../how-to/integration.rst:145
 msgid "Methods to find or make the project available. Available methods are"
-msgstr ""
+msgstr "Möglichkeiten zum Finden oder zum Erstellen des Projekts. Verfügbar sind "
 
 #: ../how-to/integration.rst:147
 msgid "``cmake``: Try to find via CMake config file"
-msgstr ""
+msgstr "``cmake``: Versuche via CMake Konfigurationsdatei zu finden"
 
 #: ../how-to/integration.rst:148
 msgid "``pkgconf``: Try to find via pkg-config file"
-msgstr ""
+msgstr "``pkgconf``: Versuche via pkg-config Datei zu finden"
 
 #: ../how-to/integration.rst:149
 msgid "``subproject``: Use source in subprojects directory"
-msgstr ""
+msgstr "``subproject``: Verwende Quellcode in Unterprojektverzeichnis"
 
 #: ../how-to/integration.rst:150
 msgid "``fetch``: Fetch the source from upstream"
-msgstr ""
+msgstr "``fetch``: Hole den Quellcode vom Upstream Repository"
 
 #: ../how-to/integration.rst:153
 msgid "``TOML_FORTRAN_DIR``"
@@ -626,7 +670,7 @@ msgstr ""
 
 #: ../how-to/integration.rst:153
 msgid "Used for searching the CMake config file"
-msgstr ""
+msgstr "Wird für die Suche der CMake Konfigurationsdatei verwendet"
 
 #: ../how-to/integration.rst:156
 msgid "``TOML_FORTRAN_SUBPROJECT``"
@@ -634,16 +678,16 @@ msgstr ""
 
 #: ../how-to/integration.rst:156
 msgid "Directory to find the toml-f subproject, relative to the project root"
-msgstr ""
+msgstr "Verzeichnis zum Finden des toml-f Unterprojekts, relativ zum Projekt "
+"Wurzelverzeichnis"
 
 #: ../how-to/integration.rst:158
 msgid "cmake/Findtoml-f.cmake"
 msgstr ""
 
 #: ../how-to/integration.rst:280
-#, fuzzy
 msgid "Other build systems"
-msgstr "Eines der unterstützten Buildsysteme"
+msgstr "Andere Buildsysteme"
 
 #: ../how-to/integration.rst:282
 msgid ""
@@ -655,6 +699,14 @@ msgid ""
 "Fortran library. First check if the ``pkg-config`` tool is available and "
 "can discover TOML Fortran"
 msgstr ""
+"Andere Buildsysteme müssen eine vorkompilierte TOML Fortran Bibliothek "
+"auf dem System finden und nutzen. Dazu wird das ``pkg-config`` Tool "
+"verwendet. Nach der Installation von TOML Fortran mit Meson oder CMake "
+"wird eine pc-Datei erzeugt, die von ``pkg-config`` gefunden werden kann "
+"und beschreibt, wie gegen die installierten Moduldateien kompiliert "
+"werden kann und wie sich die TOML Fortran Bibliothek verlinken lässt."
+"Zunächst prüfe, ob das ``pkg-config`` Tool verfügbar ist und TOML "
+"Fortran gefunden werden kann."
 
 #: ../how-to/integration.rst:291
 msgid ""
@@ -663,8 +715,12 @@ msgid ""
 "``--cflags`` options the libraries to link against as well as the include"
 " directories can be obtained:"
 msgstr ""
+"Stelle sicher, dass die Umgebungsvariable ``PKG_CONFIG_PATH`` auf "
+"das richtige Installationsverzeichnis zeigt. Mit den ``--libs`` und "
+"``--cflags`` Optionen können die Bibliotheken, die verlinkt werden sollen, "
+"und die Include-Verzeichnisse erhalten werden:"
 
 #: ../how-to/integration.rst:299
 msgid "In a handwritten Makefile those can be included by"
-msgstr ""
+msgstr "In einem handgeschriebenen Makefile können diese wie folgt genutzt werden"
 
