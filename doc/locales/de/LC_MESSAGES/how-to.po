@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toml-f 0.2.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-10 18:28+0200\n"
+"POT-Creation-Date: 2022-04-10 20:16+0200\n"
 "PO-Revision-Date: 2022-04-10 18:03+0200\n"
 "Last-Translator: Sebastian Ehlert\n"
 "Language-Team: \n"
@@ -26,8 +26,8 @@ msgid ""
 "to solve."
 msgstr ""
 "Dieser Abschnitt enthält praktische Anleitungen für die Arbeit mit TOML "
-"Fortran. Jede Rezepte ist für eine bestimmte Problem- und Nutzungs-Szenarien "
-"angepasst."
+"Fortran. Jede Rezepte ist für eine bestimmte Problem- und Nutzungs-"
+"Szenarien angepasst."
 
 #: ../how-to/index.rst:7
 msgid "Contributions are welcome!"
@@ -453,8 +453,8 @@ msgid ""
 "build system and use it easily in your project."
 msgstr ""
 "Dieses Tutorial zeigt, wie sich die TOML Fortran-Bibliothek mit Deinem "
-"Build-System integrieren kannst und sie einfach in Dein Projekt verwendest."
-
+"Build-System integrieren kannst und sie einfach in Dein Projekt "
+"verwendest."
 
 #: ../how-to/integration.rst:10
 msgid "Using the Fortran package manager"
@@ -467,10 +467,11 @@ msgid ""
 "libraries. To enable TOML Fortran in your fpm project add the following "
 "entry to your package manifest:"
 msgstr ""
-"Der Fortran-Paket-Manager (`fpm <https://fpm.fortran-lang.org/de>`_) ist ein "
-"Werkzeug zum Erstellen von Fortran-Projekten und Verwaltung von Abhängigkeiten "
-"von Fortran-Bibliotheken. Um TOML Fortran in Deinem fpm-Projekt zu "
-"aktivieren, füge folgenden Eintrag in Deinen Paket-Manifest ein:"
+"Der Fortran-Paket-Manager (`fpm <https://fpm.fortran-lang.org/de>`_) ist "
+"ein Werkzeug zum Erstellen von Fortran-Projekten und Verwaltung von "
+"Abhängigkeiten von Fortran-Bibliotheken. Um TOML Fortran in Deinem fpm-"
+"Projekt zu aktivieren, füge folgenden Eintrag in Deinen Paket-Manifest "
+"ein:"
 
 #: ../how-to/integration.rst:15
 msgid "fpm.toml"
@@ -483,8 +484,8 @@ msgid ""
 " useable in your project."
 msgstr ""
 "Wenn Du Dein Projekt baust, wird fpm automatisch TOML Fortran für Dich "
-"herunterladen und als Teil Deines Projekts kompilieren. Die TOML Fortran-Module "
-"werden in Deinem Projekt dann verfügbar gemacht."
+"herunterladen und als Teil Deines Projekts kompilieren. Die TOML Fortran-"
+"Module werden in Deinem Projekt dann verfügbar gemacht."
 
 #: ../how-to/integration.rst:26
 msgid "Integrate with meson"
@@ -495,8 +496,8 @@ msgid ""
 "To allow meson to use TOML Fortran it is easiest to include it as "
 "subproject using a git wrap file placed in the ``subprojects`` directory."
 msgstr ""
-"Um TOML Fortran in meson zu verwenden, ist es am einfachsten, wenn Du es als "
-"Unterprojekt mit einer git-Wrap-Datei im ``subprojects``-Verzeichnis "
+"Um TOML Fortran in meson zu verwenden, ist es am einfachsten, wenn Du es "
+"als Unterprojekt mit einer git-Wrap-Datei im ``subprojects``-Verzeichnis "
 "einbindest."
 
 #: ../how-to/integration.rst:30
@@ -510,11 +511,11 @@ msgid ""
 "dependency method can be used to access TOML Fortran using the wrap file "
 "to define a fallback which is built on-demand."
 msgstr ""
-"Die Revision kann angepasst werden, um eine bestimmte Release-Tag von TOML "
-"Fortran festzulegen und die Stabilität zu erhöhen. In den Meson Build-Dateien "
-"kannst Du dann TOML Fortran als Abhängigkeit verwenden, dank der Wrap-Datei, "
-"wird eine Fallback-Version definiert und TOML Fortran kann bei Bedarf "
-"mitzukompiliert werden."
+"Die Revision kann angepasst werden, um eine bestimmte Release-Tag von "
+"TOML Fortran festzulegen und die Stabilität zu erhöhen. In den Meson "
+"Build-Dateien kannst Du dann TOML Fortran als Abhängigkeit verwenden, "
+"dank der Wrap-Datei, wird eine Fallback-Version definiert und TOML "
+"Fortran kann bei Bedarf mitzukompiliert werden."
 
 #: ../how-to/integration.rst:41
 msgid "meson.build"
@@ -525,8 +526,8 @@ msgid ""
 "Finally, you can add ``tomlf_dep`` as dependency to any of your targets "
 "and are done."
 msgstr ""
-"Damit kannst Du ``tomlf_dep`` als Abhängigkeit zu einem beliebigen "
-"Ziel hinzufügen und bist fertig."
+"Damit kannst Du ``tomlf_dep`` als Abhängigkeit zu einem beliebigen Ziel "
+"hinzufügen und bist fertig."
 
 #: ../how-to/integration.rst:56
 msgid "Integrate with CMake"
@@ -539,10 +540,10 @@ msgid ""
 "as discovery of installed packages from both meson and CMake based "
 "builds."
 msgstr ""
-"Um TOML Fortran in CMake-basierten Projekten zu verwenden, ist es nützlich, "
-"ein eigenes find-Modul zu definieren, um TOML Fortran entweder bei Bedarf "
-"mitzukompiliert oder auch die Installation von installierten Paketen von "
-"sowohl meson als auch CMake-basierten Builds zu ermöglichen."
+"Um TOML Fortran in CMake-basierten Projekten zu verwenden, ist es "
+"nützlich, ein eigenes find-Modul zu definieren, um TOML Fortran entweder "
+"bei Bedarf mitzukompiliert oder auch die Installation von installierten "
+"Paketen von sowohl meson als auch CMake-basierten Builds zu ermöglichen."
 
 #: ../how-to/integration.rst:68
 msgid ""
@@ -552,8 +553,8 @@ msgid ""
 " it."
 msgstr ""
 "In Deiner primären CMake-Build Datei musst Du das eigene find-Modul in "
-"Deinem ``CMAKE_MODULE_PATH`` einbinden, danach kannst Du ``find_package`` "
-"verwenden, um das ``toml-f::toml-f``-Ziel zu erhalten und dagegen zu "
+"Deinem ``CMAKE_MODULE_PATH`` einbinden, danach kannst Du ``find_package``"
+" verwenden, um das ``toml-f::toml-f``-Ziel zu erhalten und dagegen zu "
 "verlinken."
 
 #: ../how-to/integration.rst:70
@@ -567,10 +568,10 @@ msgid ""
 " used in your project. Finally we need some boilerplate to define the "
 "custom find-module is documented below."
 msgstr ""
-"Beachte, dass wir auch die find-Module installieren, das ist wichtig, wenn "
-"Du Deine CMake-Projekte in der gleichen Weise wie TOML Fortran in anderen "
-"Projekt verwenden kannst. Zuletzt brauchst Du ein paar Zeilen Code, um das "
-"eigene find-Modul zu definieren, siehe unten."
+"Beachte, dass wir auch die find-Module installieren, das ist wichtig, "
+"wenn Du Deine CMake-Projekte in der gleichen Weise wie TOML Fortran in "
+"anderen Projekt verwenden kannst. Zuletzt brauchst Du ein paar Zeilen "
+"Code, um das eigene find-Modul zu definieren, siehe unten."
 
 #: ../how-to/integration.rst:115
 msgid "Imported Targets"
@@ -578,7 +579,9 @@ msgstr "Importierte Ziele"
 
 #: ../how-to/integration.rst:117
 msgid "This module provides the following imported target, if found:"
-msgstr "Dieses Modul stellt folgende importierte Ziele bereit, falls es gefunden wurde:"
+msgstr ""
+"Dieses Modul stellt folgende importierte Ziele bereit, falls es gefunden "
+"wurde:"
 
 #: ../how-to/integration.rst:121
 msgid "``toml-f::toml-f``"
@@ -637,8 +640,8 @@ msgid ""
 "The following cache variables may be set to influence the library "
 "detection:"
 msgstr ""
-"Die folgenden Cachevariablen können gesetzt werden um die Einbindung "
-"der Bibliothek zu beeinflussen:"
+"Die folgenden Cachevariablen können gesetzt werden um die Einbindung der "
+"Bibliothek zu beeinflussen:"
 
 #: ../how-to/integration.rst:150
 msgid "``TOML_FORTRAN_FIND_METHOD``"
@@ -678,7 +681,8 @@ msgstr ""
 
 #: ../how-to/integration.rst:156
 msgid "Directory to find the toml-f subproject, relative to the project root"
-msgstr "Verzeichnis zum Finden des toml-f Unterprojekts, relativ zum Projekt "
+msgstr ""
+"Verzeichnis zum Finden des toml-f Unterprojekts, relativ zum Projekt "
 "Wurzelverzeichnis"
 
 #: ../how-to/integration.rst:158
@@ -704,8 +708,8 @@ msgstr ""
 "verwendet. Nach der Installation von TOML Fortran mit Meson oder CMake "
 "wird eine pc-Datei erzeugt, die von ``pkg-config`` gefunden werden kann "
 "und beschreibt, wie gegen die installierten Moduldateien kompiliert "
-"werden kann und wie sich die TOML Fortran Bibliothek verlinken lässt."
-"Zunächst prüfe, ob das ``pkg-config`` Tool verfügbar ist und TOML "
+"werden kann und wie sich die TOML Fortran Bibliothek verlinken "
+"lässt.Zunächst prüfe, ob das ``pkg-config`` Tool verfügbar ist und TOML "
 "Fortran gefunden werden kann."
 
 #: ../how-to/integration.rst:291
@@ -715,12 +719,93 @@ msgid ""
 "``--cflags`` options the libraries to link against as well as the include"
 " directories can be obtained:"
 msgstr ""
-"Stelle sicher, dass die Umgebungsvariable ``PKG_CONFIG_PATH`` auf "
-"das richtige Installationsverzeichnis zeigt. Mit den ``--libs`` und "
-"``--cflags`` Optionen können die Bibliotheken, die verlinkt werden sollen, "
-"und die Include-Verzeichnisse erhalten werden:"
+"Stelle sicher, dass die Umgebungsvariable ``PKG_CONFIG_PATH`` auf das "
+"richtige Installationsverzeichnis zeigt. Mit den ``--libs`` und "
+"``--cflags`` Optionen können die Bibliotheken, die verlinkt werden "
+"sollen, und die Include-Verzeichnisse erhalten werden:"
 
 #: ../how-to/integration.rst:299
 msgid "In a handwritten Makefile those can be included by"
 msgstr "In einem handgeschriebenen Makefile können diese wie folgt genutzt werden"
 
+#: ../how-to/serde.rst:2
+msgid "Serializable base class"
+msgstr "Serialisierbare Basisklasse"
+
+#: ../how-to/serde.rst:4
+msgid ""
+"This recipe shows how to create a serializable class based on TOML "
+"Fortran. Currently, TOML Fortran does not define such a base class "
+"itself, therefore we define a loader and dumper interface for turning a "
+"file or connected unit into a data structure. The abstract base class "
+"will implement the processing of the file or unit to a TOML data "
+"structure and pass it to a deferred procedure which the implementing "
+"class uses to define its mapping from and back to the TOML data "
+"structure. This way an easily round-tripable data structure can be "
+"created and used in a variety of contexts."
+msgstr ""
+"Dieses Rezept zeigt, wie eine serialisierbare Klasse auf TOML Fortran "
+"basierend konstruiert werden kann. Momentan ist TOML Fortran selbst "
+"keine Klasse als Basis für eine serialisierbare Klasse, daher werden "
+"wir eine Loader- und Dumper-Schnittstelle definieren, um eine Datei "
+"oder eine verbundene Unit in eine Datenstruktur zu konvertieren. Die "
+"abstrakte Basisklasse implementiert die Verarbeitung der Datei oder "
+"der Unit in eine TOML Datenstruktur und leitet diese an eine "
+"deferred Prozedur weiter, die in der Klasse implementiert wird um, "
+"ein Mapping von der TOML Datenstruktur and zurück zu definieren. "
+"Diese Art von Datenstruktur kann in verschiedenen Kontexten genutzt "
+"werden and einfach in TOML und zurück transferiert werden."
+
+#: ../how-to/serde.rst:11
+msgid ""
+"TOML Fortran might provide such abstract base class in the future "
+"natively."
+msgstr ""
+"TOML Fortran könnte in Zukunft selbst eine solche abstrakte Basisklasse "
+"bereitstellen."
+
+#: ../how-to/serde.rst:13
+msgid "The base class can be defined as"
+msgstr "Die Basisklasse kann wie folgt definiert werden"
+
+#: ../how-to/serde.rst:15
+msgid "src/serde_class.f90"
+msgstr ""
+
+#: ../how-to/serde.rst:19
+msgid ""
+"We also define a convenience error handler which holds the error message "
+"and signals its error status by its allocation state."
+msgstr ""
+"Wir definieren auch einen Fehler-Handler, der die Fehlermeldung "
+"speichert und den Fehlerstatus durch seinen Allokationstatus signalisiert."
+
+#: ../how-to/serde.rst:21
+msgid "src/serde_error.f90"
+msgstr ""
+
+#: ../how-to/serde.rst:25
+msgid ""
+"An example for a serializable class based on the above base class is "
+"given below."
+msgstr ""
+"Ein Beispiel für eine serialisierbare Klasse basierend auf der oben "
+"gegebenen Basisklasse ist unten aufgeführt."
+
+#: ../how-to/serde.rst:27
+msgid "src/demo.f90"
+msgstr ""
+
+#: ../how-to/serde.rst:31
+msgid ""
+"The defined data class can in an application easily be loaded from a "
+"file, while the actual implementation does not have to deal with getting "
+"the TOML data structure from the file but can assume that if the "
+"configuration file was valid TOML it will be provided with a data "
+"structure to read from."
+msgstr ""
+"Die definierte Datenklasse kann in einer Anwendung einfach aus einer "
+"Datei geladen werden, während die tatsächliche Implementierung sich "
+"nicht um das Lesen der TOML Datenstruktur kümmert, sondern kann sich "
+"auch darauf verlassen, dass wenn die Konfigurationsdatei gültiges "
+"TOML war, eine Datenstruktur zum Lesen bereitsteht."

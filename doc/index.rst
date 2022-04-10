@@ -23,6 +23,10 @@ TOML Fortran library
    :alt: API docs
    :target: https://toml-f.github.io/toml-f
 
+.. image:: https://readthedocs.org/projects/toml-f/badge/?version=latest
+   :target: https://toml-f.readthedocs.io
+   :alt: Documentation Status
+
 .. image:: https://codecov.io/gh/toml-f/toml-f/branch/master/graph/badge.svg
    :alt: Coverage
    :target: https://codecov.io/gh/toml-f/toml-f
@@ -43,3 +47,4 @@ A typical package manifest for Fortran package manager (`fpm <https://fpm.fortra
    Tutorials <tutorial/index>
    How-Tos <how-to/index>
    References <https://toml-f.github.io/toml-f>
+   external
