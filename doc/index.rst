@@ -43,3 +43,4 @@ A typical package manifest for Fortran package manager (`fpm <https://fpm.fortra
    Tutorials <tutorial/index>
    How-Tos <how-to/index>
    References <https://toml-f.github.io/toml-f>
+   external
