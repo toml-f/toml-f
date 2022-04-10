@@ -96,12 +96,14 @@ if not meson.is_subproject() and go_exe.found()
       args: ['-testdir', compliance_testdir, toml2json_exe],
       env: validator_env,
     )
-    test(
-      'encoder',
-      toml_test,
-      args: ['-encoder', '-testdir', validator_testdir, json2toml_exe],
-      env: validator_env,
-    )
+    if os != 'windows'
+      test(
+        'encoder',
+        toml_test,
+        args: ['-encoder', '-testdir', validator_testdir, json2toml_exe],
+        env: validator_env,
+      )
+    endif
     # This is the original BurntSushi/toml-test suite
     # -> this will currently fail due to the missing Unicode support in toml-f
     benchmark(
