@@ -25,7 +25,7 @@ module tomlf_build_keyval
       & new_table, new_array, new_keyval, add_table, add_array, add_keyval, len
    use tomlf_utils, only : toml_raw_to_string, toml_raw_to_float, &
       & toml_raw_to_bool, toml_raw_to_integer, toml_raw_to_timestamp, &
-      & toml_raw_verify_string
+      & toml_raw_verify_string, toml_escape_string
    implicit none
    private
 
@@ -460,13 +460,16 @@ subroutine set_value_string(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   character(len=:), allocatable :: escaped
+
    if (toml_raw_verify_string(val)) then
       self%raw = val
    else
-      if (index(val, TOML_NEWLINE) > 0) then
-         self%raw = '"""' // val // '"""'
+      call toml_escape_string(val, escaped, .true.)
+      if (index(escaped, TOML_NEWLINE) > 0) then
+         self%raw = '"""' // escaped // '"""'
       else
-         self%raw = '"' // val // '"'
+         self%raw = '"' // escaped // '"'
       end if
    end if
 

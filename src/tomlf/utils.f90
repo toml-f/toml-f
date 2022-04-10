@@ -66,7 +66,7 @@ end function
 
 
 !> Escape all special characters in a TOML string
-subroutine toml_escape_string(raw, escaped)
+subroutine toml_escape_string(raw, escaped, multiline)
 
    !> Raw representation of TOML string
    character(kind=tfc, len=*), intent(in) :: raw
@@ -74,7 +74,14 @@ subroutine toml_escape_string(raw, escaped)
    !> Escaped view of the TOML string
    character(kind=tfc, len=:), allocatable, intent(out) :: escaped
 
+   !> Preserve newline characters
+   logical, intent(in), optional :: multiline
+
    integer :: i
+   logical :: preserve_newline
+
+   preserve_newline = .false.
+   if (present(multiline)) preserve_newline = multiline
 
    escaped = '"'
    do i = 1, len(raw)
@@ -82,7 +89,12 @@ subroutine toml_escape_string(raw, escaped)
       case default; escaped = escaped // raw(i:i)
       case('\'); escaped = escaped // '\\'
       case('"'); escaped = escaped // '\"'
-      case(TOML_NEWLINE); escaped = escaped // '\n'
+      case(TOML_NEWLINE)
+         if (preserve_newline) then
+            escaped = escaped // raw(i:i)
+         else
+            escaped = escaped // '\n'
+         end if
       case(TOML_FORMFEED); escaped = escaped // '\f'
       case(TOML_CARRIAGE_RETURN); escaped = escaped // '\r'
       case(TOML_TABULATOR); escaped = escaped // '\t'
