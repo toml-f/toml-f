@@ -9,3 +9,8 @@ Each tutorial is a full example for a specific application covering several aspe
 
    If you have written on TOML Fortran and want to contribute to the documentation,
    feel free to fork the repository and submit a pull request.
+
+
+.. toctree::
+
+   getting-started
