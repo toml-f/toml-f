@@ -96,7 +96,7 @@ To build this project from the source code in this repository you need to have
 - One of the supported build systems
 
   - `meson <https://mesonbuild.com>`_ version 0.53 or newer
-  - `CMake <https://cmake.org/>`_ version 3.9 or newer and
+  - `CMake <https://cmake.org/>`_ version 3.9 or newer
 
 First, get the source by cloning the repository
 

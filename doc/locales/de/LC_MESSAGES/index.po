@@ -1,0 +1,81 @@
+# Copyright (C) 2019-2022, Sebastian Ehlert
+# This file is distributed under the same license as the toml-f package.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: toml-f 0.2.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-10 18:05+0200\n"
+"PO-Revision-Date: 2022-04-10 18:05+0200\n"
+"Last-Translator: Sebastian Ehlert\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../index.rst:41
+msgid "Tutorials"
+msgstr "Tutorials"
+
+#: ../index.rst:41
+msgid "How-Tos"
+msgstr "How-Tos"
+
+#: ../index.rst:41
+msgid "References"
+msgstr "Referenzen"
+
+#: ../index.rst:4 0ece6747527a4fd1a9958d6d1f77d0c2
+msgid "TOML Fortran library"
+msgstr "TOML Fortran Bibliothek"
+
+#: 28ee8af67b024adf81dad84837cf4fad
+msgid "TOML Fortran"
+msgstr "TOML Fortran"
+
+#: 27e3e5d804814b5ea7ee78acb164733a
+msgid "License"
+msgstr "Lizenz"
+
+#: 2d570eb06f004152a57cb401f4d87ca0
+msgid "Version"
+msgstr "Version"
+
+#: 6000ec23f9714251bcac14523421be6a
+msgid "Continuous Integration"
+msgstr "Continuous Integration"
+
+#: 2c734c6b25df4610aef90890cdc49c28
+msgid "API docs"
+msgstr "API Dokumentation"
+
+#: 1c2fda70ebe5452f90a0eb94d58fe596
+msgid "Coverage"
+msgstr "Coverage"
+
+#: ../index.rst:31 8d7a0d289f7d427cb746306767a027bb
+msgid ""
+"This project provides a library to work with `TOML <https://toml.io>`_ "
+"files and data structures and allows to define data serialization and "
+"deserialization in Fortran. The currently supported TOML standard is "
+"`version 1.0.0 <https://toml.io/en/v1.0.0>`__."
+msgstr ""
+"Dieses Projekt stellt eine Bibliothek um mit `TOML <https://toml.io>`_ "
+"Dokumenten zu arbeiten, Datenstrukturen zu definieren und diese mit Fortran "
+"zu serialisieren und zu deserialisieren. "
+"Derzeit wird der `TOML Standard <https://toml.io/en/v1.0.0>`__ unterstützt."
+
+#: ../index.rst:34 5b71ee64f7614482968f7fd82d8664ca
+msgid ""
+"A typical package manifest for Fortran package manager (`fpm <https://fpm"
+".fortran-lang.org>`_) specified in TOML is shown below"
+msgstr ""
+"Ein typisches Paketmanifest für den Fortran Paketmanager (`fpm <https://fpm"
+".fortran-lang.org/de>`_) in TOML wird unten gezeigt"
+
+#: ../index.rst:36 9b99d244373c4e98bb5ba6102cc9ca50
+msgid "fpm.toml"
+msgstr ""
+

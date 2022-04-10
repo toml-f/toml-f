@@ -41,5 +41,6 @@ html_theme_options = {
 html_css_files = []
 html_static_path = ["_static"]
 templates_path = ["_templates"]
+locale_dirs = ["locales"]
 
 master_doc = "index"

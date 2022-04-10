@@ -1,5 +1,5 @@
-Tutorials courses
-=================
+Tutorial courses
+================
 
 This section contains self-contained courses teaching the usage of TOML Fortran.
 Each tutorial is a full example for a specific application covering several aspects of the library.
