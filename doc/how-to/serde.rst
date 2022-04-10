@@ -1,5 +1,5 @@
-Serializable abstract base class
-================================
+Serializable base class
+=======================
 
 This recipe shows how to create a serializable class based on TOML Fortran.
 Currently, TOML Fortran does not define such a base class itself, therefore we define a loader and dumper interface for turning a file or connected unit into a data structure.
@@ -19,13 +19,13 @@ The base class can be defined as
 We also define a convenience error handler which holds the error message and signals its error status by its allocation state.
 
 .. literalinclude:: serde/src/serde_error.f90
-   :caption: src/serde_class.f90
+   :caption: src/serde_error.f90
    :language: fortran
 
 An example for a serializable class based on the above base class is given below.
 
 .. literalinclude:: serde/src/demo.f90
-   :caption: src/serde_class.f90
+   :caption: src/demo.f90
    :language: fortran
 
 The defined data class can in an application easily be loaded from a file, while the actual implementation does not have to deal with getting the TOML data structure from the file but can assume that if the configuration file was valid TOML it will be provided with a data structure to read from.
