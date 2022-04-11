@@ -14,7 +14,7 @@
 !> Wrapper for the testsuites
 program tftester
    use, intrinsic :: iso_fortran_env, only : error_unit
-   use tftest_testsuite, only : run_testsuite
+   use testdrive, only : run_testsuite
    use tftest_build, only : collect_build
    use tftest_sort, only : collect_sort
    implicit none

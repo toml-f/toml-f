@@ -13,3 +13,9 @@ source-dir = "src"
 
 [build]
 auto-tests = false
+
+[[test]]
+name = "tftest"
+source-dir = "test/tftest"
+[test.dependencies]
+test-drive.git = "https://github.com/fortran-lang/test-drive.git"

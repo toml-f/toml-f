@@ -465,12 +465,7 @@ subroutine set_value_string(self, val, stat)
    if (toml_raw_verify_string(val)) then
       self%raw = val
    else
-      call toml_escape_string(val, escaped, .true.)
-      if (index(escaped, TOML_NEWLINE) > 0) then
-         self%raw = '"""' // escaped // '"""'
-      else
-         self%raw = '"' // escaped // '"'
-      end if
+      call toml_escape_string(val, self%raw, .true.)
    end if
 
    if (present(stat)) stat = toml_stat%success
