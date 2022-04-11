@@ -21,6 +21,8 @@ program tftester
    integer :: stat
    character(len=*), parameter :: fmt = '("#", *(1x, a))'
 
+   stat = 0
+
    write(error_unit, fmt) repeat('-', 72)
    write(error_unit, fmt) "Testing:", "build"
    call run_testsuite(collect_build, error_unit, stat)
