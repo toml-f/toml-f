@@ -182,16 +182,16 @@ Compilers with the label *latest* are tested with continuous integration for eac
 ========== =========================== ==================== ============== ===============
  Compiler   Version                     Platform             Architecture   version
 ========== =========================== ==================== ============== ===============
- GCC        11.1, 10.3, 9.4, 8.5, 7.5   Ubuntu 20.04         x86_64         0.2.2, latest
- GCC        9.4, 6.5                    MacOS 10.15.7        x86_64         0.2.2, latest
- GCC        11.0                        MacOS 11.0           arm64          0.2.2
- GCC        9.4                         CentOS 7             ppc64le        0.2.2
- GCC        9.4                         CentOS 7             aarch64        0.2.2
- GCC/MinGW  8.1                         Window Server 2019   x86_64         0.2.2, latest
- GCC/MinGW  5.3                         Window Server 2019   x86_64         0.2.2 
- Intel      2022.0                      Ubuntu 20.04         x86_64         0.2.2, latest
- Intel      19                          OpenSUSE             x86_64         0.2.2
- NAG        7.1                         RHEL                 x86_64         0.2.2
+ GCC        11.1, 10.3, 9.4, 8.5, 7.5   Ubuntu 20.04         x86_64         0.2.3, latest
+ GCC        9.4, 6.5                    MacOS 10.15.7        x86_64         0.2.3, latest
+ GCC        11.0                        MacOS 11.0           arm64          0.2.3
+ GCC        9.4                         CentOS 7             ppc64le        0.2.3
+ GCC        9.4                         CentOS 7             aarch64        0.2.3
+ GCC/MinGW  8.1                         Window Server 2019   x86_64         0.2.3, latest
+ GCC/MinGW  5.3                         Window Server 2019   x86_64         0.2.3
+ Intel      2022.0                      Ubuntu 20.04         x86_64         0.2.3, latest
+ Intel      19                          OpenSUSE             x86_64         0.2.3
+ NAG        7.1                         RHEL                 x86_64         0.2.3
 ========== =========================== ==================== ============== ===============
 
 Compiler known to fail are documented here, together with the last commit where this behaviour was encountered.

@@ -4,7 +4,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: toml-f 0.2.2\n"
+"Project-Id-Version: toml-f 0.2.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-04-10 20:16+0200\n"
 "PO-Revision-Date: 2022-04-10 20:16+0200\n"
