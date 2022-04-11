@@ -47,7 +47,11 @@ add_test(
 )
 
 # Unit testing
-set(test-srcs "${dir}/tftest.f90")
+if(NOT TARGET "test-drive::test-drive")
+  find_package("test-drive")
+endif()
+
+set(test-srcs)
 add_subdirectory("tftest")
 add_executable(
   tftester
@@ -57,6 +61,7 @@ target_link_libraries(
   tftester
   PRIVATE
   "${PROJECT_NAME}-lib"
+  "test-drive::test-drive"
 )
 add_test(
   "tftest"

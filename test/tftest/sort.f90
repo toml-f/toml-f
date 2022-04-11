@@ -12,7 +12,7 @@
 ! limitations under the License.
 
 module tftest_sort
-   use tftest_testsuite
+   use testdrive
    use tomlf, only : toml_key, sort
    implicit none
    private
@@ -27,7 +27,7 @@ contains
 subroutine collect_sort(testsuite)
 
    !> Collection of tests
-   type(toml_unittest), allocatable, intent(out) :: testsuite(:)
+   type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
    testsuite = [ &
       & new_unittest("sorted", test_sorted), &
@@ -41,7 +41,7 @@ end subroutine collect_sort
 subroutine test_sorted(error)
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_key), allocatable :: list(:)
    integer :: i
@@ -76,7 +76,7 @@ end subroutine test_sorted
 subroutine test_reversed(error)
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_key), allocatable :: list(:)
    integer :: i
@@ -111,7 +111,7 @@ end subroutine test_reversed
 subroutine test_unsorted(error)
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_key), allocatable :: list(:)
    integer :: i

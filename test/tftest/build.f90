@@ -13,7 +13,7 @@
 
 !> Testsuite for the `tomlf_build` modules
 module tftest_build
-   use tftest_testsuite
+   use testdrive
    use tomlf_build
    use tomlf
    implicit none
@@ -29,7 +29,7 @@ contains
 subroutine collect_build(testsuite)
 
    !> Collection of tests
-   type(toml_unittest), allocatable, intent(out) :: testsuite(:)
+   type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
    testsuite = [ &
       & new_unittest("array-real-sp", array_real_sp), &
@@ -60,7 +60,7 @@ subroutine table_real_dp(error)
    use tomlf_type, only : new_table, toml_table, toml_key
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_table) :: table
    real(tf_dp), parameter :: in1 = 1.0_tf_dp, in2 = huge(in1), in3 = tiny(in1)
@@ -100,7 +100,7 @@ subroutine table_real_sp(error)
    use tomlf_type, only : new_table, toml_table, toml_key
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_table) :: table
    real(tf_sp), parameter :: in1 = 1.0_tf_sp, in2 = huge(in1), in3 = tiny(in1)
@@ -138,7 +138,7 @@ subroutine table_int_i1(error)
    use tomlf_type, only : new_table, toml_table, toml_key
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_table) :: table
    integer(tf_i1), parameter :: in1 = 1_tf_i1, in2 = huge(in1), in3 = -huge(in1)
@@ -175,7 +175,7 @@ subroutine table_int_i2(error)
    use tomlf_type, only : new_table, toml_table
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_table) :: table
    integer(tf_i2), parameter :: in1 = 1_tf_i2, in2 = huge(in1), in3 = -huge(in1)
@@ -212,7 +212,7 @@ subroutine table_int_i4(error)
    use tomlf_type, only : new_table, toml_table, toml_key
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_table) :: table
    integer(tf_i4), parameter :: in1 = 1_tf_i4, in2 = huge(in1), in3 = -huge(in1)
@@ -249,7 +249,7 @@ subroutine table_int_i8(error)
    use tomlf_type, only : new_table, toml_table, toml_key
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_table) :: table
    integer(tf_i8), parameter :: in1 = 1_tf_i8, in2 = huge(in1), in3 = -huge(in1)
@@ -285,7 +285,7 @@ subroutine table_bool(error)
    use tomlf_type, only : toml_table, toml_key
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_table) :: table
    logical, parameter :: true = .true., false = .false.
@@ -321,7 +321,7 @@ subroutine table_string(error)
    use tomlf_type, only : toml_table, toml_key
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_table) :: table
    character(len=:), allocatable :: val
@@ -355,7 +355,7 @@ subroutine table_array(error)
       & toml_array, toml_key, add_array, len
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_table) :: table
    type(toml_table), pointer :: child
@@ -416,7 +416,7 @@ subroutine array_real_sp(error)
    use tomlf_type, only : new_array, toml_array, len
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_array) :: array
    real(tf_sp) :: val
@@ -444,7 +444,7 @@ subroutine array_real_dp(error)
    use tomlf_type, only : new_array, toml_array, len
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_array) :: array
    real(tf_dp) :: val
@@ -472,7 +472,7 @@ subroutine array_int_i1(error)
    use tomlf_type, only : new_array, toml_array, len
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_array) :: array
    integer(tf_i1) :: val
@@ -501,7 +501,7 @@ subroutine array_int_i2(error)
    use tomlf_type, only : new_array, toml_array, len
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_array) :: array
    integer(tf_i2) :: val
@@ -530,7 +530,7 @@ subroutine array_int_i4(error)
    use tomlf_type, only : new_array, toml_array, len
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_array) :: array
    integer(tf_i4) :: val
@@ -559,7 +559,7 @@ subroutine array_int_i8(error)
    use tomlf_type, only : new_array, toml_array, len
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_array) :: array
    integer(tf_i8) :: val
@@ -587,7 +587,7 @@ subroutine array_bool(error)
    use tomlf_type, only : toml_array, len
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_array) :: array
    logical :: val
@@ -614,7 +614,7 @@ subroutine array_merge(error)
    use tomlf_type, only : toml_array, new_array, len
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_array) :: array1, array2
    integer :: val1, val2
@@ -653,7 +653,7 @@ subroutine table_merge(error)
    use tomlf_type, only : toml_table, add_table, new_table, toml_key
 
    !> Error handling
-   type(toml_error), allocatable, intent(out) :: error
+   type(error_type), allocatable, intent(out) :: error
 
    type(toml_table) :: table1, table2
    type(toml_table), pointer :: child

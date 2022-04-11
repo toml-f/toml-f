@@ -29,11 +29,16 @@ if os != 'windows'
 endif
 
 # Unit testing
-test_srcs = files('tftest.f90')
+test_srcs = []
+testdrive_dep = dependency(
+  'test-drive',
+  fallback: ['test-drive', 'testdrive_dep'],
+  static: true,
+)
 subdir('tftest')
 test(
   'tftest',
-  executable('tftester', sources: test_srcs, dependencies: tomlf_dep),
+  executable('tftester', sources: test_srcs, dependencies: [tomlf_dep, testdrive_dep]),
 )
 
 # Serializer from TOML to a specific JSON format suitable for the validator suite
