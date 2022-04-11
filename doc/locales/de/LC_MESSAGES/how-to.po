@@ -4,7 +4,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: toml-f 0.2.2\n"
+"Project-Id-Version: toml-f 0.2.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-04-10 20:16+0200\n"
 "PO-Revision-Date: 2022-04-10 18:03+0200\n"
@@ -306,7 +306,7 @@ msgstr ""
 
 #: ../how-to/installation.rst:185 ../how-to/installation.rst:186
 #: ../how-to/installation.rst:190 ../how-to/installation.rst:192
-msgid "0.2.2, latest"
+msgid "0.2.3, latest"
 msgstr ""
 
 #: ../how-to/installation.rst:186
@@ -332,7 +332,7 @@ msgstr ""
 #: ../how-to/installation.rst:187 ../how-to/installation.rst:188
 #: ../how-to/installation.rst:189 ../how-to/installation.rst:191
 #: ../how-to/installation.rst:193 ../how-to/installation.rst:194
-msgid "0.2.2"
+msgid "0.2.3"
 msgstr ""
 
 #: ../how-to/installation.rst:188 ../how-to/installation.rst:189

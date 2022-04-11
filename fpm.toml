@@ -1,5 +1,5 @@
 name = "toml-f"
-version = "0.2.2"
+version = "0.2.3"
 license = "Apache-2.0 OR MIT"
 maintainer = ["@awvwgk"]
 author = ["Sebastian Ehlert"]
