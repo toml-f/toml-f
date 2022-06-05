@@ -37,6 +37,20 @@ jobs:
       with:
         python-version: '3.x'
 
+    - uses: actions/setup-go@v3
+      with:
+        go-version: '>=1.17.0'
+
+    - name: Checkout toml-test
+      uses: actions/checkout@v2
+      with:
+        repository: BurntSushi/toml-test
+        ref: v1.1.0
+        path: _validator
+
+    - run: go install ./cmd/toml-test
+      working-directory: _validator
+
     - name: Install GCC (OSX)
       if: contains(matrix.os, 'macos')
       run: |
@@ -98,6 +112,20 @@ jobs:
     - uses: actions/setup-python@v1
       with:
         python-version: '3.x'
+
+    - uses: actions/setup-go@v3
+      with:
+        go-version: '>=1.17.0'
+
+    - name: Checkout toml-test
+      uses: actions/checkout@v2
+      with:
+        repository: BurntSushi/toml-test
+        ref: v1.1.0
+        path: _validator
+
+    - run: go install ./cmd/toml-test
+      working-directory: _validator
 
     - name: Add Intel repository
       run: |

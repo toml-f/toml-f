@@ -1,4 +1,0 @@
-[wrap-git]
-directory = toml-tests
-url = https://github.com/toml-f/compliance-tests
-revision = head
