@@ -112,6 +112,12 @@ if not meson.is_subproject() and go_exe.found()
         toml_test_exe,
         args: ['-testdir', validator_testdir, '-run', t, '--', toml2json_exe],
       )
+    else
+      benchmark(
+        'decode-@0@'.format(t),
+        toml_test_exe,
+        args: ['-testdir', validator_testdir, '-run', t, '--', toml2json_exe],
+      )
     endif
   endforeach
 
@@ -177,11 +183,17 @@ if not meson.is_subproject() and go_exe.found()
 
   foreach t : invalid_tests
     if not invalid_failing.contains(t)
-    test(
-      'decode-@0@'.format(t),
-      toml_test_exe,
-      args: ['-testdir', validator_testdir, '-run', t, '--', toml2json_exe],
-    )
+      test(
+        'decode-@0@'.format(t),
+        toml_test_exe,
+        args: ['-testdir', validator_testdir, '-run', t, '--', toml2json_exe],
+      )
+    else
+      benchmark(
+        'decode-@0@'.format(t),
+        toml_test_exe,
+        args: ['-testdir', validator_testdir, '-run', t, '--', toml2json_exe],
+      )
     endif
   endforeach
 
@@ -202,6 +214,12 @@ if not meson.is_subproject() and go_exe.found()
   foreach t : valid_tests
     if not encoder_failing.contains(t)
       test(
+        'encode-@0@'.format(t),
+        toml_test_exe,
+        args: ['-encoder', '-testdir', validator_testdir, '-run', t, '--', json2toml_exe],
+      )
+    else
+      benchmark(
         'encode-@0@'.format(t),
         toml_test_exe,
         args: ['-encoder', '-testdir', validator_testdir, '-run', t, '--', json2toml_exe],
