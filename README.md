@@ -11,6 +11,7 @@ A TOML parser implementation for data serialization and deserialization in Fortr
 
 * the [TOML standard](https://toml.io)
 * currently supported [TOML v1.0.0 specification](https://toml.io/en/v1.0.0)
+* [TOML Fortran documentation](https://toml-f.readthedocs.io)
 
 <div align="center">
 <img src="./assets/toml-f.png" alt="TOML-Fortran" width="220">
@@ -19,23 +20,103 @@ A TOML parser implementation for data serialization and deserialization in Fortr
 
 ## Installation
 
+The TOML Fortran library is available via various distribution channels.
+If your channel is not found here, please checkout the instructions for [building from source](#building-from-source).
+You can also find these instructions in the user documentation at [Installing TOML Fortran](https://toml-f.readthedocs.io/en/latest/how-to/installation.html).
+
+
+### Conda package
+
+[![Conda](https://img.shields.io/conda/vn/conda-forge/toml-f)](https://github.com/conda-forge/toml-f-feedstock)
+[![Conda](https://img.shields.io/conda/pn/conda-forge/toml-f)](https://github.com/conda-forge/toml-f-feedstock)
+
+This project is packaged for the *mamba* package manager and available on the *conda-forge* channel.
+To install the *mamba* package manager we recommend the [mambaforge](https://github.com/conda-forge/miniforge/releases) installer.
+If the *conda-forge* channel is not yet enabled, add it to your channels with
+
+```
+mamba config --add channels conda-forge
+mamba config --set channel_priority strict
+```
+
+Once the *conda-forge* channel has been enabled, TOML Fortran can be installed with *mamba*:
+
+```
+mamba install toml-f
+```
+
+It is possible to list all of the versions of TOML Fortran available on your platform with *mamba*:
+
+```
+mamba repoquery search toml-f --channel conda-forge
+```
+
+
+### FreeBSD port
+
+[![FreeBSD port](https://repology.org/badge/version-for-repo/freebsd/toml-f.svg)](https://www.freshports.org/textproc/toml-f/)
+
+A port for FreeBSD is available and can be installed using
+
+```
+pkg install textproc/toml-f
+```
+
+In case no package is available build the port using
+
+```
+cd /usr/ports/textproc/toml-f
+make install clean
+```
+
+For more information see the [toml-f port details](https://www.freshports.org/textproc/toml-f/).
+
+
+### Alternative distributions
+
+Please let us know if you are packaging TOML Fortran.
+Other available distributions of TOML Fortran currently include
+
+- Homebrew tap at [grimme-lab/homebrew-qc](https://github.com/grimme-lab/homebrew-qc)
+- Easy-build config at [easybuilders/easybuild-easyconfigs](https://github.com/easybuilders/easybuild-easyconfigs/tree/develop/easybuild/easyconfigs/t/TOML-Fortran)
+
+An overview of the availability of TOML Fortran in distributions tracked by [Repology](https://repology.org) is provided here:
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/toml-f.svg)](https://repology.org/project/toml-f/versions)
+
+
+### Building from source
+
 To build this project from the source code in this repository you need to have
 
-- a Fortran compiler supporting Fortran 2008 (GCC 5 or newer or Intel Fortran)
+- a Fortran compiler supporting Fortran 2008
+
+  - GFortran 5 or newer
+  - Intel Fortran 18 or newer
+  - NAG 7 or newer
+
 - One of the supported build systems
 
   - [meson](https://mesonbuild.com) version 0.53 or newer
-  - [CMake](https://cmake.org/) version 3.9 or newer and
+  - [CMake](https://cmake.org/) version 3.9 or newer
   - [Fortran package manager (fpm)](https://github.com/fortran-lang/fpm) version 0.2.0 or newer
 
+Get the source by cloning the repository
 
-### Meson
+```
+git clone https://github.com/toml-f/toml-f
+cd toml-f
+```
+
+#### Meson
+
+To integrate TOML Fortran in your meson project checkout the [Integrate with meson](https://toml-f.readthedocs.io/en/latest/how-to/integration.html#integrate-with-meson) recipe.
 
 To build this project with meson a build-system backend is required, *i.e.* [ninja](https://ninja-build.org) version 1.7 or newer.
 Setup a build with
 
 ```
-meson setup _build
+meson setup _build --prefix=/path/to/install
 ```
 
 You can select the Fortran compiler by the `FC` environment variable.
@@ -57,7 +138,7 @@ meson test -C _build --print-errorlogs
 ```
 
 To run the full decoder test add the benchmark argument.
-This test will currently fail, due to the implementation not yet supporting Unicode escape sequences.
+This test will currently fail, due to the implementation not yet supporting Unicode escape sequences (see [toml-f#3](https://github.com/toml-f/toml-f/issues/3)).
 
 ```
 meson test -C _build --benchmark --print-errorlogs
@@ -65,14 +146,23 @@ meson test -C _build --benchmark --print-errorlogs
 
 The binary used for transcribing the TOML documents to the testing format is `_build/test/toml2json` and can be used to check on per test basis.
 
+Finally, you can install TOML Fortran using
+
+```
+meson install -C _build
+```
+
+
 
 ### CMake
+
+To integrate TOML Fortran in your CMake project checkout the [Integrate with CMake](https://toml-f.readthedocs.io/en/latest/how-to/integration.html#integrate-with-cmake) recipe.
 
 While meson is the preferred way to build this project it also offers CMake support.
 Configure the CMake build with
 
 ```
-cmake -S. -B_build -GNinja
+cmake -B _build -G Ninja -DCMAKE_INSTALL_PREFIX=/path/to/install
 ```
 
 Similar to meson the compiler can be selected with the `FC` environment variable.
@@ -82,13 +172,27 @@ You can build the project using
 cmake --build _build
 ```
 
-To include `toml-f` in your CMake project, check the [example integration with CMake](https://github.com/toml-f/tf-cmake-example).
+You can run basic unit tests using
+
+```
+ctest --test-dir _build
+```
+
 The validation suite is currently not supported as unit test for CMake builds and requires a manual setup instead using the `toml2json` binary.
+
+Finally, you can install TOML Fortran using
+
+```
+cmake --install _build
+```
 
 
 ### Fortran package manager
 
-The Fortran package manager [`fpm`](https://github.com/fortran-lang/fpm) supports the addition of `toml-f` as a dependency. In the `fpm.toml` file:
+To integrate TOML Fortran in your fpm project checkout the [Using the Fortran package manager](https://toml-f.readthedocs.io/en/latest/how-to/integration.html#using-the-fortran-package-manager) recipe.
+
+The Fortran package manager [`fpm`](https://github.com/fortran-lang/fpm) supports the addition of TOML Fortran as a dependency.
+In the `fpm.toml` file you can add a dependency via:
 
 ```toml
 [dependencies]
@@ -107,10 +211,78 @@ A more detailed example is described in [example 1](test/example-1).
 
 ## Documentation
 
-To build the documentation with `ford` run
+The user documentation is available at [readthedocs](https://toml-f.readthedocs.io).
+Additionally, the [FORD](https://github.com/Fortran-FOSS-Programmers/ford) generated API documentation is available [here](https://toml-f.github.io/toml-f).
+
+To build the user documentation locally we use sphinx, install the dependencies you can use the *mamba* package manager
 
 ```
-ford -o ./docs docs.md
+mamba create -n sphinx --file doc/requirements.txt
+mamba activate sphinx
+```
+
+The documentation is build with
+
+```
+sphinx-build doc _doc
+```
+
+You can inspect the generated documentation by starting a webserver
+
+```
+python3 -m http.server -d _doc
+```
+
+And open the down URL in a browser.
+
+
+### Translating the documentation
+
+The documentation of TOML Fortran can be fully translated.
+Before adding a translation, reach out to the repository maintainers by creating and issue or starting a discussion thread.
+
+To start a new translation you need the `sphinx-intl` package which can be installed with *mamba*
+
+```
+mamba install -n sphinx sphinx-intl
+```
+
+To add a new language to the translation extract the text with `sphinx-build` and create the respective locales with `sphinx-intl` using the commands shown below.
+
+```
+sphinx-build -b gettext doc _gettext
+sphinx-intl update -l en -p _gettext -d doc/locales
+```
+
+Replace the argument to the language flag `-l` with your target language, the language keys are listed [here](https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-language).
+The same workflow can be used for updating existing locales.
+The translation files are available in `doc/locales` and can be translated using a translation-editor, like [gtranslator](https://wiki.gnome.org/Apps/Gtranslator) or [poedit](https://poedit.net/).
+
+After a new translation is merged, a maintainer will create a new translation for the readthedocs to ensure it shows up at the pages.
+
+
+### Generating the API docs
+
+The API documentation is generated with [FORD](https://github.com/Fortran-FOSS-Programmers/ford).
+We are looking for a better tool to automatically extract the documentation, suggestions and help with this effort are welcome.
+
+The required programs can be installed with *mamba*
+
+```
+mamba create -n ford ford
+mamba activate ford
+```
+
+To generate the pages use
+
+```
+ford docs.md -o _ford
+```
+
+You can inspect the generated documentation by starting a webserver
+
+```
+python3 -m http.server -d _ford
 ```
 
 
@@ -177,7 +349,8 @@ Additionally, detailed examples are provided as well:
 
 ## Contributing
 
-See the [contributing guidelines](CONTRIBUTING.md) on how to get involved in TOML-Fortran.
+This is a volunteer open source projects and contributions are always welcome.
+Please, take a moment to read the [contributing guidelines](CONTRIBUTING.md) on how to get involved in TOML-Fortran.
 
 
 ## License
