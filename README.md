@@ -108,7 +108,7 @@ git clone https://github.com/toml-f/toml-f
 cd toml-f
 ```
 
-#### Meson
+#### Building with meson
 
 To integrate TOML Fortran in your meson project checkout the [Integrate with meson](https://toml-f.readthedocs.io/en/latest/how-to/integration.html#integrate-with-meson) recipe.
 
@@ -125,8 +125,6 @@ To compile the project run
 ```
 meson compile -C _build
 ```
-
-To use `toml-f` in your project, have a look at the [example integration with meson](https://github.com/toml-f/tf-meson-example).
 
 We employ a [validator suite](https://github.com/BurntSushi/toml-test) to test the standard compliance of this implementation.
 To use this testing a `go` installation is required.
@@ -154,7 +152,7 @@ meson install -C _build
 
 
 
-### CMake
+### Building with CMake
 
 To integrate TOML Fortran in your CMake project checkout the [Integrate with CMake](https://toml-f.readthedocs.io/en/latest/how-to/integration.html#integrate-with-cmake) recipe.
 
@@ -187,12 +185,12 @@ cmake --install _build
 ```
 
 
-### Fortran package manager
+### Building with fpm
 
 To integrate TOML Fortran in your fpm project checkout the [Using the Fortran package manager](https://toml-f.readthedocs.io/en/latest/how-to/integration.html#using-the-fortran-package-manager) recipe.
 
-The Fortran package manager [`fpm`](https://github.com/fortran-lang/fpm) supports the addition of TOML Fortran as a dependency.
-In the `fpm.toml` file you can add a dependency via:
+The Fortran package manager ([fpm](https://github.com/fortran-lang/fpm)) supports the addition of TOML Fortran as a dependency.
+In the package manifest, `fpm.toml`, you can add TOML Fortran dependency via:
 
 ```toml
 [dependencies]
@@ -342,9 +340,8 @@ Alternatively, a file can be loaded from any connected, formatted unit using the
 For the standard input the intrinsic `input_unit` should be passed.
 If the TOML file is successfully parsed the table will be allocated and can be written to the standard output by passing the `toml_serializer` as visitor to the table.
 
-Additionally, detailed examples are provided as well:
-
-- simple reader for a configuration file using `fpm`, [see example 1](test/example-1)
+For more details checkout the [documentation pages](https://toml-f.readthedocs.io).
+If you find an error in the documentation or a part is incomplete, please [open an issue](https://github.com/toml-f/toml-f/issues) or start a [discussion thread](https://github.com/orgs/toml-f/discussions).
 
 
 ## Contributing
