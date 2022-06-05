@@ -93,9 +93,14 @@ Building from source
 To build this project from the source code in this repository you need to have
 
 - a Fortran compiler supporting Fortran 2008
+
+  - GFortran 5 or newer
+  - Intel Fortran 18 or newer
+  - NAG 7 or newer
+
 - One of the supported build systems
 
-  - `meson <https://mesonbuild.com>`_ version 0.53 or newer
+  - `meson <https://mesonbuild.com>`_ version 0.55 or newer
   - `CMake <https://cmake.org/>`_ version 3.9 or newer
 
 First, get the source by cloning the repository

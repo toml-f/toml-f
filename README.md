@@ -97,7 +97,7 @@ To build this project from the source code in this repository you need to have
 
 - One of the supported build systems
 
-  - [meson](https://mesonbuild.com) version 0.53 or newer
+  - [meson](https://mesonbuild.com) version 0.55 or newer
   - [CMake](https://cmake.org/) version 3.9 or newer
   - [Fortran package manager (fpm)](https://github.com/fortran-lang/fpm) version 0.2.0 or newer
 
@@ -133,13 +133,6 @@ Run the tests with
 
 ```
 meson test -C _build --print-errorlogs
-```
-
-To run the full decoder test add the benchmark argument.
-This test will currently fail, due to the implementation not yet supporting Unicode escape sequences (see [toml-f#3](https://github.com/toml-f/toml-f/issues/3)).
-
-```
-meson test -C _build --benchmark --print-errorlogs
 ```
 
 The binary used for transcribing the TOML documents to the testing format is `_build/test/toml2json` and can be used to check on per test basis.
