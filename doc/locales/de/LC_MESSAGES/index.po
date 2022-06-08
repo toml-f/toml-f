@@ -64,7 +64,7 @@ msgstr ""
 "Dieses Projekt stellt eine Bibliothek um mit `TOML <https://toml.io>`_ "
 "Dokumenten zu arbeiten, Datenstrukturen zu definieren und diese mit "
 "Fortran zu serialisieren und zu deserialisieren. Derzeit wird der `TOML "
-"Standard in Version 1.0.0 <https://toml.io/en/v1.0.0>`__ unterstützt."
+"Standard in Version 1.0.0 <https://toml.io/en/v1.0.0>`__ unterstützt. "
 "Das TOML Fortran Projekt ist auf GitHub unter `toml-f/toml-f "
 "<https://github.com/toml-f/toml-f>`__ gehostet."
 
