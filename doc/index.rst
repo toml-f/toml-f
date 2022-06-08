@@ -34,6 +34,7 @@ TOML Fortran library
 
 This project provides a library to work with `TOML <https://toml.io>`_ files and data structures and allows to define data serialization and deserialization in Fortran.
 The currently supported TOML standard is `version 1.0.0 <https://toml.io/en/v1.0.0>`__.
+The TOML Fortran project is hosted at GitHub at `toml-f/toml-f <https://github.com/toml-f/toml-f>`__.
 
 A typical package manifest for Fortran package manager (`fpm <https://fpm.fortran-lang.org>`_) specified in TOML is shown below
 

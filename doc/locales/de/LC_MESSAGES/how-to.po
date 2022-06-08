@@ -6,20 +6,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toml-f 0.2.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-10 20:16+0200\n"
+"POT-Creation-Date: 2022-06-08 11:47+0100\n"
 "PO-Revision-Date: 2022-04-10 18:03+0200\n"
 "Last-Translator: Sebastian Ehlert\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.10.1\n"
 
-#: ../how-to/index.rst:2
+#: ../doc/how-to/index.rst:2
 msgid "How-to guides"
 msgstr ""
 
-#: ../how-to/index.rst:4
+#: ../doc/how-to/index.rst:4
 msgid ""
 "This section contains practical guides for working with TOML Fortran. "
 "Each recipe is tailored for a specific problem and use case it is trying "
@@ -29,11 +29,11 @@ msgstr ""
 "Fortran. Jede Rezepte ist für eine bestimmte Problem- und Nutzungs-"
 "Szenarien angepasst."
 
-#: ../how-to/index.rst:7
+#: ../doc/how-to/index.rst:7
 msgid "Contributions are welcome!"
-msgstr ""
+msgstr "Beiträge sind willkommen!"
 
-#: ../how-to/index.rst:10
+#: ../doc/how-to/index.rst:10
 msgid ""
 "If you have written on TOML Fortran and want to contribute to the "
 "documentation, feel free to fork the repository and submit a pull "
@@ -43,11 +43,11 @@ msgstr ""
 "beigetreten möchtest, dann kannst Du das Repository forken und eine Pull "
 "Request öffnen."
 
-#: ../how-to/installation.rst:2
+#: ../doc/how-to/installation.rst:2
 msgid "Installing TOML Fortran"
 msgstr "Installieren von TOML Fortran"
 
-#: ../how-to/installation.rst:4
+#: ../doc/how-to/installation.rst:4
 msgid ""
 "This guide will walk you through installing the latest version of TOML "
 "Fortran. If you know your way around fpm, CMake or meson, checkout the "
@@ -60,68 +60,60 @@ msgstr ""
 "automatisch in mitzukompilieren oder bereits installierte Bibliotheken zu"
 " finden."
 
-#: ../how-to/installation.rst:9
+#: ../doc/how-to/installation.rst:9
 msgid ":fab:`apple` :fab:`linux` :fab:`windows` Installing from conda-forge"
 msgstr ":fab:`apple` :fab:`linux` :fab:`windows` Installation von conda-forge"
 
 msgid "Conda"
 msgstr "Conda"
 
-#: ../how-to/installation.rst:20
+#: ../doc/how-to/installation.rst:20
 msgid ""
-"This project is packaged for the *conda* package manager and available on"
-" the *conda-forge* channel. To install the *conda* package manager we "
-"recommend the `miniforge <https://github.com/conda-"
+"This project is packaged for the *mamba* package manager and available on"
+" the *conda-forge* channel. To install the *mamba* package manager we "
+"recommend the `mambaforge <https://github.com/conda-"
 "forge/miniforge/releases>`_ installer. If the *conda-forge* channel is "
 "not yet enabled, add it to your channels with"
 msgstr ""
-"Dieses Projekt ist für den *conda*-Paketmanager zugänglich und wird auf "
+"Dieses Projekt ist für den *mamba*-Paketmanager verfügbar und wird auf "
 "dem *conda-forge*-Kanal zur Verfügung gestellt. Um den "
-"*conda*-Paketmanager zu installieren, empfehlen wir den `miniforge "
+"*mamba*-Paketmanager zu installieren, empfehlen wir den `mambaforge "
 "<https://github.com/conda-forge/miniforge/releases>`_-Installer. Falls "
 "der *conda-forge*-Kanal noch nicht aktiviert ist, füge ihn zu Deinen "
 "Kanälen hinzu mit"
 
-#: ../how-to/installation.rst:29
+#: ../doc/how-to/installation.rst:29
 msgid ""
 "Once the *conda-forge* channel has been enabled, TOML Fortran can be "
-"installed with *conda*:"
+"installed with *mamba*:"
 msgstr ""
-"Wenn der *conda-forge*-Kanal aktiviert ist, kann TOML Fortran mit *conda*"
+"Wenn der *conda-forge*-Kanal aktiviert ist, kann TOML Fortran mit *mamba*"
 " installiert werden:"
 
-#: ../how-to/installation.rst:35 ../how-to/installation.rst:47
-msgid "or with *mamba*:"
-msgstr "oder mit *mamba*:"
-
-#: ../how-to/installation.rst:41
+#: ../doc/how-to/installation.rst:35
 msgid ""
 "It is possible to list all of the versions of TOML Fortran available on "
-"your platform with *conda*:"
+"your platform with *mamba*:"
 msgstr ""
 "Es ist möglich, alle verfügbaren Versionen von TOML Fortran für Dein "
-"System mit *conda* aufzulisten:"
+"System mit *mamba* aufzulisten:"
 
-#: ../how-to/installation.rst:53
-msgid "Alternatively, *mamba repoquery* may provide more information:"
-msgstr "Alternativ kann *mamba repoquery* weitere Informationen zur Verfügung "
-
-#: ../how-to/installation.rst:68
+#: ../doc/how-to/installation.rst:43
 msgid ":fab:`freebsd` FreeBSD ports"
 msgstr ":fab:`freebsd` FreeBSD Ports"
 
 msgid "FreeBSD"
 msgstr "FreeBSD"
 
-#: ../how-to/installation.rst:74
+#: ../doc/how-to/installation.rst:49
 msgid "A port for FreeBSD is available"
 msgstr "Ein FreeBSD-Port ist verfügbar"
 
-#: ../how-to/installation.rst:80
+#: ../doc/how-to/installation.rst:55
 msgid "In case no package is available build the port using"
 msgstr "Falls kein Paket verfügbar ist, kann der Port folgendermaßen gebaut werden"
 
-#: ../how-to/installation.rst:87
+#: ../doc/how-to/installation.rst:62
 msgid ""
 "For more information see the `toml-f port details "
 "<https://www.freshports.org/textproc/toml-f/>`_."
@@ -129,11 +121,65 @@ msgstr ""
 "Für weitere Informationen schau Dir die `toml-f Port-Details "
 "<https://www.freshports.org/textproc/toml-f/>`_ an."
 
-#: ../how-to/installation.rst:91
+#: ../doc/how-to/installation.rst:66
+msgid ":fab:`linux` Using EasyBuild"
+msgstr ":fab:`linux` Mit EasyBuild"
+
+#: ../doc/how-to/installation.rst:68
+msgid ""
+"TOML Fortran is available with `EasyBuild "
+"<https://docs.easybuild.io/en/latest/index.html>`_. You can check the "
+"available configurations using the search option"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:78
+msgid "Select one matching configuration and build TOML Fortran using"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:92
+msgid ""
+"TOML Fortran should now be available via an environment module. For more "
+"details checkout the `EasyBuild`_ documentation."
+msgstr ""
+
+#: ../doc/how-to/installation.rst:97
+msgid ":fab:`apple` Using Homebrew"
+msgstr ":fab:`apple` Mit Homebrew"
+
+#: ../doc/how-to/installation.rst:99
+msgid ""
+"TOML Fortran is available in a custom tap at `grimme-lab/homebrew-qc "
+"<https://github.com/grimme-lab/homebrew-qc>`__ for the `brew "
+"<https://brew.sh>`_ package manager. You can include the tap by using"
+msgstr ""
+"TOML Fortran ist in einem eigenen Tap unter `grimme-lab/homebrew-qc "
+"<https://github.com/grimme-lab/homebrew-qc>`__ für den `brew "
+"<https://brew.sh>`_-Paketmanager verfügbar. Du kannst den Tap "
+"mit dem `tap`-Kommando einbinden."
+
+#: ../doc/how-to/installation.rst:107
+msgid ""
+"To build with a custom Fortran compiler you can set the ``FC`` "
+"environment variable and force to ignore preexisting binary distributions"
+" from the tap"
+msgstr ""
+"Um mit einem eigenen Fortran-Compiler zu kompilieren, kannst Du die "
+"``FC``-Umgebungsvariable setzen und die vorhandenen "
+"Binärdistributionsdateien vom Tap ignorieren"
+
+#: ../doc/how-to/installation.rst:116
+msgid ""
+"TOML Fortran has not yet been submitted to `homebrew-core "
+"<https://github.com/homebrew/homebrew-core>`_."
+msgstr ""
+"TOML Fortran wurde noch nicht zu `homebrew-core "
+"<https://github.com/homebrew/homebrew-core>`_ hinzugefügt."
+
+#: ../doc/how-to/installation.rst:120
 msgid "Building from source"
 msgstr "Vom Quellcode bauen"
 
-#: ../how-to/installation.rst:93
+#: ../doc/how-to/installation.rst:122
 msgid ""
 "To build this project from the source code in this repository you need to"
 " have"
@@ -141,31 +187,43 @@ msgstr ""
 "Um dieses Projekt aus dem Quellcode in diesem Repository zu bauen, "
 "benötigst Du"
 
-#: ../how-to/installation.rst:95
+#: ../doc/how-to/installation.rst:124
 msgid "a Fortran compiler supporting Fortran 2008"
 msgstr "einen Fortran-Compiler, der Fortran 2008 unterstützt"
 
-#: ../how-to/installation.rst:96
+#: ../doc/how-to/installation.rst:126
+msgid "GFortran 5 or newer"
+msgstr "GFortran 5 oder neuer"
+
+#: ../doc/how-to/installation.rst:127
+msgid "Intel Fortran 18 or newer"
+msgstr "Intel Fortran 18 oder neuer"
+
+#: ../doc/how-to/installation.rst:128
+msgid "NAG 7 or newer"
+msgstr "NAG 7 oder neuer"
+
+#: ../doc/how-to/installation.rst:130
 msgid "One of the supported build systems"
 msgstr "Eines der unterstützten Buildsysteme"
 
-#: ../how-to/installation.rst:98
-msgid "`meson <https://mesonbuild.com>`_ version 0.53 or newer"
-msgstr "`meson <https://mesonbuild.com>`_ Version 0.53 oder neuer"
+#: ../doc/how-to/installation.rst:132
+msgid "`meson <https://mesonbuild.com>`_ version 0.55 or newer"
+msgstr "`meson <https://mesonbuild.com>`_ Version 0.55 oder neuer"
 
-#: ../how-to/installation.rst:99
+#: ../doc/how-to/installation.rst:133
 msgid "`CMake <https://cmake.org/>`_ version 3.9 or newer"
 msgstr "`CMake <https://cmake.org/>`_ Version 3.9 oder neuer"
 
-#: ../how-to/installation.rst:101
+#: ../doc/how-to/installation.rst:135
 msgid "First, get the source by cloning the repository"
 msgstr "Erst, hol Dir den Quellcode per Clone des Repositories"
 
-#: ../how-to/installation.rst:110
+#: ../doc/how-to/installation.rst:144
 msgid "Using Meson"
 msgstr "Mit Meson"
 
-#: ../how-to/installation.rst:112
+#: ../doc/how-to/installation.rst:146
 msgid ""
 "To build this project with meson a build-system backend is required, "
 "*i.e.* `ninja <https://ninja-build.org>`_ version 1.7 or newer. Setup a "
@@ -174,7 +232,7 @@ msgstr ""
 "Um dieses Projekt mit meson zu bauen, benötigst Du ein Build-System, wie "
 "`ninja <https://ninja-build.org>`_ Version 1.7 oder neuer. "
 
-#: ../how-to/installation.rst:119
+#: ../doc/how-to/installation.rst:153
 msgid ""
 "You can select the Fortran compiler by the ``FC`` environment variable. "
 "To compile the project run"
@@ -182,7 +240,7 @@ msgstr ""
 "Du kannst den Fortran-Compiler durch die Umgebungsvariable ``FC`` "
 "auswählen. Um das Projekt zu kompilieren, rufe den folgenden Befehl auf"
 
-#: ../how-to/installation.rst:126
+#: ../doc/how-to/installation.rst:160
 msgid ""
 "We employ a `validator suite <https://github.com/BurntSushi/toml-test>`_ "
 "to test the standard compliance of this implementation. To use this "
@@ -197,7 +255,7 @@ msgstr ""
 "von meson in den *go*-Arbeitsbereich eingebunden. Die Tests werden "
 "folgendermaßen aufgerufen"
 
-#: ../how-to/installation.rst:135
+#: ../doc/how-to/installation.rst:169
 msgid ""
 "To run the full decoder test add the benchmark argument. This test will "
 "currently fail, due to the implementation not yet supporting Unicode "
@@ -207,7 +265,7 @@ msgstr ""
 "hinzu. Dieser Test wird zur Zeit fehlschlagen, da die Implementierung "
 "noch Unicode-Escape-Sequenzen nicht unterstützt."
 
-#: ../how-to/installation.rst:142
+#: ../doc/how-to/installation.rst:176
 msgid ""
 "The binary used for transcribing the TOML documents to the testing format"
 " is ``_build/test/toml2json`` and can be used to check on per test basis."
@@ -218,11 +276,11 @@ msgstr ""
 "verwendet werden. Zum Abschluss kann TOML Fortran wie folgt installiert "
 "werden"
 
-#: ../how-to/installation.rst:151
+#: ../doc/how-to/installation.rst:185
 msgid "Using CMake"
 msgstr "Mit CMake"
 
-#: ../how-to/installation.rst:153
+#: ../doc/how-to/installation.rst:187
 msgid ""
 "While meson is the preferred way to build this project it also offers "
 "CMake support. Configure the CMake build with"
@@ -230,7 +288,7 @@ msgstr ""
 "Während meson die bevorzugte Bauweise für dieses Projekt ist, bietet es "
 "auch CMake-Unterstützung. Konfiguriere den CMake-Build mit"
 
-#: ../how-to/installation.rst:160
+#: ../doc/how-to/installation.rst:194
 msgid ""
 "Similar to meson the compiler can be selected with the ``FC`` environment"
 " variable. You can build the project using"
@@ -238,7 +296,7 @@ msgstr ""
 "Ähnlich wie meson kann der Compiler durch die Umgebungsvariable ``FC`` "
 "ausgewählt werden. Du kannst das Projekt wie folgt bauen"
 
-#: ../how-to/installation.rst:167
+#: ../doc/how-to/installation.rst:201
 msgid ""
 "To include *toml-f* in your CMake project, check the [example integration"
 " with CMake](https://github.com/toml-f/tf-cmake-example). The validation "
@@ -247,11 +305,11 @@ msgid ""
 "you can install TOML Fortran with"
 msgstr ""
 
-#: ../how-to/installation.rst:177
+#: ../doc/how-to/installation.rst:211
 msgid "Supported compilers"
 msgstr "Unterstützte Compiler"
 
-#: ../how-to/installation.rst:179
+#: ../doc/how-to/installation.rst:213
 msgid ""
 "This is a non-comprehensive list of tested compilers for TOML Fortran. "
 "Compilers with the label *latest* are tested with continuous integration "
@@ -261,141 +319,141 @@ msgstr ""
 " Fortran. Compiler mit dem Label *latest* werden getestet mit den "
 "kontinuierlichen Integrationen für jeden Commit."
 
-#: ../how-to/installation.rst:183 ../how-to/installation.rst:202
+#: ../doc/how-to/installation.rst:217 ../doc/how-to/installation.rst:236
 msgid "Compiler"
 msgstr "Compiler"
 
-#: ../how-to/installation.rst:183 ../how-to/installation.rst:202
+#: ../doc/how-to/installation.rst:217 ../doc/how-to/installation.rst:236
 msgid "Version"
 msgstr "Version"
 
-#: ../how-to/installation.rst:183 ../how-to/installation.rst:202
+#: ../doc/how-to/installation.rst:217 ../doc/how-to/installation.rst:236
 msgid "Platform"
 msgstr "Plattform"
 
-#: ../how-to/installation.rst:183 ../how-to/installation.rst:202
+#: ../doc/how-to/installation.rst:217 ../doc/how-to/installation.rst:236
 msgid "Architecture"
 msgstr "Architektur"
 
-#: ../how-to/installation.rst:183
+#: ../doc/how-to/installation.rst:217
 msgid "version"
 msgstr "Version"
 
-#: ../how-to/installation.rst:185 ../how-to/installation.rst:186
-#: ../how-to/installation.rst:187 ../how-to/installation.rst:188
-#: ../how-to/installation.rst:189
+#: ../doc/how-to/installation.rst:219 ../doc/how-to/installation.rst:220
+#: ../doc/how-to/installation.rst:221 ../doc/how-to/installation.rst:222
+#: ../doc/how-to/installation.rst:223
 msgid "GCC"
 msgstr ""
 
-#: ../how-to/installation.rst:185
+#: ../doc/how-to/installation.rst:219
 msgid "11.1, 10.3, 9.4, 8.5, 7.5"
 msgstr ""
 
-#: ../how-to/installation.rst:185 ../how-to/installation.rst:192
-#: ../how-to/installation.rst:204
+#: ../doc/how-to/installation.rst:219 ../doc/how-to/installation.rst:226
+#: ../doc/how-to/installation.rst:238
 msgid "Ubuntu 20.04"
 msgstr ""
 
-#: ../how-to/installation.rst:185 ../how-to/installation.rst:186
-#: ../how-to/installation.rst:190 ../how-to/installation.rst:191
-#: ../how-to/installation.rst:192 ../how-to/installation.rst:193
-#: ../how-to/installation.rst:194 ../how-to/installation.rst:204
-#: ../how-to/installation.rst:205
+#: ../doc/how-to/installation.rst:219 ../doc/how-to/installation.rst:220
+#: ../doc/how-to/installation.rst:224 ../doc/how-to/installation.rst:225
+#: ../doc/how-to/installation.rst:226 ../doc/how-to/installation.rst:227
+#: ../doc/how-to/installation.rst:228 ../doc/how-to/installation.rst:238
+#: ../doc/how-to/installation.rst:239
 msgid "x86_64"
 msgstr ""
 
-#: ../how-to/installation.rst:185 ../how-to/installation.rst:186
-#: ../how-to/installation.rst:190 ../how-to/installation.rst:192
+#: ../doc/how-to/installation.rst:219 ../doc/how-to/installation.rst:220
+#: ../doc/how-to/installation.rst:224 ../doc/how-to/installation.rst:226
 msgid "0.2.3, latest"
 msgstr ""
 
-#: ../how-to/installation.rst:186
+#: ../doc/how-to/installation.rst:220
 msgid "9.4, 6.5"
 msgstr ""
 
-#: ../how-to/installation.rst:186
+#: ../doc/how-to/installation.rst:220
 msgid "MacOS 10.15.7"
 msgstr ""
 
-#: ../how-to/installation.rst:187
+#: ../doc/how-to/installation.rst:221
 msgid "11.0"
 msgstr ""
 
-#: ../how-to/installation.rst:187
+#: ../doc/how-to/installation.rst:221
 msgid "MacOS 11.0"
 msgstr ""
 
-#: ../how-to/installation.rst:187
+#: ../doc/how-to/installation.rst:221
 msgid "arm64"
 msgstr ""
 
-#: ../how-to/installation.rst:187 ../how-to/installation.rst:188
-#: ../how-to/installation.rst:189 ../how-to/installation.rst:191
-#: ../how-to/installation.rst:193 ../how-to/installation.rst:194
+#: ../doc/how-to/installation.rst:221 ../doc/how-to/installation.rst:222
+#: ../doc/how-to/installation.rst:223 ../doc/how-to/installation.rst:225
+#: ../doc/how-to/installation.rst:227 ../doc/how-to/installation.rst:228
 msgid "0.2.3"
 msgstr ""
 
-#: ../how-to/installation.rst:188 ../how-to/installation.rst:189
+#: ../doc/how-to/installation.rst:222 ../doc/how-to/installation.rst:223
 msgid "9.4"
 msgstr ""
 
-#: ../how-to/installation.rst:188 ../how-to/installation.rst:189
+#: ../doc/how-to/installation.rst:222 ../doc/how-to/installation.rst:223
 msgid "CentOS 7"
 msgstr ""
 
-#: ../how-to/installation.rst:188
+#: ../doc/how-to/installation.rst:222
 msgid "ppc64le"
 msgstr ""
 
-#: ../how-to/installation.rst:189
+#: ../doc/how-to/installation.rst:223
 msgid "aarch64"
 msgstr ""
 
-#: ../how-to/installation.rst:190 ../how-to/installation.rst:191
+#: ../doc/how-to/installation.rst:224 ../doc/how-to/installation.rst:225
 msgid "GCC/MinGW"
 msgstr ""
 
-#: ../how-to/installation.rst:190
+#: ../doc/how-to/installation.rst:224
 msgid "8.1"
 msgstr ""
 
-#: ../how-to/installation.rst:190 ../how-to/installation.rst:191
+#: ../doc/how-to/installation.rst:224 ../doc/how-to/installation.rst:225
 msgid "Window Server 2019"
 msgstr ""
 
-#: ../how-to/installation.rst:191
+#: ../doc/how-to/installation.rst:225
 msgid "5.3"
 msgstr ""
 
-#: ../how-to/installation.rst:192 ../how-to/installation.rst:193
+#: ../doc/how-to/installation.rst:226 ../doc/how-to/installation.rst:227
 msgid "Intel"
 msgstr ""
 
-#: ../how-to/installation.rst:192
+#: ../doc/how-to/installation.rst:226
 msgid "2022.0"
 msgstr ""
 
-#: ../how-to/installation.rst:193
+#: ../doc/how-to/installation.rst:227
 msgid "19"
 msgstr ""
 
-#: ../how-to/installation.rst:193
+#: ../doc/how-to/installation.rst:227
 msgid "OpenSUSE"
 msgstr ""
 
-#: ../how-to/installation.rst:194
+#: ../doc/how-to/installation.rst:228
 msgid "NAG"
 msgstr ""
 
-#: ../how-to/installation.rst:194
+#: ../doc/how-to/installation.rst:228
 msgid "7.1"
 msgstr ""
 
-#: ../how-to/installation.rst:194
+#: ../doc/how-to/installation.rst:228
 msgid "RHEL"
 msgstr ""
 
-#: ../how-to/installation.rst:197
+#: ../doc/how-to/installation.rst:231
 msgid ""
 "Compiler known to fail are documented here, together with the last commit"
 " where this behaviour was encountered. If available an issue in on the "
@@ -411,43 +469,43 @@ msgstr ""
 "ältere Versionen desselben Compilers auch fehlschlagen und dieses "
 "Verhalten ist über Platformen und/oder Architekturen konsistent."
 
-#: ../how-to/installation.rst:202
+#: ../doc/how-to/installation.rst:236
 msgid "Reference"
 msgstr "Referenz"
 
-#: ../how-to/installation.rst:204
+#: ../doc/how-to/installation.rst:238
 msgid "Flang"
 msgstr ""
 
-#: ../how-to/installation.rst:204
+#: ../doc/how-to/installation.rst:238
 msgid "20190329"
 msgstr ""
 
-#: ../how-to/installation.rst:204
+#: ../doc/how-to/installation.rst:238
 msgid "`f066ec6`_, `toml-f#28`_"
 msgstr ""
 
-#: ../how-to/installation.rst:205
+#: ../doc/how-to/installation.rst:239
 msgid "NVHPC"
 msgstr ""
 
-#: ../how-to/installation.rst:205
+#: ../doc/how-to/installation.rst:239
 msgid "20.9"
 msgstr ""
 
-#: ../how-to/installation.rst:205
+#: ../doc/how-to/installation.rst:239
 msgid "Manjaro Linux"
 msgstr ""
 
-#: ../how-to/installation.rst:205
+#: ../doc/how-to/installation.rst:239
 msgid "`f066ec6`_, `toml-f#27`_"
 msgstr ""
 
-#: ../how-to/integration.rst:4
+#: ../doc/how-to/integration.rst:4
 msgid "Using TOML Fortran"
 msgstr "TOML Fortran verwenden"
 
-#: ../how-to/integration.rst:6
+#: ../doc/how-to/integration.rst:6
 msgid ""
 "This tutorial shows how to integrate the TOML Fortran library with your "
 "build system and use it easily in your project."
@@ -456,11 +514,11 @@ msgstr ""
 "Build-System integrieren kannst und sie einfach in Dein Projekt "
 "verwendest."
 
-#: ../how-to/integration.rst:10
+#: ../doc/how-to/integration.rst:10
 msgid "Using the Fortran package manager"
 msgstr "Mit dem Fortran-Paket-Manager verwenden"
 
-#: ../how-to/integration.rst:12
+#: ../doc/how-to/integration.rst:12
 msgid ""
 "The Fortran package manager (`fpm <https://fpm.fortran-lang.org>`_) is a "
 "tool for building Fortran projects and managing dependencies on Fortran "
@@ -473,11 +531,11 @@ msgstr ""
 "Projekt zu aktivieren, füge folgenden Eintrag in Deinen Paket-Manifest "
 "ein:"
 
-#: ../how-to/integration.rst:15
+#: ../doc/how-to/integration.rst:15
 msgid "fpm.toml"
 msgstr ""
 
-#: ../how-to/integration.rst:21
+#: ../doc/how-to/integration.rst:21
 msgid ""
 "When building your project fpm will automatically fetch TOML Fortran for "
 "you and build it as part of your project. The TOML Fortran modules become"
@@ -487,11 +545,11 @@ msgstr ""
 "herunterladen und als Teil Deines Projekts kompilieren. Die TOML Fortran-"
 "Module werden in Deinem Projekt dann verfügbar gemacht."
 
-#: ../how-to/integration.rst:26
+#: ../doc/how-to/integration.rst:26
 msgid "Integrate with meson"
 msgstr "Mit meson integrieren"
 
-#: ../how-to/integration.rst:28
+#: ../doc/how-to/integration.rst:28
 msgid ""
 "To allow meson to use TOML Fortran it is easiest to include it as "
 "subproject using a git wrap file placed in the ``subprojects`` directory."
@@ -500,11 +558,11 @@ msgstr ""
 "als Unterprojekt mit einer git-Wrap-Datei im ``subprojects``-Verzeichnis "
 "einbindest."
 
-#: ../how-to/integration.rst:30
+#: ../doc/how-to/integration.rst:30
 msgid "subprojects/toml-f.wrap"
 msgstr ""
 
-#: ../how-to/integration.rst:38
+#: ../doc/how-to/integration.rst:38
 msgid ""
 "The revision can be adjusted to pin a specific release tag of TOML "
 "Fortran for additional stability. In the projects meson buid file the "
@@ -517,11 +575,11 @@ msgstr ""
 "dank der Wrap-Datei, wird eine Fallback-Version definiert und TOML "
 "Fortran kann bei Bedarf mitzukompiliert werden."
 
-#: ../how-to/integration.rst:41
+#: ../doc/how-to/integration.rst:41
 msgid "meson.build"
 msgstr ""
 
-#: ../how-to/integration.rst:52
+#: ../doc/how-to/integration.rst:52
 msgid ""
 "Finally, you can add ``tomlf_dep`` as dependency to any of your targets "
 "and are done."
@@ -529,11 +587,11 @@ msgstr ""
 "Damit kannst Du ``tomlf_dep`` als Abhängigkeit zu einem beliebigen Ziel "
 "hinzufügen und bist fertig."
 
-#: ../how-to/integration.rst:56
+#: ../doc/how-to/integration.rst:56
 msgid "Integrate with CMake"
 msgstr "Mit CMake integrieren"
 
-#: ../how-to/integration.rst:58
+#: ../doc/how-to/integration.rst:58
 msgid ""
 "To use TOML Fortran in CMake based projects it is useful to define your "
 "own find-module, to allow on-demand compilation of TOML Fortran as well "
@@ -545,7 +603,7 @@ msgstr ""
 "bei Bedarf mitzukompiliert oder auch die Installation von installierten "
 "Paketen von sowohl meson als auch CMake-basierten Builds zu ermöglichen."
 
-#: ../how-to/integration.rst:68
+#: ../doc/how-to/integration.rst:68
 msgid ""
 "In your main CMake build file you have to include the custom find-module "
 "in your ``CMAKE_MODULE_PATH``, afterwards you can just use "
@@ -557,11 +615,11 @@ msgstr ""
 " verwenden, um das ``toml-f::toml-f``-Ziel zu erhalten und dagegen zu "
 "verlinken."
 
-#: ../how-to/integration.rst:70
+#: ../doc/how-to/integration.rst:70
 msgid "CMakeLists.txt"
 msgstr ""
 
-#: ../how-to/integration.rst:111
+#: ../doc/how-to/integration.rst:111
 msgid ""
 "Note that we also install the find-modules, this is important if you want"
 " to make your CMake projects reusable in the same way TOML Fortran can be"
@@ -573,45 +631,45 @@ msgstr ""
 "anderen Projekt verwenden kannst. Zuletzt brauchst Du ein paar Zeilen "
 "Code, um das eigene find-Modul zu definieren, siehe unten."
 
-#: ../how-to/integration.rst:115
+#: ../doc/how-to/integration.rst:115
 msgid "Imported Targets"
 msgstr "Importierte Ziele"
 
-#: ../how-to/integration.rst:117
+#: ../doc/how-to/integration.rst:117
 msgid "This module provides the following imported target, if found:"
 msgstr ""
 "Dieses Modul stellt folgende importierte Ziele bereit, falls es gefunden "
 "wurde:"
 
-#: ../how-to/integration.rst:121
+#: ../doc/how-to/integration.rst:121
 msgid "``toml-f::toml-f``"
 msgstr ""
 
-#: ../how-to/integration.rst:120
+#: ../doc/how-to/integration.rst:120
 msgid "The toml-f library"
 msgstr "Die toml-f Bibliothek"
 
-#: ../how-to/integration.rst:124
+#: ../doc/how-to/integration.rst:124
 msgid "Result Variables"
 msgstr "Ergebnisvariablen"
 
-#: ../how-to/integration.rst:126
+#: ../doc/how-to/integration.rst:126
 msgid "This module will define the following variables:"
 msgstr "Dieses Modul definiert folgende Variablen:"
 
-#: ../how-to/integration.rst:129
+#: ../doc/how-to/integration.rst:129
 msgid "``TOML_FORTRAN_FOUND``"
 msgstr ""
 
-#: ../how-to/integration.rst:129
+#: ../doc/how-to/integration.rst:129
 msgid "True if the toml-f library is available"
 msgstr "Wahr wenn die toml-f Bibliothek verfügbar ist"
 
-#: ../how-to/integration.rst:133
+#: ../doc/how-to/integration.rst:133
 msgid "``TOML_FORTRAN_SOURCE_DIR``"
 msgstr ""
 
-#: ../how-to/integration.rst:132
+#: ../doc/how-to/integration.rst:132
 msgid ""
 "Path to the source directory of the toml-f project, only set if the "
 "project is included as source."
@@ -619,11 +677,11 @@ msgstr ""
 "Pfad zum Quellverzeichnis des toml-f Projekts, nur gesetzt, wenn das "
 "Projekt als Quellcode eingebunden wird."
 
-#: ../how-to/integration.rst:137
+#: ../doc/how-to/integration.rst:137
 msgid "``TOML_FORTRAN_BINARY_DIR``"
 msgstr ""
 
-#: ../how-to/integration.rst:136
+#: ../doc/how-to/integration.rst:136
 msgid ""
 "Path to the binary directory of the toml-f project, only set if the "
 "project is included as source."
@@ -631,11 +689,11 @@ msgstr ""
 "Pfad zum Buildverzeichnis des toml-f Projekts, nur gesetzt, wenn das "
 "Projekt als Quellcode eingebunden wird."
 
-#: ../how-to/integration.rst:140
+#: ../doc/how-to/integration.rst:140
 msgid "Cache variables"
 msgstr "Cachevariablen"
 
-#: ../how-to/integration.rst:142
+#: ../doc/how-to/integration.rst:142
 msgid ""
 "The following cache variables may be set to influence the library "
 "detection:"
@@ -643,57 +701,57 @@ msgstr ""
 "Die folgenden Cachevariablen können gesetzt werden um die Einbindung der "
 "Bibliothek zu beeinflussen:"
 
-#: ../how-to/integration.rst:150
+#: ../doc/how-to/integration.rst:150
 msgid "``TOML_FORTRAN_FIND_METHOD``"
 msgstr ""
 
-#: ../how-to/integration.rst:145
+#: ../doc/how-to/integration.rst:145
 msgid "Methods to find or make the project available. Available methods are"
 msgstr "Möglichkeiten zum Finden oder zum Erstellen des Projekts. Verfügbar sind "
 
-#: ../how-to/integration.rst:147
+#: ../doc/how-to/integration.rst:147
 msgid "``cmake``: Try to find via CMake config file"
 msgstr "``cmake``: Versuche via CMake Konfigurationsdatei zu finden"
 
-#: ../how-to/integration.rst:148
+#: ../doc/how-to/integration.rst:148
 msgid "``pkgconf``: Try to find via pkg-config file"
 msgstr "``pkgconf``: Versuche via pkg-config Datei zu finden"
 
-#: ../how-to/integration.rst:149
+#: ../doc/how-to/integration.rst:149
 msgid "``subproject``: Use source in subprojects directory"
 msgstr "``subproject``: Verwende Quellcode in Unterprojektverzeichnis"
 
-#: ../how-to/integration.rst:150
+#: ../doc/how-to/integration.rst:150
 msgid "``fetch``: Fetch the source from upstream"
 msgstr "``fetch``: Hole den Quellcode vom Upstream Repository"
 
-#: ../how-to/integration.rst:153
+#: ../doc/how-to/integration.rst:153
 msgid "``TOML_FORTRAN_DIR``"
 msgstr ""
 
-#: ../how-to/integration.rst:153
+#: ../doc/how-to/integration.rst:153
 msgid "Used for searching the CMake config file"
 msgstr "Wird für die Suche der CMake Konfigurationsdatei verwendet"
 
-#: ../how-to/integration.rst:156
+#: ../doc/how-to/integration.rst:156
 msgid "``TOML_FORTRAN_SUBPROJECT``"
 msgstr ""
 
-#: ../how-to/integration.rst:156
+#: ../doc/how-to/integration.rst:156
 msgid "Directory to find the toml-f subproject, relative to the project root"
 msgstr ""
 "Verzeichnis zum Finden des toml-f Unterprojekts, relativ zum Projekt "
 "Wurzelverzeichnis"
 
-#: ../how-to/integration.rst:158
+#: ../doc/how-to/integration.rst:158
 msgid "cmake/Findtoml-f.cmake"
 msgstr ""
 
-#: ../how-to/integration.rst:280
+#: ../doc/how-to/integration.rst:280
 msgid "Other build systems"
 msgstr "Andere Buildsysteme"
 
-#: ../how-to/integration.rst:282
+#: ../doc/how-to/integration.rst:282
 msgid ""
 "Other build systems must discover a precompiled TOML Fortran library from"
 " the system. For this purpose the ``pkg-config`` tool is used. After "
@@ -712,7 +770,7 @@ msgstr ""
 "lässt.Zunächst prüfe, ob das ``pkg-config`` Tool verfügbar ist und TOML "
 "Fortran gefunden werden kann."
 
-#: ../how-to/integration.rst:291
+#: ../doc/how-to/integration.rst:291
 msgid ""
 "Make sure to adjust the ``PKG_CONFIG_PATH`` environment variable to point"
 " to the correct installation directory. Using the ``--libs`` and "
@@ -724,15 +782,15 @@ msgstr ""
 "``--cflags`` Optionen können die Bibliotheken, die verlinkt werden "
 "sollen, und die Include-Verzeichnisse erhalten werden:"
 
-#: ../how-to/integration.rst:299
+#: ../doc/how-to/integration.rst:299
 msgid "In a handwritten Makefile those can be included by"
 msgstr "In einem handgeschriebenen Makefile können diese wie folgt genutzt werden"
 
-#: ../how-to/serde.rst:2
+#: ../doc/how-to/serde.rst:2
 msgid "Serializable base class"
 msgstr "Serialisierbare Basisklasse"
 
-#: ../how-to/serde.rst:4
+#: ../doc/how-to/serde.rst:4
 msgid ""
 "This recipe shows how to create a serializable class based on TOML "
 "Fortran. Currently, TOML Fortran does not define such a base class "
@@ -745,18 +803,18 @@ msgid ""
 "created and used in a variety of contexts."
 msgstr ""
 "Dieses Rezept zeigt, wie eine serialisierbare Klasse auf TOML Fortran "
-"basierend konstruiert werden kann. Momentan ist TOML Fortran selbst "
-"keine Klasse als Basis für eine serialisierbare Klasse, daher werden "
-"wir eine Loader- und Dumper-Schnittstelle definieren, um eine Datei "
-"oder eine verbundene Unit in eine Datenstruktur zu konvertieren. Die "
-"abstrakte Basisklasse implementiert die Verarbeitung der Datei oder "
-"der Unit in eine TOML Datenstruktur und leitet diese an eine "
-"deferred Prozedur weiter, die in der Klasse implementiert wird um, "
-"ein Mapping von der TOML Datenstruktur and zurück zu definieren. "
-"Diese Art von Datenstruktur kann in verschiedenen Kontexten genutzt "
-"werden and einfach in TOML und zurück transferiert werden."
+"basierend konstruiert werden kann. Momentan ist TOML Fortran selbst keine"
+" Klasse als Basis für eine serialisierbare Klasse, daher werden wir eine "
+"Loader- und Dumper-Schnittstelle definieren, um eine Datei oder eine "
+"verbundene Unit in eine Datenstruktur zu konvertieren. Die abstrakte "
+"Basisklasse implementiert die Verarbeitung der Datei oder der Unit in "
+"eine TOML Datenstruktur und leitet diese an eine deferred Prozedur "
+"weiter, die in der Klasse implementiert wird um, ein Mapping von der TOML"
+" Datenstruktur and zurück zu definieren. Diese Art von Datenstruktur kann"
+" in verschiedenen Kontexten genutzt werden and einfach in TOML und zurück"
+" transferiert werden."
 
-#: ../how-to/serde.rst:11
+#: ../doc/how-to/serde.rst:11
 msgid ""
 "TOML Fortran might provide such abstract base class in the future "
 "natively."
@@ -764,27 +822,27 @@ msgstr ""
 "TOML Fortran könnte in Zukunft selbst eine solche abstrakte Basisklasse "
 "bereitstellen."
 
-#: ../how-to/serde.rst:13
+#: ../doc/how-to/serde.rst:13
 msgid "The base class can be defined as"
 msgstr "Die Basisklasse kann wie folgt definiert werden"
 
-#: ../how-to/serde.rst:15
+#: ../doc/how-to/serde.rst:15
 msgid "src/serde_class.f90"
 msgstr ""
 
-#: ../how-to/serde.rst:19
+#: ../doc/how-to/serde.rst:19
 msgid ""
 "We also define a convenience error handler which holds the error message "
 "and signals its error status by its allocation state."
 msgstr ""
-"Wir definieren auch einen Fehler-Handler, der die Fehlermeldung "
-"speichert und den Fehlerstatus durch seinen Allokationstatus signalisiert."
+"Wir definieren auch einen Fehler-Handler, der die Fehlermeldung speichert"
+" und den Fehlerstatus durch seinen Allokationstatus signalisiert."
 
-#: ../how-to/serde.rst:21
+#: ../doc/how-to/serde.rst:21
 msgid "src/serde_error.f90"
 msgstr ""
 
-#: ../how-to/serde.rst:25
+#: ../doc/how-to/serde.rst:25
 msgid ""
 "An example for a serializable class based on the above base class is "
 "given below."
@@ -792,11 +850,11 @@ msgstr ""
 "Ein Beispiel für eine serialisierbare Klasse basierend auf der oben "
 "gegebenen Basisklasse ist unten aufgeführt."
 
-#: ../how-to/serde.rst:27
+#: ../doc/how-to/serde.rst:27
 msgid "src/demo.f90"
 msgstr ""
 
-#: ../how-to/serde.rst:31
+#: ../doc/how-to/serde.rst:31
 msgid ""
 "The defined data class can in an application easily be loaded from a "
 "file, while the actual implementation does not have to deal with getting "
@@ -805,7 +863,7 @@ msgid ""
 "structure to read from."
 msgstr ""
 "Die definierte Datenklasse kann in einer Anwendung einfach aus einer "
-"Datei geladen werden, während die tatsächliche Implementierung sich "
-"nicht um das Lesen der TOML Datenstruktur kümmert, sondern kann sich "
-"auch darauf verlassen, dass wenn die Konfigurationsdatei gültiges "
-"TOML war, eine Datenstruktur zum Lesen bereitsteht."
+"Datei geladen werden, während die tatsächliche Implementierung sich nicht"
+" um das Lesen der TOML Datenstruktur kümmert, sondern kann sich auch "
+"darauf verlassen, dass wenn die Konfigurationsdatei gültiges TOML war, "
+"eine Datenstruktur zum Lesen bereitsteht."
