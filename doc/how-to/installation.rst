@@ -17,51 +17,26 @@ If you know your way around fpm, CMake or meson, checkout the :ref:`integration 
    :target: https://github.com/conda-forge/toml-f-feedstock
 
 
-This project is packaged for the *conda* package manager and available on the *conda-forge* channel.
-To install the *conda* package manager we recommend the `miniforge <https://github.com/conda-forge/miniforge/releases>`_ installer.
+This project is packaged for the *mamba* package manager and available on the *conda-forge* channel.
+To install the *mamba* package manager we recommend the `mambaforge <https://github.com/conda-forge/miniforge/releases>`_ installer.
 If the *conda-forge* channel is not yet enabled, add it to your channels with
 
 .. code-block:: bash
 
-   conda config --add channels conda-forge
-   conda config --set channel_priority strict
+   mamba config --add channels conda-forge
+   mamba config --set channel_priority strict
 
-Once the *conda-forge* channel has been enabled, TOML Fortran can be installed with *conda*:
-
-.. code-block:: shell
-
-   conda install toml-f
-
-or with *mamba*:
+Once the *conda-forge* channel has been enabled, TOML Fortran can be installed with *mamba*:
 
 .. code-block:: shell
 
    mamba install toml-f
 
-It is possible to list all of the versions of TOML Fortran available on your platform with *conda*:
+It is possible to list all of the versions of TOML Fortran available on your platform with *mamba*:
 
 .. code-block:: shell
 
-   conda search toml-f --channel conda-forge
-
-or with *mamba*:
-
-.. code-block:: shell
-
-   mamba search toml-f --channel conda-forge
-
-Alternatively, *mamba repoquery* may provide more information:
-
-.. code-block:: shell
-
-   # Search all versions available on your platform:
    mamba repoquery search toml-f --channel conda-forge
-
-   # List packages depending on `toml-f`:
-   mamba repoquery whoneeds toml-f --channel conda-forge
-
-   # List dependencies of `toml-f`:
-   mamba repoquery depends toml-f --channel conda-forge
 
 
 :fab:`freebsd` FreeBSD ports
@@ -85,6 +60,60 @@ In case no package is available build the port using
    make install clean
 
 For more information see the `toml-f port details <https://www.freshports.org/textproc/toml-f/>`_.
+
+
+:fab:`linux` Using EasyBuild
+----------------------------
+
+TOML Fortran is available with `EasyBuild <https://docs.easybuild.io/en/latest/index.html>`_.
+You can check the available configurations using the search option
+
+.. code-block:: text
+
+   ❯ eb -S TOML-Fortran
+   CFGS1=.../easyconfigs/t/TOML-Fortran
+    * $CFGS1/TOML-Fortran-0.2.2-GCC-10.2.0.eb
+    * $CFGS1/TOML-Fortran-0.2.2-iccifort-2020.4.304.eb
+
+Select one matching configuration and build TOML Fortran using
+
+.. code-block:: text
+
+   ❯ eb TOML-Fortran-0.2.2-GCC-10.2.0.eb -r
+   == temporary log file in case of crash /tmp/eb-51Jk58/easybuild-NI5Ee1.log
+   == resolving dependencies ...
+   == processing EasyBuild easyconfig TOML-Fortran-0.2.2-GCC-10.2.0.eb
+   == building and installing TOML-Fortran-0.2.2-GCC-10.2.0.eb...
+   [...]
+   == Build succeeded for 1 out of 1
+   == Temporary log file(s) /tmp/eb-51Jk58/easybuild-NI5Ee1.log* have been removed.
+   == Temporary directory /tmp/eb-51Jk58 has been removed.
+
+TOML Fortran should now be available via an environment module.
+For more details checkout the `EasyBuild`_ documentation.
+
+
+:fab:`apple` Using Homebrew
+---------------------------
+
+TOML Fortran is available in a custom tap at `grimme-lab/homebrew-qc <https://github.com/grimme-lab/homebrew-qc>`__ for the `brew <https://brew.sh>`_ package manager.
+You can include the tap by using
+
+.. code-block:: text
+
+   brew tap grimme-lab/qc
+   brew install toml-f
+
+To build with a custom Fortran compiler you can set the ``FC`` environment variable and force to ignore preexisting binary distributions from the tap
+
+.. code-block:: text
+
+   export FC=gfortran-11
+   brew install -s toml-f
+
+.. note::
+
+   TOML Fortran has not yet been submitted to `homebrew-core <https://github.com/homebrew/homebrew-core>`_.
 
 
 Building from source
