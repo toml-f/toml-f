@@ -1,0 +1,78 @@
+Working with tables
+===================
+
+The central data structure in TOML are tables, they contain a map from a key (string) to any supported data type in TOML.
+This recipes describe common scenarios for retrieving data from tables using the TOML Fortran library.
+
+
+Iterating over keys
+-------------------
+
+An expressive way to organize data is by providing a table where the keys of each entry describe the object that should be initialized.
+For example in a package manager the keys represent the dependency, where each dependency is declared in a subtable.
+Furthermore, a convenience feature might be the possibility to just provide a string, which is interpreted as a version subentry.
+
+The final usage of this in a *requirements* table could look like the snippet shown below.
+
+.. code-block:: toml
+
+   [requirements]
+   stdlib = "^0.2.1"
+   toml = "^1.0.0"
+   cli2 = "^3.1.0"
+   lapack.version = "^3.10.1"
+   lapack.variant = "mkl|openblas"
+   minpack = {git="https://github.com/fortran-lang/minpack@v2.0.0"}
+
+The first three entries provide a string value, while the forth entry provides a subtable implicitly by using dotted key-value pairs and the last entry uses an inline table.
+
+Here we want to focus on the iteration and the default initialization, the internal structure of the *requirement_type* is secondary for this example.
+We provide the minimal definition only holding the name of the dependency for demonstration purposes.
+
+.. literalinclude:: table/keys/src/requirements.f90
+   :caption: src/requirements.f90
+   :language: fortran
+   :lines: 10-15
+
+For the actual implementation of reading all entries from the table we will use an one-dimensional array of *requirement_type* values.
+Using the ``get_keys`` method of the table we can obtain a list of all keys for the current table, the method will always allocate the ``list`` variable and we can safely allocate the *requirement_type* using the number of keys.
+To obtain the subtable, the ``get_value`` interface can be used, it will return a pointer to the subtable, either created implicitly by using a dotted key-value pair or by an inline table as shown in the snippet above.
+Finally, we can call the actual constructor of the *requirement_type* using the subtable references with the ``child`` pointer.
+
+.. literalinclude:: table/keys/src/requirements.f90
+   :caption: src/requirements.f90
+   :language: fortran
+   :lines: 19-66
+
+The other scenario we want to support is the presence of a string rather than a subtable.
+In this case the ``get_value`` interface will fail, while it provides an optional status argument to check for successful operation, we can more conveniently and idomatically verify the success by checking the state of the ``child`` pointer.
+If there is no subtable to reference, *i.e.* because it is a key-value pair with a string entry, the ``child`` pointer will not be associated, which can be easily checked.
+For this case we will again use the ``get_value`` interface, but this time to retrieve the entry into a deferred length character.
+Again we can idomatically check the status of the operation using the allocation state of the variable and create the appropriate error message if needed.
+Eventually, we have to provide the constructor of the requirements with a table, for this purpose we create a dummy table and set the entry at the version key to the just retrieved string.
+The newly created dummy table can be associated with the ``child`` pointer and passed to the actual constructor.
+
+The actual constructor for our example is very minimalistic and only recovers the name of the dependency which is passed as a separate argument.
+
+.. literalinclude:: table/keys/src/requirements.f90
+   :caption: src/requirements.f90
+   :language: fortran
+   :lines: 68-81
+
+.. note::
+
+   While we provide an error handler in the example, we also ensure that the allocation status of the *requirement_type* values communicates the status of the operation as well.
+
+.. dropdown:: Full source code
+
+   The full module implementing the *requirement_type* reading
+
+   .. literalinclude:: table/keys/src/requirements.f90
+      :caption: src/requirements.f90
+      :language: fortran
+
+   The auxilary module providing the error handler
+
+   .. literalinclude:: table/keys/src/error.f90
+      :caption: src/error.f90
+      :language: fortran
