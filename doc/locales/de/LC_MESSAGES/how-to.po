@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toml-f 0.2.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-15 23:22+0200\n"
+"POT-Creation-Date: 2022-06-15 23:35+0200\n"
 "PO-Revision-Date: 2022-04-10 18:03+0200\n"
 "Last-Translator: Sebastian Ehlert\n"
 "Language-Team: \n"
@@ -870,7 +870,7 @@ msgstr ""
 
 #: ../doc/how-to/table.rst:2
 msgid "Working with tables"
-msgstr ""
+msgstr "Mit Tabellen zu arbeiten"
 
 #: ../doc/how-to/table.rst:4
 msgid ""
@@ -879,10 +879,14 @@ msgid ""
 "common scenarios for retrieving data from tables using the TOML Fortran "
 "library."
 msgstr ""
+"Die zentrale Datenstruktur in TOML sind Tabellen, sie enthalten eine "
+"Zuordnung von Einträgen (String) zu allen unterstützten Datentypen in "
+"TOML. Dieses Rezept beschreibt die allgemeinen Szenarien für das "
+"Abfragen von Daten aus Tabellen mit der TOML Fortran-Bibliothek."
 
 #: ../doc/how-to/table.rst:9
 msgid "Accessing nested tables"
-msgstr ""
+msgstr "Geschachtelte Tabellen abfragen"
 
 #: ../doc/how-to/table.rst:11
 msgid ""
@@ -894,18 +898,30 @@ msgid ""
 " use and a good balance of short and expressive table names and "
 "meaningful subtables is required."
 msgstr ""
+"Geschachtelte Tabellen ermöglichen es, Konfigurationsdaten besser "
+"zu gruppieren. Da das TOML-Format immer den vollständigen Pfad in "
+"jeder Tabellenkopfangabe erfordert, ist es einfach für den Benutzer zu "
+"erkennen, wo die aktuellen Einstellungen zu finden sind. Aber "
+"schwieriger wird es wenn tief geschachtelte Tabellen mit langen "
+"Tabellenpfaden oder Pfadkomponenten verwendet werden. Eine gute "
+"Balance zwischen kurzen und aussagekräftigen Tabellennamen und "
+"Untereinträge ist erforderlich."
 
 #: ../doc/how-to/table.rst:15
 msgid ""
 "An example for an electronic structure code implementing different "
 "Hamiltonians is give below."
 msgstr ""
+"Ein Beispiel für einen elektronischen Strukturcode, der unterschiedliche"
+"Hamiltonians implementiert, ist unten aufgeführt."
 
 #: ../doc/how-to/table.rst:26
 msgid ""
 "The deepest nested subtable with entries in this example is the "
 "*hamiltonian.dftb.skf* path."
 msgstr ""
+"Die tiefste geschachtelte Untertabelle in diesem Beispiel ist der "
+"*hamiltonian.dftb.skf* Pfad."
 
 #: ../doc/how-to/table.rst:28
 msgid ""
@@ -914,14 +930,38 @@ msgid ""
 "describing the input. For the example above in total six derived types "
 "for the individual tables are defined as"
 msgstr ""
+"Dieser Aufbau in der Konfigurationsdatei wird in der tatsächlichen "
+"Implementierung korrespondierend wiedergeben, wobei jede Tabelle "
+"entsprechend einen abgeleiteten Typ beschreibt, der der Eingabe "
+"entspricht. Für das Beispiel oben sind insgesamt sechs abgeleitete "
+"Typen für die einzelnen Tabellen definiert."
 
-#: ../doc/how-to/table.rst:31 ../doc/how-to/table.rst:44
-#: ../doc/how-to/table.rst:51 ../doc/how-to/table.rst:60
-#: ../doc/how-to/table.rst:77
+#: ../doc/how-to/table.rst:31 ../doc/how-to/table.rst:51
+#: ../doc/how-to/table.rst:58 ../doc/how-to/table.rst:67
+#: ../doc/how-to/table.rst:84
 msgid "src/input.f90"
 msgstr ""
 
-#: ../doc/how-to/table.rst:36
+#: ../doc/how-to/table.rst:38
+#, python-format
+msgid ""
+"The representation in Fortran derived types looks lengthy compared to the"
+" actual TOML input. Consider that the 40 lines of Fortran code contain "
+"50% comments describing the data types briefly for (future) developers. "
+"Of course, the user documentation of the input format will be much more "
+"extensive, containing descriptions for every table and every entry, "
+"including input ranges and unit conventions. The final input file "
+"provided by the user can be brief and expressive."
+msgstr ""
+"Die Darstellung in abgeleiteten Typen ist in Fortran länger als die "
+"TOML-Eingabe. Dabei sollte beachten werden, dass die 40 Zeilen von "
+"Fortran Code 50% Kommentare enthalten, die die Datentypen für "
+"(zukünftige) Entwickler beschreiben. Zudem ist die Benutzerdokumentation "
+"des Eingabeformats ähnlich ausführlich, mit Beschreibungen für alle "
+"Tabellen und Einträge, inklusive Eingabebereichs und Einheiten. Die "
+"Eingabedatei kann dann kurz und aussagekräftig sein."
+
+#: ../doc/how-to/table.rst:43
 msgid ""
 "Staring with the root of the table which is read in the "
 "*simulation_input* there are two ways to obtain access to a subtable, "
@@ -933,23 +973,40 @@ msgid ""
 "unassigned in case invalid input is provided, which will result in "
 "raising an error in the implementation shown below."
 msgstr ""
+"Mit dem Wurzelknoten der Tabelle, der in den Datentypen *simulation_input* "
+"gelesen wird, gibt es zwei Wege, eine Untertabelle abzufragen, "
+"zunächst wird die *hamiltonian* Untertabelle abgefragt, die als "
+"benötigt definiert ist und mit der ``get_value``-Schnittstelle "
+"abgefragt wird. In Fällen, wenn diese Tabelle vorhanden ist, wird "
+"eine Referenz mit dem *child* Zeiger zurückgegeben. Falls keine "
+"Tabelle vorhanden ist, wird sie in den Wurzelknoten eingefügt und "
+"eine Referenz zurückgegeben. Der *child* Zeiger kann in Fällen "
+"von unzulässigen Eingaben nicht zugewiesen werden, was mit einer "
+"Fehlermeldung in der Implementierung abgefangen wird."
 
-#: ../doc/how-to/table.rst:41
+#: ../doc/how-to/table.rst:48
 msgid ""
-"The alternative to explicitly mark the subtable as optional, like for the"
+"The alternative is to explicitly mark the subtable as optional, like for the"
 " *analysis* table, if no table is available or the entry is invalid the "
 "*child* pointer will not be assigned. To differentiate those cases we can"
 " request the status information, check whether the operation was "
 "successful, and cleanly handle the error case."
 msgstr ""
+"Alternativ kann die Untertabelle als optional markiert werden, wie für "
+"die *analysis* Tabelle, wenn keine Tabelle vorhanden ist oder der "
+"Eintrag ungültig ist, bleibt der *child* Zeiger unzugewiesen. Um diese "
+"Fälle zu unterscheiden, kann der Statusinformationen abgefragt werden, "
+"um zu prüfen, ob die Operation erfolgreich war, und im Fall eines "
+"Eingabefehlers eine Fehlermeldung ausgegeben wird."
 
-#: ../doc/how-to/table.rst:49
+#: ../doc/how-to/table.rst:56
 msgid ""
 "The same happens for reading the *hamiltonian_input* and *dftb_input* "
 "entry."
 msgstr ""
+"Das gleiche gilt für die *hamiltonian_input* und *dftb_input* Einträge."
 
-#: ../doc/how-to/table.rst:56
+#: ../doc/how-to/table.rst:63
 msgid ""
 "Finally, we can implement reading the terminal subtables into the "
 "*scc_input*, *skf_input*, and *analysis_input*, where we retrieve the "
@@ -958,8 +1015,13 @@ msgid ""
 " proper error handling we can retrieve add the optional *stat* argument "
 "as well."
 msgstr ""
+"Zuletzt können die terminalen Untertabellen in *scc_input*, "
+"*skf_input*, und *analysis_input* gelesen werden, wo die Werte "
+"mit ``get_value`` abgefragt werden. Zusätzlich kann ein Standardwert "
+"mit ``get_value`` definiert werden. Für einen korrekten Fehlerbehandlung "
+"kann auch der optionalen *stat*-Parameter abgefragt werden."
 
-#: ../doc/how-to/table.rst:65
+#: ../doc/how-to/table.rst:72
 msgid ""
 "For the small incomplete input as shown here the fine grained "
 "substructure seems like overengineered, and could be fully defined in the"
@@ -967,37 +1029,47 @@ msgid ""
 "program inputs such structure can help to ensure that input readers are "
 "properly modular and reusable."
 msgstr ""
+"F[r das minimale Eingabebeispiel hier ist die Struktur scheinbar "
+"zu fein eingeteilt und könnte direkt beim Lesen der Dokumentenwurzel "
+"definiert werden. Allerdings bietet diese Struktur für große "
+"Programme einen wesentlichen Vorteil, da sie die Einlese-Routinen "
+"modular und wiederverwendbar gestaltet sind."
 
-#: ../doc/how-to/table.rst:70
+#: ../doc/how-to/table.rst:77
 msgid ""
 "The allocation status of a component of derived can used instead of a "
 "separate boolean flag to indicate whether a feature should be activated. "
-"This avoid requiring conditional code inside a reader routine for "
-"conditioanlly handling entries depending on a boolean flag, instead they "
+"This avoids requiring conditional code inside a reader routine for "
+"conditionally handling entries depending on a boolean flag, instead they "
 "can be collected in a subtable."
 msgstr ""
+"Der Allokationsstatus der Teilkomponenten in den Datentypen "
+"kann statt eines separated logischen Option verwendet werden, "
+"um eine aktive Funktionalität zu signalisieren. Dies ermöglicht "
+"es auf zusätzliche Logik zu verzichten um abhängige Einträge "
+"zu lesen, diese sind stattdessen in einer Untertabelle gesammelt."
 
 #: ../doc/how-to/table.rst
 msgid "Full source code"
-msgstr ""
+msgstr "Vollständiger Quellcode"
 
-#: ../doc/how-to/table.rst:75
+#: ../doc/how-to/table.rst:82
 msgid "The full module implementing the *simulation_input* reading"
-msgstr ""
+msgstr "Die vollständige Modul-Implementierung des *simulation_input* "
 
-#: ../doc/how-to/table.rst:81 ../doc/how-to/table.rst:154
+#: ../doc/how-to/table.rst:88 ../doc/how-to/table.rst:161
 msgid "The auxilary module providing the error handler"
-msgstr ""
+msgstr "Hilfsmodul um Fehlerbehandlung zu ermöglichen"
 
-#: ../doc/how-to/table.rst:83 ../doc/how-to/table.rst:156
+#: ../doc/how-to/table.rst:90 ../doc/how-to/table.rst:163
 msgid "src/error.f90"
 msgstr ""
 
-#: ../doc/how-to/table.rst:89
+#: ../doc/how-to/table.rst:96
 msgid "Iterating over keys"
-msgstr ""
+msgstr "Iterieren über Einträge"
 
-#: ../doc/how-to/table.rst:91
+#: ../doc/how-to/table.rst:98
 msgid ""
 "An expressive way to organize data is by providing a table where the keys"
 " of each entry describe the object that should be initialized. For "
@@ -1007,20 +1079,20 @@ msgid ""
 "interpreted as a version subentry."
 msgstr ""
 
-#: ../doc/how-to/table.rst:95
+#: ../doc/how-to/table.rst:102
 msgid ""
 "The final usage of this in a *requirements* table could look like the "
 "snippet shown below."
 msgstr ""
 
-#: ../doc/how-to/table.rst:107
+#: ../doc/how-to/table.rst:114
 msgid ""
 "The first three entries provide a string value, while the forth entry "
 "provides a subtable implicitly by using dotted key-value pairs and the "
 "last entry uses an inline table."
 msgstr ""
 
-#: ../doc/how-to/table.rst:109
+#: ../doc/how-to/table.rst:116
 msgid ""
 "Here we want to focus on the iteration and the default initialization, "
 "the internal structure of the *requirement_type* is secondary for this "
@@ -1028,12 +1100,12 @@ msgid ""
 "dependency for demonstration purposes."
 msgstr ""
 
-#: ../doc/how-to/table.rst:112 ../doc/how-to/table.rst:122
-#: ../doc/how-to/table.rst:137 ../doc/how-to/table.rst:150
+#: ../doc/how-to/table.rst:119 ../doc/how-to/table.rst:129
+#: ../doc/how-to/table.rst:144 ../doc/how-to/table.rst:157
 msgid "src/requirements.f90"
 msgstr ""
 
-#: ../doc/how-to/table.rst:117
+#: ../doc/how-to/table.rst:124
 msgid ""
 "For the actual implementation of reading all entries from the table we "
 "will use an one-dimensional array of *requirement_type* values. Using the"
@@ -1048,7 +1120,7 @@ msgid ""
 "pointer."
 msgstr ""
 
-#: ../doc/how-to/table.rst:127
+#: ../doc/how-to/table.rst:134
 msgid ""
 "The other scenario we want to support is the presence of a string rather "
 "than a subtable. In this case the ``get_value`` interface will fail, "
@@ -1068,21 +1140,20 @@ msgid ""
 "passed to the actual constructor."
 msgstr ""
 
-#: ../doc/how-to/table.rst:135
+#: ../doc/how-to/table.rst:142
 msgid ""
 "The actual constructor for our example is very minimalistic and only "
 "recovers the name of the dependency which is passed as a separate "
 "argument."
 msgstr ""
 
-#: ../doc/how-to/table.rst:144
+#: ../doc/how-to/table.rst:151
 msgid ""
 "While we provide an error handler in the example, we also ensure that the"
 " allocation status of the *requirement_type* values communicates the "
 "status of the operation as well."
 msgstr ""
 
-#: ../doc/how-to/table.rst:148
+#: ../doc/how-to/table.rst:155
 msgid "The full module implementing the *requirement_type* reading"
-msgstr ""
-
+msgstr "Das vollständige Modul zum Einlesen des *requirement_type*"

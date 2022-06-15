@@ -33,6 +33,13 @@ For the example above in total six derived types for the individual tables are d
    :language: Fortran
    :lines: 10-54
 
+.. note::
+
+   The representation in Fortran derived types looks lengthy compared to the actual TOML input.
+   Consider that the 40 lines of Fortran code contain 50% comments describing the data types briefly for (future) developers.
+   Of course, the user documentation of the input format will be much more extensive, containing descriptions for every table and every entry, including input ranges and unit conventions.
+   The final input file provided by the user can be brief and expressive.
+
 Staring with the root of the table which is read in the *simulation_input* there are two ways to obtain access to a subtable, first we get the *hamiltonian* subtable, which we defined as mandatory, using the ``get_value`` interface.
 In case it is present a reference will be returned in the *child* pointer.
 If no table is available in the input TOML Fortran will insert it into the root table and return the reference to the newly created table.
