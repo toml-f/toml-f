@@ -79,6 +79,7 @@ Other available distributions of TOML Fortran currently include
 
 - Homebrew tap at [grimme-lab/homebrew-qc](https://github.com/grimme-lab/homebrew-qc)
 - Easy-build config at [easybuilders/easybuild-easyconfigs](https://github.com/easybuilders/easybuild-easyconfigs/tree/develop/easybuild/easyconfigs/t/TOML-Fortran)
+- spack package in [develop](https://github.com/spack/spack/blob/develop/var/spack/repos/builtin/packages/toml-f/package.py)
 
 An overview of the availability of TOML Fortran in distributions tracked by [Repology](https://repology.org) is provided here:
 

@@ -45,7 +45,7 @@ In case it is present a reference will be returned in the *child* pointer.
 If no table is available in the input TOML Fortran will insert it into the root table and return the reference to the newly created table.
 The *child* pointer can still be unassigned in case invalid input is provided, which will result in raising an error in the implementation shown below.
 
-The alternative to explicitly mark the subtable as optional, like for the *analysis* table, if no table is available or the entry is invalid the *child* pointer will not be assigned.
+The alternative is to explicitly mark the subtable as optional, like for the *analysis* table, if no table is available or the entry is invalid the *child* pointer will not be assigned.
 To differentiate those cases we can request the status information, check whether the operation was successful, and cleanly handle the error case.
 
 .. literalinclude:: table/nested/src/input.f90
@@ -75,7 +75,7 @@ However, for larger program inputs such structure can help to ensure that input 
 .. tip::
 
    The allocation status of a component of derived can used instead of a separate boolean flag to indicate whether a feature should be activated.
-   This avoid requiring conditional code inside a reader routine for conditioanlly handling entries depending on a boolean flag, instead they can be collected in a subtable.
+   This avoids requiring conditional code inside a reader routine for conditionally handling entries depending on a boolean flag, instead they can be collected in a subtable.
 
 .. dropdown:: Full source code
 
