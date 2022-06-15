@@ -5,6 +5,86 @@ The central data structure in TOML are tables, they contain a map from a key (st
 This recipes describe common scenarios for retrieving data from tables using the TOML Fortran library.
 
 
+Accessing nested tables
+-----------------------
+
+Using nested tables provides the possibility to better group configuration data.
+Since the TOML format always requires the full qualified path in each table header, it is easy for the user to identify where the current settings belong to.
+On the other hand deeply nested tables with long table paths or path components make it more difficult to use and a good balance of short and expressive table names and meaningful subtables is required.
+
+An example for an electronic structure code implementing different Hamiltonians is give below.
+
+.. code-block:: toml
+
+   [hamiltonian.dftb]
+   scc = {}
+   skf.format = "mio-1-1/{}-{}.skf"
+
+   [analysis]
+   calculate-forces = true
+
+The deepest nested subtable with entries in this example is the *hamiltonian.dftb.skf* path.
+
+Such layout in the configuration file will usually be mirrored in the actual implementation, with every table corresponding to a derived type describing the input.
+For the example above in total six derived types for the individual tables are defined as
+
+.. literalinclude:: table/nested/src/input.f90
+   :caption: src/input.f90
+   :language: Fortran
+   :lines: 10-54
+
+Staring with the root of the table which is read in the *simulation_input* there are two ways to obtain access to a subtable, first we get the *hamiltonian* subtable, which we defined as mandatory, using the ``get_value`` interface.
+In case it is present a reference will be returned in the *child* pointer.
+If no table is available in the input TOML Fortran will insert it into the root table and return the reference to the newly created table.
+The *child* pointer can still be unassigned in case invalid input is provided, which will result in raising an error in the implementation shown below.
+
+The alternative to explicitly mark the subtable as optional, like for the *analysis* table, if no table is available or the entry is invalid the *child* pointer will not be assigned.
+To differentiate those cases we can request the status information, check whether the operation was successful, and cleanly handle the error case.
+
+.. literalinclude:: table/nested/src/input.f90
+   :caption: src/input.f90
+   :language: Fortran
+   :lines: 58-90
+
+The same happens for reading the *hamiltonian_input* and *dftb_input* entry.
+
+.. literalinclude:: table/nested/src/input.f90
+   :caption: src/input.f90
+   :language: Fortran
+   :lines: 92-140
+
+Finally, we can implement reading the terminal subtables into the *scc_input*, *skf_input*, and *analysis_input*, where we retrieve the actual values using the ``get_value`` interface.
+Note that we can conveniently define default values using the ``get_value`` interface.
+For proper error handling we can retrieve add the optional *stat* argument as well.
+
+.. literalinclude:: table/nested/src/input.f90
+   :caption: src/input.f90
+   :language: Fortran
+   :lines: 142-179
+
+For the small incomplete input as shown here the fine grained substructure seems like overengineered, and could be fully defined in the reading routine for the document root as well.
+However, for larger program inputs such structure can help to ensure that input readers are properly modular and reusable.
+
+.. tip::
+
+   The allocation status of a component of derived can used instead of a separate boolean flag to indicate whether a feature should be activated.
+   This avoid requiring conditional code inside a reader routine for conditioanlly handling entries depending on a boolean flag, instead they can be collected in a subtable.
+
+.. dropdown:: Full source code
+
+   The full module implementing the *simulation_input* reading
+
+   .. literalinclude:: table/nested/src/input.f90
+      :caption: src/input.f90
+      :language: fortran
+
+   The auxilary module providing the error handler
+
+   .. literalinclude:: table/nested/src/error.f90
+      :caption: src/error.f90
+      :language: fortran
+
+
 Iterating over keys
 -------------------
 
