@@ -33,6 +33,7 @@ test_srcs = []
 testdrive_dep = dependency(
   'test-drive',
   fallback: ['test-drive', 'testdrive_dep'],
+  default_options: ['default_library=static'],
   static: true,
 )
 subdir('tftest')
