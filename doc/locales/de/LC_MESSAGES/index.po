@@ -6,24 +6,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toml-f 0.2.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-08 11:47+0100\n"
+"POT-Creation-Date: 2022-06-16 11:57+0200\n"
 "PO-Revision-Date: 2022-04-10 18:05+0200\n"
 "Last-Translator: Sebastian Ehlert\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.1\n"
+"Generated-By: Babel 2.10.2\n"
 
-#: ../doc/index.rst:46
+#: ../doc/index.rst:113
 msgid "Tutorials"
 msgstr "Tutorials"
 
-#: ../doc/index.rst:46
+#: ../doc/index.rst:113
 msgid "How-Tos"
 msgstr "How-Tos"
 
-#: ../doc/index.rst:46
+#: ../doc/index.rst:113
 msgid "References"
 msgstr "Referenzen"
 
@@ -64,19 +64,75 @@ msgstr ""
 "Dieses Projekt stellt eine Bibliothek um mit `TOML <https://toml.io>`_ "
 "Dokumenten zu arbeiten, Datenstrukturen zu definieren und diese mit "
 "Fortran zu serialisieren und zu deserialisieren. Derzeit wird der `TOML "
-"Standard in Version 1.0.0 <https://toml.io/en/v1.0.0>`__ unterstützt."
-"Das TOML Fortran Projekt ist auf GitHub unter `toml-f/toml-f "
+"Standard in Version 1.0.0 <https://toml.io/en/v1.0.0>`__ unterstützt. Das"
+" TOML Fortran Projekt ist auf GitHub unter `toml-f/toml-f "
 "<https://github.com/toml-f/toml-f>`__ gehostet."
 
-#: ../doc/index.rst:39
-msgid ""
-"A typical package manifest for Fortran package manager (`fpm <https://fpm"
-".fortran-lang.org>`_) specified in TOML is shown below"
-msgstr ""
-"Ein typisches Paketmanifest für den Fortran Paketmanager (`fpm "
-"<https://fpm.fortran-lang.org/de>`_) in TOML wird unten gezeigt"
+#: ../doc/index.rst:49
+msgid ":octicon:`mortar-board` Tutorials"
+msgstr ":octicon:`mortar-board` Tutorials"
 
-#: ../doc/index.rst:41
+#: ../doc/index.rst:51
+msgid ""
+"Guides and courses for using TOML with complete and self-contained "
+"examples."
+msgstr ""
+"Anleitungen und Kurse zur Verwendung von TOML mit kompletten und "
+"eigenständigen Beispielen."
+
+#: ../doc/index.rst:60
+msgid ":octicon:`book` Recipes"
+msgstr ":octicon:`book` Rezepte"
+
+#: ../doc/index.rst:62
+msgid "Examples and recipes for solving common tasks with TOML Fortran."
+msgstr "Beispiele und Rezepte für die häufigsten Aufgaben mit TOML Fortran."
+
+#: ../doc/index.rst:70
+msgid ":octicon:`gear` Reference"
+msgstr ":octicon:`gear` Referenz"
+
+#: ../doc/index.rst:72
+msgid "Generated documentation of all procedures and derived types available."
+msgstr "Automatisch generierte Dokumentation aller Prozeduren und Datentypen."
+
+#: ../doc/index.rst:81
+msgid ":octicon:`arrow-down` Installation"
+msgstr ":octicon:`arrow-down` Installation"
+
+#: ../doc/index.rst:83
+msgid "Instructions for installing, updating or compiling TOML Fortran."
+msgstr ""
+"Anleitungen zur Installation, Aktualisierung oder Kompilierung von TOML "
+"Fortran."
+
+#: ../doc/index.rst:91
+msgid ":octicon:`mark-github` Repository"
+msgstr ":octicon:`mark-github` Repository"
+
+#: ../doc/index.rst:93
+msgid "GitHub repository for the development of TOML Fortran."
+msgstr "GitHub Repository für die Entwicklung von TOML Fortran."
+
+#: ../doc/index.rst:102
+msgid ":octicon:`link` External"
+msgstr ":octicon:`link` Extern"
+
+#: ../doc/index.rst:104
+msgid "External links to other resources, blogs, etc."
+msgstr "Externe Links zu anderen Ressourcen, Blogs, etc."
+
+#: ../doc/index.rst:106
+msgid ""
+"TOML Fortran is used for example in the Fortran package manager (`fpm "
+"<https://fpm.fortran-lang.org>`_), a typical package manifest specified "
+"in TOML is shown below"
+msgstr ""
+"TOML Fortran wird zum Beispiel in dem Fortran Paketmanager (`fpm "
+"<https://fpm.fortran-lang.org/de/>`_) verwendet, ein typischer Paketmanifest "
+"in TOML wird unten angezeigt"
+
+#: ../doc/index.rst:108
 msgid "fpm.toml"
 msgstr ""
 
