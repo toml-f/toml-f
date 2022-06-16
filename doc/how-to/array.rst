@@ -9,8 +9,8 @@ of any type supported by TOML.
 The following program parses and stores an array of integers then prints
 the values to stdout:
 
-.. literalinclude:: table/array/src/parse_array.f90
-  :caption: src/parse_array.f90
+.. literalinclude:: array/app/parse_array.f90
+  :caption: app/parse_array.f90
   :language: Fortran
 
 
@@ -27,13 +27,13 @@ structure ``arr_data`` (which is a standard Fortran array).
 As a test, let’s run the above program using the following TOML table
 (``array.toml``):
 
-.. code:: toml
+.. code-block:: toml
 
    data=[1,2,3,4]
 
 This produces the following output:
 
-::
+.. code-block:: text
 
    data =            1           2           3           4
 
@@ -50,6 +50,7 @@ interface, which automatically coerces elements of the ``toml_array`` to
 the correct type based on the variable it is copied to.
 
 .. tip::
+
    ``get_value`` returns a default value of zero if the types of the input and
    output parameters are incompatible. It also sets the value of the
    ``get_value``\'s ``stat`` parameter to a nonzero value to indicate an
