@@ -4,7 +4,7 @@ Getting started
 This tutorial provides a gentle introduction to the use of TOML Fortran.
 It will deal with reading as well as creating TOML data structures using the high-level build interface and discuss how to obtain a data structure from a TOML document or turn a data structure to TOML document again.
 
-For this project we will be working with fpm, however you can use any build tool you are familar with, checkout the :ref:`integration guide <integrations>`_ to find a matching setup.
+For this project we will be working with fpm, however you can use any build tool you are familar with, checkout the :ref:`integration guide <integration>` to find a matching setup.
 We start with creating a minimal package manifest to use TOML Fortran in our fpm project.
 
 .. code-block:: toml

@@ -1,3 +1,5 @@
+.. _external:
+
 External resources
 ==================
 
