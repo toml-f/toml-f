@@ -36,7 +36,74 @@ This project provides a library to work with `TOML <https://toml.io>`_ files and
 The currently supported TOML standard is `version 1.0.0 <https://toml.io/en/v1.0.0>`__.
 The TOML Fortran project is hosted at GitHub at `toml-f/toml-f <https://github.com/toml-f/toml-f>`__.
 
-A typical package manifest for Fortran package manager (`fpm <https://fpm.fortran-lang.org>`_) specified in TOML is shown below
+.. grid:: 3
+   :gutter: 3
+
+   .. grid-item-card::
+      :class-card: sd-bg-light sd-rounded-3
+      :class-header: sd-text-primary sd-text-center sd-font-weight-bold sd-border-bottom-0
+      :link: tutorial
+      :link-type: ref
+      :shadow: none
+
+      :octicon:`mortar-board` Tutorials
+      ^^^
+      Guides and courses for using TOML with complete and self-contained examples.
+
+   .. grid-item-card::
+      :class-card: sd-bg-light sd-rounded-3
+      :class-header: sd-text-primary sd-text-center sd-font-weight-bold sd-border-bottom-0
+      :link: recipe
+      :link-type: ref
+      :shadow: none
+
+      :octicon:`book` Recipes
+      ^^^
+      Examples and recipes for solving common tasks with TOML Fortran.
+
+   .. grid-item-card::
+      :class-card: sd-bg-light sd-rounded-3
+      :class-header: sd-text-primary sd-text-center sd-font-weight-bold sd-border-bottom-0
+      :link: https://toml-f.github.io/toml-f
+      :shadow: none
+
+      :octicon:`gear` Reference
+      ^^^
+      Generated documentation of all procedures and derived types available.
+
+   .. grid-item-card::
+      :class-card: sd-bg-light sd-rounded-3
+      :class-header: sd-text-primary sd-text-center sd-font-weight-bold sd-border-bottom-0
+      :link: installation
+      :link-type: ref
+      :shadow: none
+
+      :octicon:`arrow-down` Installation
+      ^^^
+      Instructions for installing, updating or compiling TOML Fortran.
+
+   .. grid-item-card::
+      :class-card: sd-bg-light sd-rounded-3
+      :class-header: sd-text-primary sd-text-center sd-font-weight-bold sd-border-bottom-0
+      :link: https://github.com/toml-f/toml-f
+      :shadow: none
+
+      :octicon:`mark-github` Repository
+      ^^^
+      GitHub repository for the development of TOML Fortran.
+
+   .. grid-item-card::
+      :class-card: sd-bg-light sd-rounded-3
+      :class-header: sd-text-primary sd-text-center sd-font-weight-bold sd-border-bottom-0
+      :link: external
+      :link-type: ref
+      :shadow: none
+
+      :octicon:`link` External
+      ^^^
+      External links to other resources, blogs, etc.
+
+TOML Fortran is used for example in the Fortran package manager (`fpm <https://fpm.fortran-lang.org>`_), a typical package manifest specified in TOML is shown below
 
 .. literalinclude:: ../fpm.toml
    :language: toml

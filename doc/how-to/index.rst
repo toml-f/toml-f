@@ -1,3 +1,5 @@
+.. _recipe:
+
 How-to guides
 =============
 
