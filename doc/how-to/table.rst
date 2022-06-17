@@ -1,8 +1,8 @@
 Working with tables
 ===================
 
-The central data structure in TOML are tables, they contain a map from a key (string) to any supported data type in TOML.
-This recipes describe common scenarios for retrieving data from tables using the TOML Fortran library.
+The central data structures in TOML are tables, they contain a map from a key (string) to any supported data type in TOML.
+These recipes describe common scenarios for retrieving data from tables using the TOML Fortran library.
 
 
 Accessing nested tables
@@ -10,9 +10,9 @@ Accessing nested tables
 
 Using nested tables provides the possibility to better group configuration data.
 Since the TOML format always requires the full qualified path in each table header, it is easy for the user to identify where the current settings belong to.
-On the other hand deeply nested tables with long table paths or path components make it more difficult to use and a good balance of short and expressive table names and meaningful subtables is required.
+On the other hand, deeply nested tables with long table paths or path components make them more difficult to use and a good balance of short and expressive table names and meaningful subtables is required.
 
-An example for an electronic structure code implementing different Hamiltonians is give below.
+An example of an electronic structure code implementing different Hamiltonians is given below.
 
 .. code-block:: toml
 
@@ -62,19 +62,19 @@ The same happens for reading the *hamiltonian_input* and *dftb_input* entry.
 
 Finally, we can implement reading the terminal subtables into the *scc_input*, *skf_input*, and *analysis_input*, where we retrieve the actual values using the ``get_value`` interface.
 Note that we can conveniently define default values using the ``get_value`` interface.
-For proper error handling we can retrieve add the optional *stat* argument as well.
+For proper error handling, we can retrieve the optional *stat* argument as well.
 
 .. literalinclude:: table/nested/src/input.f90
    :caption: src/input.f90
    :language: Fortran
    :lines: 142-179
 
-For the small incomplete input as shown here the fine grained substructure seems like overengineered, and could be fully defined in the reading routine for the document root as well.
-However, for larger program inputs such structure can help to ensure that input readers are properly modular and reusable.
+For the small incomplete input as shown here, the fine-grained substructure seems overengineered and could be fully defined in the reading routine for the document root as well.
+However, for larger program inputs such a structure can help to ensure that input readers are properly modular and reusable.
 
 .. tip::
 
-   The allocation status of a component of derived can used instead of a separate boolean flag to indicate whether a feature should be activated.
+   The allocation status of a component of the derived type can be used instead of a separate boolean flag to indicate whether a feature should be activated.
    This avoids requiring conditional code inside a reader routine for conditionally handling entries depending on a boolean flag, instead they can be collected in a subtable.
 
 .. dropdown:: Full source code
@@ -85,7 +85,7 @@ However, for larger program inputs such structure can help to ensure that input 
       :caption: src/input.f90
       :language: fortran
 
-   The auxilary module providing the error handler
+   The auxiliary module providing the error handler
 
    .. literalinclude:: table/nested/src/error.f90
       :caption: src/error.f90
@@ -96,7 +96,7 @@ Iterating over keys
 -------------------
 
 An expressive way to organize data is by providing a table where the keys of each entry describe the object that should be initialized.
-For example in a package manager the keys represent the dependency, where each dependency is declared in a subtable.
+For example in a package manager, the keys represent the dependency, where each dependency is declared in a subtable.
 Furthermore, a convenience feature might be the possibility to just provide a string, which is interpreted as a version subentry.
 
 The final usage of this in a *requirements* table could look like the snippet shown below.
@@ -111,7 +111,7 @@ The final usage of this in a *requirements* table could look like the snippet sh
    lapack.variant = "mkl|openblas"
    minpack = {git="https://github.com/fortran-lang/minpack@v2.0.0"}
 
-The first three entries provide a string value, while the forth entry provides a subtable implicitly by using dotted key-value pairs and the last entry uses an inline table.
+The first three entries provide a string value, while the fourth entry provides a subtable implicitly by using dotted key-value pairs and the last entry uses an inline table.
 
 Here we want to focus on the iteration and the default initialization, the internal structure of the *requirement_type* is secondary for this example.
 We provide the minimal definition only holding the name of the dependency for demonstration purposes.
@@ -121,7 +121,7 @@ We provide the minimal definition only holding the name of the dependency for de
    :language: fortran
    :lines: 10-15
 
-For the actual implementation of reading all entries from the table we will use an one-dimensional array of *requirement_type* values.
+For the actual implementation of reading all entries from the table, we will use a one-dimensional array of *requirement_type* values.
 Using the ``get_keys`` method of the table we can obtain a list of all keys for the current table, the method will always allocate the ``list`` variable and we can safely allocate the *requirement_type* using the number of keys.
 To obtain the subtable, the ``get_value`` interface can be used, it will return a pointer to the subtable, either created implicitly by using a dotted key-value pair or by an inline table as shown in the snippet above.
 Finally, we can call the actual constructor of the *requirement_type* using the subtable references with the ``child`` pointer.
@@ -132,10 +132,10 @@ Finally, we can call the actual constructor of the *requirement_type* using the 
    :lines: 19-66
 
 The other scenario we want to support is the presence of a string rather than a subtable.
-In this case the ``get_value`` interface will fail, while it provides an optional status argument to check for successful operation, we can more conveniently and idomatically verify the success by checking the state of the ``child`` pointer.
+In this case, the ``get_value`` interface will fail, while it provides an optional status argument to check for successful operation, we can more conveniently and idiomatically verify the success by checking the state of the ``child`` pointer.
 If there is no subtable to reference, *i.e.* because it is a key-value pair with a string entry, the ``child`` pointer will not be associated, which can be easily checked.
 For this case we will again use the ``get_value`` interface, but this time to retrieve the entry into a deferred length character.
-Again we can idomatically check the status of the operation using the allocation state of the variable and create the appropriate error message if needed.
+Again we can idiomatically check the status of the operation using the allocation state of the variable and create the appropriate error message if needed.
 Eventually, we have to provide the constructor of the requirements with a table, for this purpose we create a dummy table and set the entry at the version key to the just retrieved string.
 The newly created dummy table can be associated with the ``child`` pointer and passed to the actual constructor.
 
@@ -158,7 +158,7 @@ The actual constructor for our example is very minimalistic and only recovers th
       :caption: src/requirements.f90
       :language: fortran
 
-   The auxilary module providing the error handler
+   The auxiliary module providing the error handler
 
    .. literalinclude:: table/keys/src/error.f90
       :caption: src/error.f90
@@ -208,16 +208,16 @@ Except for the subtables *config* the same data is provided.
 
 
 To represent this data we can use a single *task_config* derived type with a polymorphic *driver_config* member identifying the actual task.
-For this example we will have two implementations of such task such as LBFGS and Velocity Verlet, which are defined in the following snippets.
+For this example, we will have two implementations of such tasks such as LBFGS and Velocity Verlet, which are defined in the following snippets.
 
 .. literalinclude:: table/aot/src/task.f90
    :caption: src/task.f90
    :language: fortran
    :lines: 9-35
 
-To read the array of tables we start from the root document and fetch the *tasks* entry as array using the ``get_value`` interface.
-The length of the whole arrays is known and we can use it to allocate the list of *task_config* values before reading the individual entries.
-The individual tables inside the array can addressed using the ``get_value`` interface by passing the (one-based) index.
+To read the array of tables we start from the root document and fetch the *tasks* entry as an array using the ``get_value`` interface.
+The length of the full arrays is known and we can use it to allocate the list of *task_config* values before reading the individual entries.
+The individual tables inside the array can be addressed using the ``get_value`` interface by passing the (one-based) index.
 
 .. literalinclude:: table/aot/src/task.f90
    :caption: src/task.f90
@@ -227,11 +227,11 @@ The individual tables inside the array can addressed using the ``get_value`` int
 .. note::
 
    In the setup above, if the *tasks* entry is not present it will be implicitly created as an empty array.
-   The allocation and the loop over the entries will work, however the consuming code should check whether no tasks are meaningful or should produce and error.
+   The allocation and the loop over the entries will work, however the consuming code should check whether no tasks are meaningful or should produce an error.
 
 To read the individual tasks we define a separate procedure to make it easily reusable and hide the fact that we are working with a subtable.
 To make the task *name* optional we make it default to the driver name, for *allocatable* or *pointer* variables the exit status of ``get_value`` can be easily checked by the allocation or association status of the respective variable, alternatively an integer variable can be passed to the optional *stat* argument.
-Finally, the configuration reader is called depending on the value of *driver* for ease of usage we use a block construct to allocate the specific type and than transfer it using *move_alloc* into the *task_config*.
+Finally, the configuration reader is called depending on the value of *driver* for ease of usage we use a block construct to allocate the specific type and then transfer it using *move_alloc* into the *task_config*.
 
 .. literalinclude:: table/aot/src/task.f90
    :caption: src/task.f90
