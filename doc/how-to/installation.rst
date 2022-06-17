@@ -64,6 +64,28 @@ In case no package is available build the port using
 For more information see the `toml-f port details <https://www.freshports.org/textproc/toml-f/>`_.
 
 
+:fab:`apple` :fab:`linux` Building with spack
+---------------------------------------------
+
+.. image:: https://repology.org/badge/version-for-repo/spack/toml-f.svg
+   :alt: Spack
+   :target: https://github.com/spack/spack/blob/develop/var/spack/repos/builtin/packages/toml-f/package.py
+
+This project is available with the `spack <https://spack.io>`_ package manager.
+You can install the TOML Fortran package with
+
+.. code-block:: text
+
+   spack install toml-f
+   spack load toml-f
+
+To depend on TOML Fortran in your `spack`_ package you can add a dependency with
+
+.. code-block:: python
+
+   depends_on("toml-f")
+
+
 :fab:`linux` Using EasyBuild
 ----------------------------
 
