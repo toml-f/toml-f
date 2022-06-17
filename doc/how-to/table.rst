@@ -163,3 +163,95 @@ The actual constructor for our example is very minimalistic and only recovers th
    .. literalinclude:: table/keys/src/error.f90
       :caption: src/error.f90
       :language: fortran
+
+
+Array of tables
+---------------
+
+A special construct in TOML is the array of tables syntax, it provides a more verbose form to declare several tables in an array, which are usually provided using inline tables as shown below.
+
+.. code-block:: toml
+
+   tasks = [
+      {name="optimization", driver="lbfgs"},
+      {name="equilibration", driver="velocity-verlet"},
+      {name="production", driver="velocity-verlet"},
+   ]
+
+
+Comparing the above example to the snippet below using an array of tables for the *tasks* array, the more verbose form becomes preferable in case further subtables are needed.
+Except for the subtables *config* the same data is provided.
+
+.. code-block:: toml
+
+   [[tasks]]
+   name = "optimization"
+   driver = "lbfgs"
+   [task.config]
+   tolerance = 1.0e-7
+
+   [[tasks]]
+   name = "equilibration"
+   driver = "velocity-verlet"
+   [task.config]
+   time-step = 1.0
+   temperature = 300.0
+   max-steps = 500
+
+   [[tasks]]
+   name = "production"
+   driver = "velocity-verlet"
+   [task.config]
+   time-step = 1.0
+   temperature = 300.0
+   max-steps = 10000
+
+
+To represent this data we can use a single *task_config* derived type with a polymorphic *driver_config* member identifying the actual task.
+For this example we will have two implementations of such task such as LBFGS and Velocity Verlet, which are defined in the following snippets.
+
+.. literalinclude:: table/aot/src/task.f90
+   :caption: src/task.f90
+   :language: fortran
+   :lines: 9-35
+
+To read the array of tables we start from the root document and fetch the *tasks* entry as array using the ``get_value`` interface.
+The length of the whole arrays is known and we can use it to allocate the list of *task_config* values before reading the individual entries.
+The individual tables inside the array can addressed using the ``get_value`` interface by passing the (one-based) index.
+
+.. literalinclude:: table/aot/src/task.f90
+   :caption: src/task.f90
+   :language: fortran
+   :lines: 39-56
+
+.. note::
+
+   In the setup above, if the *tasks* entry is not present it will be implicitly created as an empty array.
+   The allocation and the loop over the entries will work, however the consuming code should check whether no tasks are meaningful or should produce and error.
+
+To read the individual tasks we define a separate procedure to make it easily reusable and hide the fact that we are working with a subtable.
+To make the task *name* optional we make it default to the driver name, for *allocatable* or *pointer* variables the exit status of ``get_value`` can be easily checked by the allocation or association status of the respective variable, alternatively an integer variable can be passed to the optional *stat* argument.
+Finally, the configuration reader is called depending on the value of *driver* for ease of usage we use a block construct to allocate the specific type and than transfer it using *move_alloc* into the *task_config*.
+
+.. literalinclude:: table/aot/src/task.f90
+   :caption: src/task.f90
+   :language: fortran
+   :lines: 58-94
+
+For reading the actual driver configuration we use the ``get_value`` interface to obtain the settings.
+We use the same defaulting mechanism as for the *name* entry here.
+
+.. literalinclude:: table/aot/src/task.f90
+   :caption: src/task.f90
+   :language: fortran
+   :lines: 96-116
+
+Note that this example does not propagate back errors but directly calls *error stop*, for a more robust error reporting this can be changed by a small error handle or a context type.
+
+.. dropdown:: Full source code
+
+   The full module implementing the *task_config* reading
+
+   .. literalinclude:: table/aot/src/task.f90
+      :caption: src/task.f90
+      :language: fortran
