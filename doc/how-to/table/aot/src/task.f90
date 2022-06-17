@@ -8,13 +8,13 @@ module demo_task
 
   !> Abstract base class for all simulation driver configurations
   type, abstract :: driver_config
-  end type :: driver_config
+  end type driver_config
 
   !> Configuration for the LBFGS geometry optimization driver
   type, extends(driver_config) :: lbfgs_config
     !> Tolerance for considering optimization to be converged
     real :: tolerance
-  end type lbfgs_confg
+  end type lbfgs_config
 
   !> Configuration for the Velocity-Verlet molecular dynamics driver
   type, extends(driver_config) :: velocity_verlet_config
@@ -24,7 +24,7 @@ module demo_task
     real :: temperature
     !> Number of steps to take in the propagation
     integer :: max_steps
-  end type velocity_verlet_confg
+  end type velocity_verlet_config
 
   !> Configuration of a single simulation task
   type :: task_config
@@ -43,6 +43,7 @@ contains
     !> Configurations for simulation tasks
     type(task_config), allocatable, intent(out) :: task(:)
 
+    integer :: itask
     type(toml_array), pointer :: array
     type(toml_table), pointer :: child
 

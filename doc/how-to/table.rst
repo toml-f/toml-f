@@ -222,7 +222,7 @@ The individual tables inside the array can addressed using the ``get_value`` int
 .. literalinclude:: table/aot/src/task.f90
    :caption: src/task.f90
    :language: fortran
-   :lines: 39-56
+   :lines: 39-57
 
 .. note::
 
@@ -236,7 +236,7 @@ Finally, the configuration reader is called depending on the value of *driver* f
 .. literalinclude:: table/aot/src/task.f90
    :caption: src/task.f90
    :language: fortran
-   :lines: 58-94
+   :lines: 59-95
 
 For reading the actual driver configuration we use the ``get_value`` interface to obtain the settings.
 We use the same defaulting mechanism as for the *name* entry here.
@@ -244,7 +244,7 @@ We use the same defaulting mechanism as for the *name* entry here.
 .. literalinclude:: table/aot/src/task.f90
    :caption: src/task.f90
    :language: fortran
-   :lines: 96-116
+   :lines: 97-117
 
 Note that this example does not propagate back errors but directly calls *error stop*, for a more robust error reporting this can be changed by a small error handle or a context type.
 
