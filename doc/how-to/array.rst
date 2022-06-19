@@ -2,14 +2,14 @@ Working with arrays
 ===================
 
 TOML supports *array* data types: flat, ordered containers holding
-multiple values. Arrays are dynamically sized (i.e. don’t need specify
+multiple values. Arrays are dynamically sized (i.e. don't need specify
 the number of elements before using an array) and can contain elements
 of any type supported by TOML.
 
 The following program parses and stores an array of integers then prints
 the values to stdout:
 
-.. literalinclude:: array/app/parse_array.f90
+.. literalinclude:: array/array/app/parse_array.f90
   :caption: app/parse_array.f90
   :language: Fortran
 
@@ -17,14 +17,14 @@ the values to stdout:
 The simplest way to parse an array-valued key in ``toml-f`` is to use
 the ``get_value()`` function, which has an overload to handle arrays.
 First, we need to use a temporary variable ``arr`` (of type
-``toml_array``), as the array’s elements can be of potentially any type.
+``toml_array``), as the array's elements can be of potentially any type.
 ``arr`` is automatically associated and allocated by ``get_value``,
 which we can use to determine how much space is needed to store the
-array’s contents. Finally, we must iterate over all elements of the
+array's contents. Finally, we must iterate over all elements of the
 temporary ``toml_array`` and assign them to an element in our final data
 structure ``arr_data`` (which is a standard Fortran array).
 
-As a test, let’s run the above program using the following TOML table
+As a test, let's run the above program using the following TOML table
 (``array.toml``):
 
 .. code-block:: toml
@@ -55,3 +55,47 @@ the correct type based on the variable it is copied to.
    output parameters are incompatible. It also sets the value of the
    ``get_value``\'s ``stat`` parameter to a nonzero value to indicate an
    error ocurred.
+
+Accessing nested arrays
+-----------------------
+
+TOML arrays can be nested to produce an *array-of-arrays*. Both the top-level 
+and nested child arrays are potentially variable-length and can contain any 
+TOML data-type (including further nested arrays).
+
+The following program reads a TOML file with an array-of-arrays nested a 
+single level deep, and prints its values to stdout:
+
+.. literalinclude:: array/nested/app/nested_array.f90
+  :caption: app/nested_array.f90
+  :language: Fortran
+
+First, we need to call ``get_value`` to get a pointer to the top-level array then
+iterate through its elements, calling ``get_value`` on each to get a pointer to 
+the child array. Finally, we iterate through the individual sub-arrays and 
+process their elements one-by-one.
+
+This approach has the advantage of being able to deal with nested arrays of 
+arbitrary length, such as the TOML table below:
+
+.. code-block:: toml
+
+   data=[[1,2,3], [4,5], [6]]
+
+Which produces the following output:
+
+.. code-block:: text
+
+   data(1,1) = 1
+   data(1,2) = 2
+   data(1,3) = 3
+   data(2,1) = 4
+   data(2,2) = 5
+   data(3,1) = 6
+
+.. tip::
+   A TOML array-of-arrays does not necessarily map cleanly to a regular Fortran
+   multidimensional array. Multidimensional Fortran arrays must be rectangular 
+   (i.e. rows must contain the same number of elements), so an array-of-arrays 
+   with variable sized nested arrays cannot be directly mapped to a primitive 
+   Fortran type and must be represented using a compound data type.
