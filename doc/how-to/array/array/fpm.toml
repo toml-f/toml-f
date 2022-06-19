@@ -1,0 +1,8 @@
+name = "demo"
+
+[dependencies]
+toml-f.path = "../../../.."
+
+[[executable]]
+name = "parse-array"
+main = "parse_array.f90"

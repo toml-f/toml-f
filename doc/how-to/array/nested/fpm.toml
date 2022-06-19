@@ -1,0 +1,8 @@
+name = "demo"
+
+[dependencies]
+toml-f.path = "../../../.."
+
+[[executable]]
+name = "mested-array"
+main = "nested_array.f90"

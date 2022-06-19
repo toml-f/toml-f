@@ -18,4 +18,5 @@ Each recipe is tailored for a specific problem and use case it is trying to solv
    installation
    integration
    table
+   array
    serde
