@@ -1,0 +1,38 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019-2022, Sebastian Ehlert
+# This file is distributed under the same license as the toml-f package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: toml-f 0.2.3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-06-19 18:08-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Asdrubal Lozada-Blanco\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: ../doc/external.rst:9
+msgid "Modern Fortran by Philipp Engel (English)"
+msgstr "Modern Fortran por Philipp Engel (Inglés)"
+
+#: ../doc/external.rst:9
+msgid "Fortran in Action by Zuo Zhihua (Chinese)"
+msgstr "Fortran in Action por Zuo Zhihua (Chino)"
+
+#: ../doc/external.rst:4
+msgid "External resources"
+msgstr "Recursos externos"
+
+#: ../doc/external.rst:6
+msgid ""
+"Sides and blog posts with information on TOML Fortran are mentioned and "
+"linked here."
+msgstr ""
+"Páginas y publicaciones en blogs con información sobre TOML Fortran son mencionadas y "
+"enlzazadas aquí."
