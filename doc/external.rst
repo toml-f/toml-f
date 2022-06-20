@@ -3,7 +3,7 @@
 External resources
 ==================
 
-Sides and blog posts with information on TOML Fortran are mentioned and linked here.
+Sites and blog posts with information on TOML Fortran are mentioned and linked here.
 
 
 .. toctree::
