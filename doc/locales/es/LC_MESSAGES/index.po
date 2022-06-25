@@ -128,7 +128,7 @@ msgid ""
 "in TOML is shown below"
 msgstr ""
 "TOML Fortran es usado por ejemplo en el Administrador de paquetes de Fortran (`fpm "
-"<https://fpm.fortran-lang.org>`_). Un manifiesto típico para un paquete especificado en "
+"<https://fpm.fortran-lang.org/es>`_). Un manifiesto típico para un paquete especificado en "
 "TOML es mostrado abajo"
 
 #: ../doc/index.rst:108
