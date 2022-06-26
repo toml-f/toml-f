@@ -11,13 +11,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set(dir "${CMAKE_CURRENT_SOURCE_DIR}")
-
-list(
-  APPEND test-srcs
-  "${dir}/build.f90"
-  "${dir}/main.f90"
-  "${dir}/sort.f90"
+# Check for consistency of the internal version number with the one defined
+# in the projects meson.build
+test(
+  'version',
+  executable('tftest-version', files('version.f90'), dependencies: tomlf_dep),
+  args: meson.project_version(),
 )
 
-set(test-srcs "${test-srcs}" PARENT_SCOPE)
+# Check if the version in the fpm.toml package file matches the internal version
+test(
+  'fpm',
+  executable('tftest-fpm', files('fpm.f90'), dependencies: tomlf_dep),
+  args: fpm_toml,
+)

@@ -248,6 +248,7 @@ subroutine get_keys(self, list)
       if (allocated(self%lst(i)%val)) then
          if (allocated(self%lst(i)%val%key)) then
             list(i)%key = self%lst(i)%val%key
+            list(i)%origin = self%lst(i)%val%origin
          end if
       end if
    end do

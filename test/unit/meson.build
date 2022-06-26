@@ -11,11 +11,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Version consistency checker.
-add_subdirectory("version")
-
-# Unit testing
-add_subdirectory("unit")
-
-# Validation tests
-add_subdirectory("compliance")
+testdrive_dep = dependency(
+  'test-drive',
+  fallback: ['test-drive', 'testdrive_dep'],
+  default_options: ['default_library=static'],
+  static: true,
+)
+test(
+  'tftest',
+  executable(
+    'tftester',
+    sources: files(
+      'build.f90',
+      'main.f90',
+      'sort.f90',
+    ),
+    dependencies: [tomlf_dep, testdrive_dep],
+  ),
+)

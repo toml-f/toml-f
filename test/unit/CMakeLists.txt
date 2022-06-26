@@ -11,8 +11,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-test_srcs += files(
-  'build.f90',
-  'main.f90',
-  'sort.f90',
+if(NOT TARGET "test-drive::test-drive")
+  find_package("test-drive")
+endif()
+
+set(
+  test-srcs
+  "build.f90"
+  "main.f90"
+  "sort.f90"
+)
+
+add_executable(
+  tftester
+  "${test-srcs}"
+)
+target_link_libraries(
+  tftester
+  PRIVATE
+  "${PROJECT_NAME}-lib"
+  "test-drive::test-drive"
+)
+add_test(
+  "tftest"
+  tftester
 )

@@ -11,11 +11,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Version consistency checker.
-add_subdirectory("version")
+# Serializer from TOML to a specific JSON format suitable for the validator suite
+add_executable(
+  toml2json
+  "${dir}/json_ser.f90"
+  "${dir}/toml2json.f90"
+)
+target_link_libraries(
+  toml2json
+  PRIVATE
+  "${PROJECT_NAME}-lib"
+)
 
-# Unit testing
-add_subdirectory("unit")
-
-# Validation tests
-add_subdirectory("compliance")
+# Deserializer for a specific JSON format suitable for the validator suite
+add_executable(
+  json2toml
+  "${dir}/json_de.f90"
+  "${dir}/json2toml.f90"
+)
+target_link_libraries(
+  json2toml
+  PRIVATE
+  "${PROJECT_NAME}-lib"
+)
