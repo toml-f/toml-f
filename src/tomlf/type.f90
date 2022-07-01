@@ -46,6 +46,7 @@ module tomlf_type
    !> Interface to build new tables
    interface add_table
       module procedure :: add_table_to_table
+      module procedure :: add_table_to_table_key
       module procedure :: add_table_to_array
    end interface add_table
 
@@ -53,6 +54,7 @@ module tomlf_type
    !> Interface to build new arrays
    interface add_array
       module procedure :: add_array_to_table
+      module procedure :: add_array_to_table_key
       module procedure :: add_array_to_array
    end interface add_array
 
@@ -60,6 +62,7 @@ module tomlf_type
    !> Interface to build new key-value pairs
    interface add_keyval
       module procedure :: add_keyval_to_table
+      module procedure :: add_keyval_to_table_key
       module procedure :: add_keyval_to_array
    end interface add_keyval
 
@@ -117,6 +120,26 @@ subroutine add_table_to_table(table, key, ptr, stat)
 end subroutine add_table_to_table
 
 
+!> Create a new TOML table inside an existing table
+subroutine add_table_to_table_key(table, key, ptr, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key for the new table
+   type(toml_key), intent(in) :: key
+
+   !> Pointer to the newly created table
+   type(toml_table), pointer, intent(out) :: ptr
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call add_table(table, key%key, ptr, stat)
+   if (associated(ptr)) ptr%origin = key%origin
+end subroutine add_table_to_table_key
+
+
 !> Create a new TOML array inside an existing table
 subroutine add_array_to_table(table, key, ptr, stat)
 
@@ -167,6 +190,26 @@ subroutine add_array_to_table(table, key, ptr, stat)
 end subroutine add_array_to_table
 
 
+!> Create a new TOML array inside an existing table
+subroutine add_array_to_table_key(table, key, ptr, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key for the new array
+   type(toml_key), intent(in) :: key
+
+   !> Pointer to the newly created array
+   type(toml_array), pointer, intent(out) :: ptr
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call add_array(table, key%key, ptr, stat)
+   if (associated(ptr)) ptr%origin = key%origin
+end subroutine add_array_to_table_key
+
+
 !> Create a new key-value pair inside an existing table
 subroutine add_keyval_to_table(table, key, ptr, stat)
 
@@ -215,6 +258,26 @@ subroutine add_keyval_to_table(table, key, ptr, stat)
    if (present(stat)) stat = istat
 
 end subroutine add_keyval_to_table
+
+
+!> Create a new key-value pair inside an existing table
+subroutine add_keyval_to_table_key(table, key, ptr, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key for the new key-value pair
+   type(toml_key), intent(in) :: key
+
+   !> Pointer to the newly created key-value pair
+   type(toml_keyval), pointer, intent(out) :: ptr
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call add_keyval(table, key%key, ptr, stat)
+   if (associated(ptr)) ptr%origin = key%origin
+end subroutine add_keyval_to_table_key
 
 
 !> Create a new TOML table inside an existing array

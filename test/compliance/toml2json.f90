@@ -13,13 +13,14 @@
 
 !> Example executable to read and emit a TOML document
 program toml2json
-   use, intrinsic :: iso_fortran_env, only : input_unit
+   use, intrinsic :: iso_fortran_env, only : input_unit, error_unit
    use tomlf
    use tftest_json_ser
    implicit none
    integer :: iarg, length
    character(len=:), allocatable :: argument
    type(toml_table), allocatable :: table
+   type(toml_error), allocatable :: error
    type(json_serializer) :: ser
    integer :: unit
    logical :: exist
@@ -39,8 +40,11 @@ program toml2json
          if (exist) then
             open(newunit=unit, file=argument)
             if (allocated(table)) deallocate(table)
-            call toml_parse(table, unit)
+            call toml_parse(table, unit, error)
             close(unit)
+            if (allocated(error)) then
+               write(error_unit, '(a)') error%message
+            end if
             if (allocated(table)) then
                call table%accept(ser)
                call table%destroy
@@ -48,7 +52,10 @@ program toml2json
          end if
       end do
    else
-      call toml_parse(table, input_unit)
+      call toml_parse(table, input_unit, error)
+      if (allocated(error)) then
+         write(error_unit, '(a)') error%message
+      end if
       if (allocated(table)) then
          call table%accept(ser)
          call table%destroy

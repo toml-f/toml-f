@@ -18,6 +18,7 @@ module tomlf_datetime
    private
 
    public :: toml_datetime, toml_time, toml_date
+   public :: operator(==)
 
 
    !> TOML time value (HH:MM:SS.sssssZ...)
@@ -56,6 +57,11 @@ module tomlf_datetime
       generic :: assignment(=) => to_string
       procedure, pass(rhs) :: to_string => datetime_to_string
    end type
+
+
+   interface operator(==)
+      module procedure :: compare_datetime
+   end interface operator(==)
 
 
 contains
@@ -117,6 +123,53 @@ elemental function new_toml_time(hour, minute, second, millisec, zone) &
    if (present(millisec)) self%millisec = millisec
    if (present(zone)) self%zone = zone
 end function new_toml_time
+
+
+pure function compare_datetime(lhs, rhs) result(match)
+   type(toml_datetime), intent(in) :: lhs
+   type(toml_datetime), intent(in) :: rhs
+   logical :: match
+
+   match = allocated(lhs%date) .eqv. allocated(rhs%date) &
+      & .and. allocated(lhs%time) .eqv. allocated(rhs%time)
+   if (allocated(lhs%date) .and. allocated(rhs%date)) then
+      match = match .and. compare_date(lhs%date, rhs%date)
+   end if
+
+   if (allocated(lhs%time) .and. allocated(rhs%time)) then
+      match = match .and. compare_time(lhs%time, rhs%time)
+   end if
+end function compare_datetime
+
+
+pure function compare_date(lhs, rhs) result(match)
+   type(toml_date), intent(in) :: lhs
+   type(toml_date), intent(in) :: rhs
+   logical :: match
+
+   match = lhs%year == rhs%year .and. lhs%month == rhs%month .and. lhs%day == rhs%day
+end function compare_date
+
+
+pure function compare_time(lhs, rhs) result(match)
+   type(toml_time), intent(in) :: lhs
+   type(toml_time), intent(in) :: rhs
+   logical :: match
+
+   integer :: lms, rms
+
+   lms = 0
+   if (allocated(lhs%millisec)) lms = lhs%millisec
+   rms = 0
+   if (allocated(rhs%millisec)) rms = rhs%millisec
+
+   match = lhs%hour == rhs%hour .and. lhs%minute == rhs%minute .and. lhs%second == rhs%second &
+      & .and. lms == rms .and. allocated(lhs%zone) .eqv. allocated(rhs%zone)
+
+   if (allocated(lhs%zone) .and. allocated(rhs%zone)) then
+      match = match .and. lhs%zone == rhs%zone
+   end if
+end function compare_time
 
 
 end module tomlf_datetime

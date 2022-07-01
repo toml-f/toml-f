@@ -23,7 +23,9 @@ test(
     'tftester',
     sources: files(
       'build.f90',
+      'lexer.f90',
       'main.f90',
+      'parser.f90',
       'sort.f90',
     ),
     dependencies: [tomlf_dep, testdrive_dep],

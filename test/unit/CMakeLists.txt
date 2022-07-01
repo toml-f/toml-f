@@ -18,7 +18,9 @@ endif()
 set(
   test-srcs
   "build.f90"
+  "lexer.f90"
   "main.f90"
+  "parser.f90"
   "sort.f90"
 )
 

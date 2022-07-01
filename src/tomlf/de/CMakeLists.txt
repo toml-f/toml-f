@@ -16,6 +16,10 @@ set(dir "${CMAKE_CURRENT_SOURCE_DIR}")
 list(
   APPEND srcs
   "${dir}/character.f90"
+  "${dir}/context.f90"
+  "${dir}/lexer.f90"
+  "${dir}/parser.f90"
+  "${dir}/token.f90"
   "${dir}/tokenizer.f90"
 )
 

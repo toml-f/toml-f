@@ -27,6 +27,9 @@ module tomlf_type_keyval
       !> Raw content of the TOML value
       character(kind=tfc, len=:), allocatable :: raw
 
+      !> Origin of value
+      integer :: origin_value = 0
+
    contains
 
       !> Release allocation hold by TOML key-value pair

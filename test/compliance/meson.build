@@ -40,6 +40,10 @@ if not meson.is_subproject() and go_exe.found()
   valid_tests = toml_test_prj.get_variable('valid_tests')
   invalid_tests = toml_test_prj.get_variable('invalid_tests')
 
+  if not toml_test_exe.found()
+    subdir_done()
+  endif
+
   valid_failing = [
     'valid/array/array',
     'valid/array/bool',
