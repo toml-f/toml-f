@@ -330,7 +330,7 @@ subroutine next_token(lexer, token)
 
    case(char_kind%lbracket)
       token = toml_token(token_kind%lbracket, prev, pos)
-      if (view_scope(lexer) == lexer_scope%equal) then
+      if (any(view_scope(lexer) == [lexer_scope%equal, lexer_scope%array])) then
          call push_back(lexer, lexer_scope%array, lexer%context%top + 1)
       end if
 
@@ -667,12 +667,15 @@ subroutine next_integer(lexer, token)
    if (match(lexer, pos, "0")) then
       select case(peek(lexer, pos+1))
       case("x")
+         okay = pos == prev
          base = b16
          pos = pos + 2
       case("o")
+         okay = pos == prev
          base = b8
          pos = pos + 2
       case("b")
+         okay = pos == prev
          base = b2
          pos = pos + 2
       case(char_kind%space, char_kind%tab, char_kind%newline, char_kind%carriage_return, &
@@ -687,6 +690,7 @@ subroutine next_integer(lexer, token)
          return
       end select
    end if
+
 
    do while(pos <= size(lexer%chunk))
       ch = peek(lexer, pos)
@@ -706,7 +710,7 @@ subroutine next_integer(lexer, token)
          cycle
       end if
 
-      okay = verify(ch, terminated) == 0
+      okay = okay .and. verify(ch, terminated) == 0
       exit
    end do
 
@@ -832,7 +836,8 @@ subroutine next_datetime(lexer, token)
    has_date = valid_date(peek(lexer, pos+offset(:offset_date)))
    if (has_date) then
       if (verify(peek(lexer, pos+offset_date), "Tt ") == 0 &
-         & .and. pos + offset_date < size(lexer%chunk)) then
+         & .and. pos + offset_date < size(lexer%chunk) &
+         & .and. verify(peek(lexer, pos+offset_date+1), num) == 0) then
          pos = pos + offset_date + 1
       end if
    end if

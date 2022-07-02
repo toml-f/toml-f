@@ -38,6 +38,7 @@ subroutine collect_lexer(testsuite)
       & new_unittest("brace-left", brace_left), &
       & new_unittest("brace-right", brace_right), &
       & new_unittest("brace-unclosed", brace_unclosed), &
+      & new_unittest("bracket", bracket), &
       & new_unittest("bracket-left", bracket_left), &
       & new_unittest("bracket-right", bracket_right), &
       & new_unittest("bracket-unclosed", bracket_unclosed), &
@@ -45,6 +46,7 @@ subroutine collect_lexer(testsuite)
       & new_unittest("comment", comment), &
       & new_unittest("comment-eof", comment_eof), &
       & new_unittest("datetime", datetime), &
+      & new_unittest("datetime-comment", datetime_comment), &
       & new_unittest("datetime-local-date", datetime_local_date), &
       & new_unittest("datetime-local-time", datetime_local_time), &
       & new_unittest("datetime-local", datetime_local), &
@@ -93,6 +95,7 @@ subroutine collect_lexer(testsuite)
       & new_unittest("keypath-string", keypath_string), &
       & new_unittest("keypath-inline-table", keypath_inline_table), &
       & new_unittest("keypath-inline-array", keypath_inline_array), &
+      & new_unittest("keypath-inline-array-nested", keypath_inline_array_nested), &
       & new_unittest("keypath-inline-unclosed", keypath_inline_unclosed), &
       & new_unittest("keypath-invalid", keypath_invalid), &
       & new_unittest("keypath-escape", keypath_escape), &
@@ -197,12 +200,20 @@ subroutine brace_right(error)
       & [token_kind%rbrace, token_kind%eof], .false.)
 end subroutine brace_right
 
+subroutine bracket(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check_token(error, "[]", &
+      & [token_kind%lbracket, token_kind%rbracket, token_kind%eof], .false.)
+end subroutine bracket
+
 subroutine bracket_left(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
    call check_token(error, "[", &
-      & [token_kind%lbracket, token_kind%eof], .false.)
+      & [token_kind%lbracket, token_kind%eof], .true.)
 end subroutine bracket_left
 
 subroutine bracket_right(error)
@@ -312,6 +323,17 @@ subroutine keypath_inline_array(error)
       &  token_kind%keypath, token_kind%dot, token_kind%keypath, token_kind%equal, &
       &  token_kind%int, token_kind%rbrace, token_kind%rbracket, token_kind%eof], .true.)
 end subroutine keypath_inline_array
+
+subroutine keypath_inline_array_nested(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check_token(error, "data=[[""gamma"",""delta""],[1,2]]", &
+      & [token_kind%keypath, token_kind%equal, token_kind%lbracket, token_kind%lbracket, &
+      &  token_kind%string, token_kind%comma, token_kind%string, token_kind%rbracket, &
+      &  token_kind%comma, token_kind%lbracket, token_kind%int, token_kind%comma, &
+      &  token_kind%int, token_kind%rbracket, token_kind%rbracket, token_kind%eof], .true.)
+end subroutine keypath_inline_array_nested
 
 subroutine keypath_inline_unclosed(error)
    !> Error handling
@@ -772,6 +794,15 @@ subroutine datetime(error)
    call check_token(error, "1987-07-05 17:45:00Z,1987-07-05t17:45:00z", &
       & [token_kind%datetime, token_kind%comma, token_kind%datetime, token_kind%eof], .false.)
 end subroutine datetime
+
+subroutine datetime_comment(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check_token(error, "1979-05-27 # Comment", &
+      & [token_kind%datetime, token_kind%whitespace, token_kind%comment, token_kind%eof], &
+      & .false.)
+end subroutine datetime_comment
 
 subroutine datetime_local_date(error)
    !> Error handling

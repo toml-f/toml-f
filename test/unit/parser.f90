@@ -68,11 +68,13 @@ subroutine collect_parser(testsuite)
       & new_unittest("inline-array-empty", inline_array_empty), &
       & new_unittest("inline-array-whitespace", inline_array_whitespace), &
       & new_unittest("inline-array-newline", inline_array_newline), &
+      & new_unittest("inline-array-nested", inline_array_nested), &
       & new_unittest("inline-table", inline_table), &
       & new_unittest("inline-table-empty", inline_table_empty), &
       & new_unittest("inline-table-whitespace", inline_table_whitespace), &
       & new_unittest("inline-table-newline", inline_table_newline, should_fail=.true.), &
       & new_unittest("inline-table-comma", inline_table_comma, should_fail=.true.), &
+      & new_unittest("inline-table-modify", inline_table_modify, should_fail=.true.), &
       & new_unittest("empty", empty)]
 
 end subroutine collect_parser
@@ -458,6 +460,22 @@ subroutine inline_array_newline(error)
       &  toml_token(token_kind%comment, 17, 17), toml_token(token_kind%eof, 18, 18)])
 end subroutine inline_array_newline
 
+
+subroutine inline_array_nested(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check_parser(error, "data=[[""gamma"",""delta""],[1,2]]", &
+      & [toml_token(token_kind%keypath, 1, 4), toml_token(token_kind%equal, 5, 5), &
+      &  toml_token(token_kind%lbracket, 6, 6), toml_token(token_kind%lbracket, 7, 7), &
+      &  toml_token(token_kind%string, 8, 14), toml_token(token_kind%comma, 15, 15), &
+      &  toml_token(token_kind%string, 16, 22), toml_token(token_kind%rbracket, 23, 23), &
+      &  toml_token(token_kind%comma, 24, 24), toml_token(token_kind%lbracket, 25, 25), &
+      &  toml_token(token_kind%int, 26, 26), toml_token(token_kind%comma, 27, 27), &
+      &  toml_token(token_kind%int, 28, 28), toml_token(token_kind%rbracket, 29, 29), &
+      &  toml_token(token_kind%rbracket, 30, 30), toml_token(token_kind%eof, 31, 31)])
+end subroutine inline_array_nested
+
 subroutine inline_table(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -527,6 +545,20 @@ subroutine inline_table_comma(error)
       &  toml_token(token_kind%int, 7, 7), toml_token(token_kind%comma, 8, 8), &
       &  toml_token(token_kind%rbrace, 9, 9), toml_token(token_kind%eof, 10, 10)])
 end subroutine inline_table_comma
+
+
+subroutine inline_table_modify(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check_parser(error, "a={}"//nl//"[a.b]", &
+      & [toml_token(token_kind%keypath, 1, 1), toml_token(token_kind%equal, 2, 2), &
+      &  toml_token(token_kind%lbrace, 3, 3), toml_token(token_kind%rbrace, 4, 4), &
+      &  toml_token(token_kind%newline, 5, 5), toml_token(token_kind%lbracket, 6, 6), &
+      &  toml_token(token_kind%keypath, 7, 7), toml_token(token_kind%dot, 8, 8), &
+      &  toml_token(token_kind%keypath, 9, 9), toml_token(token_kind%rbracket, 10, 10), &
+      &  toml_token(token_kind%eof, 11, 11)])
+end subroutine inline_table_modify
 
 subroutine check_parser(error, string, token)
    !> Error handling

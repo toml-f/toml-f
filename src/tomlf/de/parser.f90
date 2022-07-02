@@ -315,6 +315,15 @@ contains
                return
             end if
          end if
+
+         if (table%inline) then
+            call semantic_error(parser%diagnostic, lexer, &
+               & parser%context%token(key%origin), &
+               & parser%context%token(table%origin), &
+               & "Inline table '"//key%key//"' cannot be used as a key", &
+               & "inline table cannot be extended", &
+               & "defined as inline first")
+         end if
       end do
 
       parser%current => table
