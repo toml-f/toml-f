@@ -12,10 +12,8 @@
 # limitations under the License.
 
 srcs += files(
-  'character.f90',
   'context.f90',
   'lexer.f90',
   'parser.f90',
-  'tokenizer.f90',
   'token.f90',
 )
