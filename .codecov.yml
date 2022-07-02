@@ -1,0 +1,5 @@
+fixes:
+  - "/home/runner/work/toml-f/toml-f::"
+
+ignore:
+  - "test/**"
