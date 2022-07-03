@@ -284,7 +284,7 @@ contains
       type(toml_table), pointer :: table, tmp_tbl
       type(toml_array), pointer :: array
       type(toml_key), pointer :: key
-      class(toml_value), pointer :: ptr, tmp
+      class(toml_value), pointer :: ptr
       integer :: it
 
       table => parser%root
@@ -512,11 +512,6 @@ recursive subroutine parse_inline_table(parser, lexer, table)
    class(toml_lexer), intent(inout) :: lexer
    !> Current table
    type(toml_table), intent(inout) :: table
-
-   type(toml_keyval), pointer :: vptr
-   type(toml_array), pointer :: aptr
-   type(toml_table), pointer :: tptr
-   logical :: first
 
    table%inline = .true.
    call consume(parser, lexer, token_kind%lbrace)

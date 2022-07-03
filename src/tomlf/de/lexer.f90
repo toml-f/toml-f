@@ -141,12 +141,15 @@ subroutine new_lexer_from_unit(lexer, io, error)
    character(:, tfc), allocatable :: source
    integer, parameter :: bufsize = 512
    character(len=bufsize) :: buffer, msg
-   integer :: length, stat, pos
+   integer :: length, stat
 
    inquire(unit=io, access=msg, name=buffer)
    lexer%pos = 0
    if (len_trim(buffer) > 0) lexer%source = trim(buffer)
    select case(trim(msg))
+   case default
+      stat = 1
+
    case("stream", "STREAM")
       stat = 1
 
@@ -254,7 +257,6 @@ subroutine next_token(lexer, token)
    type(toml_token), intent(inout) :: token
 
    integer :: prev, pos
-   character(1, tfc) :: ch
 
    ! Consume current token
    lexer%pos = lexer%pos + token%last - token%first + 1
@@ -1325,7 +1327,7 @@ subroutine extract_bool(lexer, token, val)
 
    if (token%kind /= token_kind%bool) return
 
-   val = (token%last - token%first + 1) == 4
+   val = peek(lexer, token%first) == "t"
 end subroutine extract_bool
 
 

@@ -59,12 +59,53 @@ module tomlf_datetime
    end type
 
 
+   !> Create a new TOML datetime value
+   interface toml_datetime
+      module procedure :: new_datetime
+   end interface toml_datetime
+
+
    interface operator(==)
       module procedure :: compare_datetime
    end interface operator(==)
 
 
 contains
+
+
+function new_datetime(year, month, day, hour, minute, second, millisecond, zone) &
+      & result(datetime)
+   integer, intent(in), optional :: year
+   integer, intent(in), optional :: month
+   integer, intent(in), optional :: day
+   integer, intent(in), optional :: hour
+   integer, intent(in), optional :: minute
+   integer, intent(in), optional :: second
+   integer, intent(in), optional :: millisecond
+   character(len=*), intent(in), optional :: zone
+   type(toml_datetime) :: datetime
+
+   if (present(year) .and. present(month) .and. present(day)) then
+      allocate(datetime%date)
+      datetime%date%year = year
+      datetime%date%month = month
+      datetime%date%day = day
+   end if
+
+   if (present(hour) .and. present(minute) .and. present(second)) then
+      allocate(datetime%time)
+      datetime%time%hour = hour
+      datetime%time%minute = minute
+      datetime%time%second = second
+      if (present(millisecond)) then
+         datetime%time%millisec = millisecond
+      end if
+      if (present(zone)) then
+         datetime%time%zone = zone
+      end if
+   end if
+end function new_datetime
+
 
 
 subroutine date_to_string(lhs, rhs)
@@ -130,8 +171,8 @@ pure function compare_datetime(lhs, rhs) result(match)
    type(toml_datetime), intent(in) :: rhs
    logical :: match
 
-   match = allocated(lhs%date) .eqv. allocated(rhs%date) &
-      & .and. allocated(lhs%time) .eqv. allocated(rhs%time)
+   match = (allocated(lhs%date) .eqv. allocated(rhs%date)) &
+      & .and. (allocated(lhs%time) .eqv. allocated(rhs%time))
    if (allocated(lhs%date) .and. allocated(rhs%date)) then
       match = match .and. compare_date(lhs%date, rhs%date)
    end if

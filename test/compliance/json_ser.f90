@@ -166,7 +166,6 @@ subroutine visit_array(visitor, array)
    class(toml_value), pointer :: ptr
    character(kind=tfc, len=:), allocatable :: key
    integer :: i, n
-   logical :: array_of_tables
 
    call indent(visitor)
 

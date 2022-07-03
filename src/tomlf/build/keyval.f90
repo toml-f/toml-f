@@ -460,8 +460,6 @@ subroutine set_value_string(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   character(len=:), allocatable :: escaped
-
    if (toml_raw_verify_string(val)) then
       self%raw = val
    else
