@@ -72,8 +72,6 @@ module tomlf_diagnostic
       character(len=:), allocatable :: source
       !> Messages associated with this diagnostic
       type(toml_label), allocatable :: label(:)
-      !> Additional diagnostic information
-      type(toml_diagnostic), allocatable :: sub(:)
    end type toml_diagnostic
 
    interface toml_diagnostic
@@ -111,7 +109,7 @@ end function new_label
 
 
 !> Create new diagnostic message
-function new_diagnostic(level, message, source, label, diagnostic) result(new)
+function new_diagnostic(level, message, source, label) result(new)
    !> Level of message
    type(level_enum), intent(in) :: level
    !> Primary message
@@ -120,15 +118,12 @@ function new_diagnostic(level, message, source, label, diagnostic) result(new)
    character(len=*), intent(in), optional :: source
    !> Messages associated with this diagnostic
    type(toml_label), intent(in), optional :: label(:)
-   !> Additional diagnostic information
-   type(toml_diagnostic), intent(in), optional :: diagnostic(:)
    type(toml_diagnostic) :: new
 
    new%level = level
    if (present(message)) new%message = message
    if (present(source)) new%source = source
    if (present(label)) new%label = label
-   if (present(diagnostic)) new%sub = diagnostic
 end function new_diagnostic
 
 
@@ -168,14 +163,6 @@ recursive function render_diagnostic(diag, input, color) result(string)
       string = string // nl // &
          render_text_with_labels(input, diag%label, color, source=diag%source)
    end if
-
-   if (allocated(diag%sub)) then
-      do is = 1, size(diag%sub)
-         string = string // nl // &
-            render_diagnostic(diag%sub(is), input, color)
-      end do
-   end if
-
 end function render_diagnostic
 
 function render_message(level, message, color) result(string)

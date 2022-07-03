@@ -1395,7 +1395,6 @@ subroutine extract_datetime(lexer, token, val)
 
       first = first + 8
       if (peek(lexer, first + 1) == ".") then
-         allocate(time%millisec)
          time%millisec = 0
          do it = first + 2, token%last
             tmp = scan(num, peek(lexer, it)) - 1

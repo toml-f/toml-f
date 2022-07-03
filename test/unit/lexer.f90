@@ -14,7 +14,7 @@
 module tftest_lexer
    use testdrive
    use tomlf_constants, only : tfi, tfr, nl => TOML_NEWLINE
-   use tomlf_datetime, only : toml_datetime, toml_date, toml_time, operator(==)
+   use tomlf_datetime, only : toml_datetime, toml_date, toml_time, operator(==), to_string
    use tomlf_de_lexer
    use tomlf_error, only : toml_error
    implicit none
@@ -1154,43 +1154,40 @@ subroutine token_datetime(error)
    type(error_type), allocatable, intent(out) :: error
 
    type(toml_lexer) :: lexer
+   type(toml_token) :: token
    type(toml_datetime) :: val, ref
    character(*), parameter :: str = "1987-07-05 17:45:00z"
-   character(:), allocatable :: tmp
 
    call new_lexer_from_string(lexer, str)
-   associate(token => toml_token(token_kind%datetime, 1, 10))
-      call lexer%extract(token, val)
-      call val%to_string(tmp)
-      ref = toml_datetime(year=1987, month=7, day=5)
-      call check(error, val == ref, &
-         & "Extraction of '"//str(token%first:token%last)//"' failed, got '"//tmp//"'")
-   end associate
+
+   token = toml_token(token_kind%datetime, 1, 10)
+   ref = toml_datetime(year=1987, month=7, day=5)
+   call lexer%extract(token, val)
+   call check(error, val == ref, &
+      & "Extraction of '"//str(token%first:token%last)//"' failed, "//&
+      & "expected '"//to_string(ref)//"', got '"//to_string(val)//"'")
    if (allocated(error)) return
-   associate(token => toml_token(token_kind%datetime, 1, 19))
-      call lexer%extract(token, val)
-      call val%to_string(tmp)
-      ref = toml_datetime(year=1987, month=7, day=5, hour=17, minute=45, second=0)
-      call check(error, val == ref, &
-         & "Extraction of '"//str(token%first:token%last)//"' failed, got '"//tmp//"'")
-   end associate
+
+   token = toml_token(token_kind%datetime, 1, 19)
+   call lexer%extract(token, val)
+   ref = toml_datetime(year=1987, month=7, day=5, hour=17, minute=45, second=0)
+   call check(error, val == ref, &
+      & "Extraction of '"//str(token%first:token%last)//"' failed")
    if (allocated(error)) return
-   associate(token => toml_token(token_kind%datetime, 12, 19))
-      call lexer%extract(token, val)
-      call val%to_string(tmp)
-      ref = toml_datetime(hour=17, minute=45, second=0)
-      call check(error, val == ref, &
-         & "Extraction of '"//str(token%first:token%last)//"' failed, got '"//tmp//"'")
-   end associate
+
+   token = toml_token(token_kind%datetime, 12, 19)
+   call lexer%extract(token, val)
+   ref = toml_datetime(hour=17, minute=45, second=0)
+   call check(error, val == ref, &
+      & "Extraction of '"//str(token%first:token%last)//"' failed")
    if (allocated(error)) return
-   associate(token => toml_token(token_kind%datetime, 1, 20))
-      call lexer%extract(token, val)
-      call val%to_string(tmp)
-      ref = toml_datetime(year=1987, month=7, day=5, hour=17, minute=45, second=0, &
-         & zone="Z")
-      call check(error, val == ref, &
-         & "Extraction of '"//str(token%first:token%last)//"' failed, got '"//tmp//"'")
-   end associate
+
+   token = toml_token(token_kind%datetime, 1, 20)
+   call lexer%extract(token, val)
+   ref = toml_datetime(year=1987, month=7, day=5, hour=17, minute=45, second=0, &
+      & zone="Z")
+   call check(error, val == ref, &
+      & "Extraction of '"//str(token%first:token%last)//"' failed")
    if (allocated(error)) return
 end subroutine token_datetime
 

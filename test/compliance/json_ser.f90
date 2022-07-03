@@ -136,8 +136,8 @@ subroutine visit_keyval(visitor, keyval)
    case(toml_type%datetime)
       stat = convert_raw(keyval%raw, ts)
       write(visitor%unit, '(a)', advance='no') '{"type": "'
-      if (allocated(ts%date)) write(visitor%unit, '(a)', advance='no') 'date'
-      if (allocated(ts%time)) then
+      if (has_date(ts)) write(visitor%unit, '(a)', advance='no') 'date'
+      if (has_time(ts)) then
          write(visitor%unit, '(a)', advance='no') 'time'
          if (.not.allocated(ts%time%zone)) then
             write(visitor%unit, '(a)', advance='no') '-local'
@@ -145,7 +145,7 @@ subroutine visit_keyval(visitor, keyval)
       else
          write(visitor%unit, '(a)', advance='no') '-local'
       end if
-      call ts%to_string(str)
+      str = to_string(ts)
       write(visitor%unit, '(a,a,a)', advance='no') &
          &  '", "value": "', str, '"}'
 
