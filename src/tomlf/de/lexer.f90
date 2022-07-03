@@ -11,6 +11,21 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
+!> Provides tokenization for TOML documents.
+!>
+!> The lexer provides a way to turn a stream of characters into tokens which
+!> are further processed by the parser and turned into actual TOML data structures.
+!> In the current structure no knowledge about the character stream is required
+!> in the parser to generate the data structures.
+!>
+!> The validity of all tokens can be guaranteed by the lexer, however syntax errors
+!> and semantic errors are not detected until the parser is run. Identification of
+!> invalid tokens and recovery of the tokenization is done on a best effort basis.
+!>
+!> To avoid overflows in the parser due to deeply nested but unclosed groups, the
+!> lexer will always tokenize a complete group to verify it is closed properly.
+!> Unclosed groups will lead to the first token of the group getting invalidated,
+!> to allow reporting in the parsing phase.
 module tomlf_de_lexer
    use tomlf_constants, only : tfc, tfi, tfr, TOML_BACKSPACE, TOML_TABULATOR, TOML_NEWLINE, &
       & TOML_CARRIAGE_RETURN, TOML_FORMFEED
@@ -26,6 +41,7 @@ module tomlf_de_lexer
    public :: toml_token, stringify, token_kind
 
 
+   !> Possible characters encountered in a lexeme
    type :: enum_char
       character(1, tfc) :: space = tfc_" "
       character(1, tfc) :: hash = tfc_"#"
@@ -51,56 +67,92 @@ module tomlf_de_lexer
       character(12, tfc) :: literal = tfc_"0123456789-_"
    end type enum_char
 
+   !> Actual enumerator for possible characters
    type(enum_char), parameter :: char_kind = enum_char()
 
+   !> Set of characters marking a terminated lexeme, mainly used for values and to
+   !> obtain boundaries of invalid tokens.
    character(*, tfc), parameter :: terminated = &
       & char_kind%space//char_kind%tab//char_kind%newline//char_kind%carriage_return//&
       & char_kind%hash//char_kind%rbrace//char_kind%rbracket//char_kind%comma//&
       & char_kind%equal
 
+   !> Scopes to identify the state of the lexer.
    type :: enum_scope
+      !> Table scopes allow keypaths, in this scenario only bare keys, strings and
+      !> literals are allowed, furthermore dots become special characters to separate
+      !> the keypaths.
       integer :: table = 1
+      !> Terminates a table scope and opens a value scope. Here usual values, like integer,
+      !> floats or strings are allowed.
       integer :: equal = 2
+      !> Opens an array scope, similar to the value scope for allowed characters but with
+      !> simplified closing rules to allow handling of values and inline tables in arrays.
       integer :: array = 3
    end type enum_scope
 
+   !> Actual enumerator for auxiliary scopes
    type(enum_scope), parameter :: lexer_scope = enum_scope()
 
+   !> Item identifying the scope and the corresponding token index
    type :: stack_item
+      !> Current scope of the item, can only be removed with matching scope
       integer :: scope
+      !> Token index in the buffer of the lexer, used for invalidation of unclosed groups
       integer :: token
    end type stack_item
 
-
-   type :: toml_lexer
-      character(len=:), allocatable :: source
-      integer :: pos = 0
-      character(1, tfc), allocatable :: chunk(:)
-      integer :: top = 0
-      type(stack_item), allocatable :: stack(:)
-      integer :: buffer = 0
-      type(toml_context) :: context
-   contains
-      procedure :: next
-      generic :: extract => extract_string, extract_integer, extract_float, &
-         & extract_bool, extract_datetime
-      procedure :: extract_string
-      procedure :: extract_integer
-      procedure :: extract_float
-      procedure :: extract_bool
-      procedure :: extract_datetime
-      procedure :: extract_raw
-   end type toml_lexer
-
+   !> Reallocate the stack of scopes
    interface resize
       module procedure :: resize_scope
    end interface
 
+
+   !> Tokenizer for TOML documents.
+   type :: toml_lexer
+      !> Name of the source file, used for error reporting
+      character(len=:), allocatable :: source
+      !> Current internal position in the source chunk
+      integer :: pos = 0
+      !> Current source chunk, for convenience stored as character array rather than string
+      character(1, tfc), allocatable :: chunk(:)
+      !> Last scope of the lexer
+      integer :: top = 0
+      !> Stack of scopes, used to identify the current state of the lexer
+      type(stack_item), allocatable :: stack(:)
+      !> Index in the buffer queue
+      integer :: buffer = 0
+      !> Douple-ended queue for buffering tokens
+      type(toml_context) :: context
+   contains
+      !> Obtain the next token
+      procedure :: next
+      !> Extract a token
+      generic :: extract => &
+         & extract_string, extract_integer, extract_float, extract_bool, extract_datetime
+      !> Extract a string from a token
+      procedure :: extract_string
+      !> Extract an integer from a token
+      procedure :: extract_integer
+      !> Extract a float from a token
+      procedure :: extract_float
+      !> Extract a boolean from a token
+      procedure :: extract_bool
+      !> Extract a timestamp from a token
+      procedure :: extract_datetime
+      !> Extract the raw value of the token
+      procedure :: extract_raw
+   end type toml_lexer
+
 contains
 
+!> Create a new instance of a lexer by reading from a file
 subroutine new_lexer_from_file(lexer, filename, error)
+   !> Instance of the lexer
    type(toml_lexer), intent(out) :: lexer
+   !> Name of the file to read from
    character(len=*), intent(in) :: filename
+   !> Error code
    type(toml_error), allocatable, intent(out) :: error
 
    integer :: stat, io, length
@@ -132,10 +184,15 @@ subroutine new_lexer_from_file(lexer, filename, error)
    end if
 end subroutine new_lexer_from_file
 
-
+!> Create a new instance of a lexer by reading from a unit.
+!>
+!> Currently, only sequential access units can be processed by this constructor.
 subroutine new_lexer_from_unit(lexer, io, error)
+   !> Instance of the lexer
    type(toml_lexer), intent(out) :: lexer
+   !> Unit to read from
    integer, intent(in) :: io
+   !> Error code
    type(toml_error), allocatable, intent(out) :: error
 
    character(:, tfc), allocatable :: source
@@ -189,9 +246,11 @@ subroutine new_lexer_from_unit(lexer, io, error)
    end if
 end subroutine new_lexer_from_unit
 
-
+!> Create a new instance of a lexer by reading from a string.
 subroutine new_lexer_from_string(lexer, string)
+   !> Instance of the lexer
    type(toml_lexer), intent(out) :: lexer
+   !> String to read from
    character(len=*), intent(in) :: string
 
    integer :: length
@@ -206,6 +265,7 @@ subroutine new_lexer_from_string(lexer, string)
 end subroutine new_lexer_from_string
 
 
+!> Advance the lexer to the next token.
 subroutine next(lexer, token)
    !> Instance of the lexer
    class(toml_lexer), intent(inout) :: lexer
@@ -220,7 +280,11 @@ subroutine next(lexer, token)
    token = lexer%context%token(lexer%buffer)
 end subroutine next
 
-
+!> Fill the buffer with tokens, this routine will attempt to create as many tokens as
+!> necessary to determine whether all opened groups are closed properly.
+!>
+!> The state of the buffer can be changed while this routine is running, therefore
+!> accessing the buffer concurrently is not allowed.
 subroutine fill_buffer(lexer)
    !> Instance of the lexer
    class(toml_lexer), intent(inout) :: lexer
@@ -249,7 +313,7 @@ subroutine fill_buffer(lexer)
    end if
 end subroutine fill_buffer
 
-
+!> Actually generate the next token, unbuffered version
 subroutine next_token(lexer, token)
    !> Instance of the lexer
    class(toml_lexer), intent(inout) :: lexer
@@ -348,6 +412,7 @@ subroutine next_token(lexer, token)
    end select
 end subroutine next_token
 
+!> Process next literal string token, can produce normal literals and multiline literals
 subroutine next_sstring(lexer, token)
    !> Instance of the lexer
    type(toml_lexer), intent(inout) :: lexer
@@ -402,6 +467,7 @@ subroutine next_sstring(lexer, token)
    token = toml_token(merge(token_kind%literal, token_kind%invalid, valid), prev, pos)
 end subroutine next_sstring
 
+!> Process next string token, can produce normal string and multiline string tokens
 subroutine next_dstring(lexer, token)
    !> Instance of the lexer
    type(toml_lexer), intent(inout) :: lexer
@@ -536,6 +602,7 @@ subroutine next_dstring(lexer, token)
    token = toml_token(merge(token_kind%string, token_kind%invalid, valid), prev, pos)
 end subroutine next_dstring
 
+!> Validate characters in string, non-printable characters are invalid in this context
 pure function valid_string(ch) result(valid)
    character(1, tfc), intent(in) :: ch
    logical :: valid
@@ -549,6 +616,7 @@ pure function valid_string(ch) result(valid)
       & ch /= x7f
 end function
 
+!> Process next bare key token, produces keypath tokens.
 subroutine next_keypath(lexer, token)
    !> Instance of the lexer
    type(toml_lexer), intent(inout) :: lexer
@@ -581,7 +649,7 @@ subroutine next_keypath(lexer, token)
    token = toml_token(merge(token_kind%keypath, token_kind%invalid, valid), prev, pos)
 end subroutine next_keypath
 
-!> Identify literal values
+!> Identify literal values, produces integer, float, boolean, and datetime tokens.
 subroutine next_literal(lexer, token)
    !> Instance of the lexer
    type(toml_lexer), intent(inout) :: lexer
@@ -590,7 +658,7 @@ subroutine next_literal(lexer, token)
 
    integer :: prev, pos
    integer, parameter :: offset(*) = [0, 1, 2, 3, 4, 5]
-   character(1, tfc), parameter :: nan(3) = ["n", "a", "n"], inf(3) = ["i", "n", "f"], &
+   character(1, tfc), parameter :: &
       & true(4) = ["t", "r", "u", "e"], false(5) = ["f", "a", "l", "s", "e"]
 
    prev = lexer%pos
@@ -630,7 +698,7 @@ subroutine next_literal(lexer, token)
    token = toml_token(token_kind%invalid, prev, pos)
 end subroutine next_literal
 
-
+!> Process integer tokens and binary, octal, and hexadecimal literals.
 subroutine next_integer(lexer, token)
    !> Instance of the lexer
    type(toml_lexer), intent(inout) :: lexer
@@ -712,6 +780,7 @@ subroutine next_integer(lexer, token)
    token = toml_token(merge(token_kind%int, token_kind%invalid, okay), prev, pos-1)
 end subroutine next_integer
 
+!> Process float tokens.
 subroutine next_float(lexer, token)
    !> Instance of the lexer
    type(toml_lexer), intent(inout) :: lexer
@@ -1105,9 +1174,13 @@ contains
 
 end function strstr
 
+!> Extract raw value of token
 subroutine extract_raw(lexer, token, string)
+   !> Instance of the lexer
    class(toml_lexer), intent(in) :: lexer
+   !> Token to extract raw value from
    type(toml_token), intent(in) :: token
+   !> Raw value of token
    character(len=:), allocatable, intent(out) :: string
 
    integer :: length
@@ -1117,9 +1190,14 @@ subroutine extract_raw(lexer, token, string)
    string = transfer(lexer%chunk(token%first:token%last), string)
 end subroutine extract_raw
 
+!> Extract string value of token, works for keypath, string, multiline string, literal,
+!> and mulitline literal tokens.
 subroutine extract_string(lexer, token, string)
+   !> Instance of the lexer
    class(toml_lexer), intent(in) :: lexer
+   !> Token to extract string value from
    type(toml_token), intent(in) :: token
+   !> String value of token
    character(len=:), allocatable, intent(out) :: string
 
    integer :: it, length
@@ -1190,10 +1268,13 @@ subroutine extract_string(lexer, token, string)
 
 end subroutine extract_string
 
-
+!> Extract integer value of token
 subroutine extract_integer(lexer, token, val)
+   !> Instance of the lexer
    class(toml_lexer), intent(in) :: lexer
+   !> Token to extract integer value from
    type(toml_token), intent(in) :: token
+   !> Integer value of token
    integer(tfi), intent(out) :: val
 
    integer :: first, base, it, tmp
@@ -1235,12 +1316,15 @@ subroutine extract_integer(lexer, token, val)
    if (match(lexer, token%first, char_kind%minus)) val = -val
 end subroutine extract_integer
 
-
+!> Extract floating point value of token
 subroutine extract_float(lexer, token, val)
    use, intrinsic :: ieee_arithmetic, only : ieee_value, &
       & ieee_positive_inf, ieee_negative_inf, ieee_quiet_nan
+   !> Instance of the lexer
    class(toml_lexer), intent(in) :: lexer
+   !> Token to extract floating point value from
    type(toml_token), intent(in) :: token
+   !> Floating point value of token
    real(tfr), intent(out) :: val
 
    integer :: first, it, ic
@@ -1319,10 +1403,13 @@ subroutine extract_float(lexer, token, val)
    read(buffer(:ic), *, iostat=it) val
 end subroutine extract_float
 
-
+!> Extract boolean value of token
 subroutine extract_bool(lexer, token, val)
+   !> Instance of the lexer
    class(toml_lexer), intent(in) :: lexer
+   !> Token to extract boolean value from
    type(toml_token), intent(in) :: token
+   !> Boolean value of token
    logical, intent(out) :: val
 
    if (token%kind /= token_kind%bool) return
@@ -1330,10 +1417,13 @@ subroutine extract_bool(lexer, token, val)
    val = peek(lexer, token%first) == "t"
 end subroutine extract_bool
 
-
+!> Extract datetime value of token
 subroutine extract_datetime(lexer, token, val)
+   !> Instance of the lexer
    class(toml_lexer), intent(in) :: lexer
+   !> Token to extract datetime value from
    type(toml_token), intent(in) :: token
+   !> Datetime value of token
    type(toml_datetime), intent(out) :: val
 
    type(toml_date) :: date
@@ -1417,6 +1507,7 @@ subroutine extract_datetime(lexer, token, val)
 end subroutine extract_datetime
 
 
+!> Push a new scope onto the lexer stack and record the token
 pure subroutine push_back(lexer, scope, token)
    type(toml_lexer), intent(inout) :: lexer
    integer, intent(in) :: scope
@@ -1427,7 +1518,7 @@ pure subroutine push_back(lexer, scope, token)
    lexer%stack(lexer%top) = stack_item(scope, token)
 end subroutine push_back
 
-
+!> Pop a scope from the lexer stack in case the topmost scope matches the requested scope
 subroutine pop(lexer, scope)
    type(toml_lexer), intent(inout) :: lexer
    integer, intent(in) :: scope
@@ -1437,7 +1528,7 @@ subroutine pop(lexer, scope)
    end if
 end subroutine pop
 
-
+!> Peek at the topmost scope on the lexer stack
 pure function view_scope(lexer) result(scope)
    type(toml_lexer), intent(in) :: lexer
    integer :: scope
@@ -1450,7 +1541,7 @@ pure function view_scope(lexer) result(scope)
 end function view_scope
 
 
-!> Reallocate list of integers
+!> Reallocate list of scopes
 pure subroutine resize_scope(var, n)
    !> Instance of the array to be resized
    type(stack_item), allocatable, intent(inout) :: var(:)
