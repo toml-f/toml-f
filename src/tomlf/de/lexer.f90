@@ -141,22 +141,14 @@ subroutine new_lexer_from_unit(lexer, io, error)
    character(:, tfc), allocatable :: source
    integer, parameter :: bufsize = 512
    character(len=bufsize) :: buffer, msg
-   integer :: length, stat
+   integer :: length, stat, pos
 
    inquire(unit=io, access=msg, name=buffer)
    lexer%pos = 0
    if (len_trim(buffer) > 0) lexer%source = trim(buffer)
    select case(trim(msg))
    case("stream", "STREAM")
-      open(unit=io, position="append", iostat=stat, iomsg=msg)
-      if (stat == 0) then
-         inquire(unit=io, pos=length)
-         allocate(lexer%chunk(length-1), stat=stat)
-      end if
-      if (stat == 0) then
-         read(io, pos=1, iostat=stat, iomsg=msg) lexer%chunk(:length-1)
-      end if
-      call resize(lexer%stack)
+      stat = 1
 
    case("sequential", "SEQUENTIAL")
       allocate(character(len=0) :: source)

@@ -17,17 +17,29 @@ testdrive_dep = dependency(
   default_options: ['default_library=static'],
   static: true,
 )
-test(
-  'tftest',
-  executable(
-    'tftester',
-    sources: files(
-      'build.f90',
-      'lexer.f90',
-      'main.f90',
-      'parser.f90',
-      'sort.f90',
-    ),
-    dependencies: [tomlf_dep, testdrive_dep],
-  ),
+
+unittests = [
+  'build',
+  'lexer',
+  'parser',
+  'sort',
+]
+
+test_srcs = files('main.f90')
+foreach t : unittests
+  test_srcs += files('@0@.f90'.format(t))
+endforeach
+
+tester = executable(
+  'tftester',
+  sources: test_srcs,
+  dependencies: [tomlf_dep, testdrive_dep],
 )
+
+foreach t : unittests
+  test(
+    'tftest-@0@'.format(t),
+    tester,
+    args: [t],
+  )
+endforeach

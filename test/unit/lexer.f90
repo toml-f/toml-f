@@ -135,8 +135,7 @@ subroutine collect_lexer(testsuite)
       & new_unittest("whitespace-blank", whitespace_blank), &
       & new_unittest("whitespace-tab", whitespace_tab), &
       & new_unittest("whitespace-mixed", whitespace_mixed), &
-      & new_unittest("lexer-from-sequential", lexer_from_sequential), &
-      & new_unittest("lexer-from-stream", lexer_from_stream)]
+      & new_unittest("lexer-from-sequential", lexer_from_sequential)]
 
 end subroutine collect_lexer
 
@@ -1145,7 +1144,7 @@ subroutine token_float_fuzz(error)
 
       call new_lexer_from_string(lexer, buffer)
       call lexer%extract(toml_token(token_kind%float, 1, len_trim(buffer)), val2)
-      call check(error, val2, val1)
+      call check(error, val2, val1, thr=2*epsilon(val1))
       if (allocated(error)) exit
    end do
 end subroutine token_float_fuzz
@@ -1195,40 +1194,23 @@ subroutine lexer_from_sequential(error)
    type(toml_lexer) :: lexer
    type(toml_token) :: token
    type(toml_error), allocatable :: parse_error
+   character(:), allocatable :: filename
    integer :: io
 
-   open(newunit=io, status="scratch")
+   filename = get_name()
+   open(file=filename, newunit=io)
    write(io, "(a)") "abc"
-   open(unit=io, position="rewind")
+   close(io)
+
+   open(file=filename, newunit=io)
    call new_lexer_from_unit(lexer, io, parse_error)
    call move_error(error, parse_error)
-   close(io)
+   close(io, status="delete")
    if (allocated(error)) return
 
    call lexer%next(token)
    call check(error, token%kind, token_kind%keypath)
 end subroutine lexer_from_sequential
-
-subroutine lexer_from_stream(error)
-   !> Error handling
-   type(error_type), allocatable, intent(out) :: error
-
-   type(toml_lexer) :: lexer
-   type(toml_token) :: token
-   type(toml_error), allocatable :: parse_error
-   integer :: io
-
-   open(newunit=io, status="scratch", access="stream")
-   write(io, pos=1) "abc"
-   open(unit=io, position="rewind")
-   call new_lexer_from_unit(lexer, io, parse_error)
-   call move_error(error, parse_error)
-   close(io)
-   if (allocated(error)) return
-
-   call lexer%next(token)
-   call check(error, token%kind, token_kind%keypath)
-end subroutine lexer_from_stream
 
 subroutine check_token(error, string, expected, keypath)
    use tomlf_diagnostic, only : render, toml_label, level_error, level_info
@@ -1257,16 +1239,16 @@ subroutine check_token(error, string, expected, keypath)
    do it = 1, size(expected)
       call lexer%next(token)
       okay = token%kind == expected(it)
-      label = [label, toml_label(merge(level_info, level_error, okay), &
-         &     stringify(token), token%first, token%last, .not.okay)]
-      msg = render(string//new_line('a'), [label(size(label))], toml_terminal(.true.))
+      ! label = [label, toml_label(merge(level_info, level_error, okay), &
+      !    &     stringify(token), token%first, token%last, .not.okay)]
+      ! msg = render(string//new_line('a'), [label(size(label))], toml_terminal(.true.))
       call check(error, token%kind, expected(it), &
          & "Expected '"//stringify(toml_token(expected(it)))// &
-         & "' but got '"//stringify(token)//"'"//new_line('a')//msg)
+         & "' but got '"//stringify(token)//"'")!//new_line('a')//msg)
       if (allocated(error)) exit
    end do
-   msg = render(string//new_line('a'), label, toml_terminal(.true.))
-   print '(a)', msg
+   ! msg = render(string//new_line('a'), label, toml_terminal(.true.))
+   ! print '(a)', msg
 end subroutine check_token
 
 subroutine move_error(error, parse_error)
@@ -1279,5 +1261,14 @@ subroutine move_error(error, parse_error)
       error%message = parse_error%message
    end if
 end subroutine move_error
+
+function get_name() result(filename)
+   character(len=15) :: filename
+
+   real :: val
+
+   call random_number(val)
+   write(filename, '(a, z8.8)') "toml-f-", int(val*1.0e9)
+end function
 
 end module tftest_lexer

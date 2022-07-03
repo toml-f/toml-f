@@ -221,7 +221,7 @@ function render_source(source, offset, color) result(string)
    character(len=:), allocatable :: string
 
    string = &
-      & repeat(" ", offset) // color%bold + color%blue // "-->" // color%reset // " " // source
+      & repeat(" ", offset) // (color%bold + color%blue) // "-->" // color%reset // " " // source
 end function render_source
 
 function render_text(input, color, source) result(string)
@@ -238,10 +238,10 @@ function render_text(input, color, source) result(string)
 
    if (present(source)) then
       string = render_source(source, offset, color) // nl // &
-         & repeat(" ", offset + 1) // color%bold + color%blue // "|" // color%reset
+         & repeat(" ", offset + 1) // (color%bold + color%blue) // "|" // color%reset
    else
       string = &
-         & repeat(" ", offset + 1) // color%bold + color%blue // "|" // color%reset
+         & repeat(" ", offset + 1) // (color%bold + color%blue) // "|" // color%reset
    end if
 
    do it = 1, size(token)
@@ -249,7 +249,7 @@ function render_text(input, color, source) result(string)
          & render_line(input(token(it)%first:token(it)%last), to_string(it, offset), color)
    end do
    string = string // nl // &
-      repeat(" ", offset + 1) // color%bold + color%blue // "|" // color%reset
+      repeat(" ", offset + 1) // (color%bold + color%blue) // "|" // color%reset
 
 end function render_text
 
@@ -281,7 +281,7 @@ function render_text_with_label(input, label, color, source) result(string)
       end if
    end if
    string = string // nl // &
-      & repeat(" ", offset + 1) // color%bold + color%blue // "|" // color%reset
+      & repeat(" ", offset + 1) // (color%bold + color%blue) // "|" // color%reset
 
    do it = first, last
       string = string // nl //&
@@ -289,12 +289,12 @@ function render_text_with_label(input, label, color, source) result(string)
          &             to_string(it, offset), color)
       if (it == line) then
          string = string // nl //&
-            & repeat(" ", offset + 1) // color%bold + color%blue // "|" // color%reset // &
+            & repeat(" ", offset + 1) // (color%bold + color%blue) // "|" // color%reset // &
             & render_label(label, shift, color)
       end if
    end do
    string = string // nl // &
-      repeat(" ", offset + 1) // color%bold + color%blue // "|" // color%reset
+      repeat(" ", offset + 1) // (color%bold + color%blue) // "|" // color%reset
 
 end function render_text_with_label
 
@@ -335,7 +335,7 @@ function render_text_with_labels(input, label, color, source) result(string)
       end if
    end if
    string = string // nl // &
-      & repeat(" ", offset + 1) // color%bold + color%blue // "|" // color%reset
+      & repeat(" ", offset + 1) // (color%bold + color%blue) // "|" // color%reset
 
    allocate(display(first:last), source=.false.)
    do il = 1, size(label)
@@ -347,7 +347,7 @@ function render_text_with_labels(input, label, color, source) result(string)
       if (.not.display(it)) then
          if (display(it-1) .and. count(display(it:)) > 0) then
             string = string // nl //&
-               & repeat(" ", offset + 1) // color%bold + color%blue // ":" // color%reset
+               & repeat(" ", offset + 1) // (color%bold + color%blue) // ":" // color%reset
          end if
          cycle
       end if
@@ -359,13 +359,13 @@ function render_text_with_labels(input, label, color, source) result(string)
          do il = 1, size(label)
             if (line(il) /= it) cycle
             string = string // nl //&
-               & repeat(" ", offset + 1) // color%bold + color%blue // "|" // color%reset // &
+               & repeat(" ", offset + 1) // (color%bold + color%blue) // "|" // color%reset // &
                & render_label(label(il), shift(il), color)
          end do
       end if
    end do
    string = string // nl // &
-      repeat(" ", offset + 1) // color%bold + color%blue // "|" // color%reset
+      repeat(" ", offset + 1) // (color%bold + color%blue) // "|" // color%reset
 
 end function render_text_with_labels
 
@@ -418,7 +418,7 @@ function render_line(input, line, color) result(string)
    character(len=:), allocatable :: string
 
    string = &
-      & line // " " // color%bold + color%blue // "|" // color%reset // " " // input
+      & line // " " // (color%bold + color%blue) // "|" // color%reset // " " // input
 end function render_line
 
 function integer_width(input) result(width)
