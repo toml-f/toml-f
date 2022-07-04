@@ -89,7 +89,7 @@ module tomlf_diagnostic
 contains
 
 
-function new_label(level, text, first, last, primary) result(new)
+pure function new_label(level, text, first, last, primary) result(new)
    type(level_enum), intent(in) :: level
    character(len=*), intent(in) :: text
    integer, intent(in) :: first, last
@@ -109,7 +109,7 @@ end function new_label
 
 
 !> Create new diagnostic message
-function new_diagnostic(level, message, source, label) result(new)
+pure function new_diagnostic(level, message, source, label) result(new)
    !> Level of message
    type(level_enum), intent(in) :: level
    !> Primary message
@@ -127,7 +127,7 @@ function new_diagnostic(level, message, source, label) result(new)
 end function new_diagnostic
 
 
-function line_tokens(input) result(token)
+pure function line_tokens(input) result(token)
    character(len=*), intent(in) :: input
    type(line_token), allocatable :: token(:)
 
@@ -148,7 +148,7 @@ function line_tokens(input) result(token)
    end do
 end function line_tokens
 
-recursive function render_diagnostic(diag, input, color) result(string)
+recursive pure function render_diagnostic(diag, input, color) result(string)
    character(len=*), intent(in) :: input
    type(toml_diagnostic), intent(in) :: diag
    type(toml_terminal), intent(in) :: color
@@ -165,7 +165,7 @@ recursive function render_diagnostic(diag, input, color) result(string)
    end if
 end function render_diagnostic
 
-function render_message(level, message, color) result(string)
+pure function render_message(level, message, color) result(string)
    type(level_enum), intent(in) :: level
    character(len=*), intent(in), optional :: message
    type(toml_terminal), intent(in) :: color
@@ -180,7 +180,7 @@ function render_message(level, message, color) result(string)
    end if
 end function render_message
 
-function level_name(level, color) result(string)
+pure function level_name(level, color) result(string)
    type(level_enum), intent(in) :: level
    type(toml_terminal), intent(in) :: color
    character(len=:), allocatable :: string
@@ -201,7 +201,7 @@ function level_name(level, color) result(string)
    end select
 end function level_name
 
-function render_source(source, offset, color) result(string)
+pure function render_source(source, offset, color) result(string)
    character(len=*), intent(in) :: source
    integer, intent(in) :: offset
    type(toml_terminal), intent(in) :: color
@@ -285,7 +285,7 @@ function render_text_with_label(input, label, color, source) result(string)
 
 end function render_text_with_label
 
-function render_text_with_labels(input, label, color, source) result(string)
+pure function render_text_with_labels(input, label, color, source) result(string)
    character(len=*), intent(in) :: input
    type(toml_label), intent(in) :: label(:)
    type(toml_terminal), intent(in) :: color
@@ -356,7 +356,7 @@ function render_text_with_labels(input, label, color, source) result(string)
 
 end function render_text_with_labels
 
-function render_label(label, shift, color) result(string)
+pure function render_label(label, shift, color) result(string)
    type(toml_label), intent(in) :: label
    integer, intent(in) :: shift
    type(toml_terminal), intent(in) :: color
@@ -379,7 +379,7 @@ function render_label(label, shift, color) result(string)
 
 end function render_label
 
-function level_color(level, color) result(this_color)
+pure function level_color(level, color) result(this_color)
    type(level_enum), intent(in) :: level
    type(toml_terminal), intent(in) :: color
    type(ansi_code) :: this_color
@@ -398,7 +398,7 @@ function level_color(level, color) result(this_color)
    end select
 end function level_color
 
-function render_line(input, line, color) result(string)
+pure function render_line(input, line, color) result(string)
    character(len=*), intent(in) :: input
    character(len=*), intent(in) :: line
    type(toml_terminal), intent(in) :: color
@@ -408,7 +408,7 @@ function render_line(input, line, color) result(string)
       & line // " " // (color%bold + color%blue) // "|" // color%reset // " " // input
 end function render_line
 
-function integer_width(input) result(width)
+pure function integer_width(input) result(width)
    integer, value :: input
    integer :: width
 
@@ -421,7 +421,7 @@ function integer_width(input) result(width)
 end function integer_width
 
 !> Represent an integer as character sequence.
-function to_string(val, width) result(string)
+pure function to_string(val, width) result(string)
    integer, intent(in) :: val
    integer, intent(in), optional :: width
    character(len=:), allocatable :: string

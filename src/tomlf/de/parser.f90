@@ -11,6 +11,7 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
+!> Implementation of a parser for transforming a token stream to TOML datastructures.
 module tomlf_de_parser
    use tomlf_constants, only : tfc, TOML_NEWLINE
    use tomlf_de_context, only : toml_context
@@ -24,48 +25,77 @@ module tomlf_de_parser
    implicit none
    private
 
-   public :: toml_parser, parse
+   public :: toml_parser, toml_parser_config, parse
 
 
+   !> Configuration of the TOML parser
+   type :: toml_parser_config
+      !> Use colorful output for diagnostics
+      logical :: color = .false.
+   end type toml_parser_config
+
+   !> TOML parser
    type :: toml_parser
+      !> Current token
       type(toml_token) :: token
+      !> Table containing the document root
       type(toml_table), allocatable :: root
+      !> Pointer to the currently processed table
       type(toml_table), pointer :: current
+      !> Diagnostic produced while parsing
       type(toml_diagnostic), allocatable :: diagnostic
+      !> Context for producing diagnostics
       type(toml_context) :: context
+      !> Configuration of the parser
+      type(toml_parser_config) :: config
    end type toml_parser
 
 contains
 
-subroutine new_parser(parser)
+!> Create a new instance of the TOML parser
+subroutine new_parser(parser, config)
+   !> Instance of the parser
    type(toml_parser), intent(out), target :: parser
+   !> Configuration of the parser
+   type(toml_parser_config), intent(in), optional :: config
 
    parser%token = toml_token(token_kind%newline, 0, 0)
    parser%root = toml_table()
    parser%current => parser%root
+   parser%config = toml_parser_config()
+   if (present(config)) parser%config = config
 end subroutine new_parser
 
 !> Parse TOML document and return root table
-subroutine parse(lexer, table, error)
+subroutine parse(lexer, table, config, context, error)
    !> Instance of the lexer
    class(toml_lexer), intent(inout) :: lexer
    !> TOML data structure
    type(toml_table), allocatable, intent(out) :: table
+   !> Configuration for the parser
+   type(toml_parser_config), intent(in), optional :: config
+   !> Context tracking the origin of the data structure to allow rich reports
+   type(toml_context), intent(out), optional :: context
    !> Error handler
    type(toml_error), allocatable, intent(out), optional :: error
 
    type(toml_parser) :: parser
 
-   call new_parser(parser)
-
+   call new_parser(parser, config)
    call parse_root(parser, lexer)
 
    if (present(error) .and. allocated(parser%diagnostic)) then
-      call make_error(error, parser%diagnostic, lexer)
+      call make_error(error, parser%diagnostic, lexer, parser%config%color)
    end if
    if (allocated(parser%diagnostic)) return
 
    call move_alloc(parser%root, table)
+
+   if (present(context)) then
+      context = parser%context
+      context%filename = lexer%source
+      context%source = as_string(lexer)//new_line('a')
+   end if
 end subroutine parse
 
 !> Parse the root table
@@ -362,6 +392,7 @@ contains
          allocate(stack(m))
       end if
    end subroutine resize
+
 end subroutine parse_table_header
 
 !> Parse key value pairs in a table body
@@ -669,19 +700,21 @@ subroutine duplicate_key_error(diagnostic, lexer, token1, token2, message)
 end subroutine duplicate_key_error
 
 !> Create an error from a diagnostic
-subroutine make_error(error, diagnostic, lexer)
+subroutine make_error(error, diagnostic, lexer, color)
    !> Error to be created
    type(toml_error), allocatable, intent(out) :: error
    !> Diagnostic to be used
    type(toml_diagnostic), intent(in) :: diagnostic
    !> Instance of the lexer providing the context
    type(toml_lexer), intent(in) :: lexer
+   !> Use colorful error messages
+   logical, intent(in) :: color
 
    character(len=:), allocatable :: str
 
    allocate(error)
    str = as_string(lexer)//new_line('a')
-   error%message = render(diagnostic, str, toml_terminal(.true.))
+   error%message = render(diagnostic, str, toml_terminal(color))
    error%stat = toml_stat%fatal
 end subroutine make_error
 

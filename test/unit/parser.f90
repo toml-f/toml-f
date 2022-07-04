@@ -572,7 +572,7 @@ subroutine check_parser(error, string, token)
 
    call new_lexer(lexer, string, token)
 
-   call parse(lexer, table, parse_error)
+   call parse(lexer, table, config=toml_parser_config(.true.), error=parse_error)
    call move_error(error, parse_error)
    if (allocated(error)) return
    call check(error, allocated(table))
