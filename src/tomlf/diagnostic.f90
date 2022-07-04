@@ -409,12 +409,15 @@ pure function render_line(input, line, color) result(string)
 end function render_line
 
 pure function integer_width(input) result(width)
-   integer, value :: input
+   integer, intent(in) :: input
    integer :: width
 
+   integer :: val
+
+   val = input
    width = 0
-   do while (input /= 0)
-      input = input / 10
+   do while (val /= 0)
+      val = val / 10
       width = width + 1
    end do
 
