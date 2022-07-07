@@ -1233,7 +1233,7 @@ subroutine lexer_from_sequential(error)
 end subroutine lexer_from_sequential
 
 subroutine check_token(error, string, expected, keypath)
-   use tomlf_diagnostic, only : render, toml_label, level_error, level_info
+   use tomlf_diagnostic, only : render, toml_label, toml_level
    use tomlf_terminal, only : toml_terminal
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1260,7 +1260,7 @@ subroutine check_token(error, string, expected, keypath)
       call lexer%next(token)
       okay = token%kind == expected(it)
       ! label = [label, toml_label(merge(level_info, level_error, okay), &
-      !    &     stringify(token), token%first, token%last, .not.okay)]
+      !    &     token%first, token%last, stringify(token), .not.okay)]
       ! msg = render(string//new_line('a'), [label(size(label))], toml_terminal(.true.))
       call check(error, token%kind, expected(it), &
          & "Expected '"//stringify(toml_token(expected(it)))// &

@@ -25,7 +25,7 @@ module tomlf_build_keyval
       & new_table, new_array, new_keyval, add_table, add_array, add_keyval, len
    use tomlf_utils, only : toml_raw_to_string, toml_raw_to_float, &
       & toml_raw_to_bool, toml_raw_to_integer, toml_raw_to_timestamp, &
-      & toml_raw_verify_string, toml_escape_string
+      & toml_raw_verify_string, toml_escape_string, to_string
    implicit none
    private
 
@@ -66,7 +66,7 @@ contains
 
 
 !> Retrieve TOML value as single precision float (might lose accuracy)
-subroutine get_value_float_sp(self, val, stat)
+subroutine get_value_float_sp(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(in) :: self
@@ -77,6 +77,9 @@ subroutine get_value_float_sp(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    logical :: istat
    real(tfr) :: dummy
 
@@ -85,14 +88,15 @@ subroutine get_value_float_sp(self, val, stat)
       val = real(dummy, tf_sp)
       if (present(stat)) stat = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%fatal
+      if (present(stat)) stat = toml_stat%type_mismatch
    end if
 
+   if (present(origin)) origin = self%origin_value
 end subroutine get_value_float_sp
 
 
 !> Retrieve TOML value as double precision float
-subroutine get_value_float_dp(self, val, stat)
+subroutine get_value_float_dp(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(in) :: self
@@ -103,6 +107,9 @@ subroutine get_value_float_dp(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    logical :: istat
    real(tfr) :: dummy
 
@@ -111,14 +118,15 @@ subroutine get_value_float_dp(self, val, stat)
       val = real(dummy, tf_dp)
       if (present(stat)) stat = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%fatal
+      if (present(stat)) stat = toml_stat%type_mismatch
    end if
 
+   if (present(origin)) origin = self%origin_value
 end subroutine get_value_float_dp
 
 
 !> Retrieve TOML value as one byte integer (might loose precision)
-subroutine get_value_integer_i1(self, val, stat)
+subroutine get_value_integer_i1(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(in) :: self
@@ -129,6 +137,9 @@ subroutine get_value_integer_i1(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    logical :: istat
    integer(tfi) :: dummy
 
@@ -137,14 +148,15 @@ subroutine get_value_integer_i1(self, val, stat)
       val = int(dummy, tf_i1)
       if (present(stat)) stat = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%fatal
+      if (present(stat)) stat = toml_stat%type_mismatch
    end if
 
+   if (present(origin)) origin = self%origin_value
 end subroutine get_value_integer_i1
 
 
 !> Retrieve TOML value as two byte integer (might loose precision)
-subroutine get_value_integer_i2(self, val, stat)
+subroutine get_value_integer_i2(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(in) :: self
@@ -155,6 +167,9 @@ subroutine get_value_integer_i2(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    logical :: istat
    integer(tfi) :: dummy
 
@@ -163,14 +178,15 @@ subroutine get_value_integer_i2(self, val, stat)
       val = int(dummy, tf_i2)
       if (present(stat)) stat = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%fatal
+      if (present(stat)) stat = toml_stat%type_mismatch
    end if
 
+   if (present(origin)) origin = self%origin_value
 end subroutine get_value_integer_i2
 
 
 !> Retrieve TOML value as four byte integer (might loose precision)
-subroutine get_value_integer_i4(self, val, stat)
+subroutine get_value_integer_i4(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(in) :: self
@@ -181,6 +197,9 @@ subroutine get_value_integer_i4(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    logical :: istat
    integer(tfi) :: dummy
 
@@ -189,14 +208,15 @@ subroutine get_value_integer_i4(self, val, stat)
       val = int(dummy, tf_i4)
       if (present(stat)) stat = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%fatal
+      if (present(stat)) stat = toml_stat%type_mismatch
    end if
 
+   if (present(origin)) origin = self%origin_value
 end subroutine get_value_integer_i4
 
 
 !> Retrieve TOML value as eight byte integer
-subroutine get_value_integer_i8(self, val, stat)
+subroutine get_value_integer_i8(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(in) :: self
@@ -207,6 +227,9 @@ subroutine get_value_integer_i8(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    logical :: istat
    integer(tfi) :: dummy
 
@@ -215,14 +238,15 @@ subroutine get_value_integer_i8(self, val, stat)
       val = int(dummy, tf_i8)
       if (present(stat)) stat = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%fatal
+      if (present(stat)) stat = toml_stat%type_mismatch
    end if
 
+   if (present(origin)) origin = self%origin_value
 end subroutine get_value_integer_i8
 
 
 !> Retrieve TOML value as logical
-subroutine get_value_bool(self, val, stat)
+subroutine get_value_bool(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(in) :: self
@@ -233,20 +257,24 @@ subroutine get_value_bool(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    logical :: istat
 
    istat = toml_raw_to_bool(self%raw, val)
    if (istat) then
       if (present(stat)) stat = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%fatal
+      if (present(stat)) stat = toml_stat%type_mismatch
    end if
 
+   if (present(origin)) origin = self%origin_value
 end subroutine get_value_bool
 
 
 !> Retrieve TOML value as deferred-length character
-subroutine get_value_string(self, val, stat)
+subroutine get_value_string(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(in) :: self
@@ -257,20 +285,24 @@ subroutine get_value_string(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    logical :: istat
 
    istat = toml_raw_to_string(self%raw, val)
    if (istat) then
       if (present(stat)) stat = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%fatal
+      if (present(stat)) stat = toml_stat%type_mismatch
    end if
 
+   if (present(origin)) origin = self%origin_value
 end subroutine get_value_string
 
 
 !> Set TOML value to single precision float
-subroutine set_value_float_sp(self, val, stat)
+subroutine set_value_float_sp(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(inout) :: self
@@ -280,6 +312,9 @@ subroutine set_value_float_sp(self, val, stat)
 
    !> Status of operation
    integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
 
    character(kind=tfc, len=buffersize) :: tmp
    integer :: istat
@@ -292,11 +327,13 @@ subroutine set_value_float_sp(self, val, stat)
       if (present(stat)) stat = toml_stat%fatal
    end if
 
+   self%origin_value = 0
+   if (present(origin)) origin = self%origin
 end subroutine set_value_float_sp
 
 
 !> Set TOML value to double precision float
-subroutine set_value_float_dp(self, val, stat)
+subroutine set_value_float_dp(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(inout) :: self
@@ -306,6 +343,9 @@ subroutine set_value_float_dp(self, val, stat)
 
    !> Status of operation
    integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
 
    character(kind=tfc, len=buffersize) :: tmp
    integer :: istat
@@ -318,11 +358,13 @@ subroutine set_value_float_dp(self, val, stat)
       if (present(stat)) stat = toml_stat%fatal
    end if
 
+   self%origin_value = 0
+   if (present(origin)) origin = self%origin
 end subroutine set_value_float_dp
 
 
 !> Set TOML value to one byte integer
-subroutine set_value_integer_i1(self, val, stat)
+subroutine set_value_integer_i1(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(inout) :: self
@@ -333,22 +375,19 @@ subroutine set_value_integer_i1(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   character(kind=tfc, len=buffersize) :: tmp
-   integer :: istat
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
 
-   write(tmp, '(i0)', iostat=istat) val
-   if (istat == 0) then
-      self%raw = trim(adjustl(tmp))
-      if (present(stat)) stat = toml_stat%success
-   else
-      if (present(stat)) stat = toml_stat%fatal
-   end if
+   self%raw = to_string(val)
+   if (present(stat)) stat = toml_stat%success
 
+   self%origin_value = 0
+   if (present(origin)) origin = self%origin
 end subroutine set_value_integer_i1
 
 
 !> Set TOML value to two byte integer
-subroutine set_value_integer_i2(self, val, stat)
+subroutine set_value_integer_i2(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(inout) :: self
@@ -359,22 +398,19 @@ subroutine set_value_integer_i2(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   character(kind=tfc, len=buffersize) :: tmp
-   integer :: istat
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
 
-   write(tmp, '(i0)', iostat=istat) val
-   if (istat == 0) then
-      self%raw = trim(adjustl(tmp))
-      if (present(stat)) stat = toml_stat%success
-   else
-      if (present(stat)) stat = toml_stat%fatal
-   end if
+   self%raw = to_string(val)
+   if (present(stat)) stat = toml_stat%success
 
+   self%origin_value = 0
+   if (present(origin)) origin = self%origin
 end subroutine set_value_integer_i2
 
 
 !> Set TOML value to four byte integer
-subroutine set_value_integer_i4(self, val, stat)
+subroutine set_value_integer_i4(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(inout) :: self
@@ -385,22 +421,19 @@ subroutine set_value_integer_i4(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   character(kind=tfc, len=buffersize) :: tmp
-   integer :: istat
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
 
-   write(tmp, '(i0)', iostat=istat) val
-   if (istat == 0) then
-      self%raw = trim(adjustl(tmp))
-      if (present(stat)) stat = toml_stat%success
-   else
-      if (present(stat)) stat = toml_stat%fatal
-   end if
+   self%raw = to_string(val)
+   if (present(stat)) stat = toml_stat%success
 
+   self%origin_value = 0
+   if (present(origin)) origin = self%origin
 end subroutine set_value_integer_i4
 
 
 !> Set TOML value to eight byte integer
-subroutine set_value_integer_i8(self, val, stat)
+subroutine set_value_integer_i8(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(inout) :: self
@@ -411,22 +444,19 @@ subroutine set_value_integer_i8(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
-   character(kind=tfc, len=buffersize) :: tmp
-   integer :: istat
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
 
-   write(tmp, '(i0)', iostat=istat) val
-   if (istat == 0) then
-      self%raw = trim(adjustl(tmp))
-      if (present(stat)) stat = toml_stat%success
-   else
-      if (present(stat)) stat = toml_stat%fatal
-   end if
+   self%raw = to_string(val)
+   if (present(stat)) stat = toml_stat%success
 
+   self%origin_value = 0
+   if (present(origin)) origin = self%origin
 end subroutine set_value_integer_i8
 
 
 !> Set TOML value to logical
-subroutine set_value_bool(self, val, stat)
+subroutine set_value_bool(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(inout) :: self
@@ -437,6 +467,9 @@ subroutine set_value_bool(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    if (val) then
       self%raw = 'true'
    else
@@ -445,11 +478,13 @@ subroutine set_value_bool(self, val, stat)
 
    if (present(stat)) stat = toml_stat%success
 
+   self%origin_value = 0
+   if (present(origin)) origin = self%origin
 end subroutine set_value_bool
 
 
 !> Set TOML value to deferred-length character
-subroutine set_value_string(self, val, stat)
+subroutine set_value_string(self, val, stat, origin)
 
    !> Instance of the key-value pair
    class(toml_keyval), intent(inout) :: self
@@ -460,6 +495,9 @@ subroutine set_value_string(self, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    if (toml_raw_verify_string(val)) then
       self%raw = val
    else
@@ -468,6 +506,8 @@ subroutine set_value_string(self, val, stat)
 
    if (present(stat)) stat = toml_stat%success
 
+   self%origin_value = 0
+   if (present(origin)) origin = self%origin
 end subroutine set_value_string
 
 

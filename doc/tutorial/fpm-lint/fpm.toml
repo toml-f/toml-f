@@ -1,0 +1,14 @@
+name = 'fpm-lint'
+
+executable = [
+  {name = "fpm-lint0", main = "main0.f90"},
+  {name = "fpm-lint1", main = "main1.f90"},
+  {name = "fpm-lint2", main = "main2.f90"},
+  {name = "fpm-lint3", main = "main3.f90"},
+]
+
+[build]
+auto-executables = false
+
+[dependencies]
+toml-f.path = "../../.."

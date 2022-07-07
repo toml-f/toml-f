@@ -26,6 +26,15 @@ module tomlf_utils
    public :: toml_raw_verify_integer, toml_raw_verify_timestamp
    public :: toml_raw_verify_date, toml_raw_verify_time
    public :: toml_escape_string, toml_get_value_type
+   public :: to_string
+
+
+   interface to_string
+      module procedure :: to_string_i1
+      module procedure :: to_string_i2
+      module procedure :: to_string_i4
+      module procedure :: to_string_i8
+   end interface to_string
 
 
 contains
@@ -104,6 +113,158 @@ subroutine toml_escape_string(raw, escaped, multiline)
    escaped = escaped // '"'
 
 end subroutine toml_escape_string
+
+
+!> Represent an integer as character sequence.
+pure function to_string_i1(val) result(string)
+   integer, parameter :: ik = tf_i1
+   !> Integer value to create string from
+   integer(ik), intent(in) :: val
+   !> String representation of integer
+   character(len=:), allocatable :: string
+
+   integer, parameter :: buffer_len = range(val)+2
+   character(len=buffer_len) :: buffer
+   integer :: pos
+   integer(ik) :: n
+   character(len=1), parameter :: numbers(0:9) = &
+      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+   if (val == 0_ik) then
+      string = numbers(0)
+      return
+   end if
+
+   n = abs(val)
+   buffer = ""
+
+   pos = buffer_len + 1
+   do while (n > 0_ik)
+      pos = pos - 1
+      buffer(pos:pos) = numbers(mod(n, 10_ik))
+      n = n/10_ik
+   end do
+   if (val < 0_ik) then
+      pos = pos - 1
+      buffer(pos:pos) = '-'
+   end if
+
+   string = buffer(pos:)
+end function to_string_i1
+
+
+!> Represent an integer as character sequence.
+pure function to_string_i2(val) result(string)
+   integer, parameter :: ik = tf_i2
+   !> Integer value to create string from
+   integer(ik), intent(in) :: val
+   !> String representation of integer
+   character(len=:), allocatable :: string
+
+   integer, parameter :: buffer_len = range(val)+2
+   character(len=buffer_len) :: buffer
+   integer :: pos
+   integer(ik) :: n
+   character(len=1), parameter :: numbers(0:9) = &
+      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+   if (val == 0_ik) then
+      string = numbers(0)
+      return
+   end if
+
+   n = abs(val)
+   buffer = ""
+
+   pos = buffer_len + 1
+   do while (n > 0_ik)
+      pos = pos - 1
+      buffer(pos:pos) = numbers(mod(n, 10_ik))
+      n = n/10_ik
+   end do
+   if (val < 0_ik) then
+      pos = pos - 1
+      buffer(pos:pos) = '-'
+   end if
+
+   string = buffer(pos:)
+end function to_string_i2
+
+
+!> Represent an integer as character sequence.
+pure function to_string_i4(val) result(string)
+   integer, parameter :: ik = tf_i4
+   !> Integer value to create string from
+   integer(ik), intent(in) :: val
+   !> String representation of integer
+   character(len=:), allocatable :: string
+
+   integer, parameter :: buffer_len = range(val)+2
+   character(len=buffer_len) :: buffer
+   integer :: pos
+   integer(ik) :: n
+   character(len=1), parameter :: numbers(0:9) = &
+      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+   if (val == 0_ik) then
+      string = numbers(0)
+      return
+   end if
+
+   n = abs(val)
+   buffer = ""
+
+   pos = buffer_len + 1
+   do while (n > 0_ik)
+      pos = pos - 1
+      buffer(pos:pos) = numbers(mod(n, 10_ik))
+      n = n/10_ik
+   end do
+   if (val < 0_ik) then
+      pos = pos - 1
+      buffer(pos:pos) = '-'
+   end if
+
+   string = buffer(pos:)
+end function to_string_i4
+
+
+!> Represent an integer as character sequence.
+pure function to_string_i8(val) result(string)
+   integer, parameter :: ik = tf_i8
+   !> Integer value to create string from
+   integer(ik), intent(in) :: val
+   !> String representation of integer
+   character(len=:), allocatable :: string
+
+   integer, parameter :: buffer_len = range(val)+2
+   character(len=buffer_len) :: buffer
+   integer :: pos
+   integer(ik) :: n
+   character(len=1), parameter :: numbers(0:9) = &
+      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+   if (val == 0_ik) then
+      string = numbers(0)
+      return
+   end if
+
+   n = abs(val)
+   buffer = ""
+
+   pos = buffer_len + 1
+   do while (n > 0_ik)
+      pos = pos - 1
+      buffer(pos:pos) = numbers(mod(n, 10_ik))
+      n = n/10_ik
+   end do
+   if (val < 0_ik) then
+      pos = pos - 1
+      buffer(pos:pos) = '-'
+   end if
+
+   string = buffer(pos:)
+end function to_string_i8
 
 
 end module tomlf_utils

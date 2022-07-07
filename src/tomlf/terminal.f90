@@ -55,6 +55,7 @@
 !> hidden      | `hidden` (8)
 !> crossed     | `crossed` (9)
 module tomlf_terminal
+   use tomlf_utils, only : to_string
    implicit none
    private
 
@@ -200,7 +201,7 @@ module tomlf_terminal
 contains
 
 !> Create new terminal
-function new_terminal(use_color) result(new)
+pure function new_terminal(use_color) result(new)
    !> Enable color support in terminal
    logical, intent(in) :: use_color
    !> New terminal instance
@@ -321,43 +322,5 @@ pure function anycolor(code)
 
    anycolor = code%fg >= 0 .or. code%bg >= 0 .or. code%style >= 0
 end function anycolor
-
-
-!> Represent an integer as character sequence.
-pure function to_string(val) result(string)
-   integer, parameter :: ik = i1
-   !> Integer value to create string from
-   integer(i1), intent(in) :: val
-   !> String representation of integer
-   character(len=:), allocatable :: string
-
-   integer, parameter :: buffer_len = range(val)+2
-   character(len=buffer_len) :: buffer
-   integer :: pos
-   integer(ik) :: n
-   character(len=1), parameter :: numbers(0:9) = &
-      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-
-   if (val == 0_ik) then
-      string = numbers(0)
-      return
-   end if
-
-   n = abs(val)
-   buffer = ""
-
-   pos = buffer_len + 1
-   do while (n > 0_ik)
-      pos = pos - 1
-      buffer(pos:pos) = numbers(mod(n, 10_ik))
-      n = n/10_ik
-   end do
-   if (val < 0_ik) then
-      pos = pos - 1
-      buffer(pos:pos) = '-'
-   end if
-
-   string = buffer(pos:)
-end function to_string
 
 end module tomlf_terminal

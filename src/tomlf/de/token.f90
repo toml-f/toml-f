@@ -11,6 +11,7 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
+!> Provides a definition for a token
 module tomlf_de_token
    implicit none
    private
@@ -69,21 +70,26 @@ module tomlf_de_token
    !> Actual enumerator for token kinds
    type(enum_token), parameter :: token_kind = enum_token()
 
+   !> Token containing
    type :: toml_token
+      !> Kind of token
       integer :: kind = token_kind%newline
+      !> Starting position of the token in character stream
       integer :: first = 0
+      !> Last position of the token in character stream
       integer :: last = 0
+      !> Identifier for the chunk index in case of buffered reading
       integer :: chunk = 0
    end type toml_token
 
+   !> Reallocate a list of tokens
    interface resize
       module procedure :: resize_token
    end interface
 
 contains
 
-
-!> Reallocate list of integers
+!> Reallocate list of tokens
 pure subroutine resize_token(var, n)
    !> Instance of the array to be resized
    type(toml_token), allocatable, intent(inout) :: var(:)
@@ -117,8 +123,11 @@ pure subroutine resize_token(var, n)
 
 end subroutine resize_token
 
+!> Represent a token as string
 pure function stringify(token) result(str)
+   !> Token to represent as string
    type(toml_token), intent(in) :: token
+   !> String representation of token
    character(len=:), allocatable :: str
 
    select case(token%kind)
@@ -147,6 +156,5 @@ pure function stringify(token) result(str)
    case(token_kind%datetime); str = "datetime"
    end select
 end function stringify
-
 
 end module tomlf_de_token

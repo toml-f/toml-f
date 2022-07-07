@@ -31,22 +31,20 @@ module tomlf_diagnostic
 
    !> Enumerator for diagnostic levels
    type :: level_enum
-      !> Raw identifier for enumerator
-      integer :: id
+      integer :: error = 0
+      integer :: warning = 1
+      integer :: help = 2
+      integer :: note = 3
+      integer :: info = 4
    end type level_enum
 
    !> Actual enumerator values
-   type(level_enum), parameter, public :: &
-      level_error = level_enum(0), &
-      level_warning = level_enum(1), &
-      level_help = level_enum(2), &
-      level_note = level_enum(3), &
-      level_info = level_enum(4)
+   type(level_enum), parameter, public :: toml_level = level_enum()
 
 
    type toml_label
       !> Level of message
-      type(level_enum) :: level
+      integer :: level
       !> Primary message
       logical :: primary
       !> First and last character of message
@@ -65,7 +63,7 @@ module tomlf_diagnostic
    !> Definition of diagnostic message
    type :: toml_diagnostic
       !> Level of message
-      type(level_enum) :: level
+      integer :: level
       !> Primary message
       character(len=:), allocatable :: message
       !> Context of the diagnostic source
@@ -89,14 +87,14 @@ module tomlf_diagnostic
 contains
 
 
-pure function new_label(level, text, first, last, primary) result(new)
-   type(level_enum), intent(in) :: level
-   character(len=*), intent(in) :: text
+pure function new_label(level, first, last, text, primary) result(new)
+   integer, intent(in) :: level
    integer, intent(in) :: first, last
+   character(len=*), intent(in), optional :: text
    logical, intent(in), optional :: primary
    type(toml_label) :: new
 
-   new%text = text
+   if (present(text)) new%text = text
    new%level = level
    new%first = first
    new%last = last
@@ -111,7 +109,7 @@ end function new_label
 !> Create new diagnostic message
 pure function new_diagnostic(level, message, source, label) result(new)
    !> Level of message
-   type(level_enum), intent(in) :: level
+   integer, intent(in) :: level
    !> Primary message
    character(len=*), intent(in), optional :: message
    !> Context of the diagnostic source
@@ -166,7 +164,7 @@ recursive pure function render_diagnostic(diag, input, color) result(string)
 end function render_diagnostic
 
 pure function render_message(level, message, color) result(string)
-   type(level_enum), intent(in) :: level
+   integer, intent(in) :: level
    character(len=*), intent(in), optional :: message
    type(toml_terminal), intent(in) :: color
    character(len=:), allocatable :: string
@@ -181,20 +179,20 @@ pure function render_message(level, message, color) result(string)
 end function render_message
 
 pure function level_name(level, color) result(string)
-   type(level_enum), intent(in) :: level
+   integer, intent(in) :: level
    type(toml_terminal), intent(in) :: color
    character(len=:), allocatable :: string
 
-   select case(level%id)
-   case(level_error%id)
+   select case(level)
+   case(toml_level%error)
       string = color%bold + color%red // "error" // color%reset
-   case(level_warning%id)
+   case(toml_level%warning)
       string = color%bold + color%yellow // "warning" // color%reset
-   case(level_help%id)
+   case(toml_level%help)
       string = color%bold + color%cyan // "help" // color%reset
-   case(level_note%id)
+   case(toml_level%note)
       string = color%bold + color%blue // "note" // color%reset
-   case(level_info%id)
+   case(toml_level%info)
       string = color%bold + color%magenta // "info" // color%reset
    case default
       string = color%bold + color%blue // "unknown" // color%reset
@@ -380,18 +378,18 @@ pure function render_label(label, shift, color) result(string)
 end function render_label
 
 pure function level_color(level, color) result(this_color)
-   type(level_enum), intent(in) :: level
+   integer, intent(in) :: level
    type(toml_terminal), intent(in) :: color
    type(ansi_code) :: this_color
 
-   select case(level%id)
-   case(level_error%id)
+   select case(level)
+   case(toml_level%error)
       this_color = color%bold + color%red
-   case(level_warning%id)
+   case(toml_level%warning)
       this_color = color%bold + color%yellow
-   case(level_help%id)
+   case(toml_level%help)
       this_color = color%bold + color%cyan
-   case(level_info%id)
+   case(toml_level%info)
       this_color = color%bold + color%magenta
    case default
       this_color = color%bold + color%blue

@@ -16,8 +16,7 @@ module tftest_json_de
    use iso_fortran_env, only: error_unit
    use tomlf_build, only : get_value, set_value
    use tomlf_constants
-   use tomlf_error, only : toml_stat, toml_error, toml_context, &
-      & syntax_error, duplicate_key_error, vendor_error, io_error
+   use tomlf_error, only : toml_stat, toml_error
    use tomlf_utils
    use tomlf_type, only : toml_value, toml_key, toml_table, toml_array, &
       & toml_keyval, toml_visitor, new_table, add_array, add_table, add_keyval, &
@@ -33,6 +32,22 @@ module tftest_json_de
       module procedure :: json_parse_unit
       module procedure :: json_parse_string
    end interface json_parse
+
+
+   !> Context for error message (usually a line in a TOML document)
+   type :: toml_context
+
+      !> Current internal position
+      integer :: pos = 0
+
+      !> Current internal count
+      integer :: num = 0
+
+      !> Current internal location on the string buffer
+      character(kind=tfc, len=:), pointer :: ptr => null()
+
+   end type toml_context
+
 
 
    !> Possible tokens in this specific version of JSON format
@@ -793,6 +808,168 @@ subroutine unquote_json(raw, string)
    end do
 
 end subroutine unquote_json
+
+
+!> A syntactic error in a TOML document was found
+subroutine syntax_error(error, context, message, stat)
+
+   !> Instance of the TOML error
+   type(toml_error), allocatable, intent(out) :: error
+
+   !> Current context producing the error
+   type(toml_context), intent(in), optional :: context
+
+   !> A detailed message describing the error and (optionally) offering advice
+   character(kind=tfc, len=*), intent(in), optional :: message
+
+   !> Overwrite of the error code
+   integer, intent(in), optional :: stat
+
+   allocate(error)
+
+   if (present(stat)) then
+      error%stat = stat
+   else
+      error%stat = toml_stat%fatal
+   end if
+
+   if (present(message)) then
+      error%message = message
+   else
+      error%message = "Syntax error"
+   end if
+
+   if (present(context)) then
+      call add_context(error%message, context)
+   end if
+
+end subroutine syntax_error
+
+
+!> Key is present multiple times in a TOML document within the same table
+subroutine duplicate_key_error(error, context, key, stat)
+
+   !> Instance of the TOML error
+   type(toml_error), allocatable, intent(out) :: error
+
+   !> Current context producing the error
+   type(toml_context), intent(in), optional :: context
+
+   !> The offending duplicate key
+   character(kind=tfc, len=*), intent(in), optional :: key
+
+   !> Overwrite of the error code
+   integer, intent(in), optional :: stat
+
+   allocate(error)
+
+   if (present(stat)) then
+      error%stat = stat
+   else
+      error%stat = toml_stat%duplicate_key
+   end if
+
+   if (present(key)) then
+      error%message = "Duplicate key ("//key//") found"
+   else
+      error%message = "Duplicate key found"
+   end if
+
+   if (present(context)) then
+      call add_context(error%message, context)
+   end if
+
+end subroutine duplicate_key_error
+
+
+!> IO runtime error
+subroutine io_error(error, message)
+
+   !> Instance of the TOML error
+   type(toml_error), allocatable, intent(out) :: error
+
+   !> A detailed message describing the error and (optionally) offering advice
+   character(kind=tfc, len=*), intent(in), optional :: message
+
+   allocate(error)
+   error%stat = toml_stat%fatal
+
+   if (present(message)) then
+      error%message = message
+   else
+      error%message = "IO runtime error"
+   end if
+
+end subroutine io_error
+
+
+!> A shortcoming in the implementation or an internal error occured, rather
+!  than falling back to unpredictable and possibly harmful behaviour, we try
+!  to offer an apology for this inconvenience
+subroutine vendor_error(error, context, message, stat)
+
+   !> Instance of the TOML error
+   type(toml_error), allocatable, intent(out) :: error
+
+   !> Current context producing the error
+   type(toml_context), intent(in), optional :: context
+
+   !> A detailed message describing the error and (optionally) offering advice
+   character(kind=tfc, len=*), intent(in), optional :: message
+
+   !> Overwrite of the error code
+   integer, intent(in), optional :: stat
+
+   allocate(error)
+
+   if (present(stat)) then
+      error%stat = stat
+   else
+      error%stat = toml_stat%fatal
+   end if
+
+   if (present(message)) then
+      error%message = message
+   else
+      error%message = "Internal error"
+   end if
+
+   if (present(context)) then
+      call add_context(error%message, context)
+   end if
+
+end subroutine vendor_error
+
+
+!> Put an existing error message into a more useful context
+subroutine add_context(message, context)
+
+   !> A detailed message describing the error, requiring some more context
+   character(len=:), allocatable, intent(inout) :: message
+
+   !> Current context producing the error
+   type(toml_context), intent(in) :: context
+
+   character(len=20) :: num
+   integer :: line_break
+
+   if (context%num > 0) then
+      write(num, '("line",1x,i0,":")') context%num
+      message = num(1:len_trim(num)+1) // message
+   end if
+
+   if (associated(context%ptr)) then
+      line_break = index(context%ptr, TOML_NEWLINE)-1
+      if (line_break < 0) line_break = len(context%ptr)
+      message = message // TOML_NEWLINE // &
+         & '   | '// context%ptr(1:line_break) // TOML_NEWLINE // &
+         & '   |'
+      if (context%pos > 0 .and. context%pos <= line_break) then
+         message = message // repeat('-', context%pos) // '^'
+      end if
+   end if
+
+end subroutine add_context
 
 
 end module tftest_json_de

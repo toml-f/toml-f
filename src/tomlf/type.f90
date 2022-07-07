@@ -41,6 +41,7 @@ module tomlf_type
    public :: new, new_table, new_array, new_keyval, len
    public :: add_table, add_array, add_keyval
    public :: is_array_of_tables
+   public :: cast_to_table, cast_to_array, cast_to_keyval
 
 
    !> Interface to build new tables
@@ -492,6 +493,49 @@ function is_array_of_tables(array) result(only_tables)
    end do
 
 end function is_array_of_tables
+
+
+!> Cast an abstract TOML value to a TOML array
+function cast_to_array(ptr) result(array)
+   !> TOML value to be casted
+   class(toml_value), intent(in), target :: ptr
+   !> TOML array view, nullified if the value is not an array
+   type(toml_array), pointer :: array
+
+   nullify(array)
+   select type(ptr)
+   type is(toml_array)
+      array => ptr
+   end select
+end function cast_to_array
+
+!> Cast an abstract TOML value to a TOML table
+function cast_to_table(ptr) result(table)
+   !> TOML value to be casted
+   class(toml_value), intent(in), target :: ptr
+   !> TOML table view, nullified if the value is not a table
+   type(toml_table), pointer :: table
+
+   nullify(table)
+   select type(ptr)
+   type is(toml_table)
+      table => ptr
+   end select
+end function cast_to_table
+
+!> Cast an abstract TOML value to a TOML key-value pair
+function cast_to_keyval(ptr) result(kval)
+   !> TOML value to be casted
+   class(toml_value), intent(in), target :: ptr
+   !> TOML key-value view, nullified if the value is not a table
+   type(toml_keyval), pointer :: kval
+
+   nullify(kval)
+   select type(ptr)
+   type is(toml_keyval)
+      kval => ptr
+   end select
+end function cast_to_keyval
 
 
 end module tomlf_type

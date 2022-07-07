@@ -18,13 +18,15 @@ module tomlf_de
    use tomlf_de_lexer, only : toml_lexer, new_lexer_from_string, new_lexer_from_unit, &
       & new_lexer_from_file
    use tomlf_de_parser, only : parse, toml_parser_config
-   use tomlf_error, only : toml_error, io_error
+   use tomlf_diagnostic, only : toml_level
+   use tomlf_error, only : toml_error
    use tomlf_type, only : toml_table
    implicit none
    private
 
    public :: toml_parse
-   public :: toml_load, toml_loads, toml_context, toml_parser_config
+   public :: toml_load, toml_loads
+   public :: toml_context, toml_parser_config, toml_level
 
 
    !> Parse a TOML document.
@@ -51,6 +53,8 @@ contains
 
 
 !> Parse a TOML input from a given IO unit.
+!>
+!> @note This procedure is deprectated
 subroutine toml_parse_unit(table, unit, error)
    !> Instance of the TOML data structure, not allocated in case of error
    type(toml_table), allocatable, intent(out) :: table
@@ -62,11 +66,13 @@ subroutine toml_parse_unit(table, unit, error)
    call toml_load(table, unit, error=error)
 end subroutine toml_parse_unit
 
-
 !> Wrapper to parse a TOML string.
+!>
+!> @note This procedure is deprectated
 subroutine toml_parse_string(table, string, error)
    !> Instance of the TOML data structure, not allocated in case of error
    type(toml_table), allocatable, intent(out) :: table
+   !> String containing TOML document
    character(len=*), intent(in), target :: string
    !> Error handling, provides detailed diagnostic in case of error
    type(toml_error), allocatable, intent(out), optional :: error
@@ -74,7 +80,7 @@ subroutine toml_parse_string(table, string, error)
    call toml_loads(table, string, error=error)
 end subroutine toml_parse_string
 
-
+!> Load TOML data structure from file
 subroutine toml_load_file(table, filename, config, context, error)
    !> Instance of the TOML data structure, not allocated in case of error
    type(toml_table), allocatable, intent(out) :: table
@@ -97,6 +103,7 @@ subroutine toml_load_file(table, filename, config, context, error)
    end if
 end subroutine toml_load_file
 
+!> Load TOML data structure from unit
 subroutine toml_load_unit(table, io, config, context, error)
    !> Instance of the TOML data structure, not allocated in case of error
    type(toml_table), allocatable, intent(out) :: table
@@ -120,9 +127,11 @@ subroutine toml_load_unit(table, io, config, context, error)
    end if
 end subroutine toml_load_unit
 
+!> Load TOML data structure from string
 subroutine toml_load_string(table, string, config, context, error)
    !> Instance of the TOML data structure, not allocated in case of error
    type(toml_table), allocatable, intent(out) :: table
+   !> String containing TOML document
    character(*, tfc), intent(in) :: string
    !> Configuration for the parser
    type(toml_parser_config), intent(in), optional :: config

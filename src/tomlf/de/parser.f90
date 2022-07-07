@@ -17,11 +17,11 @@ module tomlf_de_parser
    use tomlf_de_context, only : toml_context
    use tomlf_de_lexer, only : toml_lexer
    use tomlf_de_token, only : toml_token, token_kind, stringify
-   use tomlf_diagnostic, only : render, toml_diagnostic, toml_label, level_error, level_info
+   use tomlf_diagnostic, only : render, toml_diagnostic, toml_label, toml_level
    use tomlf_terminal, only : toml_terminal
    use tomlf_error, only : toml_error, toml_stat
    use tomlf_type, only : toml_table, toml_array, toml_keyval, toml_value, toml_key, &
-      & add_table, add_array, add_keyval, len
+      & add_table, add_array, add_keyval, cast_to_table, cast_to_array, len
    implicit none
    private
 
@@ -32,6 +32,8 @@ module tomlf_de_parser
    type :: toml_parser_config
       !> Use colorful output for diagnostics
       logical :: color = .false.
+      !> Record all tokens
+      integer :: context_detail = 0
    end type toml_parser_config
 
    !> TOML parser
@@ -647,13 +649,13 @@ subroutine syntax_error(diagnostic, lexer, token, message, label)
 
    allocate(diagnostic)
    diagnostic = toml_diagnostic( &
-      & level_error, &
+      & toml_level%error, &
       & message, &
       & lexer%source, &
-      & [toml_label(level_error, label, &
-      &  token%first, token%last, .true.)])
+      & [toml_label(toml_level%error, token%first, token%last, label, .true.)])
 end subroutine syntax_error
 
+!> Create diagnostic for incorrect semantics
 subroutine semantic_error(diagnostic, lexer, token1, token2, message, label1, label2)
    !> Diagnostic for the duplicate key error
    type(toml_diagnostic), allocatable, intent(out) :: diagnostic
@@ -665,16 +667,18 @@ subroutine semantic_error(diagnostic, lexer, token1, token2, message, label1, la
    type(toml_token), intent(in) :: token2
    !> Message for the error
    character(len=*), intent(in) :: message
+   !> Label for the first token
    character(len=*), intent(in) :: label1
+   !> Label for the second token
    character(len=*), intent(in) :: label2
 
    allocate(diagnostic)
    diagnostic = toml_diagnostic( &
-      & level_error, &
+      & toml_level%error, &
       & message, &
       & lexer%source, &
-      & [toml_label(level_error, label1, token1%first, token1%last, .true.), &
-      &  toml_label(level_info, label2, token2%first, token2%last, .false.)])
+      & [toml_label(toml_level%error, token1%first, token1%last, label1, .true.), &
+      &  toml_label(toml_level%info, token2%first, token2%last, label2, .false.)])
 end subroutine semantic_error
 
 !> Create a diagnostic for a duplicate key entry
@@ -690,13 +694,8 @@ subroutine duplicate_key_error(diagnostic, lexer, token1, token2, message)
    !> Message for the error
    character(len=*), intent(in) :: message
 
-   allocate(diagnostic)
-   diagnostic = toml_diagnostic( &
-      & level_error, &
-      & message, &
-      & lexer%source, &
-      & [toml_label(level_error, "key already used", token1%first, token1%last, .true.), &
-      &  toml_label(level_info, "first defined here", token2%first, token2%last, .false.)])
+   call semantic_error(diagnostic, lexer, token1, token2, &
+      & message, "key already used", "first defined here")
 end subroutine duplicate_key_error
 
 !> Create an error from a diagnostic
@@ -718,8 +717,11 @@ subroutine make_error(error, diagnostic, lexer, color)
    error%stat = toml_stat%fatal
 end subroutine make_error
 
+!> Transform lexer content to string
 function as_string(lexer) result(string)
+   !> Instance of the lexer
    class(toml_lexer), intent(in) :: lexer
+   !> String representing source code
    character(size(lexer%chunk), tfc) :: string
 
    string = transfer(lexer%chunk, string)
@@ -734,11 +736,19 @@ subroutine next_token(parser, lexer)
    class(toml_lexer), intent(inout) :: lexer
 
    call lexer%next(parser%token)
-   if (any(parser%token%kind == [token_kind%keypath, token_kind%string, &
-      & token_kind%literal, token_kind%int, token_kind%float, token_kind%bool, &
-      & token_kind%datetime])) then
+
+   select case(parser%token%kind)
+   case(token_kind%keypath, token_kind%string, token_kind%literal, token_kind%int, &
+         & token_kind%float, token_kind%bool, token_kind%datetime)
       call parser%context%push_back(parser%token)
-   end if
+   case(token_kind%newline, token_kind%dot, token_kind%comma, token_kind%equal, &
+         & token_kind%lbrace, token_kind%rbrace, token_kind%lbracket, token_kind%rbracket)
+      if (parser%config%context_detail > 0) &
+         call parser%context%push_back(parser%token)
+   case default
+      if (parser%config%context_detail > 1) &
+         call parser%context%push_back(parser%token)
+   end select
 end subroutine next_token
 
 !> Extract key from token
@@ -796,33 +806,5 @@ subroutine get_table(table, key, ptr, stat)
       call add_table(table, key, ptr, stat)
    end if
 end subroutine get_table
-
-!> Cast an abstract TOML value to a TOML array
-function cast_to_array(ptr) result(array)
-   !> TOML value to be casted
-   class(toml_value), intent(in), target :: ptr
-   !> TOML array view, nullified if the value is not an array
-   type(toml_array), pointer :: array
-
-   nullify(array)
-   select type(ptr)
-   type is(toml_array)
-      array => ptr
-   end select
-end function cast_to_array
-
-!> Cast an abstract TOML value to a TOML table
-function cast_to_table(ptr) result(table)
-   !> TOML value to be casted
-   class(toml_value), intent(in), target :: ptr
-   !> TOML table view, nullified if the value is not a table
-   type(toml_table), pointer :: table
-
-   nullify(table)
-   select type(ptr)
-   type is(toml_table)
-      table => ptr
-   end select
-end function cast_to_table
 
 end module tomlf_de_parser

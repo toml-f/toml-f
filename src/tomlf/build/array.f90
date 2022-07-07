@@ -40,7 +40,8 @@ module tomlf_build_array
       & tf_sp, tf_dp
    use tomlf_error, only : toml_stat
    use tomlf_type, only : toml_value, toml_table, toml_array, toml_keyval, &
-      & new_table, new_array, new_keyval, add_table, add_array, add_keyval, len
+      & new_table, new_array, new_keyval, add_table, add_array, add_keyval, &
+      & cast_to_table, cast_to_array, cast_to_keyval, len
    use tomlf_utils, only : toml_raw_to_string, toml_raw_to_float, &
       & toml_raw_to_bool, toml_raw_to_integer, toml_raw_to_timestamp
    implicit none
@@ -81,7 +82,7 @@ module tomlf_build_array
 contains
 
 
-subroutine get_elem_table(array, pos, ptr, stat)
+subroutine get_elem_table(array, pos, ptr, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -95,6 +96,9 @@ subroutine get_elem_table(array, pos, ptr, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    class(toml_value), pointer :: tmp
 
    nullify(ptr)
@@ -102,21 +106,24 @@ subroutine get_elem_table(array, pos, ptr, stat)
    call array%get(pos, tmp)
 
    if (associated(tmp)) then
-      select type(tmp)
-      type is(toml_table)
-         ptr => tmp
-         if (present(stat)) stat = toml_stat%success
-      class default
-         if (present(stat)) stat = toml_stat%fatal
-      end select
+      ptr => cast_to_table(tmp)
+      if (present(stat)) then
+         if (associated(ptr)) then
+            stat = toml_stat%success
+         else
+            stat = toml_stat%type_mismatch
+         end if
+      end if
+      if (present(origin)) origin = tmp%origin
    else
       if (present(stat)) stat = toml_stat%fatal
+      if (present(origin)) origin = array%origin
    end if
 
 end subroutine get_elem_table
 
 
-subroutine get_elem_array(array, pos, ptr, stat)
+subroutine get_elem_array(array, pos, ptr, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -130,6 +137,9 @@ subroutine get_elem_array(array, pos, ptr, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    class(toml_value), pointer :: tmp
 
    nullify(ptr)
@@ -137,21 +147,24 @@ subroutine get_elem_array(array, pos, ptr, stat)
    call array%get(pos, tmp)
 
    if (associated(tmp)) then
-      select type(tmp)
-      type is(toml_array)
-         ptr => tmp
-         if (present(stat)) stat = toml_stat%success
-      class default
-         if (present(stat)) stat = toml_stat%fatal
-      end select
+      ptr => cast_to_array(tmp)
+      if (present(stat)) then
+         if (associated(ptr)) then
+            stat = toml_stat%success
+         else
+            stat = toml_stat%type_mismatch
+         end if
+      end if
+      if (present(origin)) origin = tmp%origin
    else
       if (present(stat)) stat = toml_stat%fatal
+      if (present(origin)) origin = array%origin
    end if
 
 end subroutine get_elem_array
 
 
-subroutine get_elem_keyval(array, pos, ptr, stat)
+subroutine get_elem_keyval(array, pos, ptr, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -165,6 +178,9 @@ subroutine get_elem_keyval(array, pos, ptr, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    class(toml_value), pointer :: tmp
 
    nullify(ptr)
@@ -172,22 +188,25 @@ subroutine get_elem_keyval(array, pos, ptr, stat)
    call array%get(pos, tmp)
 
    if (associated(tmp)) then
-      select type(tmp)
-      type is(toml_keyval)
-         ptr => tmp
-         if (present(stat)) stat = toml_stat%success
-      class default
-         if (present(stat)) stat = toml_stat%fatal
-      end select
+      ptr => cast_to_keyval(tmp)
+      if (present(stat)) then
+         if (associated(ptr)) then
+            stat = toml_stat%success
+         else
+            stat = toml_stat%type_mismatch
+         end if
+      end if
+      if (present(origin)) origin = tmp%origin
    else
       if (present(stat)) stat = toml_stat%fatal
+      if (present(origin)) origin = array%origin
    end if
 
 end subroutine get_elem_keyval
 
 
 !> Retrieve TOML value as deferred-length character
-subroutine get_elem_value_string(array, pos, val, stat)
+subroutine get_elem_value_string(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -201,12 +220,15 @@ subroutine get_elem_value_string(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (associated(ptr)) then
-      call get_value(ptr, val, stat)
+      call get_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if
@@ -215,7 +237,7 @@ end subroutine get_elem_value_string
 
 
 !> Retrieve TOML value as single precision floating point number
-subroutine get_elem_value_float_sp(array, pos, val, stat)
+subroutine get_elem_value_float_sp(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -229,12 +251,15 @@ subroutine get_elem_value_float_sp(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (associated(ptr)) then
-      call get_value(ptr, val, stat)
+      call get_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if
@@ -243,7 +268,7 @@ end subroutine get_elem_value_float_sp
 
 
 !> Retrieve TOML value as double precision floating point number
-subroutine get_elem_value_float_dp(array, pos, val, stat)
+subroutine get_elem_value_float_dp(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -257,12 +282,15 @@ subroutine get_elem_value_float_dp(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (associated(ptr)) then
-      call get_value(ptr, val, stat)
+      call get_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if
@@ -271,7 +299,7 @@ end subroutine get_elem_value_float_dp
 
 
 !> Retrieve TOML value as integer value
-subroutine get_elem_value_int_i1(array, pos, val, stat)
+subroutine get_elem_value_int_i1(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -285,12 +313,15 @@ subroutine get_elem_value_int_i1(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (associated(ptr)) then
-      call get_value(ptr, val, stat)
+      call get_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if
@@ -299,7 +330,7 @@ end subroutine get_elem_value_int_i1
 
 
 !> Retrieve TOML value as integer value
-subroutine get_elem_value_int_i2(array, pos, val, stat)
+subroutine get_elem_value_int_i2(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -313,12 +344,15 @@ subroutine get_elem_value_int_i2(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (associated(ptr)) then
-      call get_value(ptr, val, stat)
+      call get_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if
@@ -327,7 +361,7 @@ end subroutine get_elem_value_int_i2
 
 
 !> Retrieve TOML value as integer value
-subroutine get_elem_value_int_i4(array, pos, val, stat)
+subroutine get_elem_value_int_i4(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -341,12 +375,15 @@ subroutine get_elem_value_int_i4(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (associated(ptr)) then
-      call get_value(ptr, val, stat)
+      call get_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if
@@ -355,7 +392,7 @@ end subroutine get_elem_value_int_i4
 
 
 !> Retrieve TOML value as integer value
-subroutine get_elem_value_int_i8(array, pos, val, stat)
+subroutine get_elem_value_int_i8(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -369,12 +406,15 @@ subroutine get_elem_value_int_i8(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (associated(ptr)) then
-      call get_value(ptr, val, stat)
+      call get_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if
@@ -383,7 +423,7 @@ end subroutine get_elem_value_int_i8
 
 
 !> Retrieve TOML value as boolean
-subroutine get_elem_value_bool(array, pos, val, stat)
+subroutine get_elem_value_bool(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -397,12 +437,15 @@ subroutine get_elem_value_bool(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (associated(ptr)) then
-      call get_value(ptr, val, stat)
+      call get_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if
@@ -411,7 +454,7 @@ end subroutine get_elem_value_bool
 
 
 !> Retrieve TOML value as deferred-length character
-subroutine set_elem_value_string(array, pos, val, stat)
+subroutine set_elem_value_string(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -425,9 +468,12 @@ subroutine set_elem_value_string(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (.not.associated(ptr)) then
       if (pos == len(array) + 1) then
@@ -436,7 +482,7 @@ subroutine set_elem_value_string(array, pos, val, stat)
    end if
 
    if (associated(ptr)) then
-      call set_value(ptr, val, stat)
+      call set_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if
@@ -445,7 +491,7 @@ end subroutine set_elem_value_string
 
 
 !> Retrieve TOML value as single precision floating point number
-subroutine set_elem_value_float_sp(array, pos, val, stat)
+subroutine set_elem_value_float_sp(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -459,9 +505,12 @@ subroutine set_elem_value_float_sp(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (.not.associated(ptr)) then
       if (pos == len(array) + 1) then
@@ -470,7 +519,7 @@ subroutine set_elem_value_float_sp(array, pos, val, stat)
    end if
 
    if (associated(ptr)) then
-      call set_value(ptr, val, stat)
+      call set_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if
@@ -479,7 +528,7 @@ end subroutine set_elem_value_float_sp
 
 
 !> Retrieve TOML value as double precision floating point number
-subroutine set_elem_value_float_dp(array, pos, val, stat)
+subroutine set_elem_value_float_dp(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -493,9 +542,12 @@ subroutine set_elem_value_float_dp(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (.not.associated(ptr)) then
       if (pos == len(array) + 1) then
@@ -504,7 +556,7 @@ subroutine set_elem_value_float_dp(array, pos, val, stat)
    end if
 
    if (associated(ptr)) then
-      call set_value(ptr, val, stat)
+      call set_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if
@@ -513,7 +565,7 @@ end subroutine set_elem_value_float_dp
 
 
 !> Retrieve TOML value as integer value
-subroutine set_elem_value_int_i1(array, pos, val, stat)
+subroutine set_elem_value_int_i1(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -527,9 +579,12 @@ subroutine set_elem_value_int_i1(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (.not.associated(ptr)) then
       if (pos == len(array) + 1) then
@@ -538,7 +593,7 @@ subroutine set_elem_value_int_i1(array, pos, val, stat)
    end if
 
    if (associated(ptr)) then
-      call set_value(ptr, val, stat)
+      call set_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if
@@ -547,7 +602,7 @@ end subroutine set_elem_value_int_i1
 
 
 !> Retrieve TOML value as integer value
-subroutine set_elem_value_int_i2(array, pos, val, stat)
+subroutine set_elem_value_int_i2(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -561,9 +616,12 @@ subroutine set_elem_value_int_i2(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (.not.associated(ptr)) then
       if (pos == len(array) + 1) then
@@ -572,7 +630,7 @@ subroutine set_elem_value_int_i2(array, pos, val, stat)
    end if
 
    if (associated(ptr)) then
-      call set_value(ptr, val, stat)
+      call set_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if
@@ -581,7 +639,7 @@ end subroutine set_elem_value_int_i2
 
 
 !> Retrieve TOML value as integer value
-subroutine set_elem_value_int_i4(array, pos, val, stat)
+subroutine set_elem_value_int_i4(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -595,9 +653,12 @@ subroutine set_elem_value_int_i4(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (.not.associated(ptr)) then
       if (pos == len(array) + 1) then
@@ -606,7 +667,7 @@ subroutine set_elem_value_int_i4(array, pos, val, stat)
    end if
 
    if (associated(ptr)) then
-      call set_value(ptr, val, stat)
+      call set_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if
@@ -615,7 +676,7 @@ end subroutine set_elem_value_int_i4
 
 
 !> Retrieve TOML value as integer value
-subroutine set_elem_value_int_i8(array, pos, val, stat)
+subroutine set_elem_value_int_i8(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -629,9 +690,12 @@ subroutine set_elem_value_int_i8(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (.not.associated(ptr)) then
       if (pos == len(array) + 1) then
@@ -640,7 +704,7 @@ subroutine set_elem_value_int_i8(array, pos, val, stat)
    end if
 
    if (associated(ptr)) then
-      call set_value(ptr, val, stat)
+      call set_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if
@@ -649,7 +713,7 @@ end subroutine set_elem_value_int_i8
 
 
 !> Retrieve TOML value as boolean value
-subroutine set_elem_value_bool(array, pos, val, stat)
+subroutine set_elem_value_bool(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
    class(toml_array), intent(inout) :: array
@@ -663,9 +727,12 @@ subroutine set_elem_value_bool(array, pos, val, stat)
    !> Status of operation
    integer, intent(out), optional :: stat
 
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
    type(toml_keyval), pointer :: ptr
 
-   call get_value(array, pos, ptr, stat)
+   call get_value(array, pos, ptr, stat, origin)
 
    if (.not.associated(ptr)) then
       if (pos == len(array) + 1) then
@@ -674,7 +741,7 @@ subroutine set_elem_value_bool(array, pos, val, stat)
    end if
 
    if (associated(ptr)) then
-      call set_value(ptr, val, stat)
+      call set_value(ptr, val, stat, origin)
    else
       if (present(stat)) stat = toml_stat%fatal
    end if

@@ -162,18 +162,21 @@ subroutine push_back(self, val, stat)
    !> Status of operation
    integer, intent(out) :: stat
 
+   class(toml_value), pointer :: ptr
+
    if (.not.allocated(val)) then
-      stat = toml_stat%fatal
+      stat = merge(self%origin, toml_stat%fatal, self%origin > 0)
       return
    end if
 
    if (.not.allocated(val%key)) then
-      stat = toml_stat%fatal
+      stat = merge(val%origin, toml_stat%fatal, val%origin > 0)
       return
    end if
 
-   if (self%has_key(val%key)) then
-      stat = toml_stat%duplicate_key
+   call self%get(val%key, ptr)
+   if (associated(ptr)) then
+      stat = merge(ptr%origin, toml_stat%duplicate_key, ptr%origin > 0)
       return
    end if
 

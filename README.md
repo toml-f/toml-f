@@ -288,7 +288,7 @@ An example program to load and dump a TOML file would look like this:
 ```fortran
 use tomlf
 implicit none
-character(len=1), parameter :: nl = new_line('a')
+character(len=*), parameter :: nl = new_line("a")
 type(toml_table), allocatable :: table
 character(kind=tfc, len=:), allocatable :: input_string
 type(toml_serializer) :: ser
@@ -320,7 +320,7 @@ input_string = &
    & '  "omega"' // nl // &
    & ']'
 
-call toml_parse(table, input_string)
+call toml_loads(table, input_string)
 if (allocated(table)) then
    call table%accept(ser)
    call table%destroy  ! not necessary

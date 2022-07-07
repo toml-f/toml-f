@@ -2,7 +2,7 @@
 !> Each data record knows how to serialize and deserialize itself.
 module serde_class
   use serde_error, only : error_type, fatal_error
-  use tomlf, only : toml_table, toml_error, toml_parse, toml_serializer
+  use tomlf, only : toml_table, toml_error, toml_load, toml_serializer
   implicit none
   private
 
@@ -63,18 +63,19 @@ contains
     !> Error handling
     type(error_type), allocatable, intent(out) :: error
 
-    integer :: unit
-    logical :: exist
+    type(toml_error), allocatable :: parse_error
+    type(toml_table), allocatable :: table
 
-    inquire(file=file, exist=exist)
-    if (.not.exist) then
-      call fatal_error(error, "Could not find configuration file '"//file//"'")
+    call toml_load(table, file, error=parse_error)
+
+    if (allocated(parse_error)) then
+      allocate(error)
+      call move_alloc(parse_error%message, error%message)
       return
     end if
 
-    open(file=file, newunit=unit)
-    call self%load(unit, error)
-    close(unit)
+    call self%load(table, error)
+    if (allocated(error)) return
   end subroutine load_from_file
 
   !> Read configuration data from file
@@ -89,7 +90,7 @@ contains
     type(toml_error), allocatable :: parse_error
     type(toml_table), allocatable :: table
 
-    call toml_parse(table, unit, parse_error)
+    call toml_load(table, unit, error=parse_error)
 
     if (allocated(parse_error)) then
       allocate(error)
@@ -99,7 +100,6 @@ contains
 
     call self%load(table, error)
     if (allocated(error)) return
-
   end subroutine load_from_unit
 
   !> Write configuration data to file
