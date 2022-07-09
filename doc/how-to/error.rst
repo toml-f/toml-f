@@ -1,7 +1,7 @@
 Reporting errors
 ================
 
-TOML data structures can record their origin in the original TOML document, which can be used reporting errors with rich context information.
+TOML data structures can record their origin in the original TOML document, which can be used to report errors with rich context information.
 The recipes here describe how to obtain the context for producing error messages and diagnostics using the origin information of the data structures.
 
 
@@ -10,21 +10,28 @@ Loading with rich context
 
 To make use of the origin information, the context from loading the document has to be preserved.
 This can be archived by passing the optional ``context`` argument to the loading interface to request the document context to be exported.
-We define a simple data type for a configuration at
+To obtain the context object we have to request it when reading the TOML document.
+
+.. code-block:: fortran
+   :caption: app/main.f90
+
+   call toml_load(table, filename, context=context, error=error)
+
+We define a simple data type for a configuration for this recipe.
 
 .. literalinclude:: error/single/src/config.f90
    :language: fortran
    :caption: src/config.f90
    :lines: 6-10
 
-To report errors, we now not only use the TOML data structure, but also a context object, which allows to create the report.
+To report errors, we now not only use the TOML data structure, but also a context object, which allows us to create the report.
 
 .. literalinclude:: error/single/src/config.f90
    :language: fortran
    :caption: src/config.f90
    :lines: 17-34, 46
 
-To obtain the context object we have to request it when reading the TOML document.
+To provide the data structure we create a simple driver to read a TOML document.
 
 .. literalinclude:: error/single/app/main.f90
    :language: fortran
@@ -78,7 +85,7 @@ The resulting error message is shown below.
    The report function will only produce labels for non-zero origins and gracefully ignore data without origin in the current context.
 
 The reporting function is not limited to errors, it can also produce warnings or informational messages.
-For this purpose we select the appropriate ``toml_level`` for the report.
+For this purpose, we select the appropriate ``toml_level`` for the report.
 
 .. literalinclude:: error/single/src/config.f90
    :language: fortran
@@ -125,10 +132,10 @@ The resulting warning is shown below.
 Multiline reports
 -----------------
 
-In come cases multiple labels are required to express the context of the report correctly.
+In some cases, multiple labels are required to express the context of the report correctly.
 This feature is available with the context object, by providing the origin of the two data structures in the reporting function.
 
-An example for this is the dependency table in fpm, where we can either provide a local dependency using the *path* key or a remote dependency using the *git* key, but not both at the same time.
+An example of this is the dependency table in fpm, where we can either provide a local dependency using the *path* key or a remote dependency using the *git* key, but not both at the same time.
 
 We declare a simple dummy dependency storing only the dependency name for demonstration purposes.
 
@@ -137,7 +144,7 @@ We declare a simple dummy dependency storing only the dependency name for demons
    :caption: src/dependency.f90
    :lines: 6-10
 
-We iterate over the list of all subtables in the dependency table and to read the actual dependency.
+We iterate over the list of all subtables in the dependency table and read the actual dependency.
 In case an entry is not a subtable we will raise an error, since a package manifest can contain multiple dependency tables, we will report which table we are currently in as additional context.
 
 .. literalinclude:: error/multi/src/dependency.f90
@@ -145,13 +152,19 @@ In case an entry is not a subtable we will raise an error, since a package manif
    :caption: src/dependency.f90
    :lines: 14-39
 
+To provide the *dependencies* table we create a simple driver to read a TOML document.
+
+.. literalinclude:: error/multi/app/main.f90
+   :language: fortran
+   :caption: app/main.f90
+
 An example triggering the error is shown below.
 
 .. literalinclude:: error/multi/example1.toml
    :language: toml
    :caption: fpm.toml
 
-Running this example will produce the following error showing line 1 and line 3 of our example input.
+Running this example will produce the following error showing lines 1 and 3 of our example input.
 
 .. ansi-block::
 
@@ -176,7 +189,7 @@ Note that the *get_value* interface will not allocate the string if no value is 
 
 To preserve the order from the input we can compare the *origin* values of the two retrieved strings and produce the appropriate error message.
 
-In this example, the *git* entry was defined first and a conflicting *path* entry is provided afterwards.
+In this example, the *git* entry was defined first and a conflicting *path* entry is provided afterward.
 
 .. literalinclude:: error/multi/example2.toml
    :language: toml
@@ -227,3 +240,46 @@ The error message is adjusted accordingly and now reports a conflicting *git* en
    .. literalinclude:: error/multi/app/main.f90
       :language: fortran
       :caption: app/main.f90
+
+
+Color support
+-------------
+
+All reports also support colorful terminal output.
+For this purpose, we can use the provided *toml_terminal* which can be instantiated with color support.
+
+.. code-block:: fortran
+
+   block
+     use tomlf, only : toml_terminal
+     type(toml_terminal) :: terminal
+     terminal = toml_terminal(.true.)
+   end block
+
+To activate the color support for error messages produced in the load interface the optional argument *config* takes a *toml_parser_config* instance.
+
+.. code-block:: fortran
+
+   call toml_load(table, filename, config=toml_parser_config(color=.true.), error=error)
+
+Alternatively, an instance of a *toml_terminal* can be passed to the *toml_parser_config* constructor.
+
+For working with the *context* instance returned by the load interface we need a terminal to activate the colorful output passed to the optional *color* argument.
+
+.. code-block:: fortran
+
+   print '(a)', context%report("Cannot read timestep", &
+     & origin, "expected real value", color=toml_terminal(.true.))
+
+The *terminal* can also be used to colorize regular text output.
+
+.. code-block:: fortran
+
+   block
+     use tomlf_terminal, only : toml_terminal, operator(//), operator(+)
+     type(toml_terminal) :: terminal
+     terminal = toml_terminal(.true.)
+     print '(a)', (terminal%fg_red + terminal%bold) // "red bold text" // terminal%reset
+   end block
+
+If the terminal is not initialized or the color support is explicitly disabled by passing ``.false.`` to the constructor, the output will be plain text.

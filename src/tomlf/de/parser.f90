@@ -31,10 +31,14 @@ module tomlf_de_parser
    !> Configuration of the TOML parser
    type :: toml_parser_config
       !> Use colorful output for diagnostics
-      logical :: color = .false.
+      type(toml_terminal) :: color = toml_terminal()
       !> Record all tokens
       integer :: context_detail = 0
    end type toml_parser_config
+
+   interface toml_parser_config
+      module procedure :: new_parser_config
+   end interface toml_parser_config
 
    !> TOML parser
    type :: toml_parser
@@ -67,6 +71,19 @@ subroutine new_parser(parser, config)
    parser%config = toml_parser_config()
    if (present(config)) parser%config = config
 end subroutine new_parser
+
+!> Create new configuration for the TOML parser
+pure function new_parser_config(color, context_detail) result(config)
+   !> Configuration of the parser
+   type(toml_parser_config) :: config
+   !> Color support for diagnostics
+   logical, intent(in), optional :: color
+   !> Record all tokens
+   integer, intent(in), optional :: context_detail
+
+   if (present(color)) config%color = toml_terminal(color)
+   if (present(context_detail)) config%context_detail = context_detail
+end function new_parser_config
 
 !> Parse TOML document and return root table
 subroutine parse(lexer, table, config, context, error)
@@ -707,13 +724,13 @@ subroutine make_error(error, diagnostic, lexer, color)
    !> Instance of the lexer providing the context
    type(toml_lexer), intent(in) :: lexer
    !> Use colorful error messages
-   logical, intent(in) :: color
+   type(toml_terminal), intent(in) :: color
 
    character(len=:), allocatable :: str
 
    allocate(error)
    str = as_string(lexer)//new_line('a')
-   error%message = render(diagnostic, str, toml_terminal(color))
+   error%message = render(diagnostic, str, color)
    error%stat = toml_stat%fatal
 end subroutine make_error
 

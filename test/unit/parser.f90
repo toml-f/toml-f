@@ -14,10 +14,11 @@
 module tftest_parser
    use testdrive
    use tomlf_constants, only : nl => TOML_NEWLINE
-   use tomlf_error, only : toml_error
-   use tomlf_type, only : toml_table
    use tomlf_de_parser
    use tomlf_de_lexer, only : toml_lexer, new_lexer_from_string, toml_token, token_kind
+   use tomlf_error, only : toml_error
+   use tomlf_type, only : toml_table
+   use tomlf_terminal, only : toml_terminal
    implicit none
 
    public :: collect_parser
@@ -572,7 +573,7 @@ subroutine check_parser(error, string, token)
 
    call new_lexer(lexer, string, token)
 
-   call parse(lexer, table, config=toml_parser_config(.true.), error=parse_error)
+   call parse(lexer, table, config=toml_parser_config(color=.true.), error=parse_error)
    call move_error(error, parse_error)
    if (allocated(error)) return
    call check(error, allocated(table))

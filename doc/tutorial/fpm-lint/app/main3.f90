@@ -20,7 +20,7 @@ program main
   if (.not.allocated(manifest)) manifest = "fpm.toml"
 
   call toml_load(table, manifest, error=error, context=context, &
-    & config=toml_parser_config(color=color, context_detail=detail))
+    & config=toml_parser_config(color=terminal, context_detail=detail))
   call handle_error(error)
 
   call load_lint_config(config, table, context, terminal, error)
