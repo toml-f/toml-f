@@ -5,7 +5,7 @@
 [![Build](https://github.com/toml-f/toml-f/workflows/CI/badge.svg)](https://github.com/toml-f/toml-f/actions)
 [![docs](https://github.com/toml-f/toml-f/workflows/docs/badge.svg)](https://toml-f.github.io/toml-f)
 [![Documentation Status](https://readthedocs.org/projects/toml-f/badge/?version=latest)](https://toml-f.readthedocs.io)
-[![codecov](https://codecov.io/gh/toml-f/toml-f/branch/master/graph/badge.svg)](https://codecov.io/gh/toml-f/toml-f)
+[![codecov](https://codecov.io/gh/toml-f/toml-f/branch/main/graph/badge.svg)](https://codecov.io/gh/toml-f/toml-f)
 
 A TOML parser implementation for data serialization and deserialization in Fortran.
 
@@ -288,7 +288,7 @@ An example program to load and dump a TOML file would look like this:
 ```fortran
 use tomlf
 implicit none
-character(len=1), parameter :: nl = new_line('a')
+character(len=*), parameter :: nl = new_line("a")
 type(toml_table), allocatable :: table
 character(kind=tfc, len=:), allocatable :: input_string
 type(toml_serializer) :: ser
@@ -320,7 +320,7 @@ input_string = &
    & '  "omega"' // nl // &
    & ']'
 
-call toml_parse(table, input_string)
+call toml_loads(table, input_string)
 if (allocated(table)) then
    call table%accept(ser)
    call table%destroy  ! not necessary

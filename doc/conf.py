@@ -11,6 +11,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys, os.path as op
+
+sys.path.insert(0, op.abspath(op.join(op.dirname(__file__), "_vendor")))
+
+
 project = "toml-f"
 author = "Sebastian Ehlert"
 copyright = f"2019-2022, {author}"
@@ -22,6 +27,7 @@ extensions = [
     "sphinx_design",
     "sphinx_copybutton",
     "sphinx.ext.intersphinx",
+    "sphinxcontrib_ansi",
 ]
 
 html_theme = "sphinx_book_theme"
@@ -38,9 +44,10 @@ html_theme_options = {
     "path_to_docs": "doc",
 }
 
-html_css_files = []
+html_css_files = ["css/custom.css"]
 html_static_path = ["_static"]
 templates_path = ["_templates"]
 locale_dirs = ["locales"]
+copybutton_selector = "div:not(.no-copybutton) > div.highlight > pre"
 
 master_doc = "index"

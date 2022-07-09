@@ -27,6 +27,9 @@ module tomlf_type_value
       !> Raw representation of the key to the TOML value
       character(kind=tfc, len=:), allocatable :: key
 
+      !> Original source of the value
+      integer :: origin = 0
+
    contains
 
       !> Accept a visitor to transverse the data structure
@@ -59,6 +62,9 @@ module tomlf_type_value
 
       !> Raw representation of the key to the TOML value
       character(kind=tfc, len=:), allocatable :: key
+
+      !> Original source of the value
+      integer :: origin = 0
 
    end type toml_key
 

@@ -1,9 +1,9 @@
 name = "toml-f"
-version = "0.2.3"
+version = "0.3.0"
 license = "Apache-2.0 OR MIT"
 maintainer = ["@awvwgk"]
 author = ["Sebastian Ehlert"]
-copyright = "2019-2021 Sebastian Ehlert"
+copyright = "2019-2022 Sebastian Ehlert"
 homepage = "https://toml-f.github.io/toml-f"
 keywords = ["toml", "io", "serde"]
 description = "TOML parser implementation for data serialization and deserialization"
@@ -16,6 +16,6 @@ auto-tests = false
 
 [[test]]
 name = "tftest"
-source-dir = "test/tftest"
+source-dir = "test/unit"
 [test.dependencies]
 test-drive.git = "https://github.com/fortran-lang/test-drive.git"

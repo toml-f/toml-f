@@ -27,7 +27,7 @@ TOML Fortran library
    :target: https://toml-f.readthedocs.io
    :alt: Documentation Status
 
-.. image:: https://codecov.io/gh/toml-f/toml-f/branch/master/graph/badge.svg
+.. image:: https://codecov.io/gh/toml-f/toml-f/branch/main/graph/badge.svg
    :alt: Coverage
    :target: https://codecov.io/gh/toml-f/toml-f
 

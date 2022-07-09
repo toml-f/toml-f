@@ -172,7 +172,7 @@ pure function toml_raw_verify_timestamp(raw) result(stat)
          stat = .true.
          return
       end if
-      if (raw(11:11) /= ' ' .and. raw(11:11) /= 'T') return
+      if (raw(11:11) /= ' ' .and. raw(11:11) /= 'T' .and. raw(11:11) /= 't') return
       first = 12
    end if
 

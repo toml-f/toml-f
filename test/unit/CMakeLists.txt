@@ -11,13 +11,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set(dir "${CMAKE_CURRENT_SOURCE_DIR}")
+if(NOT TARGET "test-drive::test-drive")
+  find_package("test-drive")
+endif()
 
-list(
-  APPEND test-srcs
-  "${dir}/build.f90"
-  "${dir}/main.f90"
-  "${dir}/sort.f90"
+set(
+  test-srcs
+  "build.f90"
+  "lexer.f90"
+  "main.f90"
+  "parser.f90"
+  "sort.f90"
 )
 
-set(test-srcs "${test-srcs}" PARENT_SCOPE)
+add_executable(
+  tftester
+  "${test-srcs}"
+)
+target_link_libraries(
+  tftester
+  PRIVATE
+  "${PROJECT_NAME}-lib"
+  "test-drive::test-drive"
+)
+add_test(
+  "tftest"
+  tftester
+)

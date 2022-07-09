@@ -21,16 +21,16 @@ module tomlf_version
 
 
    !> String representation of the TOML-Fortran version
-   character(len=*), parameter :: tomlf_version_string = "0.2.3"
+   character(len=*), parameter :: tomlf_version_string = "0.3.0"
 
    !> Major version number of the above TOML-Fortran version
    integer, parameter :: tomlf_major = 0
 
    !> Minor version number of the above TOML-Fortran version
-   integer, parameter :: tomlf_minor = 2
+   integer, parameter :: tomlf_minor = 3
 
    !> Patch version number of the above TOML-Fortran version
-   integer, parameter :: tomlf_patch = 3
+   integer, parameter :: tomlf_patch = 0
 
    !> Compact numeric representation of the TOML-Fortran version
    integer, parameter :: tomlf_version_compact = &

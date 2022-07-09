@@ -120,15 +120,32 @@ subroutine visit_keyval(visitor, keyval)
 
    case(toml_type%float)
       stat = convert_raw(keyval%raw, fdummy)
-      write(visitor%unit, '(a,g0,a)', advance='no') &
-         &  '{"type": "float", "value": "', fdummy, '"}'
+      write(visitor%unit, '(a)', advance='no') &
+         &  '{"type": "float", "value": "'
+      if (fdummy > huge(fdummy)) then
+         write(visitor%unit, '(a)', advance='no') "+inf"
+      else if (fdummy < -huge(fdummy)) then
+         write(visitor%unit, '(a)', advance='no') "-inf"
+      else if (fdummy /= fdummy) then
+         write(visitor%unit, '(a)', advance='no') "nan"
+      else
+         write(visitor%unit, '(g0)', advance='no') fdummy
+      end if
+      write(visitor%unit, '(a)', advance='no') '"}'
 
    case(toml_type%datetime)
       stat = convert_raw(keyval%raw, ts)
       write(visitor%unit, '(a)', advance='no') '{"type": "'
-      if (allocated(ts%date)) write(visitor%unit, '(a)', advance='no') 'date'
-      if (allocated(ts%time)) write(visitor%unit, '(a)', advance='no') 'time'
-      call ts%to_string(str)
+      if (has_date(ts)) write(visitor%unit, '(a)', advance='no') 'date'
+      if (has_time(ts)) then
+         write(visitor%unit, '(a)', advance='no') 'time'
+         if (.not.allocated(ts%time%zone)) then
+            write(visitor%unit, '(a)', advance='no') '-local'
+         end if
+      else
+         write(visitor%unit, '(a)', advance='no') '-local'
+      end if
+      str = to_string(ts)
       write(visitor%unit, '(a,a,a)', advance='no') &
          &  '", "value": "', str, '"}'
 
@@ -149,21 +166,12 @@ subroutine visit_array(visitor, array)
    class(toml_value), pointer :: ptr
    character(kind=tfc, len=:), allocatable :: key
    integer :: i, n
-   logical :: array_of_tables
 
    call indent(visitor)
 
    if (allocated(array%key)) then
       call escape_string(array%key, key)
       write(visitor%unit, '("""",a,""": ")', advance='no') key
-   end if
-
-   array_of_tables = is_array_of_tables(array)
-   if (.not.array_of_tables) then
-      write(visitor%unit, '(a,a)', advance='no') &
-         &  '{"type": "array", "value":'
-      visitor%depth = visitor%depth + 1
-      call indent(visitor)
    end if
 
    write(visitor%unit, '("[")', advance='no')
@@ -177,11 +185,6 @@ subroutine visit_array(visitor, array)
    visitor%depth = visitor%depth - 1
    call indent(visitor)
    write(visitor%unit, '("]")', advance='no')
-   if (.not.array_of_tables) then
-      visitor%depth = visitor%depth - 1
-      call indent(visitor)
-      write(visitor%unit, '("}")', advance='no')
-   end if
 
 end subroutine visit_array
 

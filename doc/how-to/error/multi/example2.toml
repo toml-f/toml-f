@@ -1,0 +1,3 @@
+[dependencies]
+toml-f.git = "https://github.com/toml-f/toml-f.git"
+toml-f.path = "./subprojects/toml-f"

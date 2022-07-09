@@ -41,11 +41,13 @@ module tomlf_type
    public :: new, new_table, new_array, new_keyval, len
    public :: add_table, add_array, add_keyval
    public :: is_array_of_tables
+   public :: cast_to_table, cast_to_array, cast_to_keyval
 
 
    !> Interface to build new tables
    interface add_table
       module procedure :: add_table_to_table
+      module procedure :: add_table_to_table_key
       module procedure :: add_table_to_array
    end interface add_table
 
@@ -53,6 +55,7 @@ module tomlf_type
    !> Interface to build new arrays
    interface add_array
       module procedure :: add_array_to_table
+      module procedure :: add_array_to_table_key
       module procedure :: add_array_to_array
    end interface add_array
 
@@ -60,6 +63,7 @@ module tomlf_type
    !> Interface to build new key-value pairs
    interface add_keyval
       module procedure :: add_keyval_to_table
+      module procedure :: add_keyval_to_table_key
       module procedure :: add_keyval_to_array
    end interface add_keyval
 
@@ -117,6 +121,26 @@ subroutine add_table_to_table(table, key, ptr, stat)
 end subroutine add_table_to_table
 
 
+!> Create a new TOML table inside an existing table
+subroutine add_table_to_table_key(table, key, ptr, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key for the new table
+   type(toml_key), intent(in) :: key
+
+   !> Pointer to the newly created table
+   type(toml_table), pointer, intent(out) :: ptr
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call add_table(table, key%key, ptr, stat)
+   if (associated(ptr)) ptr%origin = key%origin
+end subroutine add_table_to_table_key
+
+
 !> Create a new TOML array inside an existing table
 subroutine add_array_to_table(table, key, ptr, stat)
 
@@ -167,6 +191,26 @@ subroutine add_array_to_table(table, key, ptr, stat)
 end subroutine add_array_to_table
 
 
+!> Create a new TOML array inside an existing table
+subroutine add_array_to_table_key(table, key, ptr, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key for the new array
+   type(toml_key), intent(in) :: key
+
+   !> Pointer to the newly created array
+   type(toml_array), pointer, intent(out) :: ptr
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call add_array(table, key%key, ptr, stat)
+   if (associated(ptr)) ptr%origin = key%origin
+end subroutine add_array_to_table_key
+
+
 !> Create a new key-value pair inside an existing table
 subroutine add_keyval_to_table(table, key, ptr, stat)
 
@@ -215,6 +259,26 @@ subroutine add_keyval_to_table(table, key, ptr, stat)
    if (present(stat)) stat = istat
 
 end subroutine add_keyval_to_table
+
+
+!> Create a new key-value pair inside an existing table
+subroutine add_keyval_to_table_key(table, key, ptr, stat)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key for the new key-value pair
+   type(toml_key), intent(in) :: key
+
+   !> Pointer to the newly created key-value pair
+   type(toml_keyval), pointer, intent(out) :: ptr
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   call add_keyval(table, key%key, ptr, stat)
+   if (associated(ptr)) ptr%origin = key%origin
+end subroutine add_keyval_to_table_key
 
 
 !> Create a new TOML table inside an existing array
@@ -429,6 +493,49 @@ function is_array_of_tables(array) result(only_tables)
    end do
 
 end function is_array_of_tables
+
+
+!> Cast an abstract TOML value to a TOML array
+function cast_to_array(ptr) result(array)
+   !> TOML value to be casted
+   class(toml_value), intent(in), target :: ptr
+   !> TOML array view, nullified if the value is not an array
+   type(toml_array), pointer :: array
+
+   nullify(array)
+   select type(ptr)
+   type is(toml_array)
+      array => ptr
+   end select
+end function cast_to_array
+
+!> Cast an abstract TOML value to a TOML table
+function cast_to_table(ptr) result(table)
+   !> TOML value to be casted
+   class(toml_value), intent(in), target :: ptr
+   !> TOML table view, nullified if the value is not a table
+   type(toml_table), pointer :: table
+
+   nullify(table)
+   select type(ptr)
+   type is(toml_table)
+      table => ptr
+   end select
+end function cast_to_table
+
+!> Cast an abstract TOML value to a TOML key-value pair
+function cast_to_keyval(ptr) result(kval)
+   !> TOML value to be casted
+   class(toml_value), intent(in), target :: ptr
+   !> TOML key-value view, nullified if the value is not a table
+   type(toml_keyval), pointer :: kval
+
+   nullify(kval)
+   select type(ptr)
+   type is(toml_keyval)
+      kval => ptr
+   end select
+end function cast_to_keyval
 
 
 end module tomlf_type

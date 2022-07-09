@@ -176,7 +176,6 @@ function toml_raw_to_timestamp(raw, timestamp) result(stat)
       if (len(raw(first:)) > 8) then
          dot_pos = index(raw, '.')
          if (dot_pos > 0) then
-            allocate(timestamp%time%millisec, source=0)
             read(raw(dot_pos+1:dot_pos+3), *, iostat=err) timestamp%time%millisec
             stat = stat .and. err == 0
          end if
