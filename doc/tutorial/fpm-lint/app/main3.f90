@@ -6,7 +6,7 @@ program main
     & toml_terminal
   implicit none
   logical, parameter :: color = .true.
-  integer, parameter :: detail = 2
+  integer, parameter :: detail = 1
   character(:), allocatable :: manifest
   type(toml_terminal) :: terminal
   type(toml_table), allocatable :: table

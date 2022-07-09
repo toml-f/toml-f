@@ -135,7 +135,7 @@ pure function report2(self, message, origin1, origin2, label1, label2, level1, l
       labels(1) = toml_label(level1_, &
          &  self%token(origin1)%first, self%token(origin1)%last, label1, .true.)
       labels(2) = toml_label(level2_, &
-         &  self%token(origin1)%first, self%token(origin1)%last, label2, .false.)
+         &  self%token(origin2)%first, self%token(origin2)%last, label2, .false.)
    end if
 
    diagnostic = toml_diagnostic( &
