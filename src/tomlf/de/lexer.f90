@@ -30,10 +30,11 @@ module tomlf_de_lexer
    use tomlf_constants, only : tfc, tfi, tfr, TOML_BACKSPACE, TOML_TABULATOR, TOML_NEWLINE, &
       & TOML_CARRIAGE_RETURN, TOML_FORMFEED
    use tomlf_datetime, only : toml_datetime, toml_date, toml_time
+   use tomlf_de_abc, only : abstract_lexer
    use tomlf_de_context, only : toml_context
    use tomlf_de_token, only : toml_token, stringify, token_kind, resize
-   use tomlf_error, only : toml_error, toml_stat
-   use tomlf_type, only : toml_table
+   use tomlf_error, only : toml_error, toml_stat, make_error
+   use tomlf_utils, only : read_whole_file, read_whole_line
    implicit none
    private
 
@@ -46,9 +47,9 @@ module tomlf_de_lexer
       character(1, tfc) :: space = tfc_" "
       character(1, tfc) :: hash = tfc_"#"
       character(1, tfc) :: squote = tfc_"'"
-      character(1, tfc) :: squote3(3) = [tfc_"'", tfc_"'", tfc_"'"]
+      character(3, tfc) :: squote3 = repeat(tfc_"'", 3)
       character(1, tfc) :: dquote = tfc_""""
-      character(1, tfc) :: dquote3(3) = [tfc_"""", tfc_"""", tfc_""""]
+      character(3, tfc) :: dquote3 = repeat(tfc_"""", 3)
       character(1, tfc) :: backslash = tfc_"\"
       character(1, tfc) :: dot = tfc_"."
       character(1, tfc) :: comma = tfc_","
@@ -109,13 +110,13 @@ module tomlf_de_lexer
 
 
    !> Tokenizer for TOML documents.
-   type :: toml_lexer
+   type, extends(abstract_lexer) :: toml_lexer
       !> Name of the source file, used for error reporting
-      character(len=:), allocatable :: source
+      character(len=:), allocatable :: filename
       !> Current internal position in the source chunk
       integer :: pos = 0
       !> Current source chunk, for convenience stored as character array rather than string
-      character(1, tfc), allocatable :: chunk(:)
+      character(:, tfc), allocatable :: chunk
       !> Last scope of the lexer
       integer :: top = 0
       !> Stack of scopes, used to identify the current state of the lexer
@@ -127,9 +128,6 @@ module tomlf_de_lexer
    contains
       !> Obtain the next token
       procedure :: next
-      !> Extract a token
-      generic :: extract => &
-         & extract_string, extract_integer, extract_float, extract_bool, extract_datetime
       !> Extract a string from a token
       procedure :: extract_string
       !> Extract an integer from a token
@@ -142,6 +140,8 @@ module tomlf_de_lexer
       procedure :: extract_datetime
       !> Extract the raw value of the token
       procedure :: extract_raw
+      !> Get information about source
+      procedure :: get_info
    end type toml_lexer
 
 contains
@@ -155,32 +155,15 @@ subroutine new_lexer_from_file(lexer, filename, error)
    !> Error code
    type(toml_error), allocatable, intent(out) :: error
 
-   integer :: stat, io, length
+   integer :: stat
 
    lexer%pos = 0
-   lexer%source = filename
-   open(file=filename, &
-      & status="old", &
-      & access="stream", & 
-      & position="append", &
-      & newunit=io, &
-      & iostat=stat)
-   if (stat == 0) then
-      inquire(unit=io, pos=length)
-      allocate(lexer%chunk(length-1), stat=stat)
-   end if
-   if (stat == 0) then
-      read(io, pos=1, iostat=stat) lexer%chunk(:length-1)
-   end if
-   if (stat == 0) then
-      close(io)
-   end if
+   lexer%filename = filename
    call resize(lexer%stack)
+   call read_whole_file(filename, lexer%chunk, stat)
 
    if (stat /= 0) then
-      allocate(error)
-      error%message = "failed to read from '"//filename//"'"
-      error%stat = toml_stat%fatal
+      call make_error(error, "Could not open file '"//filename//"'")
    end if
 end subroutine new_lexer_from_file
 
@@ -195,54 +178,33 @@ subroutine new_lexer_from_unit(lexer, io, error)
    !> Error code
    type(toml_error), allocatable, intent(out) :: error
 
-   character(:, tfc), allocatable :: source
+   character(:, tfc), allocatable :: source, line
    integer, parameter :: bufsize = 512
-   character(len=bufsize) :: buffer, msg
-   integer :: length, stat
+   character(bufsize, tfc) :: filename, mode
+   integer :: stat
 
-   inquire(unit=io, access=msg, name=buffer)
-   lexer%pos = 0
-   if (len_trim(buffer) > 0) lexer%source = trim(buffer)
-   select case(trim(msg))
+   inquire(unit=io, access=mode, name=filename)
+   select case(trim(mode))
    case default
       stat = 1
 
-   case("stream", "STREAM")
-      stat = 1
-
    case("sequential", "SEQUENTIAL")
-      allocate(character(len=0) :: source)
+      allocate(character(0) :: source)
       do 
-         read(io, '(a)', advance='no', iostat=stat, iomsg=msg, size=length) &
-            & buffer
+         call read_whole_line(io, line, stat)
          if (stat > 0) exit
-         source = source // buffer(:length)
+         source = source // line // TOML_NEWLINE
          if (stat < 0) then
-            if (is_iostat_eor(stat)) then
-               stat = 0
-               source = source // TOML_NEWLINE
-            end if
-            if (is_iostat_end(stat)) then
-               stat = 0
-               exit
-            end if
+            if (is_iostat_end(stat)) stat = 0
+            exit
          end if
       end do
       call new_lexer_from_string(lexer, source)
-
-   case("direct", "DIRECT")
-      stat = 1
-
    end select
+   if (len_trim(filename) > 0) lexer%filename = trim(filename)
 
    if (stat /= 0) then
-      allocate(error)
-      if (len_trim(msg) > 0) then
-         error%message = trim(msg)
-      else
-         error%message = "failed to read from unit"
-      end if
-      error%stat = toml_stat%fatal
+      call make_error(error, "Failed to read from unit")
    end if
 end subroutine new_lexer_from_unit
 
@@ -251,7 +213,7 @@ subroutine new_lexer_from_string(lexer, string)
    !> Instance of the lexer
    type(toml_lexer), intent(out) :: lexer
    !> String to read from
-   character(len=*), intent(in) :: string
+   character(*, tfc), intent(in) :: string
 
    integer :: length
    character(1, tfc) :: ch
@@ -259,8 +221,8 @@ subroutine new_lexer_from_string(lexer, string)
    length = len(string)
    lexer%pos = 0
    lexer%buffer = 0
-   allocate(lexer%chunk(length))
-   lexer%chunk(:length) = transfer(string, ch, length)
+   allocate(character(length) :: lexer%chunk)
+   lexer%chunk(:length) = string
    call resize(lexer%stack)
 end subroutine new_lexer_from_string
 
@@ -328,7 +290,7 @@ subroutine next_token(lexer, token)
    pos = lexer%pos
 
    ! If lexer is exhausted, return EOF as early as possible
-   if (pos > size(lexer%chunk)) then
+   if (pos > len(lexer%chunk)) then
       call pop(lexer, lexer_scope%equal)
       token = toml_token(token_kind%eof, prev, pos)
       return
@@ -337,14 +299,14 @@ subroutine next_token(lexer, token)
    select case(peek(lexer, pos))
    case(char_kind%hash)
       do while(all(peek(lexer, pos+1) /= [char_kind%carriage_return, char_kind%newline]) &
-            & .and. pos <= size(lexer%chunk))
+            & .and. pos <= len(lexer%chunk))
          pos = pos + 1
       end do
       token = toml_token(token_kind%comment, prev, pos)
 
    case(char_kind%space, char_kind%tab)
       do while(any(match(lexer, pos+1, [char_kind%space, char_kind%tab])) &
-            & .and. pos <= size(lexer%chunk))
+            & .and. pos <= len(lexer%chunk))
          pos = pos + 1
       end do
       token = toml_token(token_kind%whitespace, prev, pos)
@@ -431,7 +393,7 @@ subroutine next_sstring(lexer, token)
 
       pos = strstr(lexer%chunk(pos:), char_kind%squote3) + pos - 1
       if (pos < prev + 3) then
-         token = toml_token(token_kind%invalid, prev, size(lexer%chunk))
+         token = toml_token(token_kind%invalid, prev, len(lexer%chunk))
          return
       end if
 
@@ -451,7 +413,7 @@ subroutine next_sstring(lexer, token)
 
    valid = .true.
 
-   do while(pos < size(lexer%chunk))
+   do while(pos < len(lexer%chunk))
       pos = pos + 1
       ch = peek(lexer, pos)
       valid = valid .and. valid_string(ch)
@@ -488,7 +450,7 @@ subroutine next_dstring(lexer, token)
       do
          pos = strstr(lexer%chunk(pos:), char_kind%dquote3) + pos - 1
          if (pos < prev + 3) then
-            token = toml_token(token_kind%invalid, prev, size(lexer%chunk))
+            token = toml_token(token_kind%invalid, prev, len(lexer%chunk))
             return
          end if
 
@@ -566,7 +528,7 @@ subroutine next_dstring(lexer, token)
    escape = .false.
    expect = 0
 
-   do while(pos < size(lexer%chunk))
+   do while(pos < len(lexer%chunk))
       pos = pos + 1
       ch = peek(lexer, pos)
       valid = valid .and. valid_string(ch)
@@ -754,7 +716,7 @@ subroutine next_integer(lexer, token)
    end if
 
 
-   do while(pos <= size(lexer%chunk))
+   do while(pos <= len(lexer%chunk))
       ch = peek(lexer, pos)
       if (ch == "_") then
          if (underscore) then
@@ -815,7 +777,7 @@ subroutine next_float(lexer, token)
       return
    end if
 
-   do while(pos <= size(lexer%chunk))
+   do while(pos <= len(lexer%chunk))
       ch = peek(lexer, pos)
       if (ch == "_") then
          if (underscore) then
@@ -899,7 +861,7 @@ subroutine next_datetime(lexer, token)
    has_date = valid_date(peek(lexer, pos+offset(:offset_date)))
    if (has_date) then
       if (verify(peek(lexer, pos+offset_date), "Tt ") == 0 &
-         & .and. pos + offset_date < size(lexer%chunk) &
+         & .and. pos + offset_date < len(lexer%chunk) &
          & .and. verify(peek(lexer, pos+offset_date+1), num) == 0) then
          pos = pos + offset_date + 1
       end if
@@ -940,7 +902,7 @@ subroutine next_datetime(lexer, token)
    end if
 
    if (.not.has_time.and.has_date) pos = pos + offset_date - 1
-   okay = verify(peek(lexer, pos+1), terminated) == 0 .and. pos <= size(lexer%chunk)
+   okay = verify(peek(lexer, pos+1), terminated) == 0 .and. pos <= len(lexer%chunk)
    token = toml_token(merge(token_kind%datetime, token_kind%invalid, okay), prev, pos)
 end subroutine next_datetime
 
@@ -1077,8 +1039,8 @@ elemental function peek(lexer, pos) result(ch)
    !> Character found
    character(1, tfc) :: ch
 
-   if (pos <= size(lexer%chunk)) then
-      ch = lexer%chunk(pos)
+   if (pos <= len(lexer%chunk)) then
+      ch = lexer%chunk(pos:pos)
    else
       ch = char_kind%space
    end if
@@ -1113,13 +1075,13 @@ pure function match_all(lexer, pos, kind) result(match)
 end function match_all
 
 pure function strstr(string, pattern) result(res)
-   character(1, tfc), intent(in) :: string(:)
-   character(1, tfc), intent(in) :: pattern(:)
-   integer :: lps_array(size(pattern))
+   character(*, tfc), intent(in) :: string
+   character(*, tfc), intent(in) :: pattern
+   integer :: lps_array(len(pattern))
    integer :: res, s_i, p_i, length_string, length_pattern
    res = 0
-   length_string = size(string)
-   length_pattern = size(pattern)
+   length_string = len(string)
+   length_pattern = len(pattern)
 
    if (length_pattern > 0 .and. length_pattern <= length_string) then
       lps_array = compute_lps(pattern)
@@ -1127,7 +1089,7 @@ pure function strstr(string, pattern) result(res)
       s_i = 1
       p_i = 1
       do while(s_i <= length_string)
-         if (string(s_i) == pattern(p_i)) then
+         if (string(s_i:s_i) == pattern(p_i:p_i)) then
             if (p_i == length_pattern) then
                res = s_i - length_pattern + 1
                exit
@@ -1145,11 +1107,11 @@ pure function strstr(string, pattern) result(res)
 contains
 
    pure function compute_lps(string) result(lps_array)
-      character(1, tfc), intent(in) :: string(:)
-      integer :: lps_array(size(string))
+      character(*, tfc), intent(in) :: string
+      integer :: lps_array(len(string))
       integer :: i, j, length_string
 
-      length_string = size(string)
+      length_string = len(string)
 
       if (length_string > 0) then
          lps_array(1) = 0
@@ -1157,7 +1119,7 @@ contains
          i = 2
          j = 1
          do while (i <= length_string)
-            if (string(j) == string(i)) then
+            if (string(j:j) == string(i:i)) then
                lps_array(i) = j
                i = i + 1
                j = j + 1
@@ -1186,8 +1148,8 @@ subroutine extract_raw(lexer, token, string)
    integer :: length
 
    length = token%last - token%first + 1
-   allocate(character(length)::string)
-   string = transfer(lexer%chunk(token%first:token%last), string)
+   allocate(character(length) :: string)
+   string = lexer%chunk(token%first:token%last)
 end subroutine extract_raw
 
 !> Extract string value of token, works for keypath, string, multiline string, literal,
@@ -1201,7 +1163,7 @@ subroutine extract_string(lexer, token, string)
    character(len=:), allocatable, intent(out) :: string
 
    integer :: it, length
-   logical :: escape
+   logical :: escape, leading_newline
    character(1, tfc) :: ch
 
    length = token%last - token%first + 1
@@ -1211,7 +1173,7 @@ subroutine extract_string(lexer, token, string)
       string = ""
       escape = .false.
       do it = token%first + 1, token%last - 1
-         ch = lexer%chunk(it)
+         ch = peek(lexer, it)
          if (escape) then
             escape = .false.
             select case(ch)
@@ -1230,10 +1192,11 @@ subroutine extract_string(lexer, token, string)
          if (.not.escape) string = string // ch
       end do
    case(token_kind%mstring)
+      leading_newline = peek(lexer, token%first+3) == char_kind%newline
       string = ""
       escape = .false.
-      do it = token%first + 3, token%last - 3
-         ch = lexer%chunk(it)
+      do it = token%first + merge(4, 3, leading_newline), token%last - 3
+         ch = peek(lexer, it)
          if (escape) then
             escape = .false.
             select case(ch)
@@ -1257,13 +1220,14 @@ subroutine extract_string(lexer, token, string)
       end do
    case(token_kind%literal)
       allocate(character(length - 2)::string)
-      string = transfer(lexer%chunk(token%first+1:token%last-1), string)
+      string = lexer%chunk(token%first+1:token%last-1)
    case(token_kind%mliteral)
-      allocate(character(length - 6)::string)
-      string = transfer(lexer%chunk(token%first+3:token%last-3), string)
+      leading_newline = peek(lexer, token%first+3) == char_kind%newline
+      allocate(character(length - merge(7, 6, leading_newline))::string)
+      string = lexer%chunk(token%first+merge(4, 3, leading_newline):token%last-3)
    case(token_kind%keypath)
       allocate(character(length)::string)
-      string = transfer(lexer%chunk(token%first:token%last), string)
+      string = lexer%chunk(token%first:token%last)
    end select
 
 end subroutine extract_string
@@ -1426,84 +1390,9 @@ subroutine extract_datetime(lexer, token, val)
    !> Datetime value of token
    type(toml_datetime), intent(out) :: val
 
-   type(toml_date) :: date
-   type(toml_time) :: time
-
-   integer :: it, tmp, first
-   character(*, tfc), parameter :: num = "0123456789"
-
    if (token%kind /= token_kind%datetime) return
-   first = token%first - 1
 
-   if (all(peek(lexer, first + [5, 8]) == "-")) then
-      date%year = 0
-      do it = first + 1, first + 4
-         tmp = scan(num, peek(lexer, it)) - 1
-         if (tmp < 0) exit
-         date%year = date%year * 10 + tmp
-      end do
-
-      date%month = 0
-      do it = first + 6, first + 7
-         tmp = scan(num, peek(lexer, it)) - 1
-         if (tmp < 0) exit
-         date%month = date%month * 10 + tmp
-      end do
-
-      date%day = 0
-      do it = first + 9, first + 10
-         tmp = scan(num, peek(lexer, it)) - 1
-         if (tmp < 0) exit
-         date%day = date%day * 10 + tmp
-      end do
-
-      first = first + 11
-      val%date = date
-   end if
-
-   if (all(peek(lexer, first + [3, 6]) == ":") .and. first < token%last) then
-      time%hour = 0
-      do it = first + 1, first + 2
-         tmp = scan(num, peek(lexer, it)) - 1
-         if (tmp < 0) exit
-         time%hour = time%hour * 10 + tmp
-      end do
-
-      time%minute = 0
-      do it = first + 4, first + 5
-         tmp = scan(num, peek(lexer, it)) - 1
-         if (tmp < 0) exit
-         time%minute = time%minute * 10 + tmp
-      end do
-
-      time%second = 0
-      do it = first + 7, first + 8
-         tmp = scan(num, peek(lexer, it)) - 1
-         if (tmp < 0) exit
-         time%second = time%second * 10 + tmp
-      end do
-
-      first = first + 8
-      if (peek(lexer, first + 1) == ".") then
-         time%millisec = 0
-         do it = first + 2, token%last
-            tmp = scan(num, peek(lexer, it)) - 1
-            if (tmp < 0) exit
-            time%millisec = time%millisec * 10 + tmp
-         end do
-         first = it - 1
-      end if
-
-      if (first < token%last) then
-         time%zone = ""
-         do it = first + 1, token%last
-            time%zone = time%zone // peek(lexer, first + 1)
-         end do
-         if (time%zone == "z") time%zone = "Z"
-      end if
-      val%time = time
-   end if
-
+   val = toml_datetime(lexer%chunk(token%first:token%last))
 end subroutine extract_datetime
 
 
@@ -1574,6 +1463,25 @@ pure subroutine resize_scope(var, n)
    end if
 
 end subroutine resize_scope
+
+
+!> Extract information about the source
+subroutine get_info(lexer, meta, output)
+   !> Instance of the lexer
+   class(toml_lexer), intent(in) :: lexer
+   !> Query about the source
+   character(*, tfc), intent(in) :: meta
+   !> Metadata about the source
+   character(:, tfc), allocatable, intent(out) :: output
+
+   select case(meta)
+   case("source")
+      output = lexer%chunk // TOML_NEWLINE
+   case("filename")
+      if (allocated(lexer%filename)) output = lexer%filename
+   end select
+end subroutine get_info
+
 
 
 end module tomlf_de_lexer

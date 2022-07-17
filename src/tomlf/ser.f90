@@ -13,9 +13,11 @@
 
 !> TOML serializer implementation
 module tomlf_ser
-   use tomlf_constants, only : tfc, tfout
+   use tomlf_constants, only : tfc, tfi, tfr, tfout, toml_type
+   use tomlf_datetime, only : toml_datetime, to_string
    use tomlf_type, only : toml_value, toml_visitor, toml_key, toml_table, &
       & toml_array, toml_keyval, is_array_of_tables, len
+   use tomlf_utils, only : to_string, toml_escape_string
    implicit none
    private
 
@@ -127,15 +129,52 @@ subroutine visit_keyval(visitor, keyval)
    !> TOML value to visit
    type(toml_keyval), intent(inout) :: keyval
 
-   character(kind=tfc, len=:), allocatable :: key
+   character(kind=tfc, len=:), allocatable :: key, str
+   type(toml_datetime), pointer :: dval
+   character(:, tfc), pointer :: sval
+   integer(tfi), pointer :: ival
+   real(tfr), pointer :: rval
+   logical, pointer :: lval
+   character(128) :: buffer
 
    call keyval%get_key(key)
 
+   select case(keyval%get_type())
+   case(toml_type%string)
+      call keyval%get(sval)
+      call toml_escape_string(sval, str)
+   case(toml_type%int)
+      call keyval%get(ival)
+      str = to_string(ival)
+   case(toml_type%float)
+      call keyval%get(rval)
+      if (rval > huge(rval)) then
+         str = "+inf"
+      else if (rval < -huge(rval)) then
+         str = "-inf"
+      else if (rval /= rval) then
+         str = "nan"
+      else
+         write(buffer, '(g0)') rval
+         str = trim(adjustl(buffer))
+      end if
+   case(toml_type%boolean)
+      call keyval%get(lval)
+      if (lval) then
+         str = "true"
+      else
+         str = "false"
+      end if
+   case(toml_type%datetime)
+      call keyval%get(dval)
+      str = to_string(dval)
+   end select
+
    if (visitor%inline_array) then
-      write(visitor%unit, '(1x,a,1x,"=",1x,a,",")', advance='no') &
-         &  key, keyval%raw
+      write(visitor%unit, '(1x,a,1x,"=",1x,a)', advance='no') &
+         &  key, str
    else
-      write(visitor%unit, '(a,1x,"=",1x,a)') key, keyval%raw
+      write(visitor%unit, '(a,1x,"=",1x,a)') key, str
    end if
 
 end subroutine visit_keyval
@@ -231,6 +270,9 @@ subroutine visit_table(visitor, table)
       select type(ptr)
       class is(toml_keyval)
          call ptr%accept(visitor)
+         if (visitor%inline_array) then
+            if (i /= n) write(visitor%unit, '(",")', advance='no')
+         end if
       class is(toml_array)
          if (visitor%inline_array) then
             call ptr%get_key(key)
@@ -264,6 +306,9 @@ subroutine visit_table(visitor, table)
          select type(ptr)
          class is(toml_keyval)
             call ptr%accept(visitor)
+            if (visitor%inline_array) then
+               if (i /= n) write(visitor%unit, '(",")', advance='no')
+            end if
          class is(toml_array)
             if (visitor%inline_array) then
                call ptr%get_key(key)

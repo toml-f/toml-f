@@ -25,7 +25,8 @@ toml2json_exe = executable(
 json2toml_exe = executable(
   'json2toml',
   sources: files(
-    'json_de.f90',
+    'json_lexer.f90',
+    'json_parser.f90',
     'json2toml.f90',
   ),
   dependencies: tomlf_dep,
@@ -55,15 +56,17 @@ if not meson.is_subproject() and go_exe.found()
   foreach t : valid_tests
     if not valid_failing.contains(t)
       test(
-        'decode-@0@'.format(t),
+        t,
         toml_test_exe,
         args: ['-testdir', validator_testdir, '-run', t, '--', toml2json_exe],
+        suite: 'decoder',
       )
     else
       benchmark(
-        'decode-@0@'.format(t),
+        t,
         toml_test_exe,
         args: ['-testdir', validator_testdir, '-run', t, '--', toml2json_exe],
+        suite: 'decoder',
       )
     endif
   endforeach
@@ -89,27 +92,23 @@ if not meson.is_subproject() and go_exe.found()
   foreach t : invalid_tests
     if not invalid_failing.contains(t)
       test(
-        'decode-@0@'.format(t),
+        t,
         toml_test_exe,
         args: ['-testdir', validator_testdir, '-run', t, '--', toml2json_exe],
+        suite: 'decoder',
       )
     else
       benchmark(
-        'decode-@0@'.format(t),
+        t,
         toml_test_exe,
         args: ['-testdir', validator_testdir, '-run', t, '--', toml2json_exe],
+        suite: 'decoder',
       )
     endif
   endforeach
 
   encoder_failing = [
-    'valid/array/mixed-string-table',
-    'valid/comment/everywhere',
-    'valid/datetime/local-date',
-    'valid/datetime/local-time',
-    'valid/datetime/local',
-    'valid/float/inf-and-nan',
-    'valid/inline-table/nest',
+    'valid/inline-table/end-in-bool',
     'valid/key/escapes',
     'valid/key/special-chars',
     'valid/string/escapes',
@@ -119,15 +118,17 @@ if not meson.is_subproject() and go_exe.found()
   foreach t : valid_tests
     if not encoder_failing.contains(t)
       test(
-        'encode-@0@'.format(t),
+        t,
         toml_test_exe,
         args: ['-encoder', '-testdir', validator_testdir, '-run', t, '--', json2toml_exe],
+        suite: 'encoder',
       )
     else
       benchmark(
-        'encode-@0@'.format(t),
+        t,
         toml_test_exe,
         args: ['-encoder', '-testdir', validator_testdir, '-run', t, '--', json2toml_exe],
+        suite: 'encoder',
       )
     endif
   endforeach

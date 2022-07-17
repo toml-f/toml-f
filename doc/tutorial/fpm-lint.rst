@@ -1,6 +1,10 @@
 Building a linter
 =================
 
+.. sectionauthor:: Sebastian Ehlert <@awvwgk>
+.. image:: https://img.shields.io/badge/difficulty-beginner-brightgreen
+   :alt: Difficulty: Beginner
+
 This tutorial will show how to use TOML Fortran to build a linter for your configuration files.
 Linters provide a way to encourage or enforce a certain style or flag up common usage errors.
 

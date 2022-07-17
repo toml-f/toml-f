@@ -587,9 +587,9 @@ subroutine new_lexer(lexer, string, token)
 
    character(1) :: ch
 
-   lexer%source = "mocked"
+   lexer%filename = "mocked"
    lexer%pos = 0
-   lexer%chunk = transfer(string, ch, len(string))
+   lexer%chunk = string
    lexer%token = token
 end subroutine new_lexer
 

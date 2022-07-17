@@ -14,19 +14,13 @@
 module tomlf_utils
    use tomlf_constants
    use tomlf_datetime, only : toml_datetime, toml_date, toml_time
-   use tomlf_utils_convert
-   use tomlf_utils_verify
+   use tomlf_utils_io, only : read_whole_file, read_whole_line
    implicit none
    private
 
-   public :: convert_raw
-   public :: toml_raw_to_string, toml_raw_to_float, toml_raw_to_bool
-   public :: toml_raw_to_integer, toml_raw_to_timestamp
-   public :: toml_raw_verify_string, toml_raw_verify_float, toml_raw_verify_bool
-   public :: toml_raw_verify_integer, toml_raw_verify_timestamp
-   public :: toml_raw_verify_date, toml_raw_verify_time
-   public :: toml_escape_string, toml_get_value_type
+   public :: toml_escape_string
    public :: to_string
+   public :: read_whole_file, read_whole_line
 
 
    interface to_string
@@ -38,40 +32,6 @@ module tomlf_utils
 
 
 contains
-
-
-!> Determine TOML value type
-function toml_get_value_type(raw) result(vtype)
-
-   !> Raw representation of TOML string
-   character(kind=tfc, len=*), intent(in) :: raw
-
-   !> Value type
-   integer :: vtype
-
-   if (toml_raw_verify_string(raw)) then
-      vtype = toml_type%string
-      return
-   end if
-   if (toml_raw_verify_bool(raw)) then
-      vtype = toml_type%boolean
-      return
-   end if
-   if (toml_raw_verify_integer(raw)) then
-      vtype = toml_type%int
-      return
-   end if
-   if (toml_raw_verify_float(raw)) then
-      vtype = toml_type%float
-      return
-   end if
-   if (toml_raw_verify_timestamp(raw)) then
-      vtype = toml_type%datetime
-      return
-   end if
-   vtype = toml_type%invalid
-
-end function
 
 
 !> Escape all special characters in a TOML string

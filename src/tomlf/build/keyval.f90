@@ -23,9 +23,7 @@ module tomlf_build_keyval
    use tomlf_error, only : toml_stat
    use tomlf_type, only : toml_value, toml_table, toml_array, toml_keyval, &
       & new_table, new_array, new_keyval, add_table, add_array, add_keyval, len
-   use tomlf_utils, only : toml_raw_to_string, toml_raw_to_float, &
-      & toml_raw_to_bool, toml_raw_to_integer, toml_raw_to_timestamp, &
-      & toml_raw_verify_string, toml_escape_string, to_string
+   use tomlf_utils, only : toml_escape_string, to_string
    implicit none
    private
 
@@ -80,11 +78,10 @@ subroutine get_value_float_sp(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
-   logical :: istat
-   real(tfr) :: dummy
+   real(tfr), pointer :: dummy
 
-   istat = toml_raw_to_float(self%raw, dummy)
-   if (istat) then
+   call self%get(dummy)
+   if (associated(dummy)) then
       val = real(dummy, tf_sp)
       if (present(stat)) stat = toml_stat%success
    else
@@ -110,11 +107,10 @@ subroutine get_value_float_dp(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
-   logical :: istat
-   real(tfr) :: dummy
+   real(tfr), pointer :: dummy
 
-   istat = toml_raw_to_float(self%raw, dummy)
-   if (istat) then
+   call self%get(dummy)
+   if (associated(dummy)) then
       val = real(dummy, tf_dp)
       if (present(stat)) stat = toml_stat%success
    else
@@ -140,11 +136,10 @@ subroutine get_value_integer_i1(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
-   logical :: istat
-   integer(tfi) :: dummy
+   integer(tfi), pointer :: dummy
 
-   istat = toml_raw_to_integer(self%raw, dummy)
-   if (istat) then
+   call self%get(dummy)
+   if (associated(dummy)) then
       val = int(dummy, tf_i1)
       if (present(stat)) stat = toml_stat%success
    else
@@ -170,11 +165,10 @@ subroutine get_value_integer_i2(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
-   logical :: istat
-   integer(tfi) :: dummy
+   integer(tfi), pointer :: dummy
 
-   istat = toml_raw_to_integer(self%raw, dummy)
-   if (istat) then
+   call self%get(dummy)
+   if (associated(dummy)) then
       val = int(dummy, tf_i2)
       if (present(stat)) stat = toml_stat%success
    else
@@ -200,11 +194,10 @@ subroutine get_value_integer_i4(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
-   logical :: istat
-   integer(tfi) :: dummy
+   integer(tfi), pointer :: dummy
 
-   istat = toml_raw_to_integer(self%raw, dummy)
-   if (istat) then
+   call self%get(dummy)
+   if (associated(dummy)) then
       val = int(dummy, tf_i4)
       if (present(stat)) stat = toml_stat%success
    else
@@ -230,11 +223,10 @@ subroutine get_value_integer_i8(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
-   logical :: istat
-   integer(tfi) :: dummy
+   integer(tfi), pointer :: dummy
 
-   istat = toml_raw_to_integer(self%raw, dummy)
-   if (istat) then
+   call self%get(dummy)
+   if (associated(dummy)) then
       val = int(dummy, tf_i8)
       if (present(stat)) stat = toml_stat%success
    else
@@ -260,10 +252,11 @@ subroutine get_value_bool(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
-   logical :: istat
+   logical, pointer :: dummy
 
-   istat = toml_raw_to_bool(self%raw, val)
-   if (istat) then
+   call self%get(dummy)
+   if (associated(dummy)) then
+      val = dummy
       if (present(stat)) stat = toml_stat%success
    else
       if (present(stat)) stat = toml_stat%type_mismatch
@@ -288,10 +281,11 @@ subroutine get_value_string(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
-   logical :: istat
+   character(:, tfc), pointer :: dummy
 
-   istat = toml_raw_to_string(self%raw, val)
-   if (istat) then
+   call self%get(dummy)
+   if (associated(dummy)) then
+      val = dummy
       if (present(stat)) stat = toml_stat%success
    else
       if (present(stat)) stat = toml_stat%type_mismatch
@@ -321,6 +315,7 @@ subroutine set_value_float_sp(self, val, stat, origin)
 
    write(tmp, '(es30.6)', iostat=istat) val
    if (istat == 0) then
+      call self%set(real(val, tfr))
       self%raw = trim(adjustl(tmp))
       if (present(stat)) stat = toml_stat%success
    else
@@ -352,6 +347,7 @@ subroutine set_value_float_dp(self, val, stat, origin)
 
    write(tmp, '(es30.16)', iostat=istat) val
    if (istat == 0) then
+      call self%set(real(val, tfr))
       self%raw = trim(adjustl(tmp))
       if (present(stat)) stat = toml_stat%success
    else
@@ -378,6 +374,7 @@ subroutine set_value_integer_i1(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
+   call self%set(int(val, tfi))
    self%raw = to_string(val)
    if (present(stat)) stat = toml_stat%success
 
@@ -401,6 +398,7 @@ subroutine set_value_integer_i2(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
+   call self%set(int(val, tfi))
    self%raw = to_string(val)
    if (present(stat)) stat = toml_stat%success
 
@@ -424,6 +422,7 @@ subroutine set_value_integer_i4(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
+   call self%set(int(val, tfi))
    self%raw = to_string(val)
    if (present(stat)) stat = toml_stat%success
 
@@ -447,6 +446,7 @@ subroutine set_value_integer_i8(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
+   call self%set(int(val, tfi))
    self%raw = to_string(val)
    if (present(stat)) stat = toml_stat%success
 
@@ -470,6 +470,7 @@ subroutine set_value_bool(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
+   call self%set(val)
    if (val) then
       self%raw = 'true'
    else
@@ -498,11 +499,8 @@ subroutine set_value_string(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
-   if (toml_raw_verify_string(val)) then
-      self%raw = val
-   else
-      call toml_escape_string(val, self%raw, .true.)
-   end if
+   call self%set(val)
+   call toml_escape_string(val, self%raw, .true.)
 
    if (present(stat)) stat = toml_stat%success
 

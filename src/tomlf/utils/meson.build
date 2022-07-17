@@ -12,7 +12,6 @@
 # limitations under the License.
 
 srcs += files(
-  'convert.f90',
+  'io.f90',
   'sort.f90',
-  'verify.f90',
 )

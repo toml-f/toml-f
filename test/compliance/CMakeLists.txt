@@ -26,7 +26,8 @@ target_link_libraries(
 # Deserializer for a specific JSON format suitable for the validator suite
 add_executable(
   json2toml
-  "json_de.f90"
+  "json_lexer.f90"
+  "json_parser.f90"
   "json2toml.f90"
 )
 target_link_libraries(
