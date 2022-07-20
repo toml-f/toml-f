@@ -1242,6 +1242,7 @@ subroutine extract_integer(lexer, token, val)
    integer(tfi), intent(out) :: val
 
    integer :: first, base, it, tmp
+   logical :: minus
    character(1, tfc) :: ch
    character(*, tfc), parameter :: num = "0123456789abcdef"
 
@@ -1269,15 +1270,15 @@ subroutine extract_integer(lexer, token, val)
       end select
    end if
 
+   minus = match(lexer, token%first, char_kind%minus)
+
    do it = first, token%last
       ch = peek(lexer, it)
       if ("A" <= ch .and. ch <= "Z") ch = achar(iachar(ch) - iachar("A") + iachar("a"))
-      tmp = scan(num(:base), ch) - 1
+      tmp = scan(num(:abs(base)), ch) - 1
       if (tmp < 0) cycle
-      val = val * base + tmp
+      val = val * base + merge(-tmp, tmp, minus)
    end do
-
-   if (match(lexer, token%first, char_kind%minus)) val = -val
 end subroutine extract_integer
 
 !> Extract floating point value of token

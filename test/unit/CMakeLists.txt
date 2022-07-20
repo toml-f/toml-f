@@ -22,6 +22,7 @@ set(
   "main.f90"
   "parser.f90"
   "sort.f90"
+  "utils.f90"
 )
 
 add_executable(

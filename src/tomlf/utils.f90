@@ -95,18 +95,24 @@ pure function to_string_i1(val) result(string)
       return
    end if
 
-   n = abs(val)
+   n = val
    buffer = ""
-
    pos = buffer_len + 1
-   do while (n > 0_ik)
-      pos = pos - 1
-      buffer(pos:pos) = numbers(mod(n, 10_ik))
-      n = n/10_ik
-   end do
    if (val < 0_ik) then
+      do while (n < 0_ik)
+         pos = pos - 1
+         buffer(pos:pos) = numbers(abs(mod(n, 10_ik)))
+         n = n/10_ik
+      end do
+
       pos = pos - 1
       buffer(pos:pos) = '-'
+   else
+      do while (n > 0_ik)
+         pos = pos - 1
+         buffer(pos:pos) = numbers(mod(n, 10_ik))
+         n = n/10_ik
+      end do
    end if
 
    string = buffer(pos:)
@@ -133,18 +139,24 @@ pure function to_string_i2(val) result(string)
       return
    end if
 
-   n = abs(val)
+   n = val
    buffer = ""
-
    pos = buffer_len + 1
-   do while (n > 0_ik)
-      pos = pos - 1
-      buffer(pos:pos) = numbers(mod(n, 10_ik))
-      n = n/10_ik
-   end do
    if (val < 0_ik) then
+      do while (n < 0_ik)
+         pos = pos - 1
+         buffer(pos:pos) = numbers(abs(mod(n, 10_ik)))
+         n = n/10_ik
+      end do
+
       pos = pos - 1
       buffer(pos:pos) = '-'
+   else
+      do while (n > 0_ik)
+         pos = pos - 1
+         buffer(pos:pos) = numbers(mod(n, 10_ik))
+         n = n/10_ik
+      end do
    end if
 
    string = buffer(pos:)
@@ -171,18 +183,24 @@ pure function to_string_i4(val) result(string)
       return
    end if
 
-   n = abs(val)
+   n = val
    buffer = ""
-
    pos = buffer_len + 1
-   do while (n > 0_ik)
-      pos = pos - 1
-      buffer(pos:pos) = numbers(mod(n, 10_ik))
-      n = n/10_ik
-   end do
    if (val < 0_ik) then
+      do while (n < 0_ik)
+         pos = pos - 1
+         buffer(pos:pos) = numbers(abs(mod(n, 10_ik)))
+         n = n/10_ik
+      end do
+
       pos = pos - 1
       buffer(pos:pos) = '-'
+   else
+      do while (n > 0_ik)
+         pos = pos - 1
+         buffer(pos:pos) = numbers(mod(n, 10_ik))
+         n = n/10_ik
+      end do
    end if
 
    string = buffer(pos:)
@@ -209,18 +227,24 @@ pure function to_string_i8(val) result(string)
       return
    end if
 
-   n = abs(val)
+   n = val
    buffer = ""
-
    pos = buffer_len + 1
-   do while (n > 0_ik)
-      pos = pos - 1
-      buffer(pos:pos) = numbers(mod(n, 10_ik))
-      n = n/10_ik
-   end do
    if (val < 0_ik) then
+      do while (n < 0_ik)
+         pos = pos - 1
+         buffer(pos:pos) = numbers(abs(mod(n, 10_ik)))
+         n = n/10_ik
+      end do
+
       pos = pos - 1
       buffer(pos:pos) = '-'
+   else
+      do while (n > 0_ik)
+         pos = pos - 1
+         buffer(pos:pos) = numbers(mod(n, 10_ik))
+         n = n/10_ik
+      end do
    end if
 
    string = buffer(pos:)

@@ -20,6 +20,7 @@ program tftester
    use tftest_lexer, only : collect_lexer
    use tftest_parser, only : collect_parser
    use tftest_sort, only : collect_sort
+   use tftest_utils, only : collect_utils
    implicit none
    integer :: stat, is
    character(len=:), allocatable :: suite_name, test_name
@@ -32,7 +33,8 @@ program tftester
       & new_testsuite("build", collect_build), &
       & new_testsuite("lexer", collect_lexer), &
       & new_testsuite("parser", collect_parser), &
-      & new_testsuite("sort", collect_sort) &
+      & new_testsuite("sort", collect_sort), &
+      & new_testsuite("utils", collect_utils) &
       & ]
 
    call get_argument(1, suite_name)
