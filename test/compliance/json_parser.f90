@@ -255,20 +255,16 @@ subroutine prune_value(val, table, str)
       call val%get(sval)
       select case(str)
       case("date", "time", "datetime", "date-local", "time-local", "datetime-local")
-         val%raw = sval
          dval = toml_datetime(sval)
          call val%set(dval)
       case("bool")
-         val%raw = sval
          call val%set(sval == "true")
       case("integer")
-         val%raw = sval
          read(sval, *, iostat=stat) ival
          if (stat == 0) then
             call val%set(ival)
          end if
       case("float")
-         val%raw = sval
          read(sval, *, iostat=stat) fval
          if (stat == 0) then
             call val%set(fval)

@@ -801,7 +801,6 @@ subroutine extract_value(parser, lexer, kval)
    logical :: bval
    type(toml_datetime) :: dval
 
-   call lexer%extract_raw(parser%token, kval%raw)
    kval%origin_value = parser%context%top
 
    select case(parser%token%kind)

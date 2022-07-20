@@ -135,7 +135,6 @@ subroutine visit_keyval(visitor, keyval)
    integer(tfi), pointer :: ival
    real(tfr), pointer :: rval
    logical, pointer :: lval
-   character(128) :: buffer
 
    call keyval%get_key(key)
 
@@ -181,7 +180,12 @@ subroutine visit_array(visitor, array)
    type(toml_array), intent(inout) :: array
 
    class(toml_value), pointer :: ptr
-   character(kind=tfc, len=:), allocatable :: key
+   character(kind=tfc, len=:), allocatable :: key, str
+   type(toml_datetime), pointer :: dval
+   character(:, tfc), pointer :: sval
+   integer(tfi), pointer :: ival
+   real(tfr), pointer :: rval
+   logical, pointer :: lval
    integer :: i, n
 
    if (visitor%inline_array) write(visitor%unit, '(1x,"[")', advance='no')
@@ -190,7 +194,30 @@ subroutine visit_array(visitor, array)
       call array%get(i, ptr)
       select type(ptr)
       class is(toml_keyval)
-         write(visitor%unit, '(1x,a)', advance='no') ptr%raw
+
+         select case(ptr%get_type())
+         case(toml_type%string)
+            call ptr%get(sval)
+            call toml_escape_string(sval, str)
+         case(toml_type%int)
+            call ptr%get(ival)
+            str = to_string(ival)
+         case(toml_type%float)
+            call ptr%get(rval)
+            str = to_string(rval)
+         case(toml_type%boolean)
+            call ptr%get(lval)
+            if (lval) then
+               str = "true"
+            else
+               str = "false"
+            end if
+         case(toml_type%datetime)
+            call ptr%get(dval)
+            str = to_string(dval)
+         end select
+
+         write(visitor%unit, '(1x,a)', advance='no') str
          if (i /= n) write(visitor%unit, '(",")', advance='no')
       class is(toml_array)
          call ptr%accept(visitor)

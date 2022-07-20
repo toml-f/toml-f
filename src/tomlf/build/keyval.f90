@@ -310,17 +310,8 @@ subroutine set_value_float_sp(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
-   character(kind=tfc, len=buffersize) :: tmp
-   integer :: istat
-
-   write(tmp, '(es30.6)', iostat=istat) val
-   if (istat == 0) then
-      call self%set(real(val, tfr))
-      self%raw = trim(adjustl(tmp))
-      if (present(stat)) stat = toml_stat%success
-   else
-      if (present(stat)) stat = toml_stat%fatal
-   end if
+   call self%set(real(val, tfr))
+   if (present(stat)) stat = toml_stat%success
 
    self%origin_value = 0
    if (present(origin)) origin = self%origin
@@ -342,17 +333,8 @@ subroutine set_value_float_dp(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
-   character(kind=tfc, len=buffersize) :: tmp
-   integer :: istat
-
-   write(tmp, '(es30.16)', iostat=istat) val
-   if (istat == 0) then
-      call self%set(real(val, tfr))
-      self%raw = trim(adjustl(tmp))
-      if (present(stat)) stat = toml_stat%success
-   else
-      if (present(stat)) stat = toml_stat%fatal
-   end if
+   call self%set(real(val, tfr))
+   if (present(stat)) stat = toml_stat%success
 
    self%origin_value = 0
    if (present(origin)) origin = self%origin
@@ -375,7 +357,6 @@ subroutine set_value_integer_i1(self, val, stat, origin)
    integer, intent(out), optional :: origin
 
    call self%set(int(val, tfi))
-   self%raw = to_string(val)
    if (present(stat)) stat = toml_stat%success
 
    self%origin_value = 0
@@ -399,7 +380,6 @@ subroutine set_value_integer_i2(self, val, stat, origin)
    integer, intent(out), optional :: origin
 
    call self%set(int(val, tfi))
-   self%raw = to_string(val)
    if (present(stat)) stat = toml_stat%success
 
    self%origin_value = 0
@@ -423,7 +403,6 @@ subroutine set_value_integer_i4(self, val, stat, origin)
    integer, intent(out), optional :: origin
 
    call self%set(int(val, tfi))
-   self%raw = to_string(val)
    if (present(stat)) stat = toml_stat%success
 
    self%origin_value = 0
@@ -447,7 +426,6 @@ subroutine set_value_integer_i8(self, val, stat, origin)
    integer, intent(out), optional :: origin
 
    call self%set(int(val, tfi))
-   self%raw = to_string(val)
    if (present(stat)) stat = toml_stat%success
 
    self%origin_value = 0
@@ -471,12 +449,6 @@ subroutine set_value_bool(self, val, stat, origin)
    integer, intent(out), optional :: origin
 
    call self%set(val)
-   if (val) then
-      self%raw = 'true'
-   else
-      self%raw = 'false'
-   end if
-
    if (present(stat)) stat = toml_stat%success
 
    self%origin_value = 0
@@ -500,8 +472,6 @@ subroutine set_value_string(self, val, stat, origin)
    integer, intent(out), optional :: origin
 
    call self%set(val)
-   call toml_escape_string(val, self%raw, .true.)
-
    if (present(stat)) stat = toml_stat%success
 
    self%origin_value = 0

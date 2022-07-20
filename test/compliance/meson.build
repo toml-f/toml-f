@@ -108,6 +108,7 @@ if not meson.is_subproject() and go_exe.found()
   endforeach
 
   encoder_failing = [
+    'valid/array/mixed-string-table',
     'valid/inline-table/end-in-bool',
     'valid/key/escapes',
     'valid/key/special-chars',

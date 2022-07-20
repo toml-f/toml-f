@@ -48,8 +48,6 @@ module tftest_json_lexer
       procedure :: extract_bool
       !> Extract a timestamp from a token
       procedure :: extract_datetime
-      !> Extract the raw value of the token
-      procedure :: extract_raw
       !> Get information about source
       procedure :: get_info
    end type json_lexer
@@ -291,22 +289,6 @@ elemental function match(lexer, pos, kind)
 
    match = peek(lexer, pos) == kind
 end function match
-
-!> Extract raw value of token
-subroutine extract_raw(lexer, token, string)
-   !> Instance of the lexer
-   class(json_lexer), intent(in) :: lexer
-   !> Token to extract raw value from
-   type(toml_token), intent(in) :: token
-   !> Raw value of token
-   character(len=:), allocatable, intent(out) :: string
-
-   integer :: length
-
-   length = token%last - token%first + 1
-   allocate(character(length) :: string)
-   string = lexer%chunk(token%first:token%last)
-end subroutine extract_raw
 
 !> Extract string value of token, works for keypath, string, multiline string, literal,
 !> and mulitline literal tokens.

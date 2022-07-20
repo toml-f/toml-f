@@ -56,11 +56,8 @@ module tomlf_type_keyval
    !> TOML key-value pair
    type, extends(toml_value) :: toml_keyval
 
-      !> Raw content of the TOML value
-      character(kind=tfc, len=:), allocatable :: raw
-
       !> Actual TOML value
-      class(generic_value), allocatable :: tval
+      class(generic_value), allocatable :: val
 
       !> Origin of value
       integer :: origin_value = 0
@@ -122,8 +119,8 @@ subroutine destroy(self)
       deallocate(self%key)
    end if
 
-   if (allocated(self%raw)) then
-      deallocate(self%raw)
+   if (allocated(self%val)) then
+      deallocate(self%val)
    end if
 
 end subroutine destroy
@@ -138,7 +135,7 @@ subroutine get_float(self, val)
    !> Value to be assigned
    real(tfr), pointer, intent(out) :: val
 
-   val => cast_float(self%tval)
+   val => cast_float(self%val)
 end subroutine get_float
 
 
@@ -151,7 +148,7 @@ subroutine get_integer(self, val)
    !> Value to be assigned
    integer(tfi), pointer, intent(out) :: val
 
-   val => cast_integer(self%tval)
+   val => cast_integer(self%val)
 end subroutine get_integer
 
 
@@ -164,7 +161,7 @@ subroutine get_boolean(self, val)
    !> Value to be assigned
    logical, pointer, intent(out) :: val
 
-   val => cast_boolean(self%tval)
+   val => cast_boolean(self%val)
 end subroutine get_boolean
 
 
@@ -177,7 +174,7 @@ subroutine get_datetime(self, val)
    !> Value to be assigned
    type(toml_datetime), pointer, intent(out) :: val
 
-   val => cast_datetime(self%tval)
+   val => cast_datetime(self%val)
 end subroutine get_datetime
 
 
@@ -190,7 +187,7 @@ subroutine get_string(self, val)
    !> Value to be assigned
    character(:, tfc), pointer, intent(out) :: val
 
-   val => cast_string(self%tval)
+   val => cast_string(self%val)
 end subroutine get_string
 
 
@@ -207,7 +204,7 @@ subroutine set_float(self, val)
 
    allocate(tmp)
    tmp%raw = val
-   call move_alloc(tmp, self%tval)
+   call move_alloc(tmp, self%val)
 end subroutine set_float
 
 
@@ -224,7 +221,7 @@ subroutine set_integer(self, val)
 
    allocate(tmp)
    tmp%raw = val
-   call move_alloc(tmp, self%tval)
+   call move_alloc(tmp, self%val)
 end subroutine set_integer
 
 
@@ -241,7 +238,7 @@ subroutine set_boolean(self, val)
 
    allocate(tmp)
    tmp%raw = val
-   call move_alloc(tmp, self%tval)
+   call move_alloc(tmp, self%val)
 end subroutine set_boolean
 
 
@@ -258,7 +255,7 @@ subroutine set_datetime(self, val)
 
    allocate(tmp)
    tmp%raw = val
-   call move_alloc(tmp, self%tval)
+   call move_alloc(tmp, self%val)
 end subroutine set_datetime
 
 
@@ -275,7 +272,7 @@ subroutine set_string(self, val)
 
    allocate(tmp)
    tmp%raw = val
-   call move_alloc(tmp, self%tval)
+   call move_alloc(tmp, self%val)
 end subroutine set_string
 
 
@@ -288,7 +285,7 @@ pure function get_type(self) result(value_type)
    !> Value type
    integer :: value_type
 
-   select type(val => self%tval)
+   select type(val => self%val)
    class default
       value_type = toml_type%invalid
    type is(float_value)

@@ -138,8 +138,6 @@ module tomlf_de_lexer
       procedure :: extract_bool
       !> Extract a timestamp from a token
       procedure :: extract_datetime
-      !> Extract the raw value of the token
-      procedure :: extract_raw
       !> Get information about source
       procedure :: get_info
    end type toml_lexer

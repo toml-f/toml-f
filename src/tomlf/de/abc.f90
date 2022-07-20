@@ -40,8 +40,6 @@ module tomlf_de_abc
       procedure(extract_bool), deferred :: extract_bool
       !> Extract a timestamp from a token
       procedure(extract_datetime), deferred :: extract_datetime
-      !> Extract the raw value of the token
-      procedure(extract_raw), deferred :: extract_raw
       !> Get information about the source
       procedure(get_info), deferred :: get_info
    end type abstract_lexer
@@ -56,17 +54,6 @@ module tomlf_de_abc
          !> Current lexeme
          type(toml_token), intent(inout) :: token
       end subroutine next
-
-      !> Extract raw value of token
-      subroutine extract_raw(lexer, token, string)
-         import :: abstract_lexer, toml_token, tfc
-         !> Instance of the lexer
-         class(abstract_lexer), intent(in) :: lexer
-         !> Token to extract raw value from
-         type(toml_token), intent(in) :: token
-         !> Raw value of token
-         character(:, tfc), allocatable, intent(out) :: string
-      end subroutine extract_raw
 
       !> Extract string value of token, works for keypath, string, multiline string, literal,
       !> and mulitline literal tokens.
