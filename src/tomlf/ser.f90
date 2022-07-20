@@ -148,24 +148,7 @@ subroutine visit_keyval(visitor, keyval)
       str = to_string(ival)
    case(toml_type%float)
       call keyval%get(rval)
-      if (rval > huge(rval)) then
-         str = "+inf"
-      else if (rval < -huge(rval)) then
-         str = "-inf"
-      else if (rval /= rval) then
-         str = "nan"
-      else
-         if (abs(rval) >= 1.0e+100_tfr) then
-            write(buffer, '(es24.16e3)') rval
-         else if (abs(rval) >= 1.0e+10_tfr) then
-            write(buffer, '(es24.16e2)') rval
-         else if (abs(rval) >= 1.0e+3_tfr) then
-            write(buffer, '(es24.16e1)') rval
-         else
-            write(buffer, '(f24.16)') rval
-         end if
-         str = trim(adjustl(buffer))
-      end if
+      str = to_string(rval)
    case(toml_type%boolean)
       call keyval%get(lval)
       if (lval) then

@@ -13,7 +13,7 @@
 
 module tomlf_utils
    use tomlf_constants
-   use tomlf_datetime, only : toml_datetime, toml_date, toml_time
+   use tomlf_datetime, only : toml_datetime, toml_date, toml_time, to_string
    use tomlf_utils_io, only : read_whole_file, read_whole_line
    implicit none
    private
@@ -28,6 +28,7 @@ module tomlf_utils
       module procedure :: to_string_i2
       module procedure :: to_string_i4
       module procedure :: to_string_i8
+      module procedure :: to_string_r8
    end interface to_string
 
 
@@ -250,5 +251,34 @@ pure function to_string_i8(val) result(string)
    string = buffer(pos:)
 end function to_string_i8
 
+!> Represent an real as character sequence.
+pure function to_string_r8(val) result(string)
+   integer, parameter :: rk = tfr
+   !> Real value to create string from
+   real(rk), intent(in) :: val
+   !> String representation of integer
+   character(len=:), allocatable :: string
+
+   character(128, tfc) :: buffer
+
+   if (val > huge(val)) then
+      string = "+inf"
+   else if (val < -huge(val)) then
+      string = "-inf"
+   else if (val /= val) then
+      string = "nan"
+   else
+      if (abs(val) >= 1.0e+100_rk) then
+         write(buffer, '(es24.16e3)') val
+      else if (abs(val) >= 1.0e+10_rk) then
+         write(buffer, '(es24.16e2)') val
+      else if (abs(val) >= 1.0e+3_rk) then
+         write(buffer, '(es24.16e1)') val
+      else
+         write(buffer, '(f24.16)') val
+      end if
+      string = trim(adjustl(buffer))
+   end if
+end function to_string_r8
 
 end module tomlf_utils
