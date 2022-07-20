@@ -155,7 +155,15 @@ subroutine visit_keyval(visitor, keyval)
       else if (rval /= rval) then
          str = "nan"
       else
-         write(buffer, '(g0)') rval
+         if (abs(rval) >= 1.0e+100_tfr) then
+            write(buffer, '(es24.16e3)') rval
+         else if (abs(rval) >= 1.0e+10_tfr) then
+            write(buffer, '(es24.16e2)') rval
+         else if (abs(rval) >= 1.0e+3_tfr) then
+            write(buffer, '(es24.16e1)') rval
+         else
+            write(buffer, '(f24.16)') rval
+         end if
          str = trim(adjustl(buffer))
       end if
    case(toml_type%boolean)
