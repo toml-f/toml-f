@@ -11,12 +11,11 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-module tftest_json_parser
-   use tomlf_constants, only : tfc, tfi, tfr, TOML_NEWLINE, TOML_BACKSPACE, TOML_TABULATOR, &
-      & TOML_FORMFEED, TOML_CARRIAGE_RETURN, toml_type
+module tjson_parser
+   use tomlf_constants, only : tfc, tfi, tfr, toml_type
    use tomlf_datetime, only : toml_datetime
    use tomlf_de_context, only : toml_context
-   use tftest_json_lexer, only : json_lexer, new_lexer_from_string, new_lexer_from_unit, &
+   use tjson_lexer, only : json_lexer, new_lexer_from_string, new_lexer_from_unit, &
       & new_lexer_from_file
    use tomlf_de_parser, only : parse, toml_parser_config
    use tomlf_diagnostic, only : toml_level
@@ -48,7 +47,6 @@ module tftest_json_parser
       !> Traverse the AST and prune all annotated values
       procedure :: visit
    end type json_prune
-
 
 contains
 
@@ -273,38 +271,4 @@ subroutine prune_value(val, table, str)
    end select
 end subroutine prune_value
 
-!> Transform a TOML raw value to a JSON compatible escaped string
-subroutine unquote_json(raw, string)
-   !> JSON compatible escaped string
-   character(len=*), intent(in) :: string
-   !> Raw value of TOML value
-   character(len=:), allocatable, intent(out) :: raw
-
-   integer :: i
-   logical :: escape
-
-   raw = ''
-   escape = .false.
-   do i = 2, len(string)-1
-      if (escape) then
-         select case(string(i:i))
-         case default; raw = raw // string(i:i)
-         case('\'); raw = raw // '\'
-         case('"'); raw = raw // '"'
-         case('n'); raw = raw // TOML_NEWLINE
-         case('f'); raw = raw // TOML_FORMFEED
-         case('r'); raw = raw // TOML_CARRIAGE_RETURN
-         case('t'); raw = raw // TOML_TABULATOR
-         case('b'); raw = raw // TOML_BACKSPACE
-         end select
-         escape = .false.
-      else
-         select case(string(i:i))
-         case default; raw = raw // string(i:i)
-         case('\'); escape = .true.
-         end select
-      end if
-   end do
-end subroutine unquote_json
-
-end module tftest_json_parser
+end module tjson_parser

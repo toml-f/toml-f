@@ -11,21 +11,19 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-module tftest_json_lexer
-   use tomlf_constants, only : tfc, tfi, tfr, TOML_BACKSPACE, TOML_TABULATOR, TOML_NEWLINE, &
-      & TOML_CARRIAGE_RETURN, TOML_FORMFEED
-   use tomlf_datetime, only : toml_datetime, toml_date, toml_time
+module tjson_lexer
+   use tomlf_constants, only : tfc, tfi, tfr, toml_escape
+   use tomlf_datetime, only : toml_datetime
    use tomlf_de_abc, only : abstract_lexer
-   use tomlf_de_context, only : toml_context
-   use tomlf_de_token, only : toml_token, stringify, token_kind
-   use tomlf_error, only : toml_error, toml_stat, make_error
+   use tomlf_de_token, only : toml_token, token_kind
+   use tomlf_error, only : toml_error, make_error
    use tomlf_utils, only : read_whole_file, read_whole_line
    implicit none
    private
 
    public :: json_lexer
    public :: new_lexer_from_file, new_lexer_from_unit, new_lexer_from_string
-
+   public :: toml_token, token_kind
 
    !> Tokenizer for JSON documents
    type, extends(abstract_lexer) :: json_lexer
@@ -54,8 +52,8 @@ module tftest_json_lexer
       procedure :: get_info
    end type json_lexer
 
-   character(*, tfc), parameter :: terminated = &
-      & " "//TOML_TABULATOR//TOML_NEWLINE//TOML_CARRIAGE_RETURN//"{}[],:"
+   character(*, tfc), parameter :: terminated = " {}[],:"//&
+      & toml_escape%tabulator//toml_escape%newline//toml_escape%carriage_return
 
 contains
 
@@ -70,13 +68,10 @@ subroutine new_lexer_from_file(lexer, filename, error)
 
    integer :: stat
 
-   lexer%pos = 0
    lexer%filename = filename
    call read_whole_file(filename, lexer%chunk, stat)
 
-   if (stat /= 0) then
-      call make_error(error, "Could not open file '"//filename//"'")
-   end if
+   if (stat /= 0) call make_error(error, "Could not open file '"//filename//"'")
 end subroutine new_lexer_from_file
 
 !> Create a new instance of a lexer by reading from a unit.
@@ -105,7 +100,7 @@ subroutine new_lexer_from_unit(lexer, io, error)
       do 
          call read_whole_line(io, line, stat)
          if (stat > 0) exit
-         source = source // line // TOML_NEWLINE
+         source = source // line // toml_escape%newline
          if (stat < 0) then
             if (is_iostat_end(stat)) stat = 0
             exit
@@ -115,9 +110,7 @@ subroutine new_lexer_from_unit(lexer, io, error)
    end select
    if (len_trim(filename) > 0) lexer%filename = trim(filename)
 
-   if (stat /= 0) then
-      call make_error(error, "Failed to read from unit")
-   end if
+   if (stat /= 0) call make_error(error, "Failed to read from unit")
 end subroutine new_lexer_from_unit
 
 !> Create a new instance of a lexer by reading from a string.
@@ -127,9 +120,25 @@ subroutine new_lexer_from_string(lexer, string)
    !> String to read from
    character(len=*), intent(in) :: string
 
-   lexer%pos = 0
    lexer%chunk = string
 end subroutine new_lexer_from_string
+
+!> Extract information about the source
+subroutine get_info(lexer, meta, output)
+   !> Instance of the lexer
+   class(json_lexer), intent(in) :: lexer
+   !> Query about the source
+   character(*, tfc), intent(in) :: meta
+   !> Metadata about the source
+   character(:, tfc), allocatable, intent(out) :: output
+
+   select case(meta)
+   case("source")
+      output = lexer%chunk // toml_escape%newline
+   case("filename")
+      if (allocated(lexer%filename)) output = lexer%filename
+   end select
+end subroutine get_info
 
 !> Advance to the next token in the lexer
 subroutine next(lexer, token)
@@ -139,7 +148,7 @@ subroutine next(lexer, token)
    type(toml_token), intent(inout) :: token
 
    type(toml_token), parameter :: prelude(2) = &
-      [toml_token(token_kind%equal, 1, 0), toml_token(token_kind%keypath, 1, 0)]
+      [toml_token(token_kind%equal, 0, 0), toml_token(token_kind%keypath, 1, 0)]
 
    if (lexer%prelude > 0) then
       token = prelude(lexer%prelude)
@@ -171,9 +180,9 @@ subroutine next_token(lexer, token)
    end if
 
    select case(lexer%chunk(pos:pos))
-   case(" ", TOML_TABULATOR, TOML_NEWLINE, TOML_CARRIAGE_RETURN)
-      do while(any(lexer%chunk(pos+1:pos+1) == [" ", TOML_TABULATOR, TOML_NEWLINE, &
-            & TOML_CARRIAGE_RETURN]) .and. pos < len(lexer%chunk))
+   case(" ", toml_escape%tabulator, toml_escape%newline, toml_escape%carriage_return)
+      do while(any(lexer%chunk(pos+1:pos+1) == [" ", toml_escape%tabulator, &
+            & toml_escape%newline, toml_escape%carriage_return]) .and. pos < len(lexer%chunk))
          pos = pos + 1
       end do
       token = toml_token(token_kind%whitespace, prev, pos)
@@ -222,8 +231,8 @@ subroutine next_string(lexer, token)
    type(toml_token), intent(inout) :: token
 
    character(1, tfc) :: ch
-   character(*, tfc), parameter :: hex = "0123456789ABCDEFabcdef", valid_escape = 'btnfr\"'
-   integer :: prev, pos, expect, it
+   character(*, tfc), parameter :: valid_escape = 'btnfr\"'
+   integer :: prev, pos, it
    logical :: escape, valid, space
 
    prev = lexer%pos
@@ -231,7 +240,6 @@ subroutine next_string(lexer, token)
 
    valid = .true.
    escape = .false.
-   expect = 0
 
    do while(pos < len(lexer%chunk))
       pos = pos + 1
@@ -239,22 +247,12 @@ subroutine next_string(lexer, token)
       valid = valid .and. valid_string(ch)
       if (escape) then
          escape = .false.
-         if (verify(ch, valid_escape) == 0) cycle
-         if (ch == "u") then
-            expect = 4
-            cycle
-         end if
-         valid = .false.
+         valid = valid .and. verify(ch, valid_escape) == 0
          cycle
       end if
-      if (expect > 0) then
-         expect = expect - 1
-         valid = valid .and. verify(ch, hex) == 0
-         cycle
-      end if
-      escape = ch == "\"
+      escape = ch == toml_escape%backslash
       if (ch == '"') exit
-      if (ch == TOML_NEWLINE) then
+      if (ch == toml_escape%newline) then
          pos = pos - 1
          valid = .false.
          exit
@@ -272,15 +270,17 @@ subroutine next_number(lexer, token)
    !> Current token
    type(toml_token), intent(inout) :: token
 
-   integer :: prev, pos
-   logical :: minus, point, expo, okay, zero, first
+   integer :: prev, pos, point, expo
+   logical :: minus, okay, zero, first
    character(1, tfc) :: ch
    integer, parameter :: offset(*) = [0, 1, 2]
 
    prev = lexer%pos
    pos = lexer%pos
-   point = .false.
-   expo = .false.
+   token = toml_token(token_kind%invalid, prev, pos)
+
+   point = 0
+   expo = 0
    zero = .false.
    first = .true.
    minus = lexer%chunk(pos:pos) == "-"
@@ -289,41 +289,29 @@ subroutine next_number(lexer, token)
    do while(pos <= len(lexer%chunk))
       ch = lexer%chunk(pos:pos)
       if (ch == ".") then
-         if (point .or. expo) then
-            token = toml_token(token_kind%invalid, prev, pos)
-            return
-         end if
+         if (point > 0 .or. expo > 0) return
          zero = .false.
-         point = .true.
+         point = pos
          pos = pos + 1
          cycle
       end if
 
       if (ch == "e" .or. ch == "E") then
-         if (expo) then
-            token = toml_token(token_kind%invalid, prev, pos)
-            return
-         end if
+         if (expo > 0) return
          zero = .false.
-         expo = .true.
+         expo = pos
          pos = pos + 1
          cycle
       end if
 
       if (ch == "+" .or. ch == "-") then
-         if (.not.any(lexer%chunk(pos-1:pos-1) == ["e", "E"])) then
-            token = toml_token(token_kind%invalid, prev, pos)
-            return
-         end if
+         if (.not.any(lexer%chunk(pos-1:pos-1) == ["e", "E"])) return
          pos = pos + 1
          cycle
       end if
 
       if (verify(ch, "0123456789") == 0) then
-         if (zero) then
-            token = toml_token(token_kind%invalid, prev, pos)
-            return
-         end if
+         if (zero) return
          zero = first .and. ch == "0"
          first = .false.
          pos = pos + 1
@@ -333,7 +321,9 @@ subroutine next_number(lexer, token)
       exit
    end do
 
-   token = toml_token(merge(token_kind%float, token_kind%int, expo .or. point), prev, pos-1)
+   if (any([expo, point] == pos-1)) return
+   token = toml_token(merge(token_kind%float, token_kind%int, any([expo, point] > 0)), &
+      & prev, pos-1)
 end subroutine next_number
 
 !> Process next boolean token
@@ -400,17 +390,16 @@ subroutine extract_string(lexer, token, string)
          if (escape) then
             escape = .false.
             select case(ch)
-            case('"', "\");  string = string // ch
-            case("b"); string = string // TOML_BACKSPACE
-            case("t"); string = string // TOML_TABULATOR
-            case("n"); string = string // TOML_NEWLINE
-            case("r"); string = string // TOML_CARRIAGE_RETURN
-            case("f"); string = string // TOML_FORMFEED
-            case("u"); string = string // "\u"  ! FIXME
+            case(toml_escape%dquote, toml_escape%backslash); string = string // ch
+            case("b"); string = string // toml_escape%bspace
+            case("t"); string = string // toml_escape%tabulator
+            case("n"); string = string // toml_escape%newline
+            case("r"); string = string // toml_escape%carriage_return
+            case("f"); string = string // toml_escape%formfeed
             end select
             cycle
          end if
-         escape = ch == "\"
+         escape = ch == toml_escape%backslash
          if (.not.escape) string = string // ch
       end do
    end select
@@ -489,21 +478,4 @@ subroutine extract_datetime(lexer, token, val)
    type(toml_datetime), intent(out) :: val
 end subroutine extract_datetime
 
-!> Extract information about the source
-subroutine get_info(lexer, meta, output)
-   !> Instance of the lexer
-   class(json_lexer), intent(in) :: lexer
-   !> Query about the source
-   character(*, tfc), intent(in) :: meta
-   !> Metadata about the source
-   character(:, tfc), allocatable, intent(out) :: output
-
-   select case(meta)
-   case("source")
-      output = lexer%chunk // TOML_NEWLINE
-   case("filename")
-      if (allocated(lexer%filename)) output = lexer%filename
-   end select
-end subroutine get_info
-
-end module tftest_json_lexer
+end module tjson_lexer

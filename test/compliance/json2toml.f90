@@ -15,7 +15,7 @@
 program json2toml
    use, intrinsic :: iso_fortran_env, only : input_unit
    use tomlf
-   use tftest_json_parser
+   use tjson_parser
    implicit none
    integer :: iarg, length
    character(len=:), allocatable :: argument

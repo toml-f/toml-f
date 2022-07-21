@@ -15,7 +15,7 @@
 program toml2json
    use, intrinsic :: iso_fortran_env, only : input_unit, error_unit
    use tomlf
-   use tftest_json_ser
+   use tjson_ser
    implicit none
    integer :: iarg, length
    character(len=:), allocatable :: argument
