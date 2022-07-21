@@ -338,14 +338,14 @@ subroutine table_string(error)
    call set_value(table, "string", """value""", stat=stat)
    call get_value(table, "string", val, stat=stat)
 
-   call check(error, val, "value")
+   call check(error, val, """value""")
    if (allocated(error)) return
 
    call table%destroy
    call new_table(table)
    call get_value(table, toml_key("string"), val, "'value'", stat=stat)
 
-   call check(error, val, "value")
+   call check(error, val, "'value'")
    if (allocated(error)) return
 
 end subroutine table_string

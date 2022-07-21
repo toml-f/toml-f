@@ -752,7 +752,7 @@ subroutine get_child_value_float_sp(table, key, val, default, stat, origin)
    call get_value(table, key, ptr, present(default), stat, origin)
 
    if (associated(ptr)) then
-      if (allocated(ptr%raw)) then
+      if (allocated(ptr%val)) then
          call get_value(ptr, val, stat, origin)
       else
          if (present(default)) then
@@ -793,7 +793,7 @@ subroutine get_child_value_float_dp(table, key, val, default, stat, origin)
    call get_value(table, key, ptr, present(default), stat, origin)
 
    if (associated(ptr)) then
-      if (allocated(ptr%raw)) then
+      if (allocated(ptr%val)) then
          call get_value(ptr, val, stat, origin)
       else
          if (present(default)) then
@@ -834,7 +834,7 @@ subroutine get_child_value_integer_i1(table, key, val, default, stat, origin)
    call get_value(table, key, ptr, present(default), stat, origin)
 
    if (associated(ptr)) then
-      if (allocated(ptr%raw)) then
+      if (allocated(ptr%val)) then
          call get_value(ptr, val, stat, origin)
       else
          if (present(default)) then
@@ -875,7 +875,7 @@ subroutine get_child_value_integer_i2(table, key, val, default, stat, origin)
    call get_value(table, key, ptr, present(default), stat, origin)
 
    if (associated(ptr)) then
-      if (allocated(ptr%raw)) then
+      if (allocated(ptr%val)) then
          call get_value(ptr, val, stat, origin)
       else
          if (present(default)) then
@@ -916,7 +916,7 @@ subroutine get_child_value_integer_i4(table, key, val, default, stat, origin)
    call get_value(table, key, ptr, present(default), stat, origin)
 
    if (associated(ptr)) then
-      if (allocated(ptr%raw)) then
+      if (allocated(ptr%val)) then
          call get_value(ptr, val, stat, origin)
       else
          if (present(default)) then
@@ -957,7 +957,7 @@ subroutine get_child_value_integer_i8(table, key, val, default, stat, origin)
    call get_value(table, key, ptr, present(default), stat, origin)
 
    if (associated(ptr)) then
-      if (allocated(ptr%raw)) then
+      if (allocated(ptr%val)) then
          call get_value(ptr, val, stat, origin)
       else
          if (present(default)) then
@@ -998,7 +998,7 @@ subroutine get_child_value_bool(table, key, val, default, stat, origin)
    call get_value(table, key, ptr, present(default), stat, origin)
 
    if (associated(ptr)) then
-      if (allocated(ptr%raw)) then
+      if (allocated(ptr%val)) then
          call get_value(ptr, val, stat, origin)
       else
          if (present(default)) then
@@ -1039,7 +1039,7 @@ subroutine get_child_value_string(table, key, val, default, stat, origin)
    call get_value(table, key, ptr, present(default), stat, origin)
 
    if (associated(ptr)) then
-      if (allocated(ptr%raw)) then
+      if (allocated(ptr%val)) then
          call get_value(ptr, val, stat, origin)
       else
          if (present(default)) then

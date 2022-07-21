@@ -42,8 +42,6 @@ module tomlf_build_array
    use tomlf_type, only : toml_value, toml_table, toml_array, toml_keyval, &
       & new_table, new_array, new_keyval, add_table, add_array, add_keyval, &
       & cast_to_table, cast_to_array, cast_to_keyval, len
-   use tomlf_utils, only : toml_raw_to_string, toml_raw_to_float, &
-      & toml_raw_to_bool, toml_raw_to_integer, toml_raw_to_timestamp
    implicit none
    private
 

@@ -15,11 +15,12 @@
 program json2toml
    use, intrinsic :: iso_fortran_env, only : input_unit
    use tomlf
-   use tftest_json_de
+   use tjson_parser
    implicit none
    integer :: iarg, length
    character(len=:), allocatable :: argument
    type(toml_table), allocatable :: table
+   type(toml_error), allocatable :: error
    type(toml_serializer) :: ser
    integer :: unit
    logical :: exist
@@ -35,10 +36,9 @@ program json2toml
             inquire(file=argument, exist=exist)
          end if
          if (exist) then
-            open(newunit=unit, file=argument)
             if (allocated(table)) deallocate(table)
-            call json_parse(table, unit)
-            close(unit)
+            call json_load(table, argument, error=error)
+            if (allocated(error)) print '(a)', error%message
             if (allocated(table)) then
                call table%accept(ser)
                call table%destroy
@@ -46,7 +46,8 @@ program json2toml
          end if
       end do
    else
-      call json_parse(table, input_unit)
+      call json_load(table, input_unit, error=error)
+      if (allocated(error)) print '(a)', error%message
       if (allocated(table)) then
          call table%accept(ser)
          call table%destroy

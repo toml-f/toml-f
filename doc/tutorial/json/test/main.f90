@@ -12,15 +12,11 @@
 ! limitations under the License.
 
 !> Wrapper for the testsuites
-program tftester
+program tester
    use, intrinsic :: iso_fortran_env, only : error_unit
    use testdrive, only : run_testsuite, new_testsuite, testsuite_type, &
       & select_suite, run_selected, get_argument
-   use tftest_build, only : collect_build
-   use tftest_lexer, only : collect_lexer
-   use tftest_parser, only : collect_parser
-   use tftest_sort, only : collect_sort
-   use tftest_utils, only : collect_utils
+   use test_lexer, only : collect_lexer
    implicit none
    integer :: stat, is
    character(len=:), allocatable :: suite_name, test_name
@@ -30,11 +26,7 @@ program tftester
    stat = 0
 
    testsuites = [ &
-      & new_testsuite("build", collect_build), &
-      & new_testsuite("lexer", collect_lexer), &
-      & new_testsuite("parser", collect_parser), &
-      & new_testsuite("sort", collect_sort), &
-      & new_testsuite("utils", collect_utils) &
+      & new_testsuite("lexer", collect_lexer) &
       & ]
 
    call get_argument(1, suite_name)
@@ -71,5 +63,4 @@ program tftester
       write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
       error stop 1
    end if
-
-end program tftester
+end program tester

@@ -17,3 +17,4 @@ Each tutorial is a full example for a specific application covering several aspe
 
    getting-started
    fpm-lint
+   json

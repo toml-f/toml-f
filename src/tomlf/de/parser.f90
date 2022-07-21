@@ -13,9 +13,10 @@
 
 !> Implementation of a parser for transforming a token stream to TOML datastructures.
 module tomlf_de_parser
-   use tomlf_constants, only : tfc, TOML_NEWLINE
+   use tomlf_constants, only : tfc, tfr, tfi, TOML_NEWLINE
+   use tomlf_datetime, only : toml_datetime
    use tomlf_de_context, only : toml_context
-   use tomlf_de_lexer, only : toml_lexer
+   use tomlf_de_abc, only : toml_lexer => abstract_lexer
    use tomlf_de_token, only : toml_token, token_kind, stringify
    use tomlf_diagnostic, only : render, toml_diagnostic, toml_label, toml_level
    use tomlf_terminal, only : toml_terminal
@@ -112,8 +113,8 @@ subroutine parse(lexer, table, config, context, error)
 
    if (present(context)) then
       context = parser%context
-      context%filename = lexer%source
-      context%source = as_string(lexer)//new_line('a')
+      call lexer%get_info("filename", context%filename)
+      call lexer%get_info("source", context%source)
    end if
 end subroutine parse
 
@@ -664,11 +665,15 @@ subroutine syntax_error(diagnostic, lexer, token, message, label)
    !> Label for the token
    character(len=*), intent(in) :: label
 
+   character(:, tfc), allocatable :: filename
+
+   call lexer%get_info("filename", filename)
+
    allocate(diagnostic)
    diagnostic = toml_diagnostic( &
       & toml_level%error, &
       & message, &
-      & lexer%source, &
+      & filename, &
       & [toml_label(toml_level%error, token%first, token%last, label, .true.)])
 end subroutine syntax_error
 
@@ -689,11 +694,15 @@ subroutine semantic_error(diagnostic, lexer, token1, token2, message, label1, la
    !> Label for the second token
    character(len=*), intent(in) :: label2
 
+   character(:, tfc), allocatable :: filename
+
+   call lexer%get_info("filename", filename)
+
    allocate(diagnostic)
    diagnostic = toml_diagnostic( &
       & toml_level%error, &
       & message, &
-      & lexer%source, &
+      & filename, &
       & [toml_label(toml_level%error, token1%first, token1%last, label1, .true.), &
       &  toml_label(toml_level%info, token2%first, token2%last, label2, .false.)])
 end subroutine semantic_error
@@ -722,27 +731,17 @@ subroutine make_error(error, diagnostic, lexer, color)
    !> Diagnostic to be used
    type(toml_diagnostic), intent(in) :: diagnostic
    !> Instance of the lexer providing the context
-   type(toml_lexer), intent(in) :: lexer
+   class(toml_lexer), intent(in) :: lexer
    !> Use colorful error messages
    type(toml_terminal), intent(in) :: color
 
    character(len=:), allocatable :: str
 
    allocate(error)
-   str = as_string(lexer)//new_line('a')
+   call lexer%get_info("source", str)
    error%message = render(diagnostic, str, color)
    error%stat = toml_stat%fatal
 end subroutine make_error
-
-!> Transform lexer content to string
-function as_string(lexer) result(string)
-   !> Instance of the lexer
-   class(toml_lexer), intent(in) :: lexer
-   !> String representing source code
-   character(size(lexer%chunk), tfc) :: string
-
-   string = transfer(lexer%chunk, string)
-end function as_string
 
 !> Wrapper around the lexer to retrieve the next token.
 !> Allows to record the tokens for keys and values in the parser context
@@ -796,8 +795,35 @@ subroutine extract_value(parser, lexer, kval)
    !> Value to be extracted
    type(toml_keyval), intent(inout) :: kval
 
-   call lexer%extract_raw(parser%token, kval%raw)
+   character(:, tfc), allocatable :: sval
+   real(tfr) :: rval
+   integer(tfi) :: ival
+   logical :: bval
+   type(toml_datetime) :: dval
+
    kval%origin_value = parser%context%top
+
+   select case(parser%token%kind)
+   case(token_kind%string, token_kind%literal, token_kind%mstring, token_kind%mliteral)
+      call lexer%extract_string(parser%token, sval)
+      call kval%set(sval)
+
+   case(token_kind%int)
+      call lexer%extract_integer(parser%token, ival)
+      call kval%set(ival)
+
+   case(token_kind%float)
+      call lexer%extract_float(parser%token, rval)
+      call kval%set(rval)
+
+   case(token_kind%bool)
+      call lexer%extract_bool(parser%token, bval)
+      call kval%set(bval)
+
+   case(token_kind%datetime)
+      call lexer%extract_datetime(parser%token, dval)
+      call kval%set(dval)
+   end select
 end subroutine extract_value
 
 !> Try to retrieve TOML table with key or create it

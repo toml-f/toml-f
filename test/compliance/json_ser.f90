@@ -12,12 +12,11 @@
 ! limitations under the License.
 
 !> Implementation of a serializer for TOML values to JSON, used for testing only.
-module tftest_json_ser
+module tjson_ser
    use tomlf_constants
    use tomlf_datetime
    use tomlf_type, only : toml_value, toml_visitor, toml_key, toml_table, &
       & toml_array, toml_keyval, is_array_of_tables, len
-   use tomlf_utils, only : convert_raw, toml_get_value_type
    implicit none
    private
 
@@ -77,12 +76,13 @@ subroutine visit_keyval(visitor, keyval)
    !> TOML value to visit
    type(toml_keyval), intent(inout) :: keyval
 
-   character(kind=tfc, len=:), allocatable :: str
-   character(kind=tfc, len=:), allocatable :: key
-   type(toml_datetime) :: ts
-   integer(tfi) :: idummy
-   real(tfr) :: fdummy
-   logical :: stat, ldummy
+   character(kind=tfc, len=:), allocatable :: str, key
+   character(kind=tfc, len=:), pointer :: sdummy
+   type(toml_datetime), pointer :: ts
+   integer(tfi), pointer :: idummy
+   real(tfr), pointer :: fdummy
+   logical, pointer :: ldummy
+   logical :: stat
 
    call indent(visitor)
 
@@ -91,20 +91,19 @@ subroutine visit_keyval(visitor, keyval)
       write(visitor%unit, '("""", a, """: ")', advance='no') key
    end if
 
-   select case(toml_get_value_type(keyval%raw))
+   select case(keyval%get_type())
    case default
-      call escape_string(keyval%raw, str)
-      write(visitor%unit, '(a,a,a)', advance='no') &
-         &  '{"type": "invalid", "value": "', str, '"}'
+      write(visitor%unit, '(a)', advance='no') &
+         &  '{}'
 
    case(toml_type%string)
-      stat = convert_raw(keyval%raw, key)
-      call escape_string(key, str)
+      call keyval%get(sdummy)
+      call escape_string(sdummy, str)
       write(visitor%unit, '(a,a,a)', advance='no') &
          &  '{"type": "string", "value": "', str, '"}'
 
    case(toml_type%boolean)
-      stat = convert_raw(keyval%raw, ldummy)
+      call keyval%get(ldummy)
       if (ldummy) then
          write(visitor%unit, '(a)', advance='no') &
             &  '{"type": "bool", "value": "true"}'
@@ -114,12 +113,12 @@ subroutine visit_keyval(visitor, keyval)
       end if
 
    case(toml_type%int)
-      stat = convert_raw(keyval%raw, idummy)
+      call keyval%get(idummy)
       write(visitor%unit, '(a,i0,a)', advance='no') &
          &  '{"type": "integer", "value": "', idummy, '"}'
 
    case(toml_type%float)
-      stat = convert_raw(keyval%raw, fdummy)
+      call keyval%get(fdummy)
       write(visitor%unit, '(a)', advance='no') &
          &  '{"type": "float", "value": "'
       if (fdummy > huge(fdummy)) then
@@ -134,7 +133,7 @@ subroutine visit_keyval(visitor, keyval)
       write(visitor%unit, '(a)', advance='no') '"}'
 
    case(toml_type%datetime)
-      stat = convert_raw(keyval%raw, ts)
+      call keyval%get(ts)
       write(visitor%unit, '(a)', advance='no') '{"type": "'
       if (has_date(ts)) write(visitor%unit, '(a)', advance='no') 'date'
       if (has_time(ts)) then
@@ -283,4 +282,4 @@ subroutine escape_string(raw, escaped)
 end subroutine escape_string
 
 
-end module tftest_json_ser
+end module tjson_ser

@@ -12,6 +12,7 @@
 # limitations under the License.
 
 srcs += files(
+  'abc.f90',
   'context.f90',
   'lexer.f90',
   'parser.f90',

@@ -1,6 +1,10 @@
 Getting started
 ===============
 
+.. sectionauthor:: Sebastian Ehlert <@awvwgk>
+.. image:: https://img.shields.io/badge/difficulty-beginner-brightgreen
+   :alt: Difficulty: Beginner
+
 This tutorial provides a gentle introduction to the use of TOML Fortran.
 It will deal with reading as well as creating TOML data structures using the high-level build interface and discuss how to obtain a data structure from a TOML document or turn a data structure to TOML document again.
 

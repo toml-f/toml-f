@@ -13,20 +13,14 @@
 
 module tomlf_utils
    use tomlf_constants
-   use tomlf_datetime, only : toml_datetime, toml_date, toml_time
-   use tomlf_utils_convert
-   use tomlf_utils_verify
+   use tomlf_datetime, only : toml_datetime, toml_date, toml_time, to_string
+   use tomlf_utils_io, only : read_whole_file, read_whole_line
    implicit none
    private
 
-   public :: convert_raw
-   public :: toml_raw_to_string, toml_raw_to_float, toml_raw_to_bool
-   public :: toml_raw_to_integer, toml_raw_to_timestamp
-   public :: toml_raw_verify_string, toml_raw_verify_float, toml_raw_verify_bool
-   public :: toml_raw_verify_integer, toml_raw_verify_timestamp
-   public :: toml_raw_verify_date, toml_raw_verify_time
-   public :: toml_escape_string, toml_get_value_type
+   public :: toml_escape_string
    public :: to_string
+   public :: read_whole_file, read_whole_line
 
 
    interface to_string
@@ -34,44 +28,11 @@ module tomlf_utils
       module procedure :: to_string_i2
       module procedure :: to_string_i4
       module procedure :: to_string_i8
+      module procedure :: to_string_r8
    end interface to_string
 
 
 contains
-
-
-!> Determine TOML value type
-function toml_get_value_type(raw) result(vtype)
-
-   !> Raw representation of TOML string
-   character(kind=tfc, len=*), intent(in) :: raw
-
-   !> Value type
-   integer :: vtype
-
-   if (toml_raw_verify_string(raw)) then
-      vtype = toml_type%string
-      return
-   end if
-   if (toml_raw_verify_bool(raw)) then
-      vtype = toml_type%boolean
-      return
-   end if
-   if (toml_raw_verify_integer(raw)) then
-      vtype = toml_type%int
-      return
-   end if
-   if (toml_raw_verify_float(raw)) then
-      vtype = toml_type%float
-      return
-   end if
-   if (toml_raw_verify_timestamp(raw)) then
-      vtype = toml_type%datetime
-      return
-   end if
-   vtype = toml_type%invalid
-
-end function
 
 
 !> Escape all special characters in a TOML string
@@ -127,23 +88,23 @@ pure function to_string_i1(val) result(string)
    character(len=buffer_len) :: buffer
    integer :: pos
    integer(ik) :: n
-   character(len=1), parameter :: numbers(0:9) = &
-      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+   character(len=1), parameter :: numbers(-9:0) = &
+      ["9", "8", "7", "6", "5", "4", "3", "2", "1", "0"]
 
    if (val == 0_ik) then
       string = numbers(0)
       return
    end if
 
-   n = abs(val)
+   n = sign(val, -1_ik)
    buffer = ""
-
    pos = buffer_len + 1
-   do while (n > 0_ik)
+   do while (n < 0_ik)
       pos = pos - 1
       buffer(pos:pos) = numbers(mod(n, 10_ik))
       n = n/10_ik
    end do
+
    if (val < 0_ik) then
       pos = pos - 1
       buffer(pos:pos) = '-'
@@ -165,23 +126,23 @@ pure function to_string_i2(val) result(string)
    character(len=buffer_len) :: buffer
    integer :: pos
    integer(ik) :: n
-   character(len=1), parameter :: numbers(0:9) = &
-      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+   character(len=1), parameter :: numbers(-9:0) = &
+      ["9", "8", "7", "6", "5", "4", "3", "2", "1", "0"]
 
    if (val == 0_ik) then
       string = numbers(0)
       return
    end if
 
-   n = abs(val)
+   n = sign(val, -1_ik)
    buffer = ""
-
    pos = buffer_len + 1
-   do while (n > 0_ik)
+   do while (n < 0_ik)
       pos = pos - 1
       buffer(pos:pos) = numbers(mod(n, 10_ik))
       n = n/10_ik
    end do
+
    if (val < 0_ik) then
       pos = pos - 1
       buffer(pos:pos) = '-'
@@ -203,23 +164,23 @@ pure function to_string_i4(val) result(string)
    character(len=buffer_len) :: buffer
    integer :: pos
    integer(ik) :: n
-   character(len=1), parameter :: numbers(0:9) = &
-      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+   character(len=1), parameter :: numbers(-9:0) = &
+      ["9", "8", "7", "6", "5", "4", "3", "2", "1", "0"]
 
    if (val == 0_ik) then
       string = numbers(0)
       return
    end if
 
-   n = abs(val)
+   n = sign(val, -1_ik)
    buffer = ""
-
    pos = buffer_len + 1
-   do while (n > 0_ik)
+   do while (n < 0_ik)
       pos = pos - 1
       buffer(pos:pos) = numbers(mod(n, 10_ik))
       n = n/10_ik
    end do
+
    if (val < 0_ik) then
       pos = pos - 1
       buffer(pos:pos) = '-'
@@ -241,23 +202,23 @@ pure function to_string_i8(val) result(string)
    character(len=buffer_len) :: buffer
    integer :: pos
    integer(ik) :: n
-   character(len=1), parameter :: numbers(0:9) = &
-      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+   character(len=1), parameter :: numbers(-9:0) = &
+      ["9", "8", "7", "6", "5", "4", "3", "2", "1", "0"]
 
    if (val == 0_ik) then
       string = numbers(0)
       return
    end if
 
-   n = abs(val)
+   n = sign(val, -1_ik)
    buffer = ""
-
    pos = buffer_len + 1
-   do while (n > 0_ik)
+   do while (n < 0_ik)
       pos = pos - 1
       buffer(pos:pos) = numbers(mod(n, 10_ik))
       n = n/10_ik
    end do
+
    if (val < 0_ik) then
       pos = pos - 1
       buffer(pos:pos) = '-'
@@ -266,5 +227,34 @@ pure function to_string_i8(val) result(string)
    string = buffer(pos:)
 end function to_string_i8
 
+!> Represent an real as character sequence.
+pure function to_string_r8(val) result(string)
+   integer, parameter :: rk = tfr
+   !> Real value to create string from
+   real(rk), intent(in) :: val
+   !> String representation of integer
+   character(len=:), allocatable :: string
+
+   character(128, tfc) :: buffer
+
+   if (val > huge(val)) then
+      string = "+inf"
+   else if (val < -huge(val)) then
+      string = "-inf"
+   else if (val /= val) then
+      string = "nan"
+   else
+      if (abs(val) >= 1.0e+100_rk) then
+         write(buffer, '(es24.16e3)') val
+      else if (abs(val) >= 1.0e+10_rk) then
+         write(buffer, '(es24.16e2)') val
+      else if (abs(val) >= 1.0e+3_rk) then
+         write(buffer, '(es24.16e1)') val
+      else
+         write(buffer, '(f24.16)') val
+      end if
+      string = trim(adjustl(buffer))
+   end if
+end function to_string_r8
 
 end module tomlf_utils

@@ -1,0 +1,10 @@
+name = "tjson"
+
+[library]
+source-dir = "../../../test/compliance"
+
+[dependencies]
+toml-f.path = "../../.."
+
+[dev-dependencies]
+test-drive.git = "https://github.com/fortran-lang/test-drive"

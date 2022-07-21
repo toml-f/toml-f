@@ -17,7 +17,7 @@ module tomlf_error
    implicit none
    private
 
-   public :: toml_stat, toml_error
+   public :: toml_stat, toml_error, make_error
 
 
    !> Possible TOML-Fortran error codes
@@ -54,5 +54,25 @@ module tomlf_error
 
    end type toml_error
 
+
+contains
+
+!> Create new error message
+subroutine make_error(error, message, stat)
+   !> Error report
+   type(toml_error), allocatable, intent(out) :: error
+   !> Message for the error
+   character(*, tfc), intent(in) :: message
+   !> Status code
+   integer, intent(in), optional :: stat
+
+   allocate(error)
+   error%message = message
+   if (present(stat)) then
+      error%stat = stat
+   else
+      error%stat = toml_stat%fatal
+   end if
+end subroutine make_error
 
 end module tomlf_error

@@ -19,3 +19,13 @@ name = "tftest"
 source-dir = "test/unit"
 [test.dependencies]
 test-drive.git = "https://github.com/fortran-lang/test-drive.git"
+
+[[executable]]
+name = "toml2json"
+source-dir = "test/compliance"
+main = "toml2json.f90"
+
+[[executable]]
+name = "json2toml"
+source-dir = "test/compliance"
+main = "json2toml.f90"

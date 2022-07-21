@@ -23,6 +23,7 @@ unittests = [
   'lexer',
   'parser',
   'sort',
+  'utils',
 ]
 
 test_srcs = files('main.f90')
