@@ -33,8 +33,10 @@ module tftest_json_lexer
       character(len=:), allocatable :: filename
       !> Current internal position in the source chunk
       integer :: pos = 0
-      !> Current source chunk, for convenience stored as character array rather than string
+      !> Current source chunk
       character(:, tfc), allocatable :: chunk
+      !> Additional tokens to insert before the actual token stream
+      integer :: prelude = 2
    contains
       !> Obtain the next token
       procedure :: next
@@ -71,7 +73,6 @@ subroutine new_lexer_from_file(lexer, filename, error)
    lexer%pos = 0
    lexer%filename = filename
    call read_whole_file(filename, lexer%chunk, stat)
-   lexer%chunk = """_"":" // lexer%chunk
 
    if (stat /= 0) then
       call make_error(error, "Could not open file '"//filename//"'")
@@ -126,12 +127,8 @@ subroutine new_lexer_from_string(lexer, string)
    !> String to read from
    character(len=*), intent(in) :: string
 
-   integer :: length
-   character(1, tfc) :: ch
-
-   length = len(string)
    lexer%pos = 0
-   lexer%chunk = """_"":" // string
+   lexer%chunk = string
 end subroutine new_lexer_from_string
 
 !> Advance to the next token in the lexer
@@ -140,6 +137,15 @@ subroutine next(lexer, token)
    class(json_lexer), intent(inout) :: lexer
    !> Current token
    type(toml_token), intent(inout) :: token
+
+   type(toml_token), parameter :: prelude(2) = &
+      [toml_token(token_kind%equal, 1, 0), toml_token(token_kind%keypath, 1, 0)]
+
+   if (lexer%prelude > 0) then
+      token = prelude(lexer%prelude)
+      lexer%prelude = lexer%prelude - 1
+      return
+   end if
 
    call next_token(lexer, token)
 end subroutine next
@@ -165,37 +171,50 @@ subroutine next_token(lexer, token)
    end if
 
    select case(lexer%chunk(pos:pos))
-   case(tfc_" ", TOML_TABULATOR, TOML_NEWLINE, TOML_CARRIAGE_RETURN)
-      do while(any(lexer%chunk(pos+1:pos+1) == [tfc_" ", TOML_TABULATOR, TOML_NEWLINE, &
+   case(" ", TOML_TABULATOR, TOML_NEWLINE, TOML_CARRIAGE_RETURN)
+      do while(any(lexer%chunk(pos+1:pos+1) == [" ", TOML_TABULATOR, TOML_NEWLINE, &
             & TOML_CARRIAGE_RETURN]) .and. pos < len(lexer%chunk))
          pos = pos + 1
       end do
       token = toml_token(token_kind%whitespace, prev, pos)
-   case(tfc_":")
+      return
+   case(":")
       token = toml_token(token_kind%equal, prev, pos)
-   case(tfc_"{")
+      return
+   case("{")
       token = toml_token(token_kind%lbrace, prev, pos)
-   case(tfc_"}")
+      return
+   case("}")
       token = toml_token(token_kind%rbrace, prev, pos)
-   case(tfc_"[")
+      return
+   case("[")
       token = toml_token(token_kind%lbracket, prev, pos)
-   case(tfc_"]")
+      return
+   case("]")
       token = toml_token(token_kind%rbracket, prev, pos)
-   case(tfc_"""")
+      return
+   case('"')
       call next_string(lexer, token)
-   case(tfc_",")
+      return
+   case("-", "0":"9")
+      call next_number(lexer, token)
+      if (token%kind /= token_kind%invalid) return
+   case("t", "f")
+      call next_boolean(lexer, token)
+      return
+   case(",")
       token = toml_token(token_kind%comma, prev, pos)
-   case default
-      ! If the current token is invalid, advance to the next terminator
-      do while(verify(lexer%chunk(pos+1:pos+1), terminated) > 0 .and. pos < len(lexer%chunk))
-         pos = pos + 1
-      end do
-      token = toml_token(token_kind%invalid, prev, pos)
+      return
    end select
 
+   ! If the current token is invalid, advance to the next terminator
+   do while(verify(lexer%chunk(pos+1:pos+1), terminated) > 0 .and. pos < len(lexer%chunk))
+      pos = pos + 1
+   end do
+   token = toml_token(token_kind%invalid, prev, pos)
 end subroutine next_token
 
-!> Process next string token, can produce normal string and multiline string tokens
+!> Process next string token
 subroutine next_string(lexer, token)
    !> Instance of the lexer
    type(json_lexer), intent(inout) :: lexer
@@ -203,7 +222,7 @@ subroutine next_string(lexer, token)
    type(toml_token), intent(inout) :: token
 
    character(1, tfc) :: ch
-   character(*, tfc), parameter :: hex = "0123456789ABCDEFabcdef", valid_escape = "btnfr\"""
+   character(*, tfc), parameter :: hex = "0123456789ABCDEFabcdef", valid_escape = 'btnfr\"'
    integer :: prev, pos, expect, it
    logical :: escape, valid, space
 
@@ -233,8 +252,8 @@ subroutine next_string(lexer, token)
          valid = valid .and. verify(ch, hex) == 0
          cycle
       end if
-      escape = ch == tfc_"\"
-      if (ch == tfc_"""") exit
+      escape = ch == "\"
+      if (ch == '"') exit
       if (ch == TOML_NEWLINE) then
          pos = pos - 1
          valid = .false.
@@ -242,9 +261,104 @@ subroutine next_string(lexer, token)
       end if
    end do
 
-   valid = valid .and. lexer%chunk(pos:pos) == """" .and. pos /= prev
+   valid = valid .and. lexer%chunk(pos:pos) == '"' .and. pos /= prev
    token = toml_token(merge(token_kind%string, token_kind%invalid, valid), prev, pos)
 end subroutine next_string
+
+!> Process next number token, can produce either integer or floats
+subroutine next_number(lexer, token)
+   !> Instance of the lexer
+   type(json_lexer), intent(inout) :: lexer
+   !> Current token
+   type(toml_token), intent(inout) :: token
+
+   integer :: prev, pos
+   logical :: minus, point, expo, okay, zero, first
+   character(1, tfc) :: ch
+   integer, parameter :: offset(*) = [0, 1, 2]
+
+   prev = lexer%pos
+   pos = lexer%pos
+   point = .false.
+   expo = .false.
+   zero = .false.
+   first = .true.
+   minus = lexer%chunk(pos:pos) == "-"
+   if (minus) pos = pos + 1
+
+   do while(pos <= len(lexer%chunk))
+      ch = lexer%chunk(pos:pos)
+      if (ch == ".") then
+         if (point .or. expo) then
+            token = toml_token(token_kind%invalid, prev, pos)
+            return
+         end if
+         zero = .false.
+         point = .true.
+         pos = pos + 1
+         cycle
+      end if
+
+      if (ch == "e" .or. ch == "E") then
+         if (expo) then
+            token = toml_token(token_kind%invalid, prev, pos)
+            return
+         end if
+         zero = .false.
+         expo = .true.
+         pos = pos + 1
+         cycle
+      end if
+
+      if (ch == "+" .or. ch == "-") then
+         if (.not.any(lexer%chunk(pos-1:pos-1) == ["e", "E"])) then
+            token = toml_token(token_kind%invalid, prev, pos)
+            return
+         end if
+         pos = pos + 1
+         cycle
+      end if
+
+      if (verify(ch, "0123456789") == 0) then
+         if (zero) then
+            token = toml_token(token_kind%invalid, prev, pos)
+            return
+         end if
+         zero = first .and. ch == "0"
+         first = .false.
+         pos = pos + 1
+         cycle
+      end if
+
+      exit
+   end do
+
+   token = toml_token(merge(token_kind%float, token_kind%int, expo .or. point), prev, pos-1)
+end subroutine next_number
+
+!> Process next boolean token
+subroutine next_boolean(lexer, token)
+   !> Instance of the lexer
+   type(json_lexer), intent(inout) :: lexer
+   !> Current token
+   type(toml_token), intent(inout) :: token
+
+   integer :: pos, prev
+
+   prev = lexer%pos
+   pos = lexer%pos
+
+   do while(verify(lexer%chunk(pos+1:pos+1), terminated) > 0 .and. pos < len(lexer%chunk))
+      pos = pos + 1
+   end do
+
+   select case(lexer%chunk(prev:pos))
+   case default
+      token = toml_token(token_kind%invalid, prev, pos)
+   case("true", "false")
+      token = toml_token(token_kind%bool, prev, pos)
+   end select
+end subroutine next_boolean
 
 !> Validate characters in string, non-printable characters are invalid in this context
 pure function valid_string(ch) result(valid)
@@ -258,40 +372,9 @@ pure function valid_string(ch) result(valid)
       & .not.(x00 <= ch .and. ch <= x08) .and. &
       & .not.(x0b <= ch .and. ch <= x1f) .and. &
       & ch /= x7f
-end function
+end function valid_string
 
-!> Show current character
-elemental function peek(lexer, pos) result(ch)
-   !> Instance of the lexer
-   type(json_lexer), intent(in) :: lexer
-   !> Position to fetch character from
-   integer, intent(in) :: pos
-   !> Character found
-   character(1, tfc) :: ch
-
-   if (pos <= len(lexer%chunk)) then
-      ch = lexer%chunk(pos:pos)
-   else
-      ch = " "
-   end if
-end function peek
-
-!> Compare a character
-elemental function match(lexer, pos, kind)
-   !> Instance of the lexer
-   type(json_lexer), intent(in) :: lexer
-   !> Position to fetch character from
-   integer, intent(in) :: pos
-   !> Character to compare against
-   character(1, tfc), intent(in) :: kind
-   !> Characters match
-   logical :: match
-
-   match = peek(lexer, pos) == kind
-end function match
-
-!> Extract string value of token, works for keypath, string, multiline string, literal,
-!> and mulitline literal tokens.
+!> Extract string value of token
 subroutine extract_string(lexer, token, string)
    !> Instance of the lexer
    class(json_lexer), intent(in) :: lexer
@@ -301,21 +384,23 @@ subroutine extract_string(lexer, token, string)
    character(len=:), allocatable, intent(out) :: string
 
    integer :: it, length
-   logical :: escape, leading_newline
+   logical :: escape
    character(1, tfc) :: ch
 
    length = token%last - token%first + 1
 
    select case(token%kind)
+   case(token_kind%keypath)  ! dummy token inserted by lexer prelude
+      string = "_"
    case(token_kind%string)
       string = ""
       escape = .false.
       do it = token%first + 1, token%last - 1
-         ch = peek(lexer, it)
+         ch = lexer%chunk(it:it)
          if (escape) then
             escape = .false.
             select case(ch)
-            case("""", "\");  string = string // ch
+            case('"', "\");  string = string // ch
             case("b"); string = string // TOML_BACKSPACE
             case("t"); string = string // TOML_TABULATOR
             case("n"); string = string // TOML_NEWLINE
@@ -328,10 +413,7 @@ subroutine extract_string(lexer, token, string)
          escape = ch == "\"
          if (.not.escape) string = string // ch
       end do
-   case(token_kind%keypath)
-      string = ""
    end select
-
 end subroutine extract_string
 
 !> Extract integer value of token
@@ -343,27 +425,26 @@ subroutine extract_integer(lexer, token, val)
    !> Integer value of token
    integer(tfi), intent(out) :: val
 
-   integer :: first, base, it, tmp
+   integer :: first, it, tmp
    character(1, tfc) :: ch
-   character(*, tfc), parameter :: num = tfc_"0123456789"
+   character(*, tfc), parameter :: num = "0123456789"
 
    if (token%kind /= token_kind%int) return
 
    val = 0
-   base = 10
    first = token%first
 
-   if (peek(lexer, first) == tfc_"-") first = first + 1
-   if (peek(lexer, first) == tfc_"0") return
+   if (lexer%chunk(first:first) == "-") first = first + 1
+   if (lexer%chunk(first:first) == "0") return
 
    do it = first, token%last
-      ch = peek(lexer, it)
+      ch = lexer%chunk(it:it)
       tmp = scan(num, ch) - 1
       if (tmp < 0) cycle
-      val = val * base + tmp
+      val = val * 10 - tmp
    end do
 
-   if (match(lexer, token%first, tfc_"-")) val = -val
+   if (lexer%chunk(token%first:token%first) /= "-") val = -val
 end subroutine extract_integer
 
 !> Extract floating point value of token
@@ -395,7 +476,7 @@ subroutine extract_bool(lexer, token, val)
 
    if (token%kind /= token_kind%bool) return
 
-   val = peek(lexer, token%first) == "t"
+   val = lexer%chunk(token%first:token%last) == "true"
 end subroutine extract_bool
 
 !> Extract datetime value of token

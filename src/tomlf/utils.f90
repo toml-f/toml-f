@@ -88,32 +88,26 @@ pure function to_string_i1(val) result(string)
    character(len=buffer_len) :: buffer
    integer :: pos
    integer(ik) :: n
-   character(len=1), parameter :: numbers(0:9) = &
-      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+   character(len=1), parameter :: numbers(-9:0) = &
+      ["9", "8", "7", "6", "5", "4", "3", "2", "1", "0"]
 
    if (val == 0_ik) then
       string = numbers(0)
       return
    end if
 
-   n = val
+   n = sign(val, -1_ik)
    buffer = ""
    pos = buffer_len + 1
-   if (val < 0_ik) then
-      do while (n < 0_ik)
-         pos = pos - 1
-         buffer(pos:pos) = numbers(abs(mod(n, 10_ik)))
-         n = n/10_ik
-      end do
+   do while (n < 0_ik)
+      pos = pos - 1
+      buffer(pos:pos) = numbers(mod(n, 10_ik))
+      n = n/10_ik
+   end do
 
+   if (val < 0_ik) then
       pos = pos - 1
       buffer(pos:pos) = '-'
-   else
-      do while (n > 0_ik)
-         pos = pos - 1
-         buffer(pos:pos) = numbers(mod(n, 10_ik))
-         n = n/10_ik
-      end do
    end if
 
    string = buffer(pos:)
@@ -132,32 +126,26 @@ pure function to_string_i2(val) result(string)
    character(len=buffer_len) :: buffer
    integer :: pos
    integer(ik) :: n
-   character(len=1), parameter :: numbers(0:9) = &
-      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+   character(len=1), parameter :: numbers(-9:0) = &
+      ["9", "8", "7", "6", "5", "4", "3", "2", "1", "0"]
 
    if (val == 0_ik) then
       string = numbers(0)
       return
    end if
 
-   n = val
+   n = sign(val, -1_ik)
    buffer = ""
    pos = buffer_len + 1
-   if (val < 0_ik) then
-      do while (n < 0_ik)
-         pos = pos - 1
-         buffer(pos:pos) = numbers(abs(mod(n, 10_ik)))
-         n = n/10_ik
-      end do
+   do while (n < 0_ik)
+      pos = pos - 1
+      buffer(pos:pos) = numbers(mod(n, 10_ik))
+      n = n/10_ik
+   end do
 
+   if (val < 0_ik) then
       pos = pos - 1
       buffer(pos:pos) = '-'
-   else
-      do while (n > 0_ik)
-         pos = pos - 1
-         buffer(pos:pos) = numbers(mod(n, 10_ik))
-         n = n/10_ik
-      end do
    end if
 
    string = buffer(pos:)
@@ -176,32 +164,26 @@ pure function to_string_i4(val) result(string)
    character(len=buffer_len) :: buffer
    integer :: pos
    integer(ik) :: n
-   character(len=1), parameter :: numbers(0:9) = &
-      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+   character(len=1), parameter :: numbers(-9:0) = &
+      ["9", "8", "7", "6", "5", "4", "3", "2", "1", "0"]
 
    if (val == 0_ik) then
       string = numbers(0)
       return
    end if
 
-   n = val
+   n = sign(val, -1_ik)
    buffer = ""
    pos = buffer_len + 1
-   if (val < 0_ik) then
-      do while (n < 0_ik)
-         pos = pos - 1
-         buffer(pos:pos) = numbers(abs(mod(n, 10_ik)))
-         n = n/10_ik
-      end do
+   do while (n < 0_ik)
+      pos = pos - 1
+      buffer(pos:pos) = numbers(mod(n, 10_ik))
+      n = n/10_ik
+   end do
 
+   if (val < 0_ik) then
       pos = pos - 1
       buffer(pos:pos) = '-'
-   else
-      do while (n > 0_ik)
-         pos = pos - 1
-         buffer(pos:pos) = numbers(mod(n, 10_ik))
-         n = n/10_ik
-      end do
    end if
 
    string = buffer(pos:)
@@ -220,32 +202,26 @@ pure function to_string_i8(val) result(string)
    character(len=buffer_len) :: buffer
    integer :: pos
    integer(ik) :: n
-   character(len=1), parameter :: numbers(0:9) = &
-      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+   character(len=1), parameter :: numbers(-9:0) = &
+      ["9", "8", "7", "6", "5", "4", "3", "2", "1", "0"]
 
    if (val == 0_ik) then
       string = numbers(0)
       return
    end if
 
-   n = val
+   n = sign(val, -1_ik)
    buffer = ""
    pos = buffer_len + 1
-   if (val < 0_ik) then
-      do while (n < 0_ik)
-         pos = pos - 1
-         buffer(pos:pos) = numbers(abs(mod(n, 10_ik)))
-         n = n/10_ik
-      end do
+   do while (n < 0_ik)
+      pos = pos - 1
+      buffer(pos:pos) = numbers(mod(n, 10_ik))
+      n = n/10_ik
+   end do
 
+   if (val < 0_ik) then
       pos = pos - 1
       buffer(pos:pos) = '-'
-   else
-      do while (n > 0_ik)
-         pos = pos - 1
-         buffer(pos:pos) = numbers(mod(n, 10_ik))
-         n = n/10_ik
-      end do
    end if
 
    string = buffer(pos:)
