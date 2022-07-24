@@ -185,7 +185,7 @@ In general, this is the right place to buffer tokens, perform overflow checks, o
 .. literalinclude:: ../../test/compliance/json_lexer.f90
    :language: fortran
    :caption: src/json_lexer.f90 (next)
-   :lines: 143-157
+   :lines: 143-160
 
 This will direct the parser to leave the root document where newlines are semantically relevant since we cannot produce such newline tokens in our JSON lexer.
 
