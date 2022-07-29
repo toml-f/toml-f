@@ -49,7 +49,8 @@ subroutine collect_build(testsuite)
       & new_unittest("table-int-i8", table_int_i8), &
       & new_unittest("table-bool", table_bool), &
       & new_unittest("table-string", table_string), &
-      & new_unittest("table-merge", table_merge)]
+      & new_unittest("table-merge-append", table_merge_append), &
+      & new_unittest("table-merge-overwrite", table_merge_overwrite)]
 
 end subroutine collect_build
 
@@ -649,7 +650,7 @@ end subroutine array_merge
 
 
 !> Merge two tables
-subroutine table_merge(error)
+subroutine table_merge_append(error)
    use tomlf_type, only : toml_table, add_table, new_table, toml_key
 
    !> Error handling
@@ -691,7 +692,53 @@ subroutine table_merge(error)
    call check(error, stat)
    if (allocated(error)) return
 
-end subroutine table_merge
+end subroutine table_merge_append
+
+
+!> Merge two tables
+subroutine table_merge_overwrite(error)
+   use tomlf_type, only : toml_table, add_table, new_table, toml_key
+
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   type(toml_table) :: table1, table2
+   type(toml_table), pointer :: child
+   type(toml_key), allocatable :: list(:)
+   logical :: val
+   integer :: stat
+
+   table1 = toml_table()
+
+   call set_value(table1, "first", 10, stat)
+   call set_value(table1, "second", "string", stat)
+   call set_value(table1, "third", 1.0e-7, stat)
+   call add_table(table1, "fourth", child, stat)
+   call set_value(child, "child", .true., stat)
+
+   call new_table(table2)
+
+   call set_value(table2, "val", 12, stat)
+   call set_value(table2, "key", "content", stat)
+   call set_value(table2, "entry", -1.0e-7, stat)
+   call set_value(table2, "third", .false., stat)
+   call add_table(table2, "section", child, stat)
+   call set_value(child, "sub", .false., stat)
+   call add_table(table2, "fourth", child, stat)
+
+   call merge_table(table1, table2, toml_merge_config(keyval="overwrite"))
+   call table2%destroy
+
+   call table1%get_keys(list)
+
+   call check(error, size(list), 8)
+   if (allocated(error)) return
+
+   call get_value(table1, "third", val, stat=stat)
+   call check(error, stat)
+   if (allocated(error)) return
+
+end subroutine table_merge_overwrite
 
 
 end module tftest_build
