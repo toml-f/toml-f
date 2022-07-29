@@ -116,6 +116,7 @@ recursive subroutine merge_table(lhs, rhs, config)
    type(toml_merge_config) :: policy
    type(toml_key), allocatable :: list(:)
    class(toml_value), pointer :: ptr1, ptr2
+   class(toml_keyval), pointer :: kv
    class(toml_value), allocatable :: tmp
    logical :: has_key
    integer :: i, n, stat
@@ -138,9 +139,9 @@ recursive subroutine merge_table(lhs, rhs, config)
          end if
          if (.not.has_key) then
             allocate(tmp, source=ptr1)
-            ptr1 => cast_to_keyval(tmp)
-            ptr1%origin_value = 0
-            ptr1%origin = 0
+            kv => cast_to_keyval(tmp)
+            kv%origin_value = 0
+            kv%origin = 0
             call lhs%push_back(tmp, stat)
          end if
 
