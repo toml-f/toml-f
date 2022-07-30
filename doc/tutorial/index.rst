@@ -14,7 +14,12 @@ Each tutorial is a full example for a specific application covering several aspe
 
 
 .. toctree::
+   :caption: Difficulty: Beginner
 
    getting-started
    fpm-lint
+
+.. toctree::
+   :caption: Difficulty: Intermediate
+
    json

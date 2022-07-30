@@ -6,20 +6,419 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toml-f 0.2.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-17 20:02+0200\n"
+"POT-Creation-Date: 2022-07-30 16:12+0200\n"
 "PO-Revision-Date: 2022-04-10 18:03+0200\n"
 "Last-Translator: Sebastian Ehlert\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.2\n"
+"Generated-By: Babel 2.10.3\n"
 
-#: ../doc/how-to/index.rst:4
+#: ../how-to/array.rst:2
+msgid "Working with arrays"
+msgstr ""
+
+#: ../how-to/array.rst:4
+msgid ""
+"TOML supports *array* data types: flat, ordered containers holding "
+"multiple values. Arrays are dynamically sized (*i.e.* do not need specify"
+" the number of elements before using an array) and can contain elements "
+"of any type supported by TOML."
+msgstr ""
+
+#: ../how-to/array.rst:7
+msgid ""
+"The following program parses and stores an array of integers then prints "
+"the values to stdout:"
+msgstr ""
+
+#: ../how-to/array.rst:9
+msgid "app/parse_array.f90"
+msgstr ""
+
+#: ../how-to/array.rst:14
+msgid ""
+"The simplest way to parse an array-valued key in TOML Fortran is to use "
+"the ``get_value`` interface, which has an overload to handle arrays. "
+"First, we need to use a temporary variable ``arr`` (of type "
+"``toml_array``), as the array's elements can be of potentially any type. "
+"``arr`` is automatically associated and allocated by ``get_value``, which"
+" we can use to determine how much space is needed to store the array's "
+"contents. Finally, we must iterate over all elements of the temporary "
+"``toml_array`` and assign them to an element in our final data structure "
+"``arr_data`` (which is a standard Fortran array)."
+msgstr ""
+
+#: ../how-to/array.rst:19
+msgid ""
+"As a test, let's run the above program using the following TOML table "
+"(``array.toml``):"
+msgstr ""
+
+#: ../how-to/array.rst:21
+msgid "array.toml"
+msgstr ""
+
+#: ../how-to/array.rst:26
+msgid "This produces the following output:"
+msgstr ""
+
+#: ../how-to/array.rst:32
+msgid ""
+"As mentioned above, TOML arrays can contain elements of any type "
+"supported by TOML. The TOML standard even supports heterogeneous arrays "
+"containing elements of multiple different types. TOML Fortran supports "
+"this through the generic ``toml_array`` type."
+msgstr ""
+
+#: ../how-to/array.rst:36
+msgid ""
+"Elements of ``toml_array`` may be of any value but require extra "
+"processing before they can be used in most Fortran programs, since "
+"Fortran arrays must only contain elements of a single type known at "
+"compile time. This is achieved through the generic ``get_value`` "
+"interface, which automatically coerces elements of the ``toml_array`` to "
+"the correct type based on the variable it is copied to."
+msgstr ""
+
+#: ../how-to/array.rst:41
+msgid ""
+"The value in ``get_value`` is an ``intent(out)`` argument, in case the "
+"input and output parameter are incompatible, it is not initialized and "
+"the actual value is dependent on the compiler settings. By passing an "
+"integer value to the optional *stat* argument, the procedure will return "
+"a non-zero value to indicate an error."
+msgstr ""
+
+#: ../how-to/array.rst:46
+msgid "Accessing nested arrays"
+msgstr ""
+
+#: ../how-to/array.rst:48
+msgid ""
+"TOML arrays can be nested to produce an *array-of-arrays*. Both the top-"
+"level and nested child arrays are potentially variable-length and can "
+"contain any TOML data-type (including further nested arrays)."
+msgstr ""
+
+#: ../how-to/array.rst:50
+msgid ""
+"The following program reads a TOML file with an array-of-arrays nested a "
+"single level deep, and prints its values to stdout:"
+msgstr ""
+
+#: ../how-to/array.rst:52
+msgid "app/nested_array.f90"
+msgstr ""
+
+#: ../how-to/array.rst:56
+msgid ""
+"First, we need to call ``get_value`` to get a pointer to the top-level "
+"array then iterate through its elements, calling ``get_value`` on each to"
+" get a pointer to the child array. Finally, we iterate through the "
+"individual sub-arrays and process their elements one-by-one."
+msgstr ""
+
+#: ../how-to/array.rst:59
+msgid ""
+"This approach has the advantage of being able to deal with nested arrays "
+"of arbitrary length, such as the TOML table below:"
+msgstr ""
+
+#: ../how-to/array.rst:65
+msgid "Which produces the following output:"
+msgstr ""
+
+#: ../how-to/array.rst:78
+msgid ""
+"A TOML array-of-arrays does not necessarily map cleanly to a regular "
+"Fortran multidimensional array. Multidimensional Fortran arrays must be "
+"rectangular (*i.e.* rows must contain the same number of elements), so an"
+" array-of-arrays with variable sized nested arrays cannot be directly "
+"mapped to a primitive Fortran type and must be represented using a "
+"compound data type."
+msgstr ""
+
+#: ../how-to/error.rst:2
+msgid "Reporting errors"
+msgstr ""
+
+#: ../how-to/error.rst:4
+msgid ""
+"TOML data structures can record their origin in the original TOML "
+"document, which can be used to report errors with rich context "
+"information. The recipes here describe how to obtain the context for "
+"producing error messages and diagnostics using the origin information of "
+"the data structures."
+msgstr ""
+
+#: ../how-to/error.rst:9
+msgid "Loading with rich context"
+msgstr ""
+
+#: ../how-to/error.rst:11
+msgid ""
+"To make use of the origin information, the context from loading the "
+"document has to be preserved. This can be archived by passing the "
+"optional ``context`` argument to the loading interface to request the "
+"document context to be exported. To obtain the context object we have to "
+"request it when reading the TOML document."
+msgstr ""
+
+#: ../how-to/error.rst:15 ../how-to/error.rst:36 ../how-to/error.rst:127
+#: ../how-to/error.rst:157 ../how-to/error.rst:240
+msgid "app/main.f90"
+msgstr ""
+
+#: ../how-to/error.rst:20
+msgid "We define a simple data type for a configuration for this recipe."
+msgstr ""
+
+#: ../how-to/error.rst:22 ../how-to/error.rst:29 ../how-to/error.rst:59
+#: ../how-to/error.rst:90
+msgid "src/config.f90"
+msgstr ""
+
+#: ../how-to/error.rst:27
+msgid ""
+"To report errors, we now not only use the TOML data structure, but also a"
+" context object, which allows us to create the report."
+msgstr ""
+
+#: ../how-to/error.rst:34
+msgid ""
+"To provide the data structure we create a simple driver to read a TOML "
+"document."
+msgstr ""
+
+#: ../how-to/error.rst:40
+msgid ""
+"Now we can try with an incorrect configuration file, where we pass a "
+"string instead of a float to our option."
+msgstr ""
+
+#: ../how-to/error.rst:42 ../how-to/error.rst:66 ../how-to/error.rst:102
+msgid "config.toml"
+msgstr ""
+
+#: ../how-to/error.rst:46
+msgid ""
+"The error message is produced and shows the exact origin of the value in "
+"the document."
+msgstr ""
+
+#: ../how-to/error.rst:57
+msgid ""
+"Now we also have to handle the case where the value can be read "
+"correctly, but is incorrect for our application, like a negative "
+"timestep."
+msgstr ""
+
+#: ../how-to/error.rst:64
+msgid ""
+"The origin information will still be available and allow us to make a "
+"rich report about the error in the input."
+msgstr ""
+
+#: ../how-to/error.rst:70
+msgid "The resulting error message is shown below."
+msgstr ""
+
+#: ../how-to/error.rst:83
+msgid ""
+"Each TOML data structure has an *origin* attribute, which can be used "
+"together with the report function of the context. In case the origin "
+"cannot be mapped to a single token, *e.g.* for the root table, the value "
+"of the origin will be zero. The report function will only produce labels "
+"for non-zero origins and gracefully ignore data without origin in the "
+"current context."
+msgstr ""
+
+#: ../how-to/error.rst:87
+msgid ""
+"The reporting function is not limited to errors, it can also produce "
+"warnings or informational messages. For this purpose, we select the "
+"appropriate ``toml_level`` for the report."
+msgstr ""
+
+#: ../how-to/error.rst:97
+msgid ""
+"The ``toml_level`` parameter provides a statically initialized derived "
+"type enumerating all available report levels. You can think of it as an "
+"enumerator with a proper namespace."
+msgstr ""
+
+#: ../how-to/error.rst:100
+msgid "We can test this for the following example."
+msgstr ""
+
+#: ../how-to/error.rst:106
+msgid "The resulting warning is shown below."
+msgstr ""
+
+#: ../how-to/error.rst
+msgid "full source"
+msgstr ""
+
+#: ../how-to/error.rst:119
+msgid "The full *demo_config* module is given here."
+msgstr ""
+
+#: ../how-to/error.rst:121 ../how-to/error.rst:142 ../how-to/error.rst:150
+#: ../how-to/error.rst:185 ../how-to/error.rst:234
+msgid "src/dependency.f90"
+msgstr ""
+
+#: ../how-to/error.rst:125
+msgid "The driver for running the examples is given below."
+msgstr ""
+
+#: ../how-to/error.rst:133
+msgid "Multiline reports"
+msgstr ""
+
+#: ../how-to/error.rst:135
+msgid ""
+"In some cases, multiple labels are required to express the context of the"
+" report correctly. This feature is available with the context object, by "
+"providing the origin of the two data structures in the reporting "
+"function."
+msgstr ""
+
+#: ../how-to/error.rst:138
+msgid ""
+"An example of this is the dependency table in fpm, where we can either "
+"provide a local dependency using the *path* key or a remote dependency "
+"using the *git* key, but not both at the same time."
+msgstr ""
+
+#: ../how-to/error.rst:140
+msgid ""
+"We declare a simple dummy dependency storing only the dependency name for"
+" demonstration purposes."
+msgstr ""
+
+#: ../how-to/error.rst:147
+msgid ""
+"We iterate over the list of all subtables in the dependency table and "
+"read the actual dependency. In case an entry is not a subtable we will "
+"raise an error, since a package manifest can contain multiple dependency "
+"tables, we will report which table we are currently in as additional "
+"context."
+msgstr ""
+
+#: ../how-to/error.rst:155
+msgid ""
+"To provide the *dependencies* table we create a simple driver to read a "
+"TOML document."
+msgstr ""
+
+#: ../how-to/error.rst:161
+msgid "An example triggering the error is shown below."
+msgstr ""
+
+#: ../how-to/error.rst:163 ../how-to/error.rst:194 ../how-to/error.rst:213
+#: ../how-to/integration.rst:15
+msgid "fpm.toml"
+msgstr ""
+
+#: ../how-to/error.rst:167
+msgid ""
+"Running this example will produce the following error showing lines 1 and"
+" 3 of our example input."
+msgstr ""
+
+#: ../how-to/error.rst:181
+msgid ""
+"Now we want to implement the actual conflicting case described above. "
+"Here we just read the two strings from the *git* and *path* entry. Note "
+"that the *get_value* interface will not allocate the string if no value "
+"is present, which allows to conveniently check for success via allocation"
+" status of the strings."
+msgstr ""
+
+#: ../how-to/error.rst:190
+msgid ""
+"To preserve the order from the input we can compare the *origin* values "
+"of the two retrieved strings and produce the appropriate error message."
+msgstr ""
+
+#: ../how-to/error.rst:192
+msgid ""
+"In this example, the *git* entry was defined first and a conflicting "
+"*path* entry is provided afterward."
+msgstr ""
+
+#: ../how-to/error.rst:198
+msgid "The order is reported correctly in the produced error message shown below."
+msgstr ""
+
+#: ../how-to/error.rst:211
+msgid "The other way round is also possible as shown in this example."
+msgstr ""
+
+#: ../how-to/error.rst:217
+msgid ""
+"The error message is adjusted accordingly and now reports a conflicting "
+"*git* entry to the already defined *path* entry."
+msgstr ""
+
+#: ../how-to/error.rst:232
+msgid "The full *demo_dependency* module is given provided below."
+msgstr ""
+
+#: ../how-to/error.rst:238
+msgid "The driver for the examples is given here."
+msgstr ""
+
+#: ../how-to/error.rst:246
+msgid "Color support"
+msgstr ""
+
+#: ../how-to/error.rst:248
+msgid ""
+"All reports also support colorful terminal output. For this purpose, we "
+"can use the provided *toml_terminal* which can be instantiated with color"
+" support."
+msgstr ""
+
+#: ../how-to/error.rst:259
+msgid ""
+"To activate the color support for error messages produced in the load "
+"interface the optional argument *config* takes a *toml_parser_config* "
+"instance."
+msgstr ""
+
+#: ../how-to/error.rst:265
+msgid ""
+"Alternatively, an instance of a *toml_terminal* can be passed to the "
+"*toml_parser_config* constructor."
+msgstr ""
+
+#: ../how-to/error.rst:267
+msgid ""
+"For working with the *context* instance returned by the load interface we"
+" need a terminal to activate the colorful output passed to the optional "
+"*color* argument."
+msgstr ""
+
+#: ../how-to/error.rst:274
+msgid "The *terminal* can also be used to colorize regular text output."
+msgstr ""
+
+#: ../how-to/error.rst:285
+msgid ""
+"If the terminal is not initialized or the color support is explicitly "
+"disabled by passing ``.false.`` to the constructor, the output will be "
+"plain text."
+msgstr ""
+
+#: ../how-to/index.rst:4
 msgid "How-to guides"
 msgstr ""
 
-#: ../doc/how-to/index.rst:6
+#: ../how-to/index.rst:6
 msgid ""
 "This section contains practical guides for working with TOML Fortran. "
 "Each recipe is tailored for a specific problem and use case it is trying "
@@ -29,11 +428,11 @@ msgstr ""
 "Fortran. Jede Rezepte ist für eine bestimmte Problem- und Nutzungs-"
 "Szenarien angepasst."
 
-#: ../doc/how-to/index.rst:9
+#: ../how-to/index.rst:9
 msgid "Contributions are welcome!"
 msgstr "Beiträge sind willkommen!"
 
-#: ../doc/how-to/index.rst:12
+#: ../how-to/index.rst:12
 msgid ""
 "If you have written on TOML Fortran and want to contribute to the "
 "documentation, feel free to fork the repository and submit a pull "
@@ -43,11 +442,11 @@ msgstr ""
 "beigetreten möchtest, dann kannst Du das Repository forken und eine Pull "
 "Request öffnen."
 
-#: ../doc/how-to/installation.rst:4
+#: ../how-to/installation.rst:4
 msgid "Installing TOML Fortran"
 msgstr "Installieren von TOML Fortran"
 
-#: ../doc/how-to/installation.rst:6
+#: ../how-to/installation.rst:6
 msgid ""
 "This guide will walk you through installing the latest version of TOML "
 "Fortran. If you know your way around fpm, CMake or meson, checkout the "
@@ -60,14 +459,14 @@ msgstr ""
 "automatisch in mitzukompilieren oder bereits installierte Bibliotheken zu"
 " finden."
 
-#: ../doc/how-to/installation.rst:11
+#: ../how-to/installation.rst:11
 msgid ":fab:`apple` :fab:`linux` :fab:`windows` Installing from conda-forge"
 msgstr ":fab:`apple` :fab:`linux` :fab:`windows` Installation von conda-forge"
 
 msgid "Conda"
 msgstr "Conda"
 
-#: ../doc/how-to/installation.rst:22
+#: ../how-to/installation.rst:22
 msgid ""
 "This project is packaged for the *mamba* package manager and available on"
 " the *conda-forge* channel. To install the *mamba* package manager we "
@@ -82,7 +481,7 @@ msgstr ""
 "der *conda-forge*-Kanal noch nicht aktiviert ist, füge ihn zu Deinen "
 "Kanälen hinzu mit"
 
-#: ../doc/how-to/installation.rst:31
+#: ../how-to/installation.rst:31
 msgid ""
 "Once the *conda-forge* channel has been enabled, TOML Fortran can be "
 "installed with *mamba*:"
@@ -90,7 +489,7 @@ msgstr ""
 "Wenn der *conda-forge*-Kanal aktiviert ist, kann TOML Fortran mit *mamba*"
 " installiert werden:"
 
-#: ../doc/how-to/installation.rst:37
+#: ../how-to/installation.rst:37
 msgid ""
 "It is possible to list all of the versions of TOML Fortran available on "
 "your platform with *mamba*:"
@@ -98,22 +497,22 @@ msgstr ""
 "Es ist möglich, alle verfügbaren Versionen von TOML Fortran für Dein "
 "System mit *mamba* aufzulisten:"
 
-#: ../doc/how-to/installation.rst:45
+#: ../how-to/installation.rst:45
 msgid ":fab:`freebsd` FreeBSD ports"
 msgstr ":fab:`freebsd` FreeBSD Ports"
 
 msgid "FreeBSD"
 msgstr "FreeBSD"
 
-#: ../doc/how-to/installation.rst:51
+#: ../how-to/installation.rst:51
 msgid "A port for FreeBSD is available"
 msgstr "Ein FreeBSD-Port ist verfügbar"
 
-#: ../doc/how-to/installation.rst:57
+#: ../how-to/installation.rst:57
 msgid "In case no package is available build the port using"
 msgstr "Falls kein Paket verfügbar ist, kann der Port folgendermaßen gebaut werden"
 
-#: ../doc/how-to/installation.rst:64
+#: ../how-to/installation.rst:64
 msgid ""
 "For more information see the `toml-f port details "
 "<https://www.freshports.org/textproc/toml-f/>`_."
@@ -121,84 +520,93 @@ msgstr ""
 "Für weitere Informationen schau Dir die `toml-f Port-Details "
 "<https://www.freshports.org/textproc/toml-f/>`_ an."
 
-#: ../doc/how-to/installation.rst:68
+#: ../how-to/installation.rst:68
 msgid ":fab:`apple` :fab:`linux` Building with spack"
-msgstr ":fab:`apple` :fab:`linux` Mit Spack bauen"
+msgstr ":fab:`apple` :fab:`linux` Mit spack bauen"
 
 msgid "Spack"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:74
+#: ../how-to/installation.rst:74
 msgid ""
 "This project is available with the `spack <https://spack.io>`_ package "
 "manager. You can install the TOML Fortran package with"
 msgstr ""
+"Dieses Projekt ist mit dem `spack <https://spack.io>`_-Paketmanager "
+"verfügbar. Du kannst TOML Fortran mit dem folgenden Befehl installieren:"
 
-#: ../doc/how-to/installation.rst:82
+#: ../how-to/installation.rst:82
 msgid ""
 "To depend on TOML Fortran in your `spack`_ package you can add a "
 "dependency with"
 msgstr ""
+"Um auf TOML Fortran in deinem `spack`_-Paket zu verwenden, kannst du "
+"eine Abhängigkeit hinzufügen mit"
 
-#: ../doc/how-to/installation.rst:90
+#: ../how-to/installation.rst:90
 msgid ":fab:`linux` Using EasyBuild"
 msgstr ":fab:`linux` Mit EasyBuild"
 
-#: ../doc/how-to/installation.rst:92
+#: ../how-to/installation.rst:92
 msgid ""
 "TOML Fortran is available with `EasyBuild "
 "<https://docs.easybuild.io/en/latest/index.html>`_. You can check the "
 "available configurations using the search option"
 msgstr ""
+"TOML Fortran ist mit `EasyBuild "
+"<https://docs.easybuild.io/en/latest/index.html>`_ verfügbar. Du kannst "
+"die verfügbaren Konfigurationen mit dem Suchoption auswählen"
 
-#: ../doc/how-to/installation.rst:102
+#: ../how-to/installation.rst:102
 msgid "Select one matching configuration and build TOML Fortran using"
-msgstr ""
+msgstr "Wähle eine passende Konfiguration aus und bau TOML Fortran mit"
 
-#: ../doc/how-to/installation.rst:116
+#: ../how-to/installation.rst:116
 msgid ""
 "TOML Fortran should now be available via an environment module. For more "
 "details checkout the `EasyBuild`_ documentation."
 msgstr ""
+"TOML Fortran ist nun über ein Umgebungsmodul verfügbar. Für weitere "
+"Informationen schau Dir die `EasyBuild`_-Dokumentation an."
 
-#: ../doc/how-to/installation.rst:121
+#: ../how-to/installation.rst:121
 msgid ":fab:`apple` Using Homebrew"
 msgstr ":fab:`apple` Mit Homebrew"
 
-#: ../doc/how-to/installation.rst:123
+#: ../how-to/installation.rst:123
 msgid ""
 "TOML Fortran is available in a custom tap at `grimme-lab/homebrew-qc "
 "<https://github.com/grimme-lab/homebrew-qc>`__ for the `brew "
 "<https://brew.sh>`_ package manager. You can include the tap by using"
 msgstr ""
-"TOML Fortran ist in einem eigenen Tap unter `grimme-lab/homebrew-qc "
+"TOML Fortran ist in einem eigenen Tap verfügbar unter `grimme-lab/homebrew-qc "
 "<https://github.com/grimme-lab/homebrew-qc>`__ für den `brew "
-"<https://brew.sh>`_-Paketmanager verfügbar. Du kannst den Tap mit dem "
-"`tap`-Kommando einbinden."
+"<https://brew.sh/index_de>`_ Paketmanager. Du kannst den Tap mit dem folgenden "
+"Befehl hinzufügen:"
 
-#: ../doc/how-to/installation.rst:131
+#: ../how-to/installation.rst:131
 msgid ""
 "To build with a custom Fortran compiler you can set the ``FC`` "
 "environment variable and force to ignore preexisting binary distributions"
 " from the tap"
 msgstr ""
-"Um mit einem eigenen Fortran-Compiler zu kompilieren, kannst Du die "
+"Um mit einem eigenen Fortran-Compiler zu bauen, kannst du die "
 "``FC``-Umgebungsvariable setzen und die vorhandenen "
-"Binärdistributionsdateien vom Tap ignorieren"
+"Binärdistribution vom Tap ignorieren"
 
-#: ../doc/how-to/installation.rst:140
+#: ../how-to/installation.rst:140
 msgid ""
 "TOML Fortran has not yet been submitted to `homebrew-core "
 "<https://github.com/homebrew/homebrew-core>`_."
 msgstr ""
-"TOML Fortran wurde noch nicht zu `homebrew-core "
-"<https://github.com/homebrew/homebrew-core>`_ hinzugefügt."
+"TOML Fortran wurde noch nicht an `homebrew-core "
+"https://github.com/homebrew/homebrew-core>`_ eingereicht."
 
-#: ../doc/how-to/installation.rst:144
+#: ../how-to/installation.rst:144
 msgid "Building from source"
 msgstr "Vom Quellcode bauen"
 
-#: ../doc/how-to/installation.rst:146
+#: ../how-to/installation.rst:146
 msgid ""
 "To build this project from the source code in this repository you need to"
 " have"
@@ -206,43 +614,43 @@ msgstr ""
 "Um dieses Projekt aus dem Quellcode in diesem Repository zu bauen, "
 "benötigst Du"
 
-#: ../doc/how-to/installation.rst:148
+#: ../how-to/installation.rst:148
 msgid "a Fortran compiler supporting Fortran 2008"
 msgstr "einen Fortran-Compiler, der Fortran 2008 unterstützt"
 
-#: ../doc/how-to/installation.rst:150
+#: ../how-to/installation.rst:150
 msgid "GFortran 5 or newer"
 msgstr "GFortran 5 oder neuer"
 
-#: ../doc/how-to/installation.rst:151
+#: ../how-to/installation.rst:151
 msgid "Intel Fortran 18 or newer"
 msgstr "Intel Fortran 18 oder neuer"
 
-#: ../doc/how-to/installation.rst:152
+#: ../how-to/installation.rst:152
 msgid "NAG 7 or newer"
 msgstr "NAG 7 oder neuer"
 
-#: ../doc/how-to/installation.rst:154
+#: ../how-to/installation.rst:154
 msgid "One of the supported build systems"
 msgstr "Eines der unterstützten Buildsysteme"
 
-#: ../doc/how-to/installation.rst:156
+#: ../how-to/installation.rst:156
 msgid "`meson <https://mesonbuild.com>`_ version 0.55 or newer"
 msgstr "`meson <https://mesonbuild.com>`_ Version 0.55 oder neuer"
 
-#: ../doc/how-to/installation.rst:157
+#: ../how-to/installation.rst:157
 msgid "`CMake <https://cmake.org/>`_ version 3.9 or newer"
 msgstr "`CMake <https://cmake.org/>`_ Version 3.9 oder neuer"
 
-#: ../doc/how-to/installation.rst:159
+#: ../how-to/installation.rst:159
 msgid "First, get the source by cloning the repository"
 msgstr "Erst, hol Dir den Quellcode per Clone des Repositories"
 
-#: ../doc/how-to/installation.rst:168
+#: ../how-to/installation.rst:168
 msgid "Using Meson"
 msgstr "Mit Meson"
 
-#: ../doc/how-to/installation.rst:170
+#: ../how-to/installation.rst:170
 msgid ""
 "To build this project with meson a build-system backend is required, "
 "*i.e.* `ninja <https://ninja-build.org>`_ version 1.7 or newer. Setup a "
@@ -251,7 +659,7 @@ msgstr ""
 "Um dieses Projekt mit meson zu bauen, benötigst Du ein Build-System, wie "
 "`ninja <https://ninja-build.org>`_ Version 1.7 oder neuer. "
 
-#: ../doc/how-to/installation.rst:177
+#: ../how-to/installation.rst:177
 msgid ""
 "You can select the Fortran compiler by the ``FC`` environment variable. "
 "To compile the project run"
@@ -259,7 +667,7 @@ msgstr ""
 "Du kannst den Fortran-Compiler durch die Umgebungsvariable ``FC`` "
 "auswählen. Um das Projekt zu kompilieren, rufe den folgenden Befehl auf"
 
-#: ../doc/how-to/installation.rst:184
+#: ../how-to/installation.rst:184
 msgid ""
 "We employ a `validator suite <https://github.com/BurntSushi/toml-test>`_ "
 "to test the standard compliance of this implementation. To use this "
@@ -274,7 +682,7 @@ msgstr ""
 "von meson in den *go*-Arbeitsbereich eingebunden. Die Tests werden "
 "folgendermaßen aufgerufen"
 
-#: ../doc/how-to/installation.rst:193
+#: ../how-to/installation.rst:193
 msgid ""
 "To run the full decoder test add the benchmark argument. This test will "
 "currently fail, due to the implementation not yet supporting Unicode "
@@ -284,7 +692,7 @@ msgstr ""
 "hinzu. Dieser Test wird zur Zeit fehlschlagen, da die Implementierung "
 "noch Unicode-Escape-Sequenzen nicht unterstützt."
 
-#: ../doc/how-to/installation.rst:200
+#: ../how-to/installation.rst:200
 msgid ""
 "The binary used for transcribing the TOML documents to the testing format"
 " is ``_build/test/toml2json`` and can be used to check on per test basis."
@@ -295,11 +703,11 @@ msgstr ""
 "verwendet werden. Zum Abschluss kann TOML Fortran wie folgt installiert "
 "werden"
 
-#: ../doc/how-to/installation.rst:209
+#: ../how-to/installation.rst:209
 msgid "Using CMake"
 msgstr "Mit CMake"
 
-#: ../doc/how-to/installation.rst:211
+#: ../how-to/installation.rst:211
 msgid ""
 "While meson is the preferred way to build this project it also offers "
 "CMake support. Configure the CMake build with"
@@ -307,7 +715,7 @@ msgstr ""
 "Während meson die bevorzugte Bauweise für dieses Projekt ist, bietet es "
 "auch CMake-Unterstützung. Konfiguriere den CMake-Build mit"
 
-#: ../doc/how-to/installation.rst:218
+#: ../how-to/installation.rst:218
 msgid ""
 "Similar to meson the compiler can be selected with the ``FC`` environment"
 " variable. You can build the project using"
@@ -315,7 +723,7 @@ msgstr ""
 "Ähnlich wie meson kann der Compiler durch die Umgebungsvariable ``FC`` "
 "ausgewählt werden. Du kannst das Projekt wie folgt bauen"
 
-#: ../doc/how-to/installation.rst:225
+#: ../how-to/installation.rst:225
 msgid ""
 "To include *toml-f* in your CMake project, check the [example integration"
 " with CMake](https://github.com/toml-f/tf-cmake-example). The validation "
@@ -324,11 +732,11 @@ msgid ""
 "you can install TOML Fortran with"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:235
+#: ../how-to/installation.rst:235
 msgid "Supported compilers"
 msgstr "Unterstützte Compiler"
 
-#: ../doc/how-to/installation.rst:237
+#: ../how-to/installation.rst:237
 msgid ""
 "This is a non-comprehensive list of tested compilers for TOML Fortran. "
 "Compilers with the label *latest* are tested with continuous integration "
@@ -338,141 +746,141 @@ msgstr ""
 " Fortran. Compiler mit dem Label *latest* werden getestet mit den "
 "kontinuierlichen Integrationen für jeden Commit."
 
-#: ../doc/how-to/installation.rst:241 ../doc/how-to/installation.rst:260
+#: ../how-to/installation.rst:241 ../how-to/installation.rst:260
 msgid "Compiler"
 msgstr "Compiler"
 
-#: ../doc/how-to/installation.rst:241 ../doc/how-to/installation.rst:260
+#: ../how-to/installation.rst:241 ../how-to/installation.rst:260
 msgid "Version"
 msgstr "Version"
 
-#: ../doc/how-to/installation.rst:241 ../doc/how-to/installation.rst:260
+#: ../how-to/installation.rst:241 ../how-to/installation.rst:260
 msgid "Platform"
 msgstr "Plattform"
 
-#: ../doc/how-to/installation.rst:241 ../doc/how-to/installation.rst:260
+#: ../how-to/installation.rst:241 ../how-to/installation.rst:260
 msgid "Architecture"
 msgstr "Architektur"
 
-#: ../doc/how-to/installation.rst:241
+#: ../how-to/installation.rst:241
 msgid "version"
 msgstr "Version"
 
-#: ../doc/how-to/installation.rst:243 ../doc/how-to/installation.rst:244
-#: ../doc/how-to/installation.rst:245 ../doc/how-to/installation.rst:246
-#: ../doc/how-to/installation.rst:247
+#: ../how-to/installation.rst:243 ../how-to/installation.rst:244
+#: ../how-to/installation.rst:245 ../how-to/installation.rst:246
+#: ../how-to/installation.rst:247
 msgid "GCC"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:243
+#: ../how-to/installation.rst:243
 msgid "11.1, 10.3, 9.4, 8.5, 7.5"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:243 ../doc/how-to/installation.rst:250
-#: ../doc/how-to/installation.rst:262
+#: ../how-to/installation.rst:243 ../how-to/installation.rst:250
+#: ../how-to/installation.rst:262
 msgid "Ubuntu 20.04"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:243 ../doc/how-to/installation.rst:244
-#: ../doc/how-to/installation.rst:248 ../doc/how-to/installation.rst:249
-#: ../doc/how-to/installation.rst:250 ../doc/how-to/installation.rst:251
-#: ../doc/how-to/installation.rst:252 ../doc/how-to/installation.rst:262
-#: ../doc/how-to/installation.rst:263
+#: ../how-to/installation.rst:243 ../how-to/installation.rst:244
+#: ../how-to/installation.rst:248 ../how-to/installation.rst:249
+#: ../how-to/installation.rst:250 ../how-to/installation.rst:251
+#: ../how-to/installation.rst:252 ../how-to/installation.rst:262
+#: ../how-to/installation.rst:263
 msgid "x86_64"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:243 ../doc/how-to/installation.rst:244
-#: ../doc/how-to/installation.rst:248 ../doc/how-to/installation.rst:250
+#: ../how-to/installation.rst:243 ../how-to/installation.rst:244
+#: ../how-to/installation.rst:248 ../how-to/installation.rst:250
 msgid "0.2.3, latest"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:244
+#: ../how-to/installation.rst:244
 msgid "9.4, 6.5"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:244
+#: ../how-to/installation.rst:244
 msgid "MacOS 10.15.7"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:245
+#: ../how-to/installation.rst:245
 msgid "11.0"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:245
+#: ../how-to/installation.rst:245
 msgid "MacOS 11.0"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:245
+#: ../how-to/installation.rst:245
 msgid "arm64"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:245 ../doc/how-to/installation.rst:246
-#: ../doc/how-to/installation.rst:247 ../doc/how-to/installation.rst:249
-#: ../doc/how-to/installation.rst:251 ../doc/how-to/installation.rst:252
+#: ../how-to/installation.rst:245 ../how-to/installation.rst:246
+#: ../how-to/installation.rst:247 ../how-to/installation.rst:249
+#: ../how-to/installation.rst:251 ../how-to/installation.rst:252
 msgid "0.2.3"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:246 ../doc/how-to/installation.rst:247
+#: ../how-to/installation.rst:246 ../how-to/installation.rst:247
 msgid "9.4"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:246 ../doc/how-to/installation.rst:247
+#: ../how-to/installation.rst:246 ../how-to/installation.rst:247
 msgid "CentOS 7"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:246
+#: ../how-to/installation.rst:246
 msgid "ppc64le"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:247
+#: ../how-to/installation.rst:247
 msgid "aarch64"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:248 ../doc/how-to/installation.rst:249
+#: ../how-to/installation.rst:248 ../how-to/installation.rst:249
 msgid "GCC/MinGW"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:248
+#: ../how-to/installation.rst:248
 msgid "8.1"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:248 ../doc/how-to/installation.rst:249
+#: ../how-to/installation.rst:248 ../how-to/installation.rst:249
 msgid "Window Server 2019"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:249
+#: ../how-to/installation.rst:249
 msgid "5.3"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:250 ../doc/how-to/installation.rst:251
+#: ../how-to/installation.rst:250 ../how-to/installation.rst:251
 msgid "Intel"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:250
+#: ../how-to/installation.rst:250
 msgid "2022.0"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:251
+#: ../how-to/installation.rst:251
 msgid "19"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:251
+#: ../how-to/installation.rst:251
 msgid "OpenSUSE"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:252
+#: ../how-to/installation.rst:252
 msgid "NAG"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:252
+#: ../how-to/installation.rst:252
 msgid "7.1"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:252
+#: ../how-to/installation.rst:252
 msgid "RHEL"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:255
+#: ../how-to/installation.rst:255
 msgid ""
 "Compiler known to fail are documented here, together with the last commit"
 " where this behaviour was encountered. If available an issue in on the "
@@ -488,43 +896,43 @@ msgstr ""
 "ältere Versionen desselben Compilers auch fehlschlagen und dieses "
 "Verhalten ist über Platformen und/oder Architekturen konsistent."
 
-#: ../doc/how-to/installation.rst:260
+#: ../how-to/installation.rst:260
 msgid "Reference"
 msgstr "Referenz"
 
-#: ../doc/how-to/installation.rst:262
+#: ../how-to/installation.rst:262
 msgid "Flang"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:262
+#: ../how-to/installation.rst:262
 msgid "20190329"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:262
+#: ../how-to/installation.rst:262
 msgid "`f066ec6`_, `toml-f#28`_"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:263
+#: ../how-to/installation.rst:263
 msgid "NVHPC"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:263
+#: ../how-to/installation.rst:263
 msgid "20.9"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:263
+#: ../how-to/installation.rst:263
 msgid "Manjaro Linux"
 msgstr ""
 
-#: ../doc/how-to/installation.rst:263
+#: ../how-to/installation.rst:263
 msgid "`f066ec6`_, `toml-f#27`_"
 msgstr ""
 
-#: ../doc/how-to/integration.rst:4
+#: ../how-to/integration.rst:4
 msgid "Using TOML Fortran"
 msgstr "TOML Fortran verwenden"
 
-#: ../doc/how-to/integration.rst:6
+#: ../how-to/integration.rst:6
 msgid ""
 "This tutorial shows how to integrate the TOML Fortran library with your "
 "build system and use it easily in your project."
@@ -533,11 +941,11 @@ msgstr ""
 "Build-System integrieren kannst und sie einfach in Dein Projekt "
 "verwendest."
 
-#: ../doc/how-to/integration.rst:10
+#: ../how-to/integration.rst:10
 msgid "Using the Fortran package manager"
 msgstr "Mit dem Fortran-Paket-Manager verwenden"
 
-#: ../doc/how-to/integration.rst:12
+#: ../how-to/integration.rst:12
 msgid ""
 "The Fortran package manager (`fpm <https://fpm.fortran-lang.org>`_) is a "
 "tool for building Fortran projects and managing dependencies on Fortran "
@@ -550,11 +958,7 @@ msgstr ""
 "Projekt zu aktivieren, füge folgenden Eintrag in Deinen Paket-Manifest "
 "ein:"
 
-#: ../doc/how-to/integration.rst:15
-msgid "fpm.toml"
-msgstr ""
-
-#: ../doc/how-to/integration.rst:21
+#: ../how-to/integration.rst:21
 msgid ""
 "When building your project fpm will automatically fetch TOML Fortran for "
 "you and build it as part of your project. The TOML Fortran modules become"
@@ -564,11 +968,11 @@ msgstr ""
 "herunterladen und als Teil Deines Projekts kompilieren. Die TOML Fortran-"
 "Module werden in Deinem Projekt dann verfügbar gemacht."
 
-#: ../doc/how-to/integration.rst:26
+#: ../how-to/integration.rst:26
 msgid "Integrate with meson"
 msgstr "Mit meson integrieren"
 
-#: ../doc/how-to/integration.rst:28
+#: ../how-to/integration.rst:28
 msgid ""
 "To allow meson to use TOML Fortran it is easiest to include it as "
 "subproject using a git wrap file placed in the ``subprojects`` directory."
@@ -577,11 +981,11 @@ msgstr ""
 "als Unterprojekt mit einer git-Wrap-Datei im ``subprojects``-Verzeichnis "
 "einbindest."
 
-#: ../doc/how-to/integration.rst:30
+#: ../how-to/integration.rst:30
 msgid "subprojects/toml-f.wrap"
 msgstr ""
 
-#: ../doc/how-to/integration.rst:38
+#: ../how-to/integration.rst:38
 msgid ""
 "The revision can be adjusted to pin a specific release tag of TOML "
 "Fortran for additional stability. In the projects meson buid file the "
@@ -594,11 +998,11 @@ msgstr ""
 "dank der Wrap-Datei, wird eine Fallback-Version definiert und TOML "
 "Fortran kann bei Bedarf mitzukompiliert werden."
 
-#: ../doc/how-to/integration.rst:41
+#: ../how-to/integration.rst:41
 msgid "meson.build"
 msgstr ""
 
-#: ../doc/how-to/integration.rst:52
+#: ../how-to/integration.rst:52
 msgid ""
 "Finally, you can add ``tomlf_dep`` as dependency to any of your targets "
 "and are done."
@@ -606,11 +1010,11 @@ msgstr ""
 "Damit kannst Du ``tomlf_dep`` als Abhängigkeit zu einem beliebigen Ziel "
 "hinzufügen und bist fertig."
 
-#: ../doc/how-to/integration.rst:56
+#: ../how-to/integration.rst:56
 msgid "Integrate with CMake"
 msgstr "Mit CMake integrieren"
 
-#: ../doc/how-to/integration.rst:58
+#: ../how-to/integration.rst:58
 msgid ""
 "To use TOML Fortran in CMake based projects it is useful to define your "
 "own find-module, to allow on-demand compilation of TOML Fortran as well "
@@ -622,7 +1026,7 @@ msgstr ""
 "bei Bedarf mitzukompiliert oder auch die Installation von installierten "
 "Paketen von sowohl meson als auch CMake-basierten Builds zu ermöglichen."
 
-#: ../doc/how-to/integration.rst:68
+#: ../how-to/integration.rst:68
 msgid ""
 "In your main CMake build file you have to include the custom find-module "
 "in your ``CMAKE_MODULE_PATH``, afterwards you can just use "
@@ -634,11 +1038,11 @@ msgstr ""
 " verwenden, um das ``toml-f::toml-f``-Ziel zu erhalten und dagegen zu "
 "verlinken."
 
-#: ../doc/how-to/integration.rst:70
+#: ../how-to/integration.rst:70
 msgid "CMakeLists.txt"
 msgstr ""
 
-#: ../doc/how-to/integration.rst:111
+#: ../how-to/integration.rst:111
 msgid ""
 "Note that we also install the find-modules, this is important if you want"
 " to make your CMake projects reusable in the same way TOML Fortran can be"
@@ -650,45 +1054,45 @@ msgstr ""
 "anderen Projekt verwenden kannst. Zuletzt brauchst Du ein paar Zeilen "
 "Code, um das eigene find-Modul zu definieren, siehe unten."
 
-#: ../doc/how-to/integration.rst:115
+#: ../how-to/integration.rst:115
 msgid "Imported Targets"
 msgstr "Importierte Ziele"
 
-#: ../doc/how-to/integration.rst:117
+#: ../how-to/integration.rst:117
 msgid "This module provides the following imported target, if found:"
 msgstr ""
 "Dieses Modul stellt folgende importierte Ziele bereit, falls es gefunden "
 "wurde:"
 
-#: ../doc/how-to/integration.rst:121
+#: ../how-to/integration.rst:121
 msgid "``toml-f::toml-f``"
 msgstr ""
 
-#: ../doc/how-to/integration.rst:120
+#: ../how-to/integration.rst:120
 msgid "The toml-f library"
 msgstr "Die toml-f Bibliothek"
 
-#: ../doc/how-to/integration.rst:124
+#: ../how-to/integration.rst:124
 msgid "Result Variables"
 msgstr "Ergebnisvariablen"
 
-#: ../doc/how-to/integration.rst:126
+#: ../how-to/integration.rst:126
 msgid "This module will define the following variables:"
 msgstr "Dieses Modul definiert folgende Variablen:"
 
-#: ../doc/how-to/integration.rst:129
+#: ../how-to/integration.rst:129
 msgid "``TOML_FORTRAN_FOUND``"
 msgstr ""
 
-#: ../doc/how-to/integration.rst:129
+#: ../how-to/integration.rst:129
 msgid "True if the toml-f library is available"
 msgstr "Wahr wenn die toml-f Bibliothek verfügbar ist"
 
-#: ../doc/how-to/integration.rst:133
+#: ../how-to/integration.rst:133
 msgid "``TOML_FORTRAN_SOURCE_DIR``"
 msgstr ""
 
-#: ../doc/how-to/integration.rst:132
+#: ../how-to/integration.rst:132
 msgid ""
 "Path to the source directory of the toml-f project, only set if the "
 "project is included as source."
@@ -696,11 +1100,11 @@ msgstr ""
 "Pfad zum Quellverzeichnis des toml-f Projekts, nur gesetzt, wenn das "
 "Projekt als Quellcode eingebunden wird."
 
-#: ../doc/how-to/integration.rst:137
+#: ../how-to/integration.rst:137
 msgid "``TOML_FORTRAN_BINARY_DIR``"
 msgstr ""
 
-#: ../doc/how-to/integration.rst:136
+#: ../how-to/integration.rst:136
 msgid ""
 "Path to the binary directory of the toml-f project, only set if the "
 "project is included as source."
@@ -708,11 +1112,11 @@ msgstr ""
 "Pfad zum Buildverzeichnis des toml-f Projekts, nur gesetzt, wenn das "
 "Projekt als Quellcode eingebunden wird."
 
-#: ../doc/how-to/integration.rst:140
+#: ../how-to/integration.rst:140
 msgid "Cache variables"
 msgstr "Cachevariablen"
 
-#: ../doc/how-to/integration.rst:142
+#: ../how-to/integration.rst:142
 msgid ""
 "The following cache variables may be set to influence the library "
 "detection:"
@@ -720,57 +1124,57 @@ msgstr ""
 "Die folgenden Cachevariablen können gesetzt werden um die Einbindung der "
 "Bibliothek zu beeinflussen:"
 
-#: ../doc/how-to/integration.rst:150
+#: ../how-to/integration.rst:150
 msgid "``TOML_FORTRAN_FIND_METHOD``"
 msgstr ""
 
-#: ../doc/how-to/integration.rst:145
+#: ../how-to/integration.rst:145
 msgid "Methods to find or make the project available. Available methods are"
 msgstr "Möglichkeiten zum Finden oder zum Erstellen des Projekts. Verfügbar sind "
 
-#: ../doc/how-to/integration.rst:147
+#: ../how-to/integration.rst:147
 msgid "``cmake``: Try to find via CMake config file"
 msgstr "``cmake``: Versuche via CMake Konfigurationsdatei zu finden"
 
-#: ../doc/how-to/integration.rst:148
+#: ../how-to/integration.rst:148
 msgid "``pkgconf``: Try to find via pkg-config file"
 msgstr "``pkgconf``: Versuche via pkg-config Datei zu finden"
 
-#: ../doc/how-to/integration.rst:149
+#: ../how-to/integration.rst:149
 msgid "``subproject``: Use source in subprojects directory"
 msgstr "``subproject``: Verwende Quellcode in Unterprojektverzeichnis"
 
-#: ../doc/how-to/integration.rst:150
+#: ../how-to/integration.rst:150
 msgid "``fetch``: Fetch the source from upstream"
 msgstr "``fetch``: Hole den Quellcode vom Upstream Repository"
 
-#: ../doc/how-to/integration.rst:153
+#: ../how-to/integration.rst:153
 msgid "``TOML_FORTRAN_DIR``"
 msgstr ""
 
-#: ../doc/how-to/integration.rst:153
+#: ../how-to/integration.rst:153
 msgid "Used for searching the CMake config file"
 msgstr "Wird für die Suche der CMake Konfigurationsdatei verwendet"
 
-#: ../doc/how-to/integration.rst:156
+#: ../how-to/integration.rst:156
 msgid "``TOML_FORTRAN_SUBPROJECT``"
 msgstr ""
 
-#: ../doc/how-to/integration.rst:156
+#: ../how-to/integration.rst:156
 msgid "Directory to find the toml-f subproject, relative to the project root"
 msgstr ""
 "Verzeichnis zum Finden des toml-f Unterprojekts, relativ zum Projekt "
 "Wurzelverzeichnis"
 
-#: ../doc/how-to/integration.rst:158
+#: ../how-to/integration.rst:158
 msgid "cmake/Findtoml-f.cmake"
 msgstr ""
 
-#: ../doc/how-to/integration.rst:280
+#: ../how-to/integration.rst:280
 msgid "Other build systems"
 msgstr "Andere Buildsysteme"
 
-#: ../doc/how-to/integration.rst:282
+#: ../how-to/integration.rst:282
 msgid ""
 "Other build systems must discover a precompiled TOML Fortran library from"
 " the system. For this purpose the ``pkg-config`` tool is used. After "
@@ -789,7 +1193,7 @@ msgstr ""
 "lässt.Zunächst prüfe, ob das ``pkg-config`` Tool verfügbar ist und TOML "
 "Fortran gefunden werden kann."
 
-#: ../doc/how-to/integration.rst:291
+#: ../how-to/integration.rst:291
 msgid ""
 "Make sure to adjust the ``PKG_CONFIG_PATH`` environment variable to point"
 " to the correct installation directory. Using the ``--libs`` and "
@@ -801,15 +1205,15 @@ msgstr ""
 "``--cflags`` Optionen können die Bibliotheken, die verlinkt werden "
 "sollen, und die Include-Verzeichnisse erhalten werden:"
 
-#: ../doc/how-to/integration.rst:299
+#: ../how-to/integration.rst:299
 msgid "In a handwritten Makefile those can be included by"
 msgstr "In einem handgeschriebenen Makefile können diese wie folgt genutzt werden"
 
-#: ../doc/how-to/serde.rst:2
+#: ../how-to/serde.rst:2
 msgid "Serializable base class"
 msgstr "Serialisierbare Basisklasse"
 
-#: ../doc/how-to/serde.rst:4
+#: ../how-to/serde.rst:4
 msgid ""
 "This recipe shows how to create a serializable class based on TOML "
 "Fortran. Currently, TOML Fortran does not define such a base class "
@@ -833,7 +1237,7 @@ msgstr ""
 " in verschiedenen Kontexten genutzt werden and einfach in TOML und zurück"
 " transferiert werden."
 
-#: ../doc/how-to/serde.rst:11
+#: ../how-to/serde.rst:11
 msgid ""
 "TOML Fortran might provide such abstract base class in the future "
 "natively."
@@ -841,15 +1245,15 @@ msgstr ""
 "TOML Fortran könnte in Zukunft selbst eine solche abstrakte Basisklasse "
 "bereitstellen."
 
-#: ../doc/how-to/serde.rst:13
+#: ../how-to/serde.rst:13
 msgid "The base class can be defined as"
 msgstr "Die Basisklasse kann wie folgt definiert werden"
 
-#: ../doc/how-to/serde.rst:15
+#: ../how-to/serde.rst:15
 msgid "src/serde_class.f90"
 msgstr ""
 
-#: ../doc/how-to/serde.rst:19
+#: ../how-to/serde.rst:19
 msgid ""
 "We also define a convenience error handler which holds the error message "
 "and signals its error status by its allocation state."
@@ -857,11 +1261,11 @@ msgstr ""
 "Wir definieren auch einen Fehler-Handler, der die Fehlermeldung speichert"
 " und den Fehlerstatus durch seinen Allokationstatus signalisiert."
 
-#: ../doc/how-to/serde.rst:21
+#: ../how-to/serde.rst:21
 msgid "src/serde_error.f90"
 msgstr ""
 
-#: ../doc/how-to/serde.rst:25
+#: ../how-to/serde.rst:25
 msgid ""
 "An example for a serializable class based on the above base class is "
 "given below."
@@ -869,11 +1273,11 @@ msgstr ""
 "Ein Beispiel für eine serialisierbare Klasse basierend auf der oben "
 "gegebenen Basisklasse ist unten aufgeführt."
 
-#: ../doc/how-to/serde.rst:27
+#: ../how-to/serde.rst:27
 msgid "src/demo.f90"
 msgstr ""
 
-#: ../doc/how-to/serde.rst:31
+#: ../how-to/serde.rst:31
 msgid ""
 "The defined data class can in an application easily be loaded from a "
 "file, while the actual implementation does not have to deal with getting "
@@ -887,27 +1291,27 @@ msgstr ""
 "darauf verlassen, dass wenn die Konfigurationsdatei gültiges TOML war, "
 "eine Datenstruktur zum Lesen bereitsteht."
 
-#: ../doc/how-to/table.rst:2
+#: ../how-to/table.rst:2
 msgid "Working with tables"
 msgstr "Mit Tabellen zu arbeiten"
 
-#: ../doc/how-to/table.rst:4
+#: ../how-to/table.rst:4
 msgid ""
 "The central data structures in TOML are tables, they contain a map from a"
 " key (string) to any supported data type in TOML. These recipes describe "
 "common scenarios for retrieving data from tables using the TOML Fortran "
 "library."
 msgstr ""
-"Die zentrale Datenstruktur in TOML sind Tabellen, sie enthalten eine "
-"Zuordnung von Einträgen (String) zu allen unterstützten Datentypen in "
-"TOML. Dieses Rezept beschreibt die allgemeinen Szenarien für das Abfragen"
-" von Daten aus Tabellen mit der TOML Fortran-Bibliothek."
+"Die zentrale Datenstruktur in TOML sind Tabellen, sie enthalten eine Zuordnung "
+"von Einträgen (String) zu allen unterstützten Datentypen in TOML. Dieses "
+"Rezept beschreibt die allgemeinen Szenarien für das Abfragen von Daten aus "
+"Tabellen mit der TOML Fortran-Bibliothek."
 
-#: ../doc/how-to/table.rst:9
+#: ../how-to/table.rst:9
 msgid "Accessing nested tables"
-msgstr "Geschachtelte Tabellen abfragen"
+msgstr "Auf geschachtelte Tabellen zuzugreifen"
 
-#: ../doc/how-to/table.rst:11
+#: ../how-to/table.rst:11
 msgid ""
 "Using nested tables provides the possibility to better group "
 "configuration data. Since the TOML format always requires the full "
@@ -917,23 +1321,25 @@ msgid ""
 "to use and a good balance of short and expressive table names and "
 "meaningful subtables is required."
 msgstr ""
-"Geschachtelte Tabellen ermöglichen es, Konfigurationsdaten besser zu "
-"gruppieren. Da das TOML-Format immer den vollständigen Pfad in jeder "
-"Tabellenkopfangabe erfordert, ist es einfach für den Benutzer zu "
-"erkennen, wo die aktuellen Einstellungen zu finden sind. Aber schwieriger"
-" wird es wenn tief geschachtelte Tabellen mit langen Tabellenpfaden oder "
-"Pfadkomponenten verwendet werden. Eine gute Balance zwischen kurzen und "
-"aussagekräftigen Tabellennamen und Untereinträge ist erforderlich."
+"Geschachtelte Tabellen ermöglichen es, Konfigurationsdaten besser zu gruppieren. Da"
+" das TOML-Format immer den vollständigen Pfad in jeder Tabellenkopfangabe"
+" erfordert, ist es einfach für den Benutzer zu erkennen, wo die "
+"aktuellen Einstellungen zu finden sind. Aber schwieriger wird es wenn tief "
+"geschachtelte Tabellen mit langen Tabellenpfaden oder Pfadkomponenten verwendet "
+"werden. Eine gute Balance zwischen kurzen und aussagekräftigen Tabellennamen und"
+" Untereinträge ist erforderlich."
 
-#: ../doc/how-to/table.rst:15
+
+#: ../how-to/table.rst:15
 msgid ""
 "An example of an electronic structure code implementing different "
 "Hamiltonians is given below."
 msgstr ""
-"Ein Beispiel für einen elektronischen Strukturcode, der "
-"unterschiedlicheHamiltonians implementiert, ist unten aufgeführt."
+"Ein Beispiel für einen elektronischen "
+"Strukturcode, der unterschiedliche Hamiltonians "
+"implementiert, ist unten aufgeführt."
 
-#: ../doc/how-to/table.rst:26
+#: ../how-to/table.rst:26
 msgid ""
 "The deepest nested subtable with entries in this example is the "
 "*hamiltonian.dftb.skf* path."
@@ -941,26 +1347,24 @@ msgstr ""
 "Die tiefste geschachtelte Untertabelle in diesem Beispiel ist der "
 "*hamiltonian.dftb.skf* Pfad."
 
-#: ../doc/how-to/table.rst:28
+#: ../how-to/table.rst:28
 msgid ""
 "Such layout in the configuration file will usually be mirrored in the "
 "actual implementation, with every table corresponding to a derived type "
 "describing the input. For the example above in total six derived types "
 "for the individual tables are defined as"
 msgstr ""
-"Dieser Aufbau in der Konfigurationsdatei wird in der tatsächlichen "
-"Implementierung korrespondierend wiedergeben, wobei jede Tabelle "
-"entsprechend einen abgeleiteten Typ beschreibt, der der Eingabe "
-"entspricht. Für das Beispiel oben sind insgesamt sechs abgeleitete Typen "
-"für die einzelnen Tabellen definiert."
+"Dieser Aufbau in der Konfigurationsdatei wird in der tatsächlichen Implementierung "
+"korrespondierend wiedergeben, wobei jede Tabelle entsprechend einen abgeleiteten Typ"
+" beschreibt, der der Eingabe entspricht. Für das Beispiel oben sind insgesamt"
+" sechs abgeleitete Typen für die einzelnen Tabellen definiert."
 
-#: ../doc/how-to/table.rst:31 ../doc/how-to/table.rst:51
-#: ../doc/how-to/table.rst:58 ../doc/how-to/table.rst:67
-#: ../doc/how-to/table.rst:84
+#: ../how-to/table.rst:31 ../how-to/table.rst:51 ../how-to/table.rst:58
+#: ../how-to/table.rst:67 ../how-to/table.rst:84
 msgid "src/input.f90"
 msgstr ""
 
-#: ../doc/how-to/table.rst:38
+#: ../how-to/table.rst:38
 #, python-format
 msgid ""
 "The representation in Fortran derived types looks lengthy compared to the"
@@ -971,15 +1375,15 @@ msgid ""
 "including input ranges and unit conventions. The final input file "
 "provided by the user can be brief and expressive."
 msgstr ""
-"Die Darstellung in abgeleiteten Typen ist in Fortran länger als die TOML-"
-"Eingabe. Dabei sollte beachten werden, dass die 40 Zeilen von Fortran "
-"Code 50% Kommentare enthalten, die die Datentypen für (zukünftige) "
-"Entwickler beschreiben. Zudem ist die Benutzerdokumentation des "
-"Eingabeformats ähnlich ausführlich, mit Beschreibungen für alle Tabellen "
-"und Einträge, inklusive Eingabebereichs und Einheiten. Die Eingabedatei "
-"kann dann kurz und aussagekräftig sein."
+"Die Darstellung in abgeleiteten Typen ist in Fortran länger als die "
+"TOML-Eingabe. Dabei sollte beachten werden, dass die 40 Zeilen von Fortran "
+"Code 50% Kommentare enthalten, die die Datentypen für (zukünftige) Entwickler "
+"beschreiben. Zudem ist die Benutzerdokumentation des Eingabeformats ähnlich "
+"ausführlich, mit Beschreibungen für alle Tabellen und Einträge, inklusive "
+"Eingabebereichs und Einheiten. Die Eingabedatei kann dann kurz und "
+"aussagekräftig sein."
 
-#: ../doc/how-to/table.rst:43
+#: ../how-to/table.rst:43
 msgid ""
 "Staring with the root of the table which is read in the "
 "*simulation_input* there are two ways to obtain access to a subtable, "
@@ -991,18 +1395,17 @@ msgid ""
 "unassigned in case invalid input is provided, which will result in "
 "raising an error in the implementation shown below."
 msgstr ""
-"Mit dem Wurzelknoten der Tabelle, der in den Datentypen "
-"*simulation_input* gelesen wird, gibt es zwei Wege, eine Untertabelle "
-"abzufragen, zunächst wird die *hamiltonian* Untertabelle abgefragt, die "
-"als benötigt definiert ist und mit der ``get_value``-Schnittstelle "
-"abgefragt wird. In Fällen, wenn diese Tabelle vorhanden ist, wird eine "
-"Referenz mit dem *child* Zeiger zurückgegeben. Falls keine Tabelle "
-"vorhanden ist, wird sie in den Wurzelknoten eingefügt und eine Referenz "
-"zurückgegeben. Der *child* Zeiger kann in Fällen von unzulässigen "
-"Eingaben nicht zugewiesen werden, was mit einer Fehlermeldung in der "
-"Implementierung abgefangen wird."
+"Mit dem Wurzelknoten der Tabelle, der in den Datentypen *simulation_input* "
+"gelesen wird, gibt es zwei Wege, eine Untertabelle abzufragen, zunächst wird"
+" die *hamiltonian* Untertabelle abgefragt, die als benötigt definiert ist und "
+"mit der ``get_value``-Schnittstelle abgefragt wird. In Fällen, wenn diese Tabelle "
+"vorhanden ist, wird eine Referenz mit dem *child* Zeiger zurückgegeben. Falls"
+" keine Tabelle vorhanden ist, wird sie in den Wurzelknoten eingefügt und"
+" eine Referenz zurückgegeben. Der *child* Zeiger kann in Fällen von "
+"unzulässigen Eingaben nicht zugewiesen werden, was mit einer Fehlermeldung in der"
+" Implementierung abgefangen wird."
 
-#: ../doc/how-to/table.rst:48
+#: ../how-to/table.rst:48
 msgid ""
 "The alternative is to explicitly mark the subtable as optional, like for "
 "the *analysis* table, if no table is available or the entry is invalid "
@@ -1010,20 +1413,21 @@ msgid ""
 " can request the status information, check whether the operation was "
 "successful, and cleanly handle the error case."
 msgstr ""
-"Alternativ kann die Untertabelle als optional markiert werden, wie für "
-"die *analysis* Tabelle, wenn keine Tabelle vorhanden ist oder der Eintrag"
-" ungültig ist, bleibt der *child* Zeiger unzugewiesen. Um diese Fälle zu "
-"unterscheiden, kann der Statusinformationen abgefragt werden, um zu "
-"prüfen, ob die Operation erfolgreich war, und im Fall eines "
-"Eingabefehlers eine Fehlermeldung ausgegeben wird."
+"Alternativ kann die Untertabelle als optional markiert werden, wie für die "
+"*analysis* Tabelle, wenn keine Tabelle vorhanden ist oder der Eintrag ungültig "
+"ist, bleibt der *child* Zeiger unzugewiesen. Um diese Fälle zu "
+"unterscheiden, kann der Statusinformationen abgefragt werden, um zu prüfen, ob "
+"die Operation erfolgreich war, und im Fall eines Eingabefehlers eine "
+"Fehlermeldung ausgegeben wird."
 
-#: ../doc/how-to/table.rst:56
+#: ../how-to/table.rst:56
 msgid ""
 "The same happens for reading the *hamiltonian_input* and *dftb_input* "
 "entry."
-msgstr "Das gleiche gilt für die *hamiltonian_input* und *dftb_input* Einträge."
+msgstr ""
+"Das gleiche gilt für die *hamiltonian_input* und *dftb_input* Einträge."
 
-#: ../doc/how-to/table.rst:63
+#: ../how-to/table.rst:63
 msgid ""
 "Finally, we can implement reading the terminal subtables into the "
 "*scc_input*, *skf_input*, and *analysis_input*, where we retrieve the "
@@ -1032,13 +1436,12 @@ msgid ""
 " proper error handling, we can retrieve the optional *stat* argument as "
 "well."
 msgstr ""
-"Zuletzt können die terminalen Untertabellen in *scc_input*, *skf_input*, "
-"und *analysis_input* gelesen werden, wo die Werte mit ``get_value`` "
-"abgefragt werden. Zusätzlich kann ein Standardwert mit ``get_value`` "
-"definiert werden. Für einen korrekten Fehlerbehandlung kann auch der "
-"optionalen *stat*-Parameter abgefragt werden."
+"Zuletzt können die terminalen Untertabellen in *scc_input*, *skf_input*, und "
+"*analysis_input* gelesen werden, wo die Werte mit ``get_value`` abgefragt werden. "
+"Zusätzlich kann ein Standardwert mit ``get_value`` definiert werden. Für einen "
+"korrekten Fehlerbehandlung kann auch der optionalen *stat*-Parameter abgefragt werden."
 
-#: ../doc/how-to/table.rst:72
+#: ../how-to/table.rst:72
 msgid ""
 "For the small incomplete input as shown here, the fine-grained "
 "substructure seems overengineered and could be fully defined in the "
@@ -1046,8 +1449,14 @@ msgid ""
 "program inputs such a structure can help to ensure that input readers are"
 " properly modular and reusable."
 msgstr ""
+"Für die kleine unvollständige Eingabe wie hier sieht die "
+"fein unterteile Struktur zu vielen Unterstrukturen übermäßig kompliziert aus "
+"und könnte auch in der Lese-Routine für der Dokument-Wurzel "
+"definiert werden. Allerdings kann für größere Programm-Eingaben "
+"eine solche Struktur hilfreich sein, um sicherzustellen, dass "
+"die Lese-Routinen modular und wiederverwendbar sind."
 
-#: ../doc/how-to/table.rst:77
+#: ../how-to/table.rst:77
 msgid ""
 "The allocation status of a component of the derived type can be used "
 "instead of a separate boolean flag to indicate whether a feature should "
@@ -1055,33 +1464,33 @@ msgid ""
 "routine for conditionally handling entries depending on a boolean flag, "
 "instead they can be collected in a subtable."
 msgstr ""
-"Der Allokationsstatus der Teilkomponenten in den Datentypen kann statt "
-"eines separated logischen Option verwendet werden, um eine aktive "
-"Funktionalität zu signalisieren. Dies ermöglicht es auf zusätzliche Logik"
-" zu verzichten um abhängige Einträge zu lesen, diese sind stattdessen in "
-"einer Untertabelle gesammelt."
+"Der Allokationsstatus der Teilkomponenten in den Datentypen kann statt eines "
+"separated logischen Option verwendet werden, um eine aktive Funktionalität zu "
+"signalisieren. Dies ermöglicht es auf zusätzliche Logik zu verzichten um "
+"abhängige Einträge zu lesen, diese sind stattdessen in einer Untertabelle "
+"gesammelt."
 
-#: ../doc/how-to/table.rst
+#: ../how-to/table.rst
 msgid "Full source code"
 msgstr "Vollständiger Quellcode"
 
-#: ../doc/how-to/table.rst:82
+#: ../how-to/table.rst:82
 msgid "The full module implementing the *simulation_input* reading"
-msgstr "Die vollständige Modul-Implementierung des *simulation_input* "
+msgstr "Die vollständige Modul-Implementierung des *simulation_input*"
 
-#: ../doc/how-to/table.rst:88 ../doc/how-to/table.rst:161
+#: ../how-to/table.rst:88 ../how-to/table.rst:161
 msgid "The auxiliary module providing the error handler"
 msgstr "Hilfsmodul um Fehlerbehandlung zu ermöglichen"
 
-#: ../doc/how-to/table.rst:90 ../doc/how-to/table.rst:163
+#: ../how-to/table.rst:90 ../how-to/table.rst:163
 msgid "src/error.f90"
 msgstr ""
 
-#: ../doc/how-to/table.rst:96
+#: ../how-to/table.rst:96
 msgid "Iterating over keys"
 msgstr "Iterieren über Einträge"
 
-#: ../doc/how-to/table.rst:98
+#: ../how-to/table.rst:98
 msgid ""
 "An expressive way to organize data is by providing a table where the keys"
 " of each entry describe the object that should be initialized. For "
@@ -1090,32 +1499,31 @@ msgid ""
 "feature might be the possibility to just provide a string, which is "
 "interpreted as a version subentry."
 msgstr ""
-"Eine klare Art Daten zu organisieren ist durch die Verwendung einer "
-"Tabelle in der die Einträge die Initialisierung der Objekte beschreiben. "
-"Zum Beispiel in einem Paketmanager beschreiben die Einträge die "
-"Abhängigkeiten, in der jede davon in einer Untertabelle deklariert wird. "
-"Zusätzlich kann der einfachheitshalber ein String angeben werden, der als"
-" Versions-Einschränkung für die Untertabelle interpretiert wird."
+"Eine klare Art Daten zu organisieren ist durch die Verwendung einer Tabelle"
+" in der die Einträge die Initialisierung der Objekte beschreiben. Zum"
+" Beispiel in einem Paketmanager beschreiben die Einträge die Abhängigkeiten, in "
+"der jede davon in einer Untertabelle deklariert wird. Zusätzlich kann der "
+"einfachheitshalber ein String angeben werden, der als Versions-Einschränkung für "
+"die Untertabelle interpretiert wird."
 
-#: ../doc/how-to/table.rst:102
+#: ../how-to/table.rst:102
 msgid ""
 "The final usage of this in a *requirements* table could look like the "
 "snippet shown below."
 msgstr ""
-"Die Implementierung in einer *requirements* Tabelle könnte wie folgt "
-"aussehen:"
+"Die Implementierung in einer *requirements* Tabelle könnte wie folgt aussehen:"
 
-#: ../doc/how-to/table.rst:114
+#: ../how-to/table.rst:114
 msgid ""
 "The first three entries provide a string value, while the fourth entry "
 "provides a subtable implicitly by using dotted key-value pairs and the "
 "last entry uses an inline table."
 msgstr ""
-"In den ersten drei Einträgen wird ein String Wert verwendet, während der "
-"vierte Eintrag eine implizite Untertabelle über ein Punktgetrenntes "
-"Werte-Paar nutzt und der letzte Eintrag eine Inline-Tabelle ist."
+"In den ersten drei Einträgen wird ein String Wert verwendet, während der"
+" vierte Eintrag eine implizite Untertabelle über ein Punktgetrenntes Werte-Paar "
+"nutzt und der letzte Eintrag eine Inline-Tabelle ist."
 
-#: ../doc/how-to/table.rst:116
+#: ../how-to/table.rst:116
 msgid ""
 "Here we want to focus on the iteration and the default initialization, "
 "the internal structure of the *requirement_type* is secondary for this "
@@ -1123,17 +1531,16 @@ msgid ""
 "dependency for demonstration purposes."
 msgstr ""
 "Wir wollen uns hier auf die Iteration und die Standardinitialisierung "
-"konzentrieren. Die internen Struktur des *requirement_type* Datentype ist"
-" nebensächlich für dieses Beispiel. Daher geben wir für dieses Beispiel "
-"nur die minimale Definition an, die ausschließlich den Namen der "
-"Abhängigkeiten enthält."
+"konzentrieren. Die internen Struktur des *requirement_type* Datentype ist nebensächlich "
+"für dieses Beispiel. Daher geben wir für dieses Beispiel nur die minimale "
+"Definition an, die ausschließlich den Namen der Abhängigkeiten enthält."
 
-#: ../doc/how-to/table.rst:119 ../doc/how-to/table.rst:129
-#: ../doc/how-to/table.rst:144 ../doc/how-to/table.rst:157
+#: ../how-to/table.rst:119 ../how-to/table.rst:129 ../how-to/table.rst:144
+#: ../how-to/table.rst:157
 msgid "src/requirements.f90"
 msgstr ""
 
-#: ../doc/how-to/table.rst:124
+#: ../how-to/table.rst:124
 msgid ""
 "For the actual implementation of reading all entries from the table, we "
 "will use a one-dimensional array of *requirement_type* values. Using the "
@@ -1147,19 +1554,18 @@ msgid ""
 "*requirement_type* using the subtable references with the ``child`` "
 "pointer."
 msgstr ""
-"Für die Implementierung der Leseoperationen wird ein eindimensionales "
-"Feld von *requirement_type* Datentypen verwendet. Durch die ``get_keys`` "
-"Methode der Tabelle können alle Schlüssel der aktuellen Tabelle ermittelt"
-" werden. Die Methode wird immer eine allozierte ``list`` Variable "
-"zurückgeben und kann damit das *requirement_type* Feld auf die Anzahl der"
-" Schlüssel allozieren. Die ``get_value`` Methode kann verwendet werden, "
-"um auf die Untertabelle zuzugreifen. Sie wird einen Zeiger auf die "
-"Untertabelle zurückgeben, die entweder durch ein Punktgetrenntes Wert-"
-"Paar oder eine Inline-Tabelle erstellt wurde. Anschließend kann der "
-"Konstruktor des *requirement_type* Datentyps auf die Untertabelle-"
-"Referenzen mit dem ``child`` Zeiger aufgerufen werden."
+"Für die Implementierung der Leseoperationen wird ein eindimensionales Feld von "
+"*requirement_type* Datentypen verwendet. Durch die ``get_keys`` Methode der Tabelle "
+"können alle Schlüssel der aktuellen Tabelle ermittelt werden. Die Methode "
+"wird immer eine allozierte ``list`` Variable zurückgeben und kann damit das"
+" *requirement_type* Feld auf die Anzahl der Schlüssel allozieren. Die ``get_value``"
+" Methode kann verwendet werden, um auf die Untertabelle zuzugreifen. Sie "
+"wird einen Zeiger auf die Untertabelle zurückgeben, die entweder durch ein "
+"Punktgetrenntes Wert-Paar oder eine Inline-Tabelle erstellt wurde. Anschließend "
+"kann der Konstruktor des *requirement_type* Datentyps auf die Untertabelle-Referenzen"
+" mit dem ``child`` Zeiger aufgerufen werden."
 
-#: ../doc/how-to/table.rst:134
+#: ../how-to/table.rst:134
 msgid ""
 "The other scenario we want to support is the presence of a string rather "
 "than a subtable. In this case, the ``get_value`` interface will fail, "
@@ -1178,50 +1584,49 @@ msgid ""
 "created dummy table can be associated with the ``child`` pointer and "
 "passed to the actual constructor."
 msgstr ""
-"Der zweite Scenario, das wir unterstützen, ist die Nutzung eines Strings "
-"anstatt einer Untertabelle. In diesem Fall wird die ``get_value`` Methode"
-" fehlschlagen, während ein optionaler Status-Parameter zurückgeben werden"
-" kann, um den Erfolg zu prüfen, können wir einfacher und idomatisch den "
-"Erfolg am Zuweisungs-Status des ``child`` Zeigers prüfen. Wenn es keine "
+"Der zweite Scenario, das wir unterstützen, ist die Nutzung eines "
+"Strings anstatt einer Untertabelle. In diesem Fall wird die ``get_value`` "
+"Methode fehlschlagen, während ein optionaler Status-Parameter zurückgeben werden kann,"
+" um den Erfolg zu prüfen, können wir einfacher und idomatisch den Erfolg"
+" am Zuweisungs-Status des ``child`` Zeigers prüfen. Wenn es keine "
 "Untertabelle zu referenzieren gibt, weil es ein Wert-Paar mit einem "
-"String-Eintrag ist, wird der ``child`` Zeiger nicht zugewiesen. Dies kann"
-" einfach geprüft werden. Für diesen Fall werden wir die ``get_value`` "
-"Methode noch einmal verwenden, um den Eintrag in einen dynamischen String"
-" zu speichern. Auch hier können wir den Erfolg am Zuweisungs-Status "
-"prüfen und wenn ein Fehler aufgetreten ist, wird eine Fehlermeldung "
-"erzeugt. Anschließend können wir den Konstruktor des *requirement_type* "
-"Datentyps mit einer Dummy Tabelle aufrufen auf die wir mit dem ``child`` "
-"Zeiger referenziert haben."
+"String-Eintrag ist, wird der ``child`` Zeiger nicht zugewiesen. Dies kann "
+"einfach geprüft werden. Für diesen Fall werden wir die ``get_value`` Methode "
+"noch einmal verwenden, um den Eintrag in einen dynamischen String zu "
+"speichern. Auch hier können wir den Erfolg am Zuweisungs-Status prüfen und"
+" wenn ein Fehler aufgetreten ist, wird eine Fehlermeldung erzeugt. Anschließend"
+" können wir den Konstruktor des *requirement_type* Datentyps mit einer Dummy"
+" Tabelle aufrufen auf die wir mit dem ``child`` Zeiger referenziert haben."
 
-#: ../doc/how-to/table.rst:142
+#: ../how-to/table.rst:142
 msgid ""
 "The actual constructor for our example is very minimalistic and only "
 "recovers the name of the dependency which is passed as a separate "
 "argument."
 msgstr ""
-"Der eigentliche Konstruktor für dieses Beispiel ist sehr minimalistisch "
-"und spezifiziert nur den Namen der Abhängigkeit, welcher als separates "
-"Argument übergeben wird."
+"Der eigentliche Konstruktor für dieses Beispiel ist sehr minimalistisch und "
+"spezifiziert nur den Namen der Abhängigkeit, welcher als separates Argument "
+"übergeben wird."
 
-#: ../doc/how-to/table.rst:151
+#: ../how-to/table.rst:151
 msgid ""
 "While we provide an error handler in the example, we also ensure that the"
 " allocation status of the *requirement_type* values communicates the "
 "status of the operation as well."
 msgstr ""
-"Wir bieten einen Fehlerbehandlungs-Prozess in diesem Beispiel, zusätzlich"
-" stellen wir sicher, dass der Zuweisungs-Status des *requirement_type* "
-"Feldes die Status-Informationen der Operation ebenfalls kommuniziert."
+"Wir bieten einen Fehlerbehandlungs-Prozess in diesem Beispiel, zusätzlich stellen "
+"wir sicher, dass der Zuweisungs-Status des *requirement_type* Feldes die "
+"Status-Informationen der Operation ebenfalls kommuniziert."
 
-#: ../doc/how-to/table.rst:155
+#: ../how-to/table.rst:155
 msgid "The full module implementing the *requirement_type* reading"
 msgstr "Das vollständige Modul zum Einlesen des *requirement_type*"
 
-#: ../doc/how-to/table.rst:169
+#: ../how-to/table.rst:169
 msgid "Array of tables"
 msgstr "Feld von Tabellen"
 
-#: ../doc/how-to/table.rst:171
+#: ../how-to/table.rst:171
 msgid ""
 "A special construct in TOML is the array of tables syntax, it provides a "
 "more verbose form to declare several tables in an array, which are "
@@ -1229,41 +1634,40 @@ msgid ""
 msgstr ""
 "Ein spezielles Konstrukt in TOML ist ein Feld von Tabellen, das eine "
 "ausführlichere Form zum Deklarieren von mehreren Tabellen in einem Feld "
-"anbietet. Normalerweise wird dies durch Inline-Tabellen angegeben wie "
-"unten gezeigt."
+"anbietet. Normalerweise wird dies durch Inline-Tabellen angegeben wie unten "
+"gezeigt."
 
-#: ../doc/how-to/table.rst:182
+#: ../how-to/table.rst:182
 msgid ""
 "Comparing the above example to the snippet below using an array of tables"
 " for the *tasks* array, the more verbose form becomes preferable in case "
 "further subtables are needed. Except for the subtables *config* the same "
 "data is provided."
 msgstr ""
-"Vergleichen wir das obige Beispiel mit dem unten gezeigten Beispiel für "
-"das *tasks* Feld, dann ist die ausführlichere Form bevorzugt, wenn wir "
-"weitere Untertabelle benötigen. In beiden Beispielen werden bis auf die "
-"*config* Untertabelle die gleichen Daten angegeben."
+"Vergleichen wir das obige Beispiel mit dem unten gezeigten Beispiel für das "
+"*tasks* Feld, dann ist die ausführlichere Form bevorzugt, wenn wir "
+"weitere Untertabelle benötigen. In beiden Beispielen werden bis auf die *config* "
+"Untertabelle die gleichen Daten angegeben."
 
-#: ../doc/how-to/table.rst:210
+#: ../how-to/table.rst:210
 msgid ""
 "To represent this data we can use a single *task_config* derived type "
 "with a polymorphic *driver_config* member identifying the actual task. "
 "For this example, we will have two implementations of such tasks such as "
 "LBFGS and Velocity Verlet, which are defined in the following snippets."
 msgstr ""
-"Um diese Daten zu repräsentieren können wir einen eigenen *task_config* "
-"Datentyp verwenden, welcher einen polymorphen *driver_config* Eintrag "
-"enthält, der die tatsächliche Aufgabe identifiziert. Für dieses Beispiel "
-"werden zwei Implementierungen wie LBFGS und Velocity Verlet definiert, "
-"welche in den folgenden Codeblöcken angegeben sind."
+"Um diese Daten zu repräsentieren können wir einen eigenen *task_config* Datentyp "
+"verwenden, welcher einen polymorphen *driver_config* Eintrag enthält, der die "
+"tatsächliche Aufgabe identifiziert. Für dieses Beispiel werden zwei Implementierungen "
+"wie LBFGS und Velocity Verlet definiert, welche in den folgenden Codeblöcken "
+"angegeben sind."
 
-#: ../doc/how-to/table.rst:213 ../doc/how-to/table.rst:222
-#: ../doc/how-to/table.rst:236 ../doc/how-to/table.rst:244
-#: ../doc/how-to/table.rst:255
+#: ../how-to/table.rst:213 ../how-to/table.rst:222 ../how-to/table.rst:236
+#: ../how-to/table.rst:244 ../how-to/table.rst:255
 msgid "src/task.f90"
 msgstr ""
 
-#: ../doc/how-to/table.rst:218
+#: ../how-to/table.rst:218
 msgid ""
 "To read the array of tables we start from the root document and fetch the"
 " *tasks* entry as an array using the ``get_value`` interface. The length "
@@ -1272,14 +1676,14 @@ msgid ""
 "individual tables inside the array can be addressed using the "
 "``get_value`` interface by passing the (one-based) index."
 msgstr ""
-"Um das Feld von Tabellen zu einlesen starten wir vom Wurzeldokument und "
-"holen das *tasks* Eintrag als Feld mit der ``get_value`` Routine.Die "
+"Um das Feld von Tabellen zu einlesen starten wir vom Wurzeldokument "
+"und holen das *tasks* Eintrag als Feld mit der ``get_value`` Routine.Die "
 "Länge des gesamten Feldes ist bekannt und wir können diese Information "
 "benutzen, um eine Liste von *task_config* Einträgen zu allokieren. Die "
 "Tabellen in dem Feld können mit der ``get_value`` Routine anhand der "
 "(1-basierten) Indexposition abgefragt werden."
 
-#: ../doc/how-to/table.rst:229
+#: ../how-to/table.rst:229
 msgid ""
 "In the setup above, if the *tasks* entry is not present it will be "
 "implicitly created as an empty array. The allocation and the loop over "
@@ -1287,12 +1691,11 @@ msgid ""
 " tasks are meaningful or should produce an error."
 msgstr ""
 "Im obigen Setup wird das *tasks* Eintrag implizit erzeugt, wenn dieser "
-"nicht vorhanden ist. Die Allokation und der Schleifendurchlauf "
-"funktionieren ohne Probleme, allerdings müssen die folgenden Routinen "
-"prüfen, ob eine Simulation ohne Aufgaben Sinn hat oder einen Fehler "
-"erzeugen."
+"nicht vorhanden ist. Die Allokation und der Schleifendurchlauf funktionieren ohne "
+"Probleme, allerdings müssen die folgenden Routinen prüfen, ob eine Simulation ohne "
+"Aufgaben Sinn hat oder einen Fehler erzeugen."
 
-#: ../doc/how-to/table.rst:232
+#: ../how-to/table.rst:232
 msgid ""
 "To read the individual tasks we define a separate procedure to make it "
 "easily reusable and hide the fact that we are working with a subtable. To"
@@ -1306,58 +1709,36 @@ msgid ""
 "*move_alloc* into the *task_config*."
 msgstr ""
 "Für die einzelnen Aufgaben definieren wir eine separate Routine, um das "
-"Auslesen von Untertabellen zu vereinfachen und die Logik zu verstecken, "
-"dass wir mit einer Untertabelle arbeiten. Für den *name* Eintrag ist der "
-"Defaultwert der Name des Treibers. Für *allocatable* oder *pointer* "
-"Variablen kann der Exit-Status der ``get_value`` Routine direkt überprüft"
-" werden. Alternativ kann ein Integerwert als optionales *stat* Argument "
-"übergeben werden. Anschließend wird eine weitere Lese-Routine abhängig "
-"von dem *driver* Eintrag aufgerufen. Dabei nutzen wir einen Block, um die"
-" spezifischen Typen zu allokieren und diese mit *move_alloc* in die "
-"*task_config* Instanz zu transferieren."
+"Auslesen von Untertabellen zu vereinfachen und die Logik zu verstecken, dass "
+"wir mit einer Untertabelle arbeiten. Für den *name* Eintrag ist der "
+"Defaultwert der Name des Treibers. Für *allocatable* oder *pointer* Variablen "
+"kann der Exit-Status der ``get_value`` Routine direkt überprüft werden. "
+"Alternativ kann ein Integerwert als optionales *stat* Argument übergeben werden."
+" Anschließend wird eine weitere Lese-Routine abhängig von dem *driver* "
+"Eintrag aufgerufen. Dabei nutzen wir einen Block, um die spezifischen Typen"
+" zu allokieren und diese mit *move_alloc* in die *task_config* Instanz "
+"zu transferieren."
 
-#: ../doc/how-to/table.rst:241
+#: ../how-to/table.rst:241
 msgid ""
 "For reading the actual driver configuration we use the ``get_value`` "
 "interface to obtain the settings. We use the same defaulting mechanism as"
 " for the *name* entry here."
 msgstr ""
-"Für die eigentliche Treiber-Konfiguration nutzen wir die ``get_value`` "
-"Routine, um die Einstellungen zu lesen. Wir nutzen dieselbe Defaultwert "
-"Mechanismus wie für den *name* Eintrag hier."
+"Für die eigentliche Treiber-Konfiguration nutzen wir die ``get_value`` Routine, um"
+" die Einstellungen zu lesen. Wir nutzen dieselbe Defaultwert Mechanismus wie"
+" für den *name* Eintrag hier."
 
-#: ../doc/how-to/table.rst:249
+#: ../how-to/table.rst:249
 msgid ""
 "Note that this example does not propagate back errors but directly calls "
 "*error stop*, for a more robust error reporting this can be changed by a "
 "small error handle or a context type."
 msgstr ""
-"Dieses Beispiel gibt keine Fehler zurück, sondern ruft direkt *error "
-"stop* auf, um eine robustere Fehlerbehandlung zu ermöglichen, kann dies "
-"durch einen kleineren Fehlerbehandlungs-Typ oder einen Kontexttyp "
-"implementiert werden."
+"Dieses Beispiel gibt keine Fehler zurück, sondern ruft direkt *error stop*"
+" auf, um eine robustere Fehlerbehandlung zu ermöglichen, kann dies durch "
+"einen kleineren Fehlerbehandlungs-Typ oder einen Kontexttyp implementiert werden."
 
-#: ../doc/how-to/table.rst:253
+#: ../how-to/table.rst:253
 msgid "The full module implementing the *task_config* reading"
 msgstr "Die vollständige Modul-Implementierung um *task_config* zu lesen"
-
-#~ msgid ""
-#~ "For the small incomplete input as "
-#~ "shown here the fine grained substructure"
-#~ " seems like overengineered, and could "
-#~ "be fully defined in the reading "
-#~ "routine for the document root as "
-#~ "well. However, for larger program inputs"
-#~ " such structure can help to ensure"
-#~ " that input readers are properly "
-#~ "modular and reusable."
-#~ msgstr ""
-#~ "F[r das minimale Eingabebeispiel hier "
-#~ "ist die Struktur scheinbar zu fein "
-#~ "eingeteilt und könnte direkt beim Lesen"
-#~ " der Dokumentenwurzel definiert werden. "
-#~ "Allerdings bietet diese Struktur für "
-#~ "große Programme einen wesentlichen Vorteil,"
-#~ " da sie die Einlese-Routinen modular"
-#~ " und wiederverwendbar gestaltet sind."
-
