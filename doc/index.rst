@@ -103,6 +103,28 @@ The TOML Fortran project is hosted at GitHub at `toml-f/toml-f <https://github.c
       ^^^
       External links to other resources, blogs, etc.
 
+
+.. card::
+   :class-body: sd-fs-4 sd-font-weight-bold
+   :class-card: sd-mt-5 sd-px-5 sd-py-1 sd-rounded-3 sd-bg-light sd-text-center
+   :shadow: none
+
+   :octicon:`pin`
+   News
+
+.. postlist:: 5
+   :excerpts:
+
+
+.. card::
+   :class-body: sd-fs-4 sd-font-weight-bold
+   :class-card: sd-mt-5 sd-px-5 sd-py-1 sd-rounded-3 sd-bg-light sd-text-center
+   :shadow: none
+
+   :octicon:`rocket`
+   Users
+
+
 TOML Fortran is used for example in the Fortran package manager (`fpm <https://fpm.fortran-lang.org>`_), a typical package manifest specified in TOML is shown below
 
 .. literalinclude:: ../fpm.toml
@@ -111,8 +133,11 @@ TOML Fortran is used for example in the Fortran package manager (`fpm <https://f
 
 
 .. toctree::
+   :maxdepth: 2
+   :hidden:
 
    Tutorials <tutorial/index>
    How-Tos <how-to/index>
    References <reference/index>
+   News <news/index>
    external
