@@ -12,10 +12,8 @@ Linters provide a way to encourage or enforce a certain style or flag up common 
 Target selection
 ----------------
 
-This tutorial will look into finding lint in the package manifest from the Fortran package manager (`fpm`_).
+This tutorial will look into finding lint in the package manifest from the Fortran package manager (`fpm <https://fpm.fortran-lang.org>`_).
 We will use its plugin mechanism to create a new subcommand called ``lint``.
-
-.. _fpm: https://fpm.fortran-lang.org
 
 We start with setting up the package manifest for our linter:
 

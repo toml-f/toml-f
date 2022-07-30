@@ -6,20 +6,631 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toml-f 0.2.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-08 16:49+0100\n"
-"PO-Revision-Date: 2022-04-10 18:03+0200\n"
+"POT-Creation-Date: 2022-07-30 16:12+0200\n"
+"PO-Revision-Date: 2022-07-30 16:12+0200\n"
 "Last-Translator: Sebastian Ehlert\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.1\n"
+"Generated-By: Babel 2.10.3\n"
 
-#: ../doc/tutorial/getting-started.rst:2
+#: ../tutorial/fpm-lint.rst:2
+msgid "Building a linter"
+msgstr ""
+
+msgid "Difficulty: Beginner"
+msgstr "Schwierigkeit: Anfänger"
+
+#: ../tutorial/fpm-lint.rst:8
+msgid ""
+"This tutorial will show how to use TOML Fortran to build a linter for "
+"your configuration files. Linters provide a way to encourage or enforce a"
+" certain style or flag up common usage errors."
+msgstr ""
+"Dieses Tutorial zeigt, wie du TOML Fortran zum Erstellen eines Linters "
+"für deine Konfigurationsdateien verwenden kannst. Linter bieten eine "
+"Möglichkeit, einen bestimmten Stil zu bevorzugen oder die häufig "
+"gemachten Fehler zu finden."
+
+#: ../tutorial/fpm-lint.rst:13
+msgid "Target selection"
+msgstr "Zielauswahl"
+
+#: ../tutorial/fpm-lint.rst:15
+msgid ""
+"This tutorial will look into finding lint in the package manifest from "
+"the Fortran package manager (`fpm <https://fpm.fortran-lang.org>`_). "
+"We will use its plugin mechanism to create a new subcommand called ``lint``."
+msgstr ""
+"Dieses Tutorial wird auf die Suche nach Lint in dem Paketmanifest des "
+"Fortran-Paketmanagers (`fpm <https://fpm.fortran-lang.org/de>`_) eingehen. "
+"Wir werden den Plugin-Mechanismus des Fortran-Paketmanagers verwenden, "
+"um ein neues Unterprogramm mit dem Namen ``lint`` zu erstellen."
+
+#: ../tutorial/fpm-lint.rst:20
+msgid "We start with setting up the package manifest for our linter:"
+msgstr "Wir beginnen mit der Einrichtung des Paketmanifests für unseren "
+"Linter:"
+
+#: ../tutorial/fpm-lint.rst:22 ../tutorial/fpm-lint.rst:38
+#: ../tutorial/fpm-lint.rst:91 ../tutorial/fpm-lint.rst:134
+#: ../tutorial/fpm-lint.rst:196 ../tutorial/fpm-lint.rst:280
+#: ../tutorial/getting-started.rst:14
+msgid "fpm.toml"
+msgstr ""
+
+#: ../tutorial/fpm-lint.rst:33
+msgid "Configuration of the linter"
+msgstr "Konfiguration des Linters"
+
+#: ../tutorial/fpm-lint.rst:35
+msgid ""
+"To configure our linter we will use the `extra section <https://fpm"
+".fortran-lang.org/en/spec/manifest.html#additional-free-data-field>`__ in"
+" the manifest which is specially reserved for tools integrating with fpm "
+"and boldly claim *extra.fpm.lint* as our configuration section. Using the"
+" package manifest provides us with two advantages, first this document "
+"will be present in all projects using fpm, second if we can read our "
+"configuration from the manifest, we are already sure it is valid TOML."
+msgstr ""
+"Um den Linter zu konfigurieren, werden wir die `extra-Sektion <https://fpm"
+".fortran-lang.org/de/spec/manifest.html#additional-free-data-field>`__ "
+"im Manifest verwenden, welche speziell für Tools, die mit fpm "
+"integriert werden, reserviert ist und *extra.fpm.lint* als "
+"Konfigurationssektion verwendet. Durch das Paketmanifest erhalten wir "
+"zwei Vorteile, erstens ist dieses Dokument in allen Projekten, die "
+"fpm verwenden, vorhanden, zweitens wenn wir unsere Konfiguration "
+"aus dem Manifest lesen können, ist sichergestellt, dass sie gültiges "
+"TOML ist."
+
+#: ../tutorial/fpm-lint.rst:46
+msgid "Now we will set up our main program to run the linter."
+msgstr "Als nächstes setzen wir das Hauptprogramm, um den Linter zu "
+"starten."
+
+#: ../tutorial/fpm-lint.rst:48 ../tutorial/fpm-lint.rst:99
+#: ../tutorial/fpm-lint.rst:160 ../tutorial/fpm-lint.rst:208
+#: ../tutorial/fpm-lint.rst:262
+msgid "app/main.f90"
+msgstr ""
+
+#: ../tutorial/fpm-lint.rst:52
+msgid ""
+"We create a utility module for the *get_argument* function used to "
+"retrieve the manifest name, in most cases we can default to *fpm.toml*, "
+"but for testing it is convenient to pass an argument."
+msgstr ""
+"Wir erstellen ein Utility-Modul für die *get_argument*-Funktion, "
+"die zum Abrufen des Manifest-Namens verwendet wird. In den meisten "
+"Fällen können wir diesen per Default auf *fpm.toml* setzen, aber für "
+"Testzwecke ist es nützlich, ein Argument übergeben zu können."
+
+#: ../tutorial/fpm-lint.rst:54 ../tutorial/fpm-lint.rst:253
+msgid "src/utils.f90"
+msgstr ""
+
+#: ../tutorial/fpm-lint.rst:59
+msgid ""
+"The first error source we can encounter stems from parsing the TOML "
+"document itself. This is outside of our responsibility to handle, still "
+"we want to check whether we can report the error correctly."
+msgstr ""
+"Die erste Fehlerquelle, die wir bei der Parseroutine selbst "
+"erkennen können, ist das Parsen des TOML-Dokuments. Dies ist "
+"außerhalb der Verantwortung des Lint-Programms, trotzdem wollen wir "
+"prüfen, ob wir den Fehler korrekt melden können."
+
+#: ../tutorial/fpm-lint.rst:62
+msgid "fpm.toml (invalid)"
+msgstr "fpm.toml (ungültig)"
+
+#: ../tutorial/fpm-lint.rst:66
+msgid ""
+"Running the linter on this document will break with the following message"
+" produced by the *toml_load* procedure."
+msgstr ""
+"Durch das Starten des Lint-Programms auf diesem Dokument wird die "
+"folgende Fehlermeldung produziert, die von der *toml_load*-Prozedur "
+"ausgegeben wird."
+
+#: ../tutorial/fpm-lint.rst:78
+msgid ""
+"With this case covered we proceed with reading the configuration for our "
+"linter."
+msgstr ""
+"Mit diesem Fall abgeschlossen setzen wir uns an, die Konfiguration "
+"für den Linter zu lesen."
+
+#: ../tutorial/fpm-lint.rst:80
+msgid ""
+"Our configuration from the package manifest will be stored in a "
+"*lint_config* type which we define in a separate module. Reading the "
+"configuration will happen from the root table, meaning we have to advance"
+" through several subtables first before we can process the options for "
+"our linter. We want to report errors with rich context information here "
+"as well, therefore we request the *origin* in every call to the "
+"*get_value* interface and produce a report using the *context* we "
+"obtained in the main program."
+msgstr ""
+"Unsere Konfiguration aus dem Paketmanifest wird in einem "
+"*lint_config*-Typ gespeichert, welcher in einem separate Modul "
+"definiert wird. Die Konfiguration wird von der Wurzel-Tabelle "
+"gelesen, d.h. wir müssen zunächst durch mehrere Untertabellen "
+"vorgehen, bevor wir die Optionen für den Linter verarbeiten können. "
+"Wir möchten hier Fehlermeldungen mit ausführlicher Kontextinformation "
+"erhalten, daher werden die *origin*-Angaben in den Aufrufen der "
+"*get_value*-Schnittstelle benötigt und wir erzeugen einen "
+"Bericht mit Hilfe des *context*-Wertes, den wir im "
+"Hauptprogramm erhalten haben."
+
+#: ../tutorial/fpm-lint.rst:84
+msgid "src/config.f90"
+msgstr ""
+
+#: ../tutorial/fpm-lint.rst:88
+msgid ""
+"For convenience, we defined a *make_error* routine to allocate the error "
+"handler and store our report from the context. At this point, we should "
+"check whether our error reporting works and run the linter on an "
+"incorrect TOML document."
+msgstr ""
+"Für einen einfachen Zugriff definiert wir eine *make_error*-Routine, "
+"die den Fehlerbehandlungsprozess ermöglicht und den Bericht aus dem "
+"Kontext speichert. An dieser Stelle sollten wir prüfen, ob die "
+"Fehlermeldungen korrekt funktionieren und den Linter auf einem "
+"falschen TOML-Dokument starten."
+
+#: ../tutorial/fpm-lint.rst
+msgid "current main program"
+msgstr "aktuelles Hauptprogramm"
+
+#: ../tutorial/fpm-lint.rst:97 ../tutorial/fpm-lint.rst:158
+#: ../tutorial/fpm-lint.rst:260
+msgid "Putting everything together in the main program should look like this."
+msgstr "Das Hauptprogramm sollte wie folgt aussehen."
+
+#: ../tutorial/fpm-lint.rst:103
+msgid ""
+"Running our linter on this file will correctly flag this as an error "
+"since a string value is provided rather than a boolean value."
+msgstr ""
+"Durch das Starten des Lint-Programms auf diesem Dokument wird dies "
+"als Fehlermeldung markiert, da ein String-Wert anstatt einer "
+"Boolesche-Angabe angegeben wurde."
+
+#: ../tutorial/fpm-lint.rst:115
+msgid ""
+"Finally, we define a logging mechanism to capture our actual linting "
+"messages which are not fatal. The logger provides two procedures, "
+"*add_message* to store a message and *show_log* to display all stored "
+"messages."
+msgstr ""
+"Zuletzt definieren wir ein Logging-Mechanismus, um die tatsächlichen "
+"Lint-Meldungen zu speichern, die nicht fatal sind. Der Logger "
+"bietet zwei Prozeduren, *add_message* zum Speichern einer "
+"Meldung und *show_log* zum Anzeigen aller gespeicherten Meldungen."
+
+#: ../tutorial/fpm-lint.rst:118
+msgid "src/logger.f90"
+msgstr ""
+
+#: ../tutorial/fpm-lint.rst:124
+msgid "Recommended package name"
+msgstr "Empfohlener Paketname"
+
+#: ../tutorial/fpm-lint.rst:126
+msgid ""
+"As a first linting check we will inspect the package name, for this we "
+"will apply the following rules:"
+msgstr ""
+"Als erste Prüfung werden wir den Paketnamen prüfen, dazu werden "
+"folgende Regeln angewendet:"
+
+#: ../tutorial/fpm-lint.rst:128
+msgid ""
+"the package name should be a TOML bare key to not require quotes in "
+"*dependency* sections, characters like dots, colons, or slashes are not "
+"allowed"
+msgstr ""
+"der Paketname sollte ein TOML-Bare-Schlüssel sein, um in den "
+"*dependency*-Bereichen keine Anführungszeichen zu erfordern, "
+"Sonderzeichen wie Punkte, Doppelpunkte, Kommas oder Schrägstriche "
+"sind nicht erlaubt"
+
+#: ../tutorial/fpm-lint.rst:129
+msgid ""
+"TOML generally favors lowercase dashed keys, therefore we will discourage"
+" capitalization (camelCase and PascalCase) as well as underscores "
+"(snake_case)"
+msgstr ""
+"TOML bevorzugt mit Bindestrichen getrennte Kleinbuchstaben in Schlüsselnamen, "
+"daher werden wir Großschreibung (camelCase und PascalCase) und "
+"Unterstriche (snake_case) verbieten"
+
+#: ../tutorial/fpm-lint.rst:130
+msgid ""
+"there are several ways to declare strings in TOML, we want to favor the "
+"normal string one"
+msgstr ""
+"Es gibt mehrere Möglichkeiten, Strings in TOML zu deklarieren, wir "
+"möchten das normale String-Format vorziehen"
+
+#: ../tutorial/fpm-lint.rst:132
+msgid ""
+"An example of a package name we would disallow would be *fpmLinter* as "
+"seen in the manifest below."
+msgstr ""
+"Ein Beispiel eines Paketnamen, den wir verboten werden würden, wäre "
+"*fpmLinter* wie im Manifest unten angezeigt."
+
+#: ../tutorial/fpm-lint.rst:138
+msgid ""
+"Let's start with our implementation of this check. For convenience we "
+"will reexport the other modules from the *fpm_lint* module, this allows "
+"one clean import in the main program. Then we define the *lint_data* "
+"procedure, where we first check whether the *name* key is present, if not"
+" we create a message at the *info* level and leave our block scope, as "
+"all further checks rely on the presence of the entry."
+msgstr ""
+"Damit wir mit unserer Implementierung beginnen können, reexportieren "
+"wir die anderen Module aus dem *fpm_lint*-Modul, dies ermöglicht einen "
+"klaren Import im Hauptprogramm. Anschließend definieren wir die "
+"*lint_data*-Prozedur, in der wir prüfen, ob der *name*-Schlüssel "
+"vorhanden ist, wenn nicht erstellen wir eine Meldung im *info*-Level "
+"und verlassen den Block-Scope, da alle weiteren Prüfungen auf die "
+"Vorhandensein des Eintrags basieren."
+
+#: ../tutorial/fpm-lint.rst:142
+msgid ""
+"We can now check whether the entry is provided as a string or maybe as "
+"something else, like a literal string, which we can flag. Furthermore, we"
+" verify that the package name uses only lowercase letters, numbers, and "
+"dashes with the *verify* intrinsic."
+msgstr ""
+"Wir können jetzt prüfen, ob der Eintrag als String angegeben ist oder "
+"möglicherweise als etwas anderes, wie ein Literalstring, das geprüft "
+"werden muss. Weiterhin prüfen wir, ob der Paketname nur Kleinbuchstaben, "
+"Zahlen und Bindestriche verwendet."
+
+#: ../tutorial/fpm-lint.rst:145 ../tutorial/fpm-lint.rst:227
+#: ../tutorial/fpm-lint.rst:243
+msgid "src/lint.f90"
+msgstr ""
+
+#: ../tutorial/fpm-lint.rst:152
+msgid ""
+"The ``toml_level`` parameter provides a statically initialized derived "
+"type enumerating all available report levels. Similarly, the "
+"``token_kind`` parameter provides an enumeration of the token kinds. You "
+"can think of it as an enumerator with a proper namespace."
+msgstr ""
+"Der ``toml_level``-Parameter stellt einen statisch initialisierten "
+"abgeleiteten Typ dar, der alle verfügbaren Meldungslevels enthält. "
+"Ähnlich gilt der ``token_kind``-Parameter als Enumerator mit einem "
+"gültigen Namensraum."
+
+#: ../tutorial/fpm-lint.rst:164
+msgid ""
+"We check this on the camelCase package name from above and can find the "
+"following output."
+msgstr ""
+"Wir prüfen diesen auf den Paketnamen mit camelCase von oben und "
+"können folgende Ausgabe finden."
+
+#: ../tutorial/fpm-lint.rst:177 ../tutorial/fpm-lint.rst:297
+#: ../tutorial/fpm-lint.rst:315 ../tutorial/json.rst:192
+#: ../tutorial/json.rst:279
+msgid "Exercise"
+msgstr "Übung"
+
+#: ../tutorial/fpm-lint.rst:180
+msgid ""
+"Add a check for the length of the package name, everything under three "
+"characters is probably a bad choice, so is a too long package name."
+msgstr ""
+"Füge eine Prüfung für die Länge des Paketnamens hinzu, alles unter "
+"drei Zeichen ist wahrscheinlich ein schlechter Wahl, genauso wie ein "
+"zu langer Paketname."
+
+#: ../tutorial/fpm-lint.rst:182
+msgid ""
+"Create an example to trigger the error with your new check. What happens "
+"if a too long camelCase package name is used?"
+msgstr ""
+"Erzeuge einen Beispiel, um den Fehler auszulösen. Was passiert wen ein "
+"zu langer camelCase-Paketname verwendet wird?"
+
+#: ../tutorial/fpm-lint.rst:187
+msgid "Bare key paths preferred"
+msgstr "Blanke Schlüsselpfade bevorzugt"
+
+#: ../tutorial/fpm-lint.rst:189
+msgid ""
+"TOML allows to quote keys, however this might become visually distracting"
+" if some keys are quoted and others are not. With our package name rule, "
+"there should not be the need to quote any keys even in dependency "
+"sections."
+msgstr ""
+"TOML erlaubt Schlüssel zu quotieren, was aber visuell unübersichtlich "
+"wird wenn nur einige Schlüssel quotiert werden und andere nicht. "
+"Mit unserer Paketnamenregel sollte es nicht notwendig sein, irgendeinen "
+"Schlüssel in Abhängigkeitsabschnitten zu quotieren."
+
+#: ../tutorial/fpm-lint.rst:192
+msgid ""
+"To determine whether a string is used in the context of a key we need a "
+"way to identify all keys. We could check all entries in the data "
+"structures by implementing a visitor object which walks through all "
+"tables and checks the keys. However, this is somewhat inefficient and we "
+"can also miss keys that are not recorded."
+msgstr ""
+"Um zu bestimmen, ob ein String in dem Kontext eines Schlüssels verwendet "
+"wird, müssen wir eine Methode finden, um alle Schlüssel zu identifizieren. "
+"Wir können alle Einträge in den Datenstrukturen durchlaufen und die "
+"Schlüssel prüfen. Allerdings ist dies auch etwas teuer und wir können "
+"auch Schlüssel verpassen, die nicht aufgezeichnet werden."
+
+#: ../tutorial/fpm-lint.rst:200
+msgid ""
+"In this example, the second occurrence of the key ``toml-f`` will only "
+"reference the table but it is already defined the line before. The "
+"quotation marks are visually identifiable as lint and we need a "
+"programmatic way to flag this."
+msgstr ""
+"In diesem Beispiel wird das zweite Vorkommnisse des Schlüssels ``toml-f`` "
+"nur referenzieren, aber es ist bereits in der Zeile vorher definiert. "
+"Die Anführungszeichen sind visuell identifizierbar als Lint und wir "
+"müssen eine Programmiermethode finden, um dies zu markieren."
+
+#: ../tutorial/fpm-lint.rst:203
+msgid ""
+"Instead of working with the data structure, we will use the parser to "
+"record more tokens in the context. Rather than using the context to only "
+"report errors, we will use it to identify keys. This is done by "
+"increasing the *context_detail* option in the *config* keyword of the "
+"parser to one. Now all tokens except for whitespace and comments will be "
+"recorded."
+msgstr ""
+"Anstatt mit der Datenstruktur zu arbeiten, werden wir den Parser verwenden "
+"um mehr Tokens in den Kontext zu speichern. Anstatt nur Fehler zu "
+"melden, werden wir den Kontext verwenden, um Schlüssel zu identifizieren. "
+"Dies wird durch das Erhöhen der *context_detail*-Option in der "
+"*config*-Schlüssel der Parser auf eins gesetzt. Damit werden alle "
+"Tokens, außer Leerzeichen und Kommentare gespeichert."
+
+#: ../tutorial/fpm-lint.rst:216
+msgid ""
+"Increasing the ``context_detail`` to two will also record whitespace and "
+"comments. This can be useful when writing checks for whitespace or "
+"indentation styles."
+msgstr ""
+"Durch das Erhöhen der *context_detail* auf zwei werden auch Leerzeichen "
+"und Kommentare gespeichert. Dies kann hilfreich sein, wenn Checks für "
+"Leerzeichen oder Einrückungsstile geschrieben werden."
+
+#: ../tutorial/fpm-lint.rst:219
+msgid "Our linter pass will work as follows:"
+msgstr "Unsere Linter-Schritt läuft wie folgt:"
+
+#: ../tutorial/fpm-lint.rst:221
+msgid "identifying all relevant keys in the manifest"
+msgstr "identifiziere alle relevanten Schlüssel im Manifest"
+
+#: ../tutorial/fpm-lint.rst:222
+msgid "check whether they are keypath tokens"
+msgstr "prüfe, ob sie Schlüsselpfad-Tokens sind"
+
+#: ../tutorial/fpm-lint.rst:223
+msgid "create a report for any key that is a string or a literal"
+msgstr "erzeuge einen Bericht für jeden Schlüssel, der ein String oder "
+"ein Literal ist"
+
+#: ../tutorial/fpm-lint.rst:225
+msgid ""
+"Our implementation reflects this by first collecting an array of "
+"*toml_key* objects in *list* and then iterating over all entries checking"
+" whether they are the correct *token_kind*."
+msgstr ""
+"Unsere Implementierung reflektiert dies durch das Sammeln einer Liste von "
+"*toml_key*-Objekten in *list* und dann durchlaufen aller Einträge, "
+"prüfen, ob sie das korrekte *token_kind* haben."
+
+#: ../tutorial/fpm-lint.rst:232
+msgid ""
+"To create the list we need to implement the *identify_keys* procedure. "
+"The rules in TOML for key paths are simple: before an equal sign we can "
+"have key paths and keypath can only be present in table bodies or inline "
+"tables. This can be implemented by using a stack storing whether the "
+"current scope belongs in a table, array, or value."
+msgstr ""
+"Um die Liste zu erzeugen müssen wir die *identify_keys*-Prozedur "
+"implementieren. Die Regeln in TOML für Schlüsselpfade sind einfach: "
+"vor einem Gleichheitszeichen können Schlüsselpfade sein und "
+"Schlüsselpfade können nur in Tabellen und Inline-Tabelle vorkommen. "
+"Dies kann implementiert werden, indem ein Stapel verwendet wird, "
+"um zu prüfen, ob der aktuelle Abschnitt in einer Tabelle, einem "
+"Feld oder einem Wert ist."
+
+#: ../tutorial/fpm-lint.rst:236
+msgid ""
+"We will always push a new scope on the respective token opening it, "
+"*i.e.* a value is opened by an equal sign, an array by a right bracket, "
+"and an inline table by a right curly brace. To distinguish table headers "
+"from inline arrays we only push arrays on our stack after an equal sign. "
+"Finally, we default to a table scope if no other scope is present and we "
+"have collected all required rules to identify key paths. Similarly, we "
+"can identify the endings of the scopes."
+msgstr ""
+"Wir werden immer einen neuen Abschnitt hinzufügen wenn wir das Token "
+"finden, das es öffnet, d.h. ein Wert öffnet sich mit einem Gleichheitszeichen, "
+"ein Feld mit einem rechten Klammer-Symbol, eine Inline-Tabelle "
+"mit einem rechten Klammer-Symbol. Um Tabelle-Überschriften von "
+"Inline-Arrays zu unterscheiden, fügen wir nur Arrays auf den Stapel "
+"hinzu nach einem Gleichheitszeichen. Zuletzt setzen wir den ersten Abschnitt "
+"als einen Tabelle-Abschnitt, wenn kein anderer Abschnitt vorhanden ist "
+"und wir haben alle benötigten Regeln zum Identifizieren von Schlüsselpfaden "
+"gesammelt. Analog gilt es für die Endungen der Abschnitte."
+
+#: ../tutorial/fpm-lint.rst:241
+msgid ""
+"We then can check whether the current scope on the top of the stack "
+"allows key paths and record those in our list."
+msgstr ""
+"Dann können wir prüfen, ob der aktuelle Abschnitt auf dem Stapel "
+"Schlüsselpfade erlaubt und diese in unsere Liste aufnehmen."
+
+#: ../tutorial/fpm-lint.rst:248
+msgid ""
+"For convenience, we implement a *push_back* and *pop* function to add and"
+" remove scopes from our stack. The *pop* function will additionally "
+"perform a check whether we want to remove a matching scope and save us "
+"some repetition in the loop this way."
+msgstr ""
+"Für einen einfachen Zugriff implementieren wir eine *push_back*- und "
+"*pop*-Funktion, um Abschnitte auf den Stapel hinzuzufügen und "
+"entfernen zu können. Die *pop*-Funktion führt zusätzlich einen "
+"Prüfung aus, ob wir einen passenden Abschnitt entfernen möchten und "
+"vermeiden eine Wiederholung in der Schleife auf diese Weise."
+
+#: ../tutorial/fpm-lint.rst:251
+msgid ""
+"In our utility module, we implement the *resize* procedure for an array "
+"of integers"
+msgstr ""
+"In unserem Utility-Modul implementieren wir die *resize*-Prozedur "
+"für ein Array von Ganzzahlen"
+
+#: ../tutorial/fpm-lint.rst:266
+msgid ""
+"At this point, we can now add a call in our main program to run the "
+"linter."
+msgstr ""
+"In dieser Stelle können wir nun einen Aufruf in unserem Hauptprogramm "
+"für den Linter hinzufügen."
+
+#: ../tutorial/fpm-lint.rst:278
+msgid ""
+"Now for something more tricky with an inline table to check whether our "
+"scoping rules are working correctly."
+msgstr ""
+"Jetzt für etwas schwieriges mit einer Inline-Tabelle, um zu prüfen, "
+"ob unsere Abschnittsregeln korrekt funktionieren."
+
+#: ../tutorial/fpm-lint.rst:284
+msgid ""
+"Our linter can correctly identify the *tag* entry as a string in the key "
+"path context and produces the appropriate message."
+msgstr ""
+"Unsere Linter kann den *tag*-Eintrag korrekt als einen String in "
+"der Schlüsselpfad-Kontext identifizieren und produziert das "
+"korrekte Meldungsformat."
+
+#: ../tutorial/fpm-lint.rst:300
+msgid ""
+"Previously, we flagged the usage of a literal string as a value for the "
+"package name, however a package manifest can contain much more string "
+"values."
+msgstr ""
+"Früher wurde die Verwendung eines Literal-Strings als Wert für den "
+"Paketnamen geprüft, aber ein Paketmanifest kann viel mehr "
+"Strings enthalten."
+
+#: ../tutorial/fpm-lint.rst:302
+msgid ""
+"Create a check for all string values in the manifest to ensure they use "
+"double-quotes. Collect string values (*string*, *literal*, *mstring*, and"
+" *mliteral*) from array and value scopes for this purpose."
+msgstr ""
+"Erstelle einen Prüfung für alle String-Werte im Manifest, um sicherzustellen, "
+"dass sie mit Anführungszeichen versehen sind. Sammle String-Werte "
+"(*string*, *literal*, *mstring*, und *mliteral*) aus Array- und "
+"Wert-Abschnitten für diesen Zweck."
+
+#: ../tutorial/fpm-lint.rst:305
+msgid ""
+"Can you make a meaningful suggestion if a literal string contains "
+"characters that must be escaped in a double-quoted string?"
+msgstr ""
+"Kannst du einen nützlichen Vorschlag machen, wenn ein Literal-String "
+"Zeichen enthält, das in einem String mit doppelten Anführungszeichen "
+"maskiert muss?"
+
+#: ../tutorial/fpm-lint.rst:309 ../tutorial/json.rst:349
+msgid "Summary"
+msgstr "Zusammenfassung"
+
+#: ../tutorial/fpm-lint.rst:311
+msgid ""
+"This concludes the linting we wanted to implement for the fpm package "
+"manifest. For a feature-complete linter, the rule set to check for is "
+"usually growing with time and might also shift as new rules are adopted. "
+"Our linter currently provides only a few rules but has the potential to "
+"include more checks as the need arises."
+msgstr ""
+"Dies beendet das Linten, das wir für das fpm-Paketmanifest "
+"implementiert haben. Für einen vollständigen Linter wird die Regelmenge, "
+"die geprüft werden soll, in der Regel mit Zeit weiterentwickelt und "
+"kann auch bei Bedarf auch wieder ändern. "
+"Unsere Linter bietet zur Zeit nur einige Regeln, aber es kann "
+"zusätzliche Prüfungen hinzugefügt werden, wenn der Bedarf entsteht."
+
+#: ../tutorial/fpm-lint.rst:317
+msgid ""
+"Our output is currently in the order of the checks, rather than in the "
+"order of reports occurring in the TOML document. The output of the "
+"reports might become more intuitive if it was sorted according to the "
+"source lines."
+msgstr ""
+"Unsere Ausgabe ist derzeit in der Reihenfolge der Prüfungen, "
+"anstatt in der Reihenfolge der Meldungen, die in der TOML-Dokumentation "
+"auftreten. Die Ausgabe der Meldungen sollte intuitiverer "
+"darstellt sein, wenn sie nach den Quellzeilen sortiert werden."
+
+#: ../tutorial/fpm-lint.rst:320
+msgid ""
+"Record the first character in the output together with the messages in "
+"the logger. Have the logger sort the messages according to their order "
+"before printing them."
+msgstr ""
+"Speichere die Position des ersten Zeichens in der Ausgabe zusammen mit den "
+"Meldungen im Logger. "
+"Der Logger sollte die Meldungen nach ihrer Reihenfolge vor der Ausgabe "
+"sortieren."
+
+#: ../tutorial/fpm-lint.rst:325
+msgid ""
+"In this tutorial, you have learned how to report custom error messages in"
+" your TOML input data. You can now"
+msgstr ""
+"In diesem Tutorial hast du gelernt, eigene Meldungen in deinen "
+"TOML-Eingabedaten zu erstellen. Du kannst nun"
+
+#: ../tutorial/fpm-lint.rst:328
+msgid "report colorized error messages with rich context information"
+msgstr "farbige Fehlermeldungen mit ausführlicher Kontextinformation "
+"ausgeben"
+
+#: ../tutorial/fpm-lint.rst:329
+msgid "create error messages when reading a TOML data structure"
+msgstr "Fehlermeldungen erstellen, wenn eine TOML-Datenstruktur gelesen "
+"wird"
+
+#: ../tutorial/fpm-lint.rst:330
+msgid "control the details captured in the context describing the TOML document"
+msgstr "die Details einstellen mit denen der Kontext des TOML-Dokumentes "
+"beschrieben wird"
+
+#: ../tutorial/fpm-lint.rst:331
+msgid "check a TOML document based on the token information in the context"
+msgstr "ein TOML-Dokument prüfen, basierend auf den Tokeninformationen "
+"im Kontext"
+
+#: ../tutorial/getting-started.rst:2
 msgid "Getting started"
 msgstr "Einführung"
 
-#: ../doc/tutorial/getting-started.rst:4
+#: ../tutorial/getting-started.rst:8
 msgid ""
 "This tutorial provides a gentle introduction to the use of TOML Fortran. "
 "It will deal with reading as well as creating TOML data structures using "
@@ -32,7 +643,7 @@ msgstr ""
 "außerdem wird diskutiert wie eine Datenstruktur aus einem TOML Dokument "
 "erstellt wird oder wieder in ein TOML Dokument konvertiert wird."
 
-#: ../doc/tutorial/getting-started.rst:7
+#: ../tutorial/getting-started.rst:11
 msgid ""
 "For this project we will be working with fpm, however you can use any "
 "build tool you are familar with, checkout the :ref:`integration guide "
@@ -41,15 +652,11 @@ msgid ""
 msgstr ""
 "Für dieses Projekt werden wir mit fpm arbeiten, aber Du kannst jedes "
 "Build-Tool verwenden, mit dem Du dich gut zurecht kommst, schau Dir die "
-":ref:`Integrations-Anleitung <integration>` an, um einen passenden Setup"
-" zu finden. Wir starten mit der Erstellung eines minimalen "
-"Paketmanifests, um TOML Fortran in unserem fpm Projekt zu benutzen."
+":ref:`Integrations-Anleitung <integration>` an, um einen passenden Setup "
+"zu finden. Wir starten mit der Erstellung eines minimalen Paketmanifests,"
+" um TOML Fortran in unserem fpm Projekt zu benutzen."
 
-#: ../doc/tutorial/getting-started.rst:10
-msgid "fpm.toml"
-msgstr ""
-
-#: ../doc/tutorial/getting-started.rst:18
+#: ../tutorial/getting-started.rst:22
 msgid ""
 "The public TOML Fortran API is defined in the ``tomlf`` module, we will "
 "only use this module for this entire course. The main data structures we "
@@ -63,11 +670,11 @@ msgstr ""
 "wird ``toml_table`` und ``toml_array`` Instanzen, die wir mit dem "
 "generischen interface ``get_value`` manipulieren können."
 
-#: ../doc/tutorial/getting-started.rst:21
+#: ../tutorial/getting-started.rst:25
 msgid "src/reader.f90"
 msgstr ""
 
-#: ../doc/tutorial/getting-started.rst:25
+#: ../tutorial/getting-started.rst:29
 msgid ""
 "Note that we declare the TOML data structure as mutable, *i.e.* "
 "``intent(inout)`` rather than just ``intent(in)``, as the ``get_value`` "
@@ -81,11 +688,11 @@ msgstr ""
 "einfachen Testprogramm, welches nicht einmal ein TOML Dokument liest, "
 "sondern nur eine leere Tabelle an den Reader weitergeben."
 
-#: ../doc/tutorial/getting-started.rst:28
+#: ../tutorial/getting-started.rst:32
 msgid "app/defaults.f90"
 msgstr ""
 
-#: ../doc/tutorial/getting-started.rst:32
+#: ../tutorial/getting-started.rst:36
 msgid ""
 "The ``get_value`` interface for processing the TOML data structure "
 "ensures that the data structure is complete throughout the whole process "
@@ -100,7 +707,7 @@ msgstr ""
 "Dich, dass die leere Tabelle während des Lesens wirklich geändert wurde, "
 "indem Du einen Serializer an die Datenstruktur übergibst."
 
-#: ../doc/tutorial/getting-started.rst:51
+#: ../tutorial/getting-started.rst:55
 msgid ""
 "This behavior is very convenient because it allows us to define our "
 "default values while defining how we read the TOML data structure."
@@ -108,7 +715,7 @@ msgstr ""
 "Dieses Verhalten ist sehr einfach, da wir unsere Standardwerte definieren"
 " können, während wir definieren, wie wir die TOML Datenstruktur lesen."
 
-#: ../doc/tutorial/getting-started.rst:55
+#: ../tutorial/getting-started.rst:59
 msgid ""
 "The ``get_value`` build interface is only one way of accessing the TOML "
 "data structure provided by TOML Fortran. It takes an opinionated approach"
@@ -120,15 +727,15 @@ msgstr ""
 "opionierten Ansicht auf, wie die Datenstruktur gelesen und verändert "
 "werden soll, was für einen Großteil der Anwendungen funktioniert."
 
-#: ../doc/tutorial/getting-started.rst:58
+#: ../tutorial/getting-started.rst:62
 msgid "Now we will actually read a TOML document and pass it to our reader."
 msgstr "Wir lesen jetzt ein echtes TOML Dokument und übergeben es an den Reader."
 
-#: ../doc/tutorial/getting-started.rst:60
+#: ../tutorial/getting-started.rst:64
 msgid "input.toml"
 msgstr ""
 
-#: ../doc/tutorial/getting-started.rst:66
+#: ../tutorial/getting-started.rst:70
 msgid ""
 "We adapt our command line driver to read the file ``input.toml`` and "
 "output the values as before"
@@ -136,11 +743,11 @@ msgstr ""
 "Wir adaptieren unseren Befehlszeilen-Driver, um die Datei ``input.toml`` "
 "zu lesen und die Werte wie vorher auszugeben."
 
-#: ../doc/tutorial/getting-started.rst:68
+#: ../tutorial/getting-started.rst:72
 msgid "app/readin.f90"
 msgstr ""
 
-#: ../doc/tutorial/getting-started.rst:72
+#: ../tutorial/getting-started.rst:76
 msgid ""
 "Running the program with fpm shows that we were able to read the correct "
 "values from the document"
@@ -148,7 +755,7 @@ msgstr ""
 "Durch das Ausführen des Programms mit fpm kannst Du sehen, dass wir die "
 "korrekten Werte aus dem Dokument gelesen haben."
 
-#: ../doc/tutorial/getting-started.rst:81
+#: ../tutorial/getting-started.rst:85
 msgid ""
 "You can again use the serializer to write the final data structure, if "
 "you want to check whether the ``get_value`` interface has added default "
@@ -158,7 +765,7 @@ msgstr ""
 "Datenstruktur zu schreiben, wenn Du möchtest, ob das ``get_value`` "
 "interface Standardwerte hinzugefügt hat."
 
-#: ../doc/tutorial/getting-started.rst:85
+#: ../tutorial/getting-started.rst:89
 msgid ""
 "In this tutorial you have learned out to read simple data structures from"
 " TOML documents. You can now"
@@ -166,29 +773,29 @@ msgstr ""
 "In diesem Tutorial hast Du gelernt, einfache Datenstrukturen aus TOML "
 "Dokumenten zu lesen. Du kannst nun"
 
-#: ../doc/tutorial/getting-started.rst:88
+#: ../tutorial/getting-started.rst:92
 msgid "define the logic to read data from TOML structures"
 msgstr "die Logik zum Lesen von Daten aus TOML Strukturen definieren"
 
-#: ../doc/tutorial/getting-started.rst:89
+#: ../tutorial/getting-started.rst:93
 msgid "provide default values in your parser as you define the input structure"
 msgstr ""
 "Standardwerte in Deinen Parsern definieren, wenn Du die Eingabestruktur "
 "definierst"
 
-#: ../doc/tutorial/getting-started.rst:90
+#: ../tutorial/getting-started.rst:94
 msgid "read an actual TOML document from a file"
 msgstr "ein echtes TOML Dokument aus einer Datei lesen"
 
-#: ../doc/tutorial/getting-started.rst:91
+#: ../tutorial/getting-started.rst:95
 msgid "write TOML documents from your data structures"
 msgstr "aus Deinen Datenstrukturen TOML Dokumente schreiben"
 
-#: ../doc/tutorial/index.rst:2
+#: ../tutorial/index.rst:4
 msgid "Tutorial courses"
 msgstr "Tutorial Kurse"
 
-#: ../doc/tutorial/index.rst:4
+#: ../tutorial/index.rst:6
 msgid ""
 "This section contains self-contained courses teaching the usage of TOML "
 "Fortran. Each tutorial is a full example for a specific application "
@@ -199,11 +806,11 @@ msgstr ""
 "Beispiel für eine bestimmte Anwendung, die mehrere Aspekte der Bibliothek"
 " abdeckt."
 
-#: ../doc/tutorial/index.rst:7
+#: ../tutorial/index.rst:9
 msgid "Contributions are welcome!"
 msgstr "Beiträge sind willkommen!"
 
-#: ../doc/tutorial/index.rst:10
+#: ../tutorial/index.rst:12
 msgid ""
 "If you have written on TOML Fortran and want to contribute to the "
 "documentation, feel free to fork the repository and submit a pull "
@@ -212,4 +819,565 @@ msgstr ""
 "Wenn Du zu TOML Fortran geschrieben hast und zur Dokumentation beitragen "
 "willst, kannst Du gerne das Repository forken und einen Pull Request "
 "öffen."
+
+#: ../tutorial/json.rst:2
+msgid "Writing a custom lexer"
+msgstr ""
+
+msgid "Difficulty: Intermediate"
+msgstr ""
+
+#: ../tutorial/json.rst:8
+msgid ""
+"Many programs already come with their input formats, switching to a "
+"different format requires establishing some way to get backward "
+"compatibility for older inputs. When transitioning to TOML Fortran "
+"reading of the input will use the provided TOML data structures. If the "
+"previous input format is sufficiently compatible, it can be parsed into a"
+" matching TOML data structure and allow to seamlessly use of the TOML "
+"format going forward while still providing compatibility for previously "
+"written inputs."
+msgstr ""
+
+#: ../tutorial/json.rst:12
+msgid ""
+"This tutorial is meant to teach how lexing in TOML Fortran works and "
+"enable the reader to implement their custom lexer for their custom "
+"format. There is no guarantee that a custom input format can be ported by"
+" creating a custom lexer, since the format needs to fulfill some basic "
+"requirements, like providing typed values. For this tutorial, we will "
+"choose `JSON <https://json.org/>`_ as our input format and walk through "
+"all the steps to create a new lexer from scratch."
+msgstr ""
+
+#: ../tutorial/json.rst:18
+msgid ""
+"The choice of JSON for this tutorial is not a coincidence. TOML Fortran "
+"does implement this lexer to parse JSON files into TOML data structures "
+"to support the encoding tests in the validation suite of `BurntSushi"
+"/toml-test <https://github.com/BurntSushi/toml-test/tree/v1.1.0"
+"#implementing-an-encoder>`_."
+msgstr ""
+
+#: ../tutorial/json.rst:23
+msgid "This tutorial makes partial use of the internal API of TOML Fortran."
+msgstr ""
+
+#: ../tutorial/json.rst:27
+msgid "Identifying limitation"
+msgstr ""
+
+#: ../tutorial/json.rst:29
+msgid ""
+"Before we start to implement our custom lexer, we need to identify any "
+"limitations of the TOML data structures to represent our custom format. "
+"TOML documents always have a table at the document root, there is no way "
+"to represent a JSON array or single value in TOML. Furthermore, JSON "
+"supports the value type ``null``, which is not representable in TOML. We "
+"have two choices here, either we can flag ``null`` values as an invalid "
+"token or we can replace them in the lexer with something else like an "
+"empty table. Finally, there are other details we have to take into "
+"account, like how JSON is handling duplicate keys, for most of the "
+"implementation-dependent cases we will follow the rules TOML provides."
+msgstr ""
+
+#: ../tutorial/json.rst:35
+msgid ""
+"This tutorial by no means aims for offering a fully compliant parser as "
+"we already fail for top-level arrays or ``null`` type values. For a "
+"custom format, this might be even more challenging, especially if the "
+"format is defined by only a single implementation."
+msgstr ""
+
+#: ../tutorial/json.rst:40
+msgid ""
+"Writing a compliant JSON parser can quickly become quite challenging (see"
+" `Parsing JSON is a Minefield "
+"<https://seriot.ch/projects/parsing_json.html>`_)."
+msgstr ""
+
+#: ../tutorial/json.rst:42
+msgid ""
+"But format limitations can go both ways, there are of course also "
+"features in TOML we cannot express in JSON. However, since we want to map"
+" JSON to TOML and not the other way round we do not have to worry about "
+"limitations present in JSON. Every feature available in TOML "
+"representable in the previous input format will be an incentive to switch"
+" to the new format."
+msgstr ""
+
+#: ../tutorial/json.rst:48
+msgid ""
+"For the actual application of the JSON parser in the validation suite, "
+"this problem is solved by not using only strings to represent values and "
+"adding type annotations. In TOML Fortran these annotations are mapped "
+"back by pruning the read JSON data structure. The pruning is done via a "
+"visitor which is accepted after the data structure has been completely "
+"parsed."
+msgstr ""
+
+#: ../tutorial/json.rst:54
+msgid "Creating the lexer"
+msgstr ""
+
+#: ../tutorial/json.rst:56
+msgid ""
+"First, we start by creating a new subclass of the abstract base class "
+"(ABC) imported from the *tomlf_de_abc* module."
+msgstr ""
+
+#: ../tutorial/json.rst:58
+msgid "src/json_lexer.f90 (json_lexer)"
+msgstr ""
+
+#: ../tutorial/json.rst:63
+msgid ""
+"We start by creating a constructor to consume an input file and turn it "
+"into a string to advance through."
+msgstr ""
+
+#: ../tutorial/json.rst:65
+msgid "src/json_lexer.f90 (new_lexer_from_file)"
+msgstr ""
+
+#: ../tutorial/json.rst:70
+msgid ""
+"Using a formatted unit is more inefficient compared to reading the whole "
+"file with direct access, but needed in case we are dealing with the "
+"standard input. We make sure to error out if we get direct access or "
+"stream access units since we cannot reliably read those."
+msgstr ""
+
+#: ../tutorial/json.rst:73
+msgid "src/json_lexer.f90 (new_lexer_from_unit)"
+msgstr ""
+
+#: ../tutorial/json.rst:78
+msgid ""
+"Finally, we sometimes also need to read from a string, there we add a "
+"constructor which can create a lexer for a string input."
+msgstr ""
+
+#: ../tutorial/json.rst:80
+msgid "src/json_lexer.f90 (new_lexer_from_string)"
+msgstr ""
+
+#: ../tutorial/json.rst:85
+msgid ""
+"The parser might need access to some of the internal data of the lexer, "
+"which is done via the *get_info* procedure."
+msgstr ""
+
+#: ../tutorial/json.rst:87
+msgid "src/json_lexer.f90 (get_info)"
+msgstr ""
+
+#: ../tutorial/json.rst:94
+msgid "Identifying tokens"
+msgstr ""
+
+#: ../tutorial/json.rst:96
+msgid ""
+"Now that we can instantiate the lexer we need to implement the "
+"possibility to recognize tokens, this is done with the *next* method. We "
+"start with creating the actual tokenization step in the *next_token* "
+"procedure, which we will call in the *next* method."
+msgstr ""
+
+#: ../tutorial/json.rst:99
+msgid "src/json_lexer.f90 (next_token)"
+msgstr ""
+
+#: ../tutorial/json.rst:104
+msgid ""
+"As a first action, we will advance the internal state of the lexer by "
+"consuming the last token. For convenience, we save the position in the "
+"source string in the *pos* and *prev* variables."
+msgstr ""
+
+#: ../tutorial/json.rst:107 ../tutorial/json.rst:114 ../tutorial/json.rst:126
+msgid "src/json_lexer.f90 (next_token, continued)"
+msgstr ""
+
+#: ../tutorial/json.rst:112
+msgid ""
+"The next thing we check is if we have exhausted the input string and if "
+"so we return the *end of file* token."
+msgstr ""
+
+#: ../tutorial/json.rst:119
+msgid ""
+"Now we can inspect the current character from the source string and "
+"decide which token it should be labeled. The character set is quite "
+"simple, we have to consider opening and closing brackets and braces, for "
+"arrays and tables, respectively, commas, colons, strings, and whitespace."
+" We will be explicitly producing whitespace tokens here rather than "
+"skipping it since the parser can gracefully handle whitespace. However, "
+"we have to consider that newlines have semantical meaning in TOML while "
+"they are only considered whitespace in JSON and therefore we will only "
+"produce whitespace tokens."
+msgstr ""
+
+#: ../tutorial/json.rst:124
+msgid "We use a select case statement to decide which token to produce."
+msgstr ""
+
+#: ../tutorial/json.rst:131
+msgid ""
+"To wrap up the lexing we will try to identify unknown tokens as well as "
+"possible trying to advance to the next terminating character. For the "
+"terminating characters, we choose whitespace as well as control "
+"characters and place those in the module scope."
+msgstr ""
+
+#: ../tutorial/json.rst:134
+msgid "src/json_lexer.f90 (terminated)"
+msgstr ""
+
+#: ../tutorial/json.rst:141
+msgid ""
+"We are cheating a bit here since we declare the colon as an *equal* "
+"token. This way we can use the same lexer for both JSON and TOML and "
+"still have the same parsing rules."
+msgstr ""
+
+#: ../tutorial/json.rst:144
+msgid ""
+"One special case to consider is literals, like strings numbers or "
+"booleans. To not clutter the logic here we create separate routines for "
+"parsing the respective literal values. For obtaining string values we "
+"will implement this as *next_string*. Here we cannot simply advance to "
+"the next quote character, since we need to handle escape characters "
+"gracefully. While doing so we can also ensure that the escape sequences "
+"found are valid and not malformed."
+msgstr ""
+
+#: ../tutorial/json.rst:150
+msgid "src/json_lexer.f90 (next_string)"
+msgstr ""
+
+#: ../tutorial/json.rst:155
+msgid ""
+"Strings can only contain printable characters, therefore we check for "
+"valid string characters using a small *valid_string* function for each "
+"character."
+msgstr ""
+
+#: ../tutorial/json.rst:157
+msgid "src/json_lexer.f90 (valid_string)"
+msgstr ""
+
+#: ../tutorial/json.rst:162
+msgid ""
+"We also need to identify numbers, mapping to either integers or floats in"
+" TOML, which is done via *next_number*."
+msgstr ""
+
+#: ../tutorial/json.rst:164
+msgid "src/json_lexer.f90 (next_number)"
+msgstr ""
+
+#: ../tutorial/json.rst:169
+msgid "To support boolean values we implement a *next_boolean* procedure."
+msgstr ""
+
+#: ../tutorial/json.rst:171
+msgid "src/json_lexer.f90 (next_boolean)"
+msgstr ""
+
+#: ../tutorial/json.rst:176
+msgid ""
+"With this logic available we can now generate all required tokens for "
+"parsing JSON."
+msgstr ""
+
+#: ../tutorial/json.rst:180
+msgid ""
+"Moving most of the validation logic in the tokenization simplifies the "
+"actual extraction of the value as we have to deal with fewer edge cases."
+msgstr ""
+
+#: ../tutorial/json.rst:182
+msgid ""
+"Now we can wrap up the *next* procedure, instead of directly returning "
+"the token we will make some adjustments to the token stream here. In "
+"general, this is the right place to buffer tokens, perform overflow "
+"checks, or detect unclosed groups, we will only use it to insert two "
+"additional tokens to inject a top-level key."
+msgstr ""
+
+#: ../tutorial/json.rst:185
+msgid "src/json_lexer.f90 (next)"
+msgstr ""
+
+#: ../tutorial/json.rst:190
+msgid ""
+"This will direct the parser to leave the root document where newlines are"
+" semantically relevant since we cannot produce such newline tokens in our"
+" JSON lexer."
+msgstr ""
+
+#: ../tutorial/json.rst:194
+msgid ""
+"If we want to support *null* values, how would we have to modify our "
+"lexer to produce for example an empty table ``{}`` instead, *i.e.* a "
+"*lbrace* and *rbrace* token?"
+msgstr ""
+
+#: ../tutorial/json.rst:198
+msgid "Extracting values"
+msgstr ""
+
+#: ../tutorial/json.rst:200
+msgid ""
+"Before we can connect our lexer to the existing TOML parser we have to "
+"implement the extraction of the values. The parser itself will use the "
+"*extract* member functions to obtain values for the respective tokens and"
+" never directly access the character stream."
+msgstr ""
+
+#: ../tutorial/json.rst:203
+msgid ""
+"To extract the string value we implement the *extract_string* procedure. "
+"We will also use the *extract_string* routine to catch the *keypath* "
+"token we inserted in the token stream and return the wanted dummy value."
+msgstr ""
+
+#: ../tutorial/json.rst:206
+msgid "src/json_lexer.f90 (extract_string)"
+msgstr ""
+
+#: ../tutorial/json.rst:211
+msgid ""
+"Similarly, we implement the *extract_integer*, instead of using an "
+"internal read, we implement the reading ourselves."
+msgstr ""
+
+#: ../tutorial/json.rst:213
+msgid "src/json_lexer.f90 (extract_integer)"
+msgstr ""
+
+#: ../tutorial/json.rst:218
+msgid ""
+"For floating point numbers implemented in *extract_float* we will just "
+"use an internal read."
+msgstr ""
+
+#: ../tutorial/json.rst:220
+msgid "src/json_lexer.f90 (extract_float)"
+msgstr ""
+
+#: ../tutorial/json.rst:225
+msgid ""
+"The last token we can produce and extract from our lexer is are boolean "
+"values, which we implement in *extract_boolean*."
+msgstr ""
+
+#: ../tutorial/json.rst:227
+msgid "src/json_lexer.f90 (extract_boolean)"
+msgstr ""
+
+#: ../tutorial/json.rst:232
+msgid ""
+"We create a mocked routine for *extract_datetime* since we cannot produce"
+" this token in JSON."
+msgstr ""
+
+#: ../tutorial/json.rst:234
+msgid "src/json_lexer.f90 (extract_datetime)"
+msgstr ""
+
+#: ../tutorial/json.rst:239
+msgid ""
+"This provides our lexer with full functionality regarding the extraction "
+"of values needed for parsing and creating data structures."
+msgstr ""
+
+#: ../tutorial/json.rst
+msgid "full source"
+msgstr ""
+
+#: ../tutorial/json.rst:243 ../tutorial/json.rst:338
+msgid ""
+"For completeness here is again the full source of our lexer "
+"implementation."
+msgstr ""
+
+#: ../tutorial/json.rst:245
+msgid "src/json_lexer.f90"
+msgstr ""
+
+#: ../tutorial/json.rst:252
+msgid "Verifying the lexer"
+msgstr ""
+
+#: ../tutorial/json.rst:254
+msgid ""
+"We could start right into connecting our lexer with the parser, but we "
+"have not yet verified that the tokenization and value extraction work as "
+"expected. For this purpose, we will create some unit tests using the "
+"`test-drive <https://github.com/fortran-lang/test-drive>`_ framework."
+msgstr ""
+
+#: ../tutorial/json.rst:257
+msgid ""
+"As the entry point for our tester, we will use the standard wrapper for "
+"launching test suites."
+msgstr ""
+
+#: ../tutorial/json.rst
+msgid "tester program"
+msgstr ""
+
+#: ../tutorial/json.rst:261
+msgid "Taken from the `test-drive`_ README"
+msgstr ""
+
+#: ../tutorial/json.rst:263
+msgid "test/main.f90"
+msgstr ""
+
+#: ../tutorial/json.rst:268
+msgid ""
+"Our actual test suite for the lexer will be based on a routine called "
+"*check_token*, which creates a new lexer from a string and retrieves all "
+"tokens while comparing them with a reference token stream. We then can "
+"implement our checks by providing a string and a list of tokens to see "
+"whether our lexer can identify the expected tokens correctly. For "
+"visualization, we use the *tomlf_diagnostic* module to label the tokens "
+"in the actual source string."
+msgstr ""
+
+#: ../tutorial/json.rst:272
+msgid "test/test_lexer.f90"
+msgstr ""
+
+#: ../tutorial/json.rst:277
+msgid ""
+"These are only a couple of tests, we have much more cases to consider for"
+" a robust lexer."
+msgstr ""
+
+#: ../tutorial/json.rst:281
+msgid ""
+"Write at least ten more tests for edge cases in the lexer. Make sure to "
+"include invalid cases and ensure that even invalid tokens are generated "
+"correctly."
+msgstr ""
+
+#: ../tutorial/json.rst:286
+msgid "Connecting to the parser"
+msgstr ""
+
+#: ../tutorial/json.rst:288
+msgid ""
+"Now that we have verified the tokenization process in our lexer we can "
+"connect our custom lexer to the default TOML parser."
+msgstr ""
+
+#: ../tutorial/json.rst:290
+msgid ""
+"For this purpose we define convenience interfaces called *json_load* / "
+"*json_loads* similar to the available *toml_load* / *toml_loads* "
+"interfaces. Other than the TOML-related load interfaces, we will also use"
+" them to implement necessary post-processing steps for the data "
+"structure."
+msgstr ""
+
+#: ../tutorial/json.rst:293 ../tutorial/json.rst:342
+msgid "src/json_parser.f90"
+msgstr ""
+
+#: ../tutorial/json.rst:298
+msgid ""
+"The *json_load* interface is implemented by *json_load_file* and "
+"*json_load_unit*. The former is a wrapper that is using the "
+"*new_lexer_from_file* constructor."
+msgstr ""
+
+#: ../tutorial/json.rst:301
+msgid "src/json_parser.f90 (json_load_file)"
+msgstr ""
+
+#: ../tutorial/json.rst:306
+msgid "The latter wraps the *new_lexer_from_unit* constructor."
+msgstr ""
+
+#: ../tutorial/json.rst:308 ../tutorial/json.rst:315
+msgid "src/json_parser.f90 (json_load_unit)"
+msgstr ""
+
+#: ../tutorial/json.rst:313
+msgid ""
+"Finally, we also provide *json_loads* by implementing *json_load_string* "
+"using our *new_lexer_from_string* constructor."
+msgstr ""
+
+#: ../tutorial/json.rst:320
+msgid ""
+"These wrappers so far are very straightforward, first setting up a lexer "
+"instance and invoking the *parse* procedure which will construct the "
+"actual parser instance and process the token stream. After a successful "
+"run, the *table* instance will be allocated, for the post-processing, we "
+"invoke the *prune* routine."
+msgstr ""
+
+#: ../tutorial/json.rst:323
+msgid "src/json_parser.f90 (prune)"
+msgstr ""
+
+#: ../tutorial/json.rst:328
+msgid ""
+"Where we effectively retrieve the first child from the root table and "
+"create a deep copy of it which is then returned."
+msgstr ""
+
+#: ../tutorial/json.rst:332
+msgid ""
+"An alternative approach would be to *pop* the value from the root table "
+"and return the polymorphic *toml_value* instance. This would have the "
+"advantage that we can support arrays and values at the root level with "
+"our JSON loader. The user than has to dispatch the value using a *select "
+"type* construct or by creating a view using the *cast_to_table* / "
+"*cast_to_array* / *cast_to_keyval* functions."
+msgstr ""
+
+#: ../tutorial/json.rst:340
+msgid ""
+"Note that this implementation also contains an implementation of a "
+"*toml_visitor* to prune type annotations used in the validation test "
+"suite to represent TOML values."
+msgstr ""
+
+#: ../tutorial/json.rst:351
+msgid ""
+"Now we have a working lexer that can tokenize JSON documents into TOML "
+"parsable tokens. The lexer implemented in TOML Fortran works on a similar"
+" construction, with the difference that the TOML grammar is much more "
+"complicated to parse than JSON."
+msgstr ""
+
+#: ../tutorial/json.rst:356
+msgid ""
+"In this tutorial, you have learned about the tokenization process used in"
+" TOML Fortran. You can now"
+msgstr ""
+"In diesem Tutorial hast Du gelernt, einfache Datenstrukturen aus TOML "
+"Dokumenten zu lesen. Du kannst nun"
+
+#: ../tutorial/json.rst:359
+msgid "implement a custom lexer based on the TOML tokens"
+msgstr ""
+
+#: ../tutorial/json.rst:360
+msgid "verify your lexer against an expected token stream"
+msgstr ""
+
+#: ../tutorial/json.rst:361
+msgid "adjust the token stream to direct the parsing process"
+msgstr ""
+
+#: ../tutorial/json.rst:362
+msgid "add a post-processing step to prune the resulting data structure"
+msgstr ""
 

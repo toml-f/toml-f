@@ -17,11 +17,11 @@ msgstr ""
 
 #: ../external.rst:7
 msgid "Modern Fortran by Philipp Engel (English)"
-msgstr ""
+msgstr "Modern Fortran von Philipp Engel (Englisch)"
 
 #: ../external.rst:7
 msgid "Fortran in Action by Zuo Zhihua (Chinese)"
-msgstr ""
+msgstr "Fortran in Action von Zuo Zhihua (Chinesisch)"
 
 #: ../external.rst:2
 msgid "External resources"
@@ -29,7 +29,7 @@ msgstr "Externe Ressourcen"
 
 #: ../external.rst:4
 msgid ""
-"Sides and blog posts with information on TOML Fortran are mentioned and "
+"Sites and blog posts with information on TOML Fortran are mentioned and "
 "linked here."
 msgstr ""
 "Seiten und Blog-Beiträge mit Informationen zu TOML Fortran werden hier "
