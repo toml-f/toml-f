@@ -436,7 +436,7 @@ subroutine next_dstring(lexer, token)
 
    character(1, tfc) :: ch
    character(*, tfc), parameter :: hexnum = "0123456789ABCDEF", valid_escape = "btnfr\"""
-   integer :: prev, pos, expect, it
+   integer :: prev, pos, expect, it, hex
    logical :: escape, valid, space
 
    prev = lexer%pos
@@ -498,10 +498,12 @@ subroutine next_dstring(lexer, token)
             if (verify(ch, valid_escape) == 0) cycle
             if (ch == "u") then
                expect = 4
+               hex = pos + 1
                cycle
             end if
             if (ch == "U") then
                expect = 8
+               hex = pos + 1
                cycle
             end if
             valid = .false.
@@ -510,6 +512,7 @@ subroutine next_dstring(lexer, token)
          if (expect > 0) then
             expect = expect - 1
             valid = valid .and. verify(ch, hexnum) == 0
+            if (expect == 0) valid = valid .and. verify_ucs(lexer%chunk(hex:pos))
             cycle
          end if
          escape = ch == char_kind%backslash
@@ -535,10 +538,12 @@ subroutine next_dstring(lexer, token)
          if (verify(ch, valid_escape) == 0) cycle
          if (ch == "u") then
             expect = 4
+            hex = pos + 1
             cycle
          end if
          if (ch == "U") then
             expect = 8
+            hex = pos + 1
             cycle
          end if
          valid = .false.
@@ -547,6 +552,7 @@ subroutine next_dstring(lexer, token)
       if (expect > 0) then
          expect = expect - 1
          valid = valid .and. verify(ch, hexnum) == 0
+         if (expect == 0) valid = valid .and. verify_ucs(lexer%chunk(hex:pos))
          cycle
       end if
       escape = ch == char_kind%backslash
@@ -1170,7 +1176,8 @@ subroutine extract_string(lexer, token, string)
    case(token_kind%string)
       string = ""
       escape = .false.
-      do it = token%first + 1, token%last - 1
+      it = token%first + 1
+      do while(it <= token%last - 1)
          ch = peek(lexer, it)
          if (escape) then
             escape = .false.
@@ -1181,19 +1188,21 @@ subroutine extract_string(lexer, token, string)
             case("n"); string = string // TOML_NEWLINE
             case("r"); string = string // TOML_CARRIAGE_RETURN
             case("f"); string = string // TOML_FORMFEED
-            case("u"); string = string // "\u"  ! FIXME
-            case("U"); string = string // "\U"  ! FIXME
+            case("u"); string = string // convert_ucs(lexer%chunk(it+1:it+4)); it = it + 5
+            case("U"); string = string // convert_ucs(lexer%chunk(it+1:it+8)); it = it + 9
             end select
-            cycle
+         else
+            escape = ch == char_kind%backslash
+            if (.not.escape) string = string // ch
          end if
-         escape = ch == char_kind%backslash
-         if (.not.escape) string = string // ch
+         it = it + 1
       end do
    case(token_kind%mstring)
       leading_newline = peek(lexer, token%first+3) == char_kind%newline
       string = ""
       escape = .false.
-      do it = token%first + merge(4, 3, leading_newline), token%last - 3
+      it = token%first + merge(4, 3, leading_newline)
+      do while(it <= token%last - 3)
          ch = peek(lexer, it)
          if (escape) then
             escape = .false.
@@ -1204,17 +1213,18 @@ subroutine extract_string(lexer, token, string)
             case("n"); string = string // TOML_NEWLINE
             case("r"); string = string // TOML_CARRIAGE_RETURN
             case("f"); string = string // TOML_FORMFEED
-            case("u"); string = string // "\u"  ! FIXME
-            case("U"); string = string // "\U"  ! FIXME
+            case("u"); string = string // convert_ucs(lexer%chunk(it+1:it+4)); it = it + 5
+            case("U"); string = string // convert_ucs(lexer%chunk(it+1:it+8)); it = it + 9
             case(char_kind%space, char_kind%tab, char_kind%carriage_return)
                escape = .true.
             case(char_kind%newline)
                continue
             end select
-            cycle
+         else
+            escape = ch == char_kind%backslash
+            if (.not.escape) string = string // ch
          end if
-         escape = ch == char_kind%backslash
-         if (.not.escape) string = string // ch
+         it = it + 1
       end do
    case(token_kind%literal)
       allocate(character(length - 2)::string)
@@ -1481,6 +1491,78 @@ subroutine get_info(lexer, meta, output)
    end select
 end subroutine get_info
 
+
+function hex_to_int(hex) result(val)
+   character(*, tfc), intent(in) :: hex
+   integer(tfi) :: val
+   integer :: i
+   character(1, tfc) :: ch
+   character(*, tfc), parameter :: hex_digits = "0123456789abcdef"
+
+   val = 0_tfi
+   do i = 1, len(hex)
+      ch = hex(i:i)
+      if ("A" <= ch .and. ch <= "Z") ch = achar(iachar(ch) - iachar("A") + iachar("a"))
+      val = val * 16 + max(index(hex_digits, ch) - 1, 0)
+   end do
+end function hex_to_int
+
+
+function verify_ucs(escape) result(valid)
+   character(*, tfc), intent(in) :: escape
+   logical :: valid
+   integer(tfi) :: code
+
+   code = hex_to_int(escape)
+
+   valid = code > 0 .and. code < int(z"7FFFFFFF", tfi) &
+      & .and. (code < int(z"d800", tfi) .or. code > int(z"dfff", tfi)) &
+      & .and. (code < int(z"fffe", tfi) .or. code > int(z"ffff", tfi))
+end function verify_ucs
+
+
+function convert_ucs(escape) result(str)
+   character(*, tfc), intent(in) :: escape
+   character(:, tfc), allocatable :: str
+   integer(tfi) :: code
+
+   code = hex_to_int(escape)
+
+   select case(code)
+   case(int(z"00000000", tfi):int(z"0000007f", tfi))
+      str = achar(code, kind=tfc)
+   case(int(z"00000080", tfi):int(z"000007ff", tfi))
+      str = &
+         achar(ior(int(z"c0", tfi), ishft(code, -6)), kind=tfc) // &
+         achar(ior(int(z"80", tfi), iand(code, int(z"3f", tfi))), kind=tfc)
+   case(int(z"00000800", tfi):int(z"0000ffff", tfi))
+      str = &
+         achar(ior(int(z"e0", tfi), ishft(code, -12)), kind=tfc) // &
+         achar(ior(int(z"80", tfi), iand(ishft(code, -6), int(z"3f", tfi))), kind=tfc) // &
+         achar(ior(int(z"80", tfi), iand(code, int(z"3f", tfi))), kind=tfc)
+   case(int(z"00010000", tfi):int(z"001fffff", tfi))
+      str = &
+         achar(ior(int(z"f0", tfi), ishft(code, -18)), kind=tfc) // &
+         achar(ior(int(z"80", tfi), iand(ishft(code, -12), int(z"3f", tfi))), kind=tfc) // &
+         achar(ior(int(z"80", tfi), iand(ishft(code, -6), int(z"3f", tfi))), kind=tfc) // &
+         achar(ior(int(z"80", tfi), iand(code, int(z"3f", tfi))), kind=tfc)
+   case(int(z"00200000", tfi):int(z"03ffffff", tfi))
+      str = &
+         achar(ior(int(z"f8", tfi), ishft(code, -24)), kind=tfc) // &
+         achar(ior(int(z"80", tfi), iand(ishft(code, -18), int(z"3f", tfi))), kind=tfc) // &
+         achar(ior(int(z"80", tfi), iand(ishft(code, -12), int(z"3f", tfi))), kind=tfc) // &
+         achar(ior(int(z"80", tfi), iand(ishft(code, -6), int(z"3f", tfi))), kind=tfc) // &
+         achar(ior(int(z"80", tfi), iand(code, int(z"3f", tfi))), kind=tfc)
+   case(int(z"04000000", tfi):int(z"7fffffff", tfi))
+      str = &
+         achar(ior(int(z"fc", tfi), ishft(code, -30)), kind=tfc) // &
+         achar(ior(int(z"80", tfi), iand(ishft(code, -24), int(z"3f", tfi))), kind=tfc) // &
+         achar(ior(int(z"80", tfi), iand(ishft(code, -18), int(z"3f", tfi))), kind=tfc) // &
+         achar(ior(int(z"80", tfi), iand(ishft(code, -12), int(z"3f", tfi))), kind=tfc) // &
+         achar(ior(int(z"80", tfi), iand(ishft(code, -6), int(z"3f", tfi))), kind=tfc) // &
+         achar(ior(int(z"80", tfi), iand(code, int(z"3f", tfi))), kind=tfc)
+   end select
+end function convert_ucs
 
 
 end module tomlf_de_lexer
