@@ -1,0 +1,1194 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019-2022, Sebastian Ehlert
+# This file is distributed under the same license as the toml-f package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: toml-f 0.2.3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-06-19 18:08-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Asdrubal Lozada-Blanco\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: ../doc/how-to/array.rst:2
+msgid "Working with arrays"
+msgstr "Trabajando con matrices"
+
+#: ../doc/how-to/array.rst:4
+msgid ""
+"TOML supports *array* data types: flat, ordered containers holding "
+"multiple values. Arrays are dynamically sized (*i.e.* do not need specify"
+" the number of elements before using an array) and can contain elements "
+"of any type supported by TOML."
+msgstr ""
+"TOML admite tipos de datos *array*: planos, contenedores ordenados "
+"que contienen valores múltiples. Las matrices son dinámicamente ajustadas (es decir, "
+" no es necesário especificar la cantidad de elementos antes de usar una matriz) y "
+"pueden contener elementos de cualquier tipo admitido por TOML."
+
+#: ../doc/how-to/array.rst:7
+msgid ""
+"The following program parses and stores an array of integers then prints "
+"the values to stdout:"
+msgstr ""
+"El siguiente programa analiza y almacena una matriz de enteros e imprime "
+"los valores en stdout:"
+
+#: ../doc/how-to/array.rst:9
+msgid "app/parse_array.f90"
+msgstr ""
+
+#: ../doc/how-to/array.rst:14
+msgid ""
+"The simplest way to parse an array-valued key in TOML Fortran is to use "
+"the ``get_value`` interface, which has an overload to handle arrays. "
+"First, we need to use a temporary variable ``arr`` (of type "
+"``toml_array``), as the array's elements can be of potentially any type. "
+"``arr`` is automatically associated and allocated by ``get_value``, which"
+" we can use to determine how much space is needed to store the array's "
+"contents. Finally, we must iterate over all elements of the temporary "
+"``toml_array`` and assign them to an element in our final data structure "
+"``arr_data`` (which is a standard Fortran array)."
+msgstr ""
+
+#: ../doc/how-to/array.rst:19
+msgid ""
+"As a test, let's run the above program using the following TOML table "
+"(``array.toml``):"
+msgstr ""
+
+#: ../doc/how-to/array.rst:21
+msgid "array.toml"
+msgstr ""
+
+#: ../doc/how-to/array.rst:26
+msgid "This produces the following output:"
+msgstr ""
+
+#: ../doc/how-to/array.rst:32
+msgid ""
+"As mentioned above, TOML arrays can contain elements of any type "
+"supported by TOML. The TOML standard even supports heterogeneous arrays "
+"containing elements of multiple different types. TOML Fortran supports "
+"this through the generic ``toml_array`` type."
+msgstr ""
+
+#: ../doc/how-to/array.rst:36
+msgid ""
+"Elements of ``toml_array`` may be of any value but require extra "
+"processing before they can be used in most Fortran programs, since "
+"Fortran arrays must only contain elements of a single type known at "
+"compile time. This is achieved through the generic ``get_value`` "
+"interface, which automatically coerces elements of the ``toml_array`` to "
+"the correct type based on the variable it is copied to."
+msgstr ""
+
+#: ../doc/how-to/array.rst:41
+msgid ""
+"The value in ``get_value`` is an ``intent(out)`` argument, in case the "
+"input and output parameter are incompatible, it is not initialized and "
+"the actual value is dependent on the compiler settings. By passing an "
+"integer value to the optional *stat* argument, the procedure will return "
+"a non-zero value to indicate an error."
+msgstr ""
+
+#: ../doc/how-to/array.rst:46
+msgid "Accessing nested arrays"
+msgstr ""
+
+#: ../doc/how-to/array.rst:48
+msgid ""
+"TOML arrays can be nested to produce an *array-of-arrays*. Both the top-"
+"level and nested child arrays are potentially variable-length and can "
+"contain any TOML data-type (including further nested arrays)."
+msgstr ""
+
+#: ../doc/how-to/array.rst:50
+msgid ""
+"The following program reads a TOML file with an array-of-arrays nested a "
+"single level deep, and prints its values to stdout:"
+msgstr ""
+
+#: ../doc/how-to/array.rst:52
+msgid "app/nested_array.f90"
+msgstr ""
+
+#: ../doc/how-to/array.rst:56
+msgid ""
+"First, we need to call ``get_value`` to get a pointer to the top-level "
+"array then iterate through its elements, calling ``get_value`` on each to"
+" get a pointer to the child array. Finally, we iterate through the "
+"individual sub-arrays and process their elements one-by-one."
+msgstr ""
+
+#: ../doc/how-to/array.rst:59
+msgid ""
+"This approach has the advantage of being able to deal with nested arrays "
+"of arbitrary length, such as the TOML table below:"
+msgstr ""
+
+#: ../doc/how-to/array.rst:65
+msgid "Which produces the following output:"
+msgstr ""
+
+#: ../doc/how-to/array.rst:78
+msgid ""
+"A TOML array-of-arrays does not necessarily map cleanly to a regular "
+"Fortran multidimensional array. Multidimensional Fortran arrays must be "
+"rectangular (*i.e.* rows must contain the same number of elements), so an"
+" array-of-arrays with variable sized nested arrays cannot be directly "
+"mapped to a primitive Fortran type and must be represented using a "
+"compound data type."
+msgstr ""
+
+#: ../doc/how-to/index.rst:4
+msgid "How-to guides"
+msgstr ""
+
+#: ../doc/how-to/index.rst:6
+msgid ""
+"This section contains practical guides for working with TOML Fortran. "
+"Each recipe is tailored for a specific problem and use case it is trying "
+"to solve."
+msgstr ""
+
+#: ../doc/how-to/index.rst:9
+msgid "Contributions are welcome!"
+msgstr ""
+
+#: ../doc/how-to/index.rst:12
+msgid ""
+"If you have written on TOML Fortran and want to contribute to the "
+"documentation, feel free to fork the repository and submit a pull "
+"request."
+msgstr ""
+
+#: ../doc/how-to/installation.rst:4
+msgid "Installing TOML Fortran"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:6
+msgid ""
+"This guide will walk you through installing the latest version of TOML "
+"Fortran. If you know your way around fpm, CMake or meson, checkout the "
+":ref:`integration guide <integration>` to allow on-demand compilation of "
+"TOML Fortran as well as discovery of installed libraries."
+msgstr ""
+
+#: ../doc/how-to/installation.rst:11
+msgid ":fab:`apple` :fab:`linux` :fab:`windows` Installing from conda-forge"
+msgstr ""
+
+msgid "Conda"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:22
+msgid ""
+"This project is packaged for the *mamba* package manager and available on"
+" the *conda-forge* channel. To install the *mamba* package manager we "
+"recommend the `mambaforge <https://github.com/conda-"
+"forge/miniforge/releases>`_ installer. If the *conda-forge* channel is "
+"not yet enabled, add it to your channels with"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:31
+msgid ""
+"Once the *conda-forge* channel has been enabled, TOML Fortran can be "
+"installed with *mamba*:"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:37
+msgid ""
+"It is possible to list all of the versions of TOML Fortran available on "
+"your platform with *mamba*:"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:45
+msgid ":fab:`freebsd` FreeBSD ports"
+msgstr ""
+
+msgid "FreeBSD"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:51
+msgid "A port for FreeBSD is available"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:57
+msgid "In case no package is available build the port using"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:64
+msgid ""
+"For more information see the `toml-f port details "
+"<https://www.freshports.org/textproc/toml-f/>`_."
+msgstr ""
+
+#: ../doc/how-to/installation.rst:68
+msgid ":fab:`apple` :fab:`linux` Building with spack"
+msgstr ""
+
+msgid "Spack"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:74
+msgid ""
+"This project is available with the `spack <https://spack.io>`_ package "
+"manager. You can install the TOML Fortran package with"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:82
+msgid ""
+"To depend on TOML Fortran in your `spack`_ package you can add a "
+"dependency with"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:90
+msgid ":fab:`linux` Using EasyBuild"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:92
+msgid ""
+"TOML Fortran is available with `EasyBuild "
+"<https://docs.easybuild.io/en/latest/index.html>`_. You can check the "
+"available configurations using the search option"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:102
+msgid "Select one matching configuration and build TOML Fortran using"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:116
+msgid ""
+"TOML Fortran should now be available via an environment module. For more "
+"details checkout the `EasyBuild`_ documentation."
+msgstr ""
+
+#: ../doc/how-to/installation.rst:121
+msgid ":fab:`apple` Using Homebrew"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:123
+msgid ""
+"TOML Fortran is available in a custom tap at `grimme-lab/homebrew-qc "
+"<https://github.com/grimme-lab/homebrew-qc>`__ for the `brew "
+"<https://brew.sh>`_ package manager. You can include the tap by using"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:131
+msgid ""
+"To build with a custom Fortran compiler you can set the ``FC`` "
+"environment variable and force to ignore preexisting binary distributions"
+" from the tap"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:140
+msgid ""
+"TOML Fortran has not yet been submitted to `homebrew-core "
+"<https://github.com/homebrew/homebrew-core>`_."
+msgstr ""
+
+#: ../doc/how-to/installation.rst:144
+msgid "Building from source"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:146
+msgid ""
+"To build this project from the source code in this repository you need to"
+" have"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:148
+msgid "a Fortran compiler supporting Fortran 2008"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:150
+msgid "GFortran 5 or newer"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:151
+msgid "Intel Fortran 18 or newer"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:152
+msgid "NAG 7 or newer"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:154
+msgid "One of the supported build systems"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:156
+msgid "`meson <https://mesonbuild.com>`_ version 0.55 or newer"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:157
+msgid "`CMake <https://cmake.org/>`_ version 3.9 or newer"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:159
+msgid "First, get the source by cloning the repository"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:168
+msgid "Using Meson"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:170
+msgid ""
+"To build this project with meson a build-system backend is required, "
+"*i.e.* `ninja <https://ninja-build.org>`_ version 1.7 or newer. Setup a "
+"build with"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:177
+msgid ""
+"You can select the Fortran compiler by the ``FC`` environment variable. "
+"To compile the project run"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:184
+msgid ""
+"We employ a `validator suite <https://github.com/BurntSushi/toml-test>`_ "
+"to test the standard compliance of this implementation. To use this "
+"testing a *go* installation is required. The installation of the "
+"validator suite will be handled by meson automatically without installing"
+" into the users *go* workspace. Run the tests with"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:193
+msgid ""
+"To run the full decoder test add the benchmark argument. This test will "
+"currently fail, due to the implementation not yet supporting Unicode "
+"escape sequences."
+msgstr ""
+
+#: ../doc/how-to/installation.rst:200
+msgid ""
+"The binary used for transcribing the TOML documents to the testing format"
+" is ``_build/test/toml2json`` and can be used to check on per test basis."
+" Finally, you can install TOML Fortran with"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:209
+msgid "Using CMake"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:211
+msgid ""
+"While meson is the preferred way to build this project it also offers "
+"CMake support. Configure the CMake build with"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:218
+msgid ""
+"Similar to meson the compiler can be selected with the ``FC`` environment"
+" variable. You can build the project using"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:225
+msgid ""
+"To include *toml-f* in your CMake project, check the [example integration"
+" with CMake](https://github.com/toml-f/tf-cmake-example). The validation "
+"suite is currently not supported as unit test for CMake builds and "
+"requires a manual setup instead using the *toml2json* binary. Finally, "
+"you can install TOML Fortran with"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:235
+msgid "Supported compilers"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:237
+msgid ""
+"This is a non-comprehensive list of tested compilers for TOML Fortran. "
+"Compilers with the label *latest* are tested with continuous integration "
+"for each commit."
+msgstr ""
+
+#: ../doc/how-to/installation.rst:241 ../doc/how-to/installation.rst:260
+msgid "Compiler"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:241 ../doc/how-to/installation.rst:260
+msgid "Version"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:241 ../doc/how-to/installation.rst:260
+msgid "Platform"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:241 ../doc/how-to/installation.rst:260
+msgid "Architecture"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:241
+msgid "version"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:243 ../doc/how-to/installation.rst:244
+#: ../doc/how-to/installation.rst:245 ../doc/how-to/installation.rst:246
+#: ../doc/how-to/installation.rst:247
+msgid "GCC"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:243
+msgid "11.1, 10.3, 9.4, 8.5, 7.5"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:243 ../doc/how-to/installation.rst:250
+#: ../doc/how-to/installation.rst:262
+msgid "Ubuntu 20.04"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:243 ../doc/how-to/installation.rst:244
+#: ../doc/how-to/installation.rst:248 ../doc/how-to/installation.rst:249
+#: ../doc/how-to/installation.rst:250 ../doc/how-to/installation.rst:251
+#: ../doc/how-to/installation.rst:252 ../doc/how-to/installation.rst:262
+#: ../doc/how-to/installation.rst:263
+msgid "x86_64"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:243 ../doc/how-to/installation.rst:244
+#: ../doc/how-to/installation.rst:248 ../doc/how-to/installation.rst:250
+msgid "0.2.3, latest"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:244
+msgid "9.4, 6.5"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:244
+msgid "MacOS 10.15.7"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:245
+msgid "11.0"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:245
+msgid "MacOS 11.0"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:245
+msgid "arm64"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:245 ../doc/how-to/installation.rst:246
+#: ../doc/how-to/installation.rst:247 ../doc/how-to/installation.rst:249
+#: ../doc/how-to/installation.rst:251 ../doc/how-to/installation.rst:252
+msgid "0.2.3"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:246 ../doc/how-to/installation.rst:247
+msgid "9.4"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:246 ../doc/how-to/installation.rst:247
+msgid "CentOS 7"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:246
+msgid "ppc64le"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:247
+msgid "aarch64"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:248 ../doc/how-to/installation.rst:249
+msgid "GCC/MinGW"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:248
+msgid "8.1"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:248 ../doc/how-to/installation.rst:249
+msgid "Window Server 2019"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:249
+msgid "5.3"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:250 ../doc/how-to/installation.rst:251
+msgid "Intel"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:250
+msgid "2022.0"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:251
+msgid "19"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:251
+msgid "OpenSUSE"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:252
+msgid "NAG"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:252
+msgid "7.1"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:252
+msgid "RHEL"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:255
+msgid ""
+"Compiler known to fail are documented here, together with the last commit"
+" where this behaviour was encountered. If available an issue in on the "
+"projects issue tracker or the issue tracker of the dependencies is "
+"linked. Usually, it safe to assume that older versions of the same "
+"compiler will fail to compile as well and this failure is consistent over"
+" platforms and/or architectures."
+msgstr ""
+
+#: ../doc/how-to/installation.rst:260
+msgid "Reference"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:262
+msgid "Flang"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:262
+msgid "20190329"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:262
+msgid "`f066ec6`_, `toml-f#28`_"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:263
+msgid "NVHPC"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:263
+msgid "20.9"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:263
+msgid "Manjaro Linux"
+msgstr ""
+
+#: ../doc/how-to/installation.rst:263
+msgid "`f066ec6`_, `toml-f#27`_"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:4
+msgid "Using TOML Fortran"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:6
+msgid ""
+"This tutorial shows how to integrate the TOML Fortran library with your "
+"build system and use it easily in your project."
+msgstr ""
+
+#: ../doc/how-to/integration.rst:10
+msgid "Using the Fortran package manager"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:12
+msgid ""
+"The Fortran package manager (`fpm <https://fpm.fortran-lang.org>`_) is a "
+"tool for building Fortran projects and managing dependencies on Fortran "
+"libraries. To enable TOML Fortran in your fpm project add the following "
+"entry to your package manifest:"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:15
+msgid "fpm.toml"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:21
+msgid ""
+"When building your project fpm will automatically fetch TOML Fortran for "
+"you and build it as part of your project. The TOML Fortran modules become"
+" useable in your project."
+msgstr ""
+
+#: ../doc/how-to/integration.rst:26
+msgid "Integrate with meson"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:28
+msgid ""
+"To allow meson to use TOML Fortran it is easiest to include it as "
+"subproject using a git wrap file placed in the ``subprojects`` directory."
+msgstr ""
+
+#: ../doc/how-to/integration.rst:30
+msgid "subprojects/toml-f.wrap"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:38
+msgid ""
+"The revision can be adjusted to pin a specific release tag of TOML "
+"Fortran for additional stability. In the projects meson buid file the "
+"dependency method can be used to access TOML Fortran using the wrap file "
+"to define a fallback which is built on-demand."
+msgstr ""
+
+#: ../doc/how-to/integration.rst:41
+msgid "meson.build"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:52
+msgid ""
+"Finally, you can add ``tomlf_dep`` as dependency to any of your targets "
+"and are done."
+msgstr ""
+
+#: ../doc/how-to/integration.rst:56
+msgid "Integrate with CMake"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:58
+msgid ""
+"To use TOML Fortran in CMake based projects it is useful to define your "
+"own find-module, to allow on-demand compilation of TOML Fortran as well "
+"as discovery of installed packages from both meson and CMake based "
+"builds."
+msgstr ""
+
+#: ../doc/how-to/integration.rst:68
+msgid ""
+"In your main CMake build file you have to include the custom find-module "
+"in your ``CMAKE_MODULE_PATH``, afterwards you can just use "
+"``find_package`` to obtain the ``toml-f::toml-f`` target and link against"
+" it."
+msgstr ""
+
+#: ../doc/how-to/integration.rst:70
+msgid "CMakeLists.txt"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:111
+msgid ""
+"Note that we also install the find-modules, this is important if you want"
+" to make your CMake projects reusable in the same way TOML Fortran can be"
+" used in your project. Finally we need some boilerplate to define the "
+"custom find-module is documented below."
+msgstr ""
+
+#: ../doc/how-to/integration.rst:115
+msgid "Imported Targets"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:117
+msgid "This module provides the following imported target, if found:"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:121
+msgid "``toml-f::toml-f``"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:120
+msgid "The toml-f library"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:124
+msgid "Result Variables"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:126
+msgid "This module will define the following variables:"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:129
+msgid "``TOML_FORTRAN_FOUND``"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:129
+msgid "True if the toml-f library is available"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:133
+msgid "``TOML_FORTRAN_SOURCE_DIR``"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:132
+msgid ""
+"Path to the source directory of the toml-f project, only set if the "
+"project is included as source."
+msgstr ""
+
+#: ../doc/how-to/integration.rst:137
+msgid "``TOML_FORTRAN_BINARY_DIR``"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:136
+msgid ""
+"Path to the binary directory of the toml-f project, only set if the "
+"project is included as source."
+msgstr ""
+
+#: ../doc/how-to/integration.rst:140
+msgid "Cache variables"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:142
+msgid ""
+"The following cache variables may be set to influence the library "
+"detection:"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:150
+msgid "``TOML_FORTRAN_FIND_METHOD``"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:145
+msgid "Methods to find or make the project available. Available methods are"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:147
+msgid "``cmake``: Try to find via CMake config file"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:148
+msgid "``pkgconf``: Try to find via pkg-config file"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:149
+msgid "``subproject``: Use source in subprojects directory"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:150
+msgid "``fetch``: Fetch the source from upstream"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:153
+msgid "``TOML_FORTRAN_DIR``"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:153
+msgid "Used for searching the CMake config file"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:156
+msgid "``TOML_FORTRAN_SUBPROJECT``"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:156
+msgid "Directory to find the toml-f subproject, relative to the project root"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:158
+msgid "cmake/Findtoml-f.cmake"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:280
+msgid "Other build systems"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:282
+msgid ""
+"Other build systems must discover a precompiled TOML Fortran library from"
+" the system. For this purpose the ``pkg-config`` tool is used. After "
+"installing TOML Fortran with either meson or CMake a pc-file is generated"
+" which can be discovered by ``pkg-config`` and describes how to compile "
+"against the installed module files as well as link against the TOML "
+"Fortran library. First check if the ``pkg-config`` tool is available and "
+"can discover TOML Fortran"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:291
+msgid ""
+"Make sure to adjust the ``PKG_CONFIG_PATH`` environment variable to point"
+" to the correct installation directory. Using the ``--libs`` and "
+"``--cflags`` options the libraries to link against as well as the include"
+" directories can be obtained:"
+msgstr ""
+
+#: ../doc/how-to/integration.rst:299
+msgid "In a handwritten Makefile those can be included by"
+msgstr ""
+
+#: ../doc/how-to/serde.rst:2
+msgid "Serializable base class"
+msgstr ""
+
+#: ../doc/how-to/serde.rst:4
+msgid ""
+"This recipe shows how to create a serializable class based on TOML "
+"Fortran. Currently, TOML Fortran does not define such a base class "
+"itself, therefore we define a loader and dumper interface for turning a "
+"file or connected unit into a data structure. The abstract base class "
+"will implement the processing of the file or unit to a TOML data "
+"structure and pass it to a deferred procedure which the implementing "
+"class uses to define its mapping from and back to the TOML data "
+"structure. This way an easily round-tripable data structure can be "
+"created and used in a variety of contexts."
+msgstr ""
+
+#: ../doc/how-to/serde.rst:11
+msgid ""
+"TOML Fortran might provide such abstract base class in the future "
+"natively."
+msgstr ""
+
+#: ../doc/how-to/serde.rst:13
+msgid "The base class can be defined as"
+msgstr ""
+
+#: ../doc/how-to/serde.rst:15
+msgid "src/serde_class.f90"
+msgstr ""
+
+#: ../doc/how-to/serde.rst:19
+msgid ""
+"We also define a convenience error handler which holds the error message "
+"and signals its error status by its allocation state."
+msgstr ""
+
+#: ../doc/how-to/serde.rst:21
+msgid "src/serde_error.f90"
+msgstr ""
+
+#: ../doc/how-to/serde.rst:25
+msgid ""
+"An example for a serializable class based on the above base class is "
+"given below."
+msgstr ""
+
+#: ../doc/how-to/serde.rst:27
+msgid "src/demo.f90"
+msgstr ""
+
+#: ../doc/how-to/serde.rst:31
+msgid ""
+"The defined data class can in an application easily be loaded from a "
+"file, while the actual implementation does not have to deal with getting "
+"the TOML data structure from the file but can assume that if the "
+"configuration file was valid TOML it will be provided with a data "
+"structure to read from."
+msgstr ""
+
+#: ../doc/how-to/table.rst:2
+msgid "Working with tables"
+msgstr ""
+
+#: ../doc/how-to/table.rst:4
+msgid ""
+"The central data structures in TOML are tables, they contain a map from a"
+" key (string) to any supported data type in TOML. These recipes describe "
+"common scenarios for retrieving data from tables using the TOML Fortran "
+"library."
+msgstr ""
+
+#: ../doc/how-to/table.rst:9
+msgid "Accessing nested tables"
+msgstr ""
+
+#: ../doc/how-to/table.rst:11
+msgid ""
+"Using nested tables provides the possibility to better group "
+"configuration data. Since the TOML format always requires the full "
+"qualified path in each table header, it is easy for the user to identify "
+"where the current settings belong to. On the other hand, deeply nested "
+"tables with long table paths or path components make them more difficult "
+"to use and a good balance of short and expressive table names and "
+"meaningful subtables is required."
+msgstr ""
+
+#: ../doc/how-to/table.rst:15
+msgid ""
+"An example of an electronic structure code implementing different "
+"Hamiltonians is given below."
+msgstr ""
+
+#: ../doc/how-to/table.rst:26
+msgid ""
+"The deepest nested subtable with entries in this example is the "
+"*hamiltonian.dftb.skf* path."
+msgstr ""
+
+#: ../doc/how-to/table.rst:28
+msgid ""
+"Such layout in the configuration file will usually be mirrored in the "
+"actual implementation, with every table corresponding to a derived type "
+"describing the input. For the example above in total six derived types "
+"for the individual tables are defined as"
+msgstr ""
+
+#: ../doc/how-to/table.rst:31 ../doc/how-to/table.rst:51
+#: ../doc/how-to/table.rst:58 ../doc/how-to/table.rst:67
+#: ../doc/how-to/table.rst:84
+msgid "src/input.f90"
+msgstr ""
+
+#: ../doc/how-to/table.rst:38
+#, python-format
+msgid ""
+"The representation in Fortran derived types looks lengthy compared to the"
+" actual TOML input. Consider that the 40 lines of Fortran code contain "
+"50% comments describing the data types briefly for (future) developers. "
+"Of course, the user documentation of the input format will be much more "
+"extensive, containing descriptions for every table and every entry, "
+"including input ranges and unit conventions. The final input file "
+"provided by the user can be brief and expressive."
+msgstr ""
+
+#: ../doc/how-to/table.rst:43
+msgid ""
+"Staring with the root of the table which is read in the "
+"*simulation_input* there are two ways to obtain access to a subtable, "
+"first we get the *hamiltonian* subtable, which we defined as mandatory, "
+"using the ``get_value`` interface. In case it is present a reference will"
+" be returned in the *child* pointer. If no table is available in the "
+"input TOML Fortran will insert it into the root table and return the "
+"reference to the newly created table. The *child* pointer can still be "
+"unassigned in case invalid input is provided, which will result in "
+"raising an error in the implementation shown below."
+msgstr ""
+
+#: ../doc/how-to/table.rst:48
+msgid ""
+"The alternative is to explicitly mark the subtable as optional, like for "
+"the *analysis* table, if no table is available or the entry is invalid "
+"the *child* pointer will not be assigned. To differentiate those cases we"
+" can request the status information, check whether the operation was "
+"successful, and cleanly handle the error case."
+msgstr ""
+
+#: ../doc/how-to/table.rst:56
+msgid ""
+"The same happens for reading the *hamiltonian_input* and *dftb_input* "
+"entry."
+msgstr ""
+
+#: ../doc/how-to/table.rst:63
+msgid ""
+"Finally, we can implement reading the terminal subtables into the "
+"*scc_input*, *skf_input*, and *analysis_input*, where we retrieve the "
+"actual values using the ``get_value`` interface. Note that we can "
+"conveniently define default values using the ``get_value`` interface. For"
+" proper error handling, we can retrieve the optional *stat* argument as "
+"well."
+msgstr ""
+
+#: ../doc/how-to/table.rst:72
+msgid ""
+"For the small incomplete input as shown here, the fine-grained "
+"substructure seems overengineered and could be fully defined in the "
+"reading routine for the document root as well. However, for larger "
+"program inputs such a structure can help to ensure that input readers are"
+" properly modular and reusable."
+msgstr ""
+
+#: ../doc/how-to/table.rst:77
+msgid ""
+"The allocation status of a component of the derived type can be used "
+"instead of a separate boolean flag to indicate whether a feature should "
+"be activated. This avoids requiring conditional code inside a reader "
+"routine for conditionally handling entries depending on a boolean flag, "
+"instead they can be collected in a subtable."
+msgstr ""
+
+#: ../doc/how-to/table.rst
+msgid "Full source code"
+msgstr ""
+
+#: ../doc/how-to/table.rst:82
+msgid "The full module implementing the *simulation_input* reading"
+msgstr ""
+
+#: ../doc/how-to/table.rst:88 ../doc/how-to/table.rst:161
+msgid "The auxiliary module providing the error handler"
+msgstr ""
+
+#: ../doc/how-to/table.rst:90 ../doc/how-to/table.rst:163
+msgid "src/error.f90"
+msgstr ""
+
+#: ../doc/how-to/table.rst:96
+msgid "Iterating over keys"
+msgstr ""
+
+#: ../doc/how-to/table.rst:98
+msgid ""
+"An expressive way to organize data is by providing a table where the keys"
+" of each entry describe the object that should be initialized. For "
+"example in a package manager, the keys represent the dependency, where "
+"each dependency is declared in a subtable. Furthermore, a convenience "
+"feature might be the possibility to just provide a string, which is "
+"interpreted as a version subentry."
+msgstr ""
+
+#: ../doc/how-to/table.rst:102
+msgid ""
+"The final usage of this in a *requirements* table could look like the "
+"snippet shown below."
+msgstr ""
+
+#: ../doc/how-to/table.rst:114
+msgid ""
+"The first three entries provide a string value, while the fourth entry "
+"provides a subtable implicitly by using dotted key-value pairs and the "
+"last entry uses an inline table."
+msgstr ""
+
+#: ../doc/how-to/table.rst:116
+msgid ""
+"Here we want to focus on the iteration and the default initialization, "
+"the internal structure of the *requirement_type* is secondary for this "
+"example. We provide the minimal definition only holding the name of the "
+"dependency for demonstration purposes."
+msgstr ""
+
+#: ../doc/how-to/table.rst:119 ../doc/how-to/table.rst:129
+#: ../doc/how-to/table.rst:144 ../doc/how-to/table.rst:157
+msgid "src/requirements.f90"
+msgstr ""
+
+#: ../doc/how-to/table.rst:124
+msgid ""
+"For the actual implementation of reading all entries from the table, we "
+"will use a one-dimensional array of *requirement_type* values. Using the "
+"``get_keys`` method of the table we can obtain a list of all keys for the"
+" current table, the method will always allocate the ``list`` variable and"
+" we can safely allocate the *requirement_type* using the number of keys. "
+"To obtain the subtable, the ``get_value`` interface can be used, it will "
+"return a pointer to the subtable, either created implicitly by using a "
+"dotted key-value pair or by an inline table as shown in the snippet "
+"above. Finally, we can call the actual constructor of the "
+"*requirement_type* using the subtable references with the ``child`` "
+"pointer."
+msgstr ""
+
+#: ../doc/how-to/table.rst:134
+msgid ""
+"The other scenario we want to support is the presence of a string rather "
+"than a subtable. In this case, the ``get_value`` interface will fail, "
+"while it provides an optional status argument to check for successful "
+"operation, we can more conveniently and idiomatically verify the success "
+"by checking the state of the ``child`` pointer. If there is no subtable "
+"to reference, *i.e.* because it is a key-value pair with a string entry, "
+"the ``child`` pointer will not be associated, which can be easily "
+"checked. For this case we will again use the ``get_value`` interface, but"
+" this time to retrieve the entry into a deferred length character. Again "
+"we can idiomatically check the status of the operation using the "
+"allocation state of the variable and create the appropriate error message"
+" if needed. Eventually, we have to provide the constructor of the "
+"requirements with a table, for this purpose we create a dummy table and "
+"set the entry at the version key to the just retrieved string. The newly "
+"created dummy table can be associated with the ``child`` pointer and "
+"passed to the actual constructor."
+msgstr ""
+
+#: ../doc/how-to/table.rst:142
+msgid ""
+"The actual constructor for our example is very minimalistic and only "
+"recovers the name of the dependency which is passed as a separate "
+"argument."
+msgstr ""
+
+#: ../doc/how-to/table.rst:151
+msgid ""
+"While we provide an error handler in the example, we also ensure that the"
+" allocation status of the *requirement_type* values communicates the "
+"status of the operation as well."
+msgstr ""
+
+#: ../doc/how-to/table.rst:155
+msgid "The full module implementing the *requirement_type* reading"
+msgstr ""
+
+#: ../doc/how-to/table.rst:169
+msgid "Array of tables"
+msgstr ""
+
+#: ../doc/how-to/table.rst:171
+msgid ""
+"A special construct in TOML is the array of tables syntax, it provides a "
+"more verbose form to declare several tables in an array, which are "
+"usually provided using inline tables as shown below."
+msgstr ""
+
+#: ../doc/how-to/table.rst:182
+msgid ""
+"Comparing the above example to the snippet below using an array of tables"
+" for the *tasks* array, the more verbose form becomes preferable in case "
+"further subtables are needed. Except for the subtables *config* the same "
+"data is provided."
+msgstr ""
+
+#: ../doc/how-to/table.rst:210
+msgid ""
+"To represent this data we can use a single *task_config* derived type "
+"with a polymorphic *driver_config* member identifying the actual task. "
+"For this example, we will have two implementations of such tasks such as "
+"LBFGS and Velocity Verlet, which are defined in the following snippets."
+msgstr ""
+
+#: ../doc/how-to/table.rst:213 ../doc/how-to/table.rst:222
+#: ../doc/how-to/table.rst:236 ../doc/how-to/table.rst:244
+#: ../doc/how-to/table.rst:255
+msgid "src/task.f90"
+msgstr ""
+
+#: ../doc/how-to/table.rst:218
+msgid ""
+"To read the array of tables we start from the root document and fetch the"
+" *tasks* entry as an array using the ``get_value`` interface. The length "
+"of the full arrays is known and we can use it to allocate the list of "
+"*task_config* values before reading the individual entries. The "
+"individual tables inside the array can be addressed using the "
+"``get_value`` interface by passing the (one-based) index."
+msgstr ""
+
+#: ../doc/how-to/table.rst:229
+msgid ""
+"In the setup above, if the *tasks* entry is not present it will be "
+"implicitly created as an empty array. The allocation and the loop over "
+"the entries will work, however the consuming code should check whether no"
+" tasks are meaningful or should produce an error."
+msgstr ""
+
+#: ../doc/how-to/table.rst:232
+msgid ""
+"To read the individual tasks we define a separate procedure to make it "
+"easily reusable and hide the fact that we are working with a subtable. To"
+" make the task *name* optional we make it default to the driver name, for"
+" *allocatable* or *pointer* variables the exit status of ``get_value`` "
+"can be easily checked by the allocation or association status of the "
+"respective variable, alternatively an integer variable can be passed to "
+"the optional *stat* argument. Finally, the configuration reader is called"
+" depending on the value of *driver* for ease of usage we use a block "
+"construct to allocate the specific type and then transfer it using "
+"*move_alloc* into the *task_config*."
+msgstr ""
+
+#: ../doc/how-to/table.rst:241
+msgid ""
+"For reading the actual driver configuration we use the ``get_value`` "
+"interface to obtain the settings. We use the same defaulting mechanism as"
+" for the *name* entry here."
+msgstr ""
+
+#: ../doc/how-to/table.rst:249
+msgid ""
+"Note that this example does not propagate back errors but directly calls "
+"*error stop*, for a more robust error reporting this can be changed by a "
+"small error handle or a context type."
+msgstr ""
+
+#: ../doc/how-to/table.rst:253
+msgid "The full module implementing the *task_config* reading"
+msgstr ""
+

@@ -1,0 +1,137 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019-2022, Sebastian Ehlert
+# This file is distributed under the same license as the toml-f package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: toml-f 0.2.3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-06-19 18:08-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Asdrubal Lozada-Blanco\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: ../doc/index.rst:113
+msgid "Tutorials"
+msgstr "Tutoriales"
+
+#: ../doc/index.rst:113
+msgid "How-Tos"
+msgstr "¿Cómo?"
+
+#: ../doc/index.rst:113
+msgid "References"
+msgstr "Referencias"
+
+#: ../doc/index.rst:4
+msgid "TOML Fortran library"
+msgstr "Biblioteca TOML Fortran"
+
+msgid "TOML Fortran"
+msgstr "TOML Fortran"
+
+msgid "License"
+msgstr "Licencia"
+
+msgid "Version"
+msgstr "Versión"
+
+msgid "Continuous Integration"
+msgstr "Integración continua"
+
+msgid "API docs"
+msgstr "Documentos de la API"
+
+msgid "Documentation Status"
+msgstr "Estado de la documentación"
+
+msgid "Coverage"
+msgstr "Cobertura"
+
+#: ../doc/index.rst:35
+msgid ""
+"This project provides a library to work with `TOML <https://toml.io>`_ "
+"files and data structures and allows to define data serialization and "
+"deserialization in Fortran. The currently supported TOML standard is "
+"`version 1.0.0 <https://toml.io/en/v1.0.0>`__. The TOML Fortran project "
+"is hosted at GitHub at `toml-f/toml-f "
+"<https://github.com/toml-f/toml-f>`__."
+msgstr "Este proyecto proporciona una biblioteca para trabajar con archivos `TOML <https://toml.io>`_ "
+"y estructuras de datos, y permite definir la serialización y deserialización de datos en Fortran."
+"El estándar TOML admitido actualmente es la `versión 1.0.0 <https://toml.io/en/v1.0.0>`__. "
+"El proyecto TOML Fortran está hospedado en Github en `toml-f/toml-f "
+"<https://github.com/toml-f/toml-f>`__"
+
+
+#: ../doc/index.rst:49
+msgid ":octicon:`mortar-board` Tutorials"
+msgstr ":octicon:`mortar-board` Tutoriales"
+
+#: ../doc/index.rst:51
+msgid ""
+"Guides and courses for using TOML with complete and self-contained "
+"examples."
+msgstr ""
+"Guías y cursos para usar TOML con ejemplos completos y autocontenidos"
+
+#: ../doc/index.rst:60
+msgid ":octicon:`book` Recipes"
+msgstr ":octicon:`book` Recetas"
+
+#: ../doc/index.rst:62
+msgid "Examples and recipes for solving common tasks with TOML Fortran."
+msgstr "Ejemplos y recetas para resolver tareas comunes con TOML Fortran."
+
+#: ../doc/index.rst:70
+msgid ":octicon:`gear` Reference"
+msgstr ":octicon:`gear` Referencia"
+
+#: ../doc/index.rst:72
+msgid "Generated documentation of all procedures and derived types available."
+msgstr "Documentación generada de todos los procedimientos y tipos derivados disponibles."
+
+#: ../doc/index.rst:81
+msgid ":octicon:`arrow-down` Installation"
+msgstr ":octicon:`arrow-down` Instalación"
+
+#: ../doc/index.rst:83
+msgid "Instructions for installing, updating or compiling TOML Fortran."
+msgstr ""
+"Instrucciones para la instalación, actualización o compilación de TOML Fortran."
+
+#: ../doc/index.rst:91
+msgid ":octicon:`mark-github` Repository"
+msgstr ":octicon:`mark-github` Repositorio"
+
+#: ../doc/index.rst:93
+msgid "GitHub repository for the development of TOML Fortran."
+msgstr "Repositorio Github para el desarrollo de TOML Fortran."
+
+#: ../doc/index.rst:102
+msgid ":octicon:`link` External"
+msgstr ":octicon:`link` Externos"
+
+#: ../doc/index.rst:104
+msgid "External links to other resources, blogs, etc."
+msgstr "Enlaces externos a otros recursos, blogs, etc."
+
+#: ../doc/index.rst:106
+msgid ""
+"TOML Fortran is used for example in the Fortran package manager (`fpm "
+"<https://fpm.fortran-lang.org>`_), a typical package manifest specified "
+"in TOML is shown below"
+msgstr ""
+"TOML Fortran es usado por ejemplo en el Administrador de paquetes de Fortran (`fpm "
+"<https://fpm.fortran-lang.org/es>`_). Un manifiesto típico para un paquete especificado en "
+"TOML es mostrado abajo"
+
+#: ../doc/index.rst:108
+msgid "fpm.toml"
+msgstr ""
+
