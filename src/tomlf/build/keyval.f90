@@ -20,6 +20,7 @@
 module tomlf_build_keyval
    use tomlf_constants, only : tfc, tfi, tfr, tf_i1, tf_i2, tf_i4, tf_i8, &
       & tf_sp, tf_dp, TOML_NEWLINE
+   use tomlf_datetime, only : toml_datetime
    use tomlf_error, only : toml_stat
    use tomlf_type, only : toml_value, toml_table, toml_array, toml_keyval, &
       & new_table, new_array, new_keyval, add_table, add_array, add_keyval, len
@@ -39,6 +40,7 @@ module tomlf_build_keyval
       module procedure :: set_value_integer_i4
       module procedure :: set_value_integer_i8
       module procedure :: set_value_bool
+      module procedure :: set_value_datetime
       module procedure :: set_value_string
    end interface set_value
 
@@ -52,6 +54,7 @@ module tomlf_build_keyval
       module procedure :: get_value_integer_i4
       module procedure :: get_value_integer_i8
       module procedure :: get_value_bool
+      module procedure :: get_value_datetime
       module procedure :: get_value_string
    end interface get_value
 
@@ -266,6 +269,35 @@ subroutine get_value_bool(self, val, stat, origin)
 end subroutine get_value_bool
 
 
+!> Retrieve TOML value as datetime
+subroutine get_value_datetime(self, val, stat, origin)
+
+   !> Instance of the key-value pair
+   class(toml_keyval), intent(in) :: self
+
+   !> Datetime value
+   type(toml_datetime), intent(out) :: val
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   type(toml_datetime), pointer :: dummy
+
+   call self%get(dummy)
+   if (associated(dummy)) then
+      val = dummy
+      if (present(stat)) stat = toml_stat%success
+   else
+      if (present(stat)) stat = toml_stat%type_mismatch
+   end if
+
+   if (present(origin)) origin = self%origin_value
+end subroutine get_value_datetime
+
+
 !> Retrieve TOML value as deferred-length character
 subroutine get_value_string(self, val, stat, origin)
 
@@ -454,6 +486,29 @@ subroutine set_value_bool(self, val, stat, origin)
    self%origin_value = 0
    if (present(origin)) origin = self%origin
 end subroutine set_value_bool
+
+
+!> Set TOML value to datetime
+subroutine set_value_datetime(self, val, stat, origin)
+
+   !> Instance of the key-value pair
+   class(toml_keyval), intent(inout) :: self
+
+   !> Datetime value
+   type(toml_datetime), intent(in) :: val
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   call self%set(val)
+   if (present(stat)) stat = toml_stat%success
+
+   self%origin_value = 0
+   if (present(origin)) origin = self%origin
+end subroutine set_value_datetime
 
 
 !> Set TOML value to deferred-length character

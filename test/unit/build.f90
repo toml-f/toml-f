@@ -39,6 +39,7 @@ subroutine collect_build(testsuite)
       & new_unittest("array-int-i4", array_int_i4), &
       & new_unittest("array-int-i8", array_int_i8), &
       & new_unittest("array-bool", array_bool), &
+      & new_unittest("array-datetime", array_datetime), &
       & new_unittest("array-merge", array_merge), &
       & new_unittest("table-array", table_array), &
       & new_unittest("table-real-sp", table_real_sp), &
@@ -48,6 +49,7 @@ subroutine collect_build(testsuite)
       & new_unittest("table-int-i4", table_int_i4), &
       & new_unittest("table-int-i8", table_int_i8), &
       & new_unittest("table-bool", table_bool), &
+      & new_unittest("table-dateime", table_datetime), &
       & new_unittest("table-string", table_string), &
       & new_unittest("table-merge-append", table_merge_append), &
       & new_unittest("table-merge-overwrite", table_merge_overwrite)]
@@ -315,6 +317,48 @@ subroutine table_bool(error)
    if (allocated(error)) return
 
 end subroutine table_bool
+
+
+!> Check datetime
+subroutine table_datetime(error)
+   use tomlf_type, only : toml_table, toml_key
+   use tomlf_datetime, only : toml_datetime, toml_date, toml_time, operator(==), to_string
+
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   type(toml_table) :: table
+   type(toml_datetime) :: val, ts1, ts2
+   integer :: stat
+
+   ts1 = toml_datetime(toml_date(2022,  7, 31), toml_time(13, 51, 42))
+   ts2 = toml_datetime(toml_date(2019, 12, 17), toml_time(18, 26, 59))
+
+   table = toml_table()
+   call set_value(table, toml_key("datetime"), ts1, stat=stat)
+   call get_value(table, toml_key("datetime"), val, stat=stat)
+
+   call check(error, val == ts1, &
+      & "Expected '"//to_string(ts1)//"' but got '"//to_string(val)//"'")
+   if (allocated(error)) return
+
+   call table%delete("datetime")
+   call set_value(table, "datetime", ts2, stat=stat)
+   call get_value(table, "datetime", val, stat=stat)
+
+   call check(error, val == ts2, &
+      & "Expected '"//to_string(ts2)//"' but got '"//to_string(val)//"'")
+   if (allocated(error)) return
+
+   call table%destroy
+   call new_table(table)
+   call get_value(table, "datetime", val, ts1, stat=stat)
+
+   call check(error, val == ts1, &
+      & "Expected '"//to_string(ts1)//"' but got '"//to_string(val)//"'")
+   if (allocated(error)) return
+
+end subroutine table_datetime
 
 
 !> Check strings
@@ -608,6 +652,36 @@ subroutine array_bool(error)
    if (allocated(error)) return
 
 end subroutine array_bool
+
+
+!> Check datetime
+subroutine array_datetime(error)
+   use tomlf_type, only : toml_array, len
+   use tomlf_datetime, only : toml_datetime, toml_date, toml_time, operator(==), to_string
+
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   type(toml_array) :: array
+   type(toml_datetime) :: val, ts
+   integer :: ii
+   integer :: stat
+
+   array = toml_array()
+   do ii = 1, 10
+      call set_value(array, ii, toml_datetime(toml_date(2022, ii, 7)), stat=stat)
+   end do
+   call check(error, len(array), 10)
+   if (allocated(error)) return
+
+   ii = 3
+   call get_value(array, ii, val, stat=stat)
+   ts = toml_datetime(toml_date(2022, ii, 7))
+   call check(error, val == ts, &
+      & "Expected '"//to_string(ts)//"' but got '"//to_string(val)//"'")
+   if (allocated(error)) return
+
+end subroutine array_datetime
 
 
 !> Merge two arrays
