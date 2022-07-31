@@ -670,14 +670,14 @@ subroutine array_datetime(error)
 
    array = toml_array()
    do ii = 1, 10
-      call set_value(array, ii, toml_datetime(toml_date(2022, ii, 7)), stat=stat)
+      call set_value(array, ii, toml_datetime(toml_date(2022, ii, 7), toml_time()), stat=stat)
    end do
    call check(error, len(array), 10)
    if (allocated(error)) return
 
    ii = 3
    call get_value(array, ii, val, stat=stat)
-   ts = toml_datetime(toml_date(2022, ii, 7))
+   ts = toml_datetime(toml_date(2022, ii, 7), toml_time())
    call check(error, val == ts, &
       & "Expected '"//to_string(ts)//"' but got '"//to_string(val)//"'")
    if (allocated(error)) return
