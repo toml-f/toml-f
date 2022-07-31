@@ -85,6 +85,13 @@ subroutine table_real_dp(error)
    call check(error, val, in1)
    if (allocated(error)) return
 
+   call table%delete("real")
+   call set_value(table, toml_path("real", "sub", "sub"), in1, stat=stat)
+   call get_value(table, toml_path("real", "sub", "sub"), val, stat=stat)
+
+   call check(error, val, in1)
+   if (allocated(error)) return
+
    call table%destroy
    call new_table(table)
    call get_value(table, "real", val, in3, stat=stat)
@@ -126,6 +133,13 @@ subroutine table_real_sp(error)
    call check(error, val, in1)
    if (allocated(error)) return
 
+   call table%delete("real")
+   call set_value(table, toml_path("real", "sub"), in1, stat=stat)
+   call get_value(table, toml_path("real", "sub"), val, stat=stat)
+
+   call check(error, val, in1)
+   if (allocated(error)) return
+
    call table%destroy
    call new_table(table)
    call get_value(table, "real", val, in3, stat=stat)
@@ -159,6 +173,13 @@ subroutine table_int_i1(error)
    call table%delete("int")
    call set_value(table, "int", in1, stat=stat)
    call get_value(table, toml_key("int"), val, stat=stat)
+
+   call check(error, val, in1)
+   if (allocated(error)) return
+
+   call table%delete("int")
+   call set_value(table, toml_path("int", "sub"), in1, stat=stat)
+   call get_value(table, toml_path("int", "sub"), val, stat=stat)
 
    call check(error, val, in1)
    if (allocated(error)) return
@@ -200,6 +221,13 @@ subroutine table_int_i2(error)
    call check(error, val, in1)
    if (allocated(error)) return
 
+   call table%delete("int")
+   call set_value(table, toml_path("int", "sub"), in1, stat=stat)
+   call get_value(table, toml_path("int", "sub"), val, stat=stat)
+
+   call check(error, val, in1)
+   if (allocated(error)) return
+
    call table%destroy
    call new_table(table)
    call get_value(table, "int", val, in3, stat=stat)
@@ -233,6 +261,13 @@ subroutine table_int_i4(error)
    call table%delete("int")
    call set_value(table, toml_key("int"), in1, stat=stat)
    call get_value(table, toml_key("int"), val, stat=stat)
+
+   call check(error, val, in1)
+   if (allocated(error)) return
+
+   call table%delete("int")
+   call set_value(table, toml_path("int", "sub", "sub"), in1, stat=stat)
+   call get_value(table, toml_path("int", "sub", "sub"), val, stat=stat)
 
    call check(error, val, in1)
    if (allocated(error)) return
@@ -274,6 +309,13 @@ subroutine table_int_i8(error)
    call check(error, val, in1)
    if (allocated(error)) return
 
+   call table%delete("int")
+   call set_value(table, toml_path([toml_key("int"), toml_key("sub")]), in1, stat=stat)
+   call get_value(table, toml_path([toml_key("int"), toml_key("sub")]), val, stat=stat)
+
+   call check(error, val, in1)
+   if (allocated(error)) return
+
    call table%destroy
    call new_table(table)
    call get_value(table, toml_key("int"), val, in3, stat=stat)
@@ -306,6 +348,13 @@ subroutine table_bool(error)
    call table%delete("logic")
    call set_value(table, "logic", false, stat=stat)
    call get_value(table, "logic", val, stat=stat)
+
+   call check(error, val, false)
+   if (allocated(error)) return
+
+   call table%delete("logic")
+   call set_value(table, toml_path("logic", "sub"), false, stat=stat)
+   call get_value(table, toml_path("logic", "sub"), val, stat=stat)
 
    call check(error, val, false)
    if (allocated(error)) return
@@ -351,6 +400,14 @@ subroutine table_datetime(error)
       & "Expected '"//to_string(ts2)//"' but got '"//to_string(val)//"'")
    if (allocated(error)) return
 
+   call table%delete("datetime")
+   call set_value(table, toml_path("datetime", "sub", "sub"), ts2, stat=stat)
+   call get_value(table, toml_path("datetime", "sub", "sub"), val, stat=stat)
+
+   call check(error, val == ts2, &
+      & "Expected '"//to_string(ts2)//"' but got '"//to_string(val)//"'")
+   if (allocated(error)) return
+
    call table%destroy
    call new_table(table)
    call get_value(table, "datetime", val, ts1, stat=stat)
@@ -385,6 +442,13 @@ subroutine table_string(error)
    call get_value(table, "string", val, stat=stat)
 
    call check(error, val, """value""")
+   if (allocated(error)) return
+
+   call table%delete("string")
+   call set_value(table, toml_path("string", "sub"), "value", stat=stat)
+   call get_value(table, toml_path("string", "sub"), val, stat=stat)
+
+   call check(error, val, "value")
    if (allocated(error)) return
 
    call table%destroy
