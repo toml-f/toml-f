@@ -41,12 +41,14 @@ from docutils import nodes
 from docutils.parsers import rst
 from docutils.parsers.rst.directives import flag
 from sphinx.util.osutil import copyfile
+from sphinx.util.logging import getLogger
 # DISABLED: from sphinx.util.console import bold
 
 
 __version__ = '0.7.0'
 
 # -- DIAGNOSTIC SUPPORT:
+LOGGER = getLogger(__name__)
 DIAG = os.environ.get("SPHINXCONTRIB_ANSI_DIAG", "no") == "yes"
 console = logging.getLogger("sphinxcontrib.ansi")
 console.setLevel(logging.ERROR)
@@ -173,7 +175,7 @@ class ANSIColorParser(object):
         Extract and parse all ansi escapes in ansi_literal_block nodes.
         """
         handler = self._colorize_block_contents
-        if app.builder.name != 'html':
+        if app.builder.name not in ('html', 'dirhtml'):
             # strip all color codes in non-html output
             handler = self._strip_color_from_block_content
         for ansi_block in doctree.traverse(ansi_literal_block):
@@ -193,20 +195,20 @@ def add_stylesheet(app):
 
 
 def copy_stylesheet(app, exception):
-    if app.builder.name != 'html' or exception:
+    if app.builder.name not in ('html', 'dirhtml') or exception:
         return
 
     verbose = hasattr(app, 'info')
     stylesheet = app.config.html_ansi_stylesheet
     if stylesheet:
         if verbose:
-            # DISABLED; app.info(bold('Copying ansi stylesheet... '), nonl=True)
-            app.info('Copying ansi stylesheet... ', nonl=True)
+            # DISABLED; LOGGER.info(bold('Copying ansi stylesheet... '), nonl=True)
+            LOGGER.info('Copying ansi stylesheet... ', nonl=True)
         dest = path.join(app.builder.outdir, '_static', 'ansi.css')
         source = path.abspath(path.dirname(__file__))
         copyfile(path.join(source, stylesheet), dest)
         if verbose:
-            app.info('done')
+            LOGGER.info('done')
 
 
 class ANSIBlockDirective(rst.Directive):
