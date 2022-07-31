@@ -67,6 +67,7 @@ module tomlf_build_path
    interface toml_path
       module procedure :: new_path2
       module procedure :: new_path3
+      module procedure :: new_path4
    end interface toml_path
 
 
@@ -108,6 +109,29 @@ pure function new_path3(key1, key2, key3) result(path)
    allocate(path%path(3))
    path%path(:) = [toml_key(key1), toml_key(key2), toml_key(key3)]
 end function new_path3
+
+
+!> Create a new path with three components
+pure function new_path4(key1, key2, key3, key4) result(path)
+
+   !> First key to retrieve
+   character(*, tfc), intent(in) :: key1
+
+   !> Second key to retrieve
+   character(*, tfc), intent(in) :: key2
+
+   !> Third key to retrieve
+   character(*, tfc), intent(in) :: key3
+
+   !> Forth key to retrieve
+   character(*, tfc), intent(in) :: key4
+
+   !> New path
+   type(toml_path) :: path
+
+   allocate(path%path(4))
+   path%path(:) = [toml_key(key1), toml_key(key2), toml_key(key3), toml_key(key4)]
+end function new_path4
 
 
 subroutine get_path_table(table, path, ptr, requested, stat, origin)

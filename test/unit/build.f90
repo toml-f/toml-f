@@ -86,8 +86,8 @@ subroutine table_real_dp(error)
    if (allocated(error)) return
 
    call table%delete("real")
-   call set_value(table, toml_path("real", "sub", "sub"), in1, stat=stat)
-   call get_value(table, toml_path("real", "sub", "sub"), val, stat=stat)
+   call set_value(table, toml_path("real", "sub", "sub", "sub"), in1, stat=stat)
+   call get_value(table, toml_path("real", "sub", "sub", "sub"), val, stat=stat)
 
    call check(error, val, in1)
    if (allocated(error)) return
