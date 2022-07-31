@@ -40,6 +40,7 @@ subroutine collect_build(testsuite)
       & new_unittest("array-int-i8", array_int_i8), &
       & new_unittest("array-bool", array_bool), &
       & new_unittest("array-datetime", array_datetime), &
+      & new_unittest("array-string", array_string), &
       & new_unittest("array-merge", array_merge), &
       & new_unittest("table-array", table_array), &
       & new_unittest("table-real-sp", table_real_sp), &
@@ -682,6 +683,33 @@ subroutine array_datetime(error)
    if (allocated(error)) return
 
 end subroutine array_datetime
+
+
+!> Check datetime
+subroutine array_string(error)
+   use tomlf_type, only : toml_array, len
+
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   type(toml_array) :: array
+   character(:), allocatable :: val
+   integer :: ii
+   integer :: stat
+
+   array = toml_array()
+   do ii = 1, 10
+      call set_value(array, ii, repeat("a", ii), stat=stat)
+   end do
+   call check(error, len(array), 10)
+   if (allocated(error)) return
+
+   ii = 3
+   call get_value(array, ii, val, stat=stat)
+   call check(error, val, repeat("a", ii))
+   if (allocated(error)) return
+
+end subroutine array_string
 
 
 !> Merge two arrays
