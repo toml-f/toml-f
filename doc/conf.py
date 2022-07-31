@@ -35,6 +35,23 @@ html_title = "TOML Fortran"
 html_logo = "../assets/toml-f.svg"
 html_favicon = "../assets/toml-f.svg"
 
+_extra_navbar = """
+<div class="sd-fs-4">
+<a href="https://fortran-lang.discourse.group/" target="_blank">
+    <i class="fab fa-discourse"></i>
+</a>
+<a href="https://github.com/orgs/toml-f/discussions" target="_blank">
+    <i class="fa fa-comments"></i>
+</a>
+<a href="https://github.com/toml-f" target="_blank">
+    <i class="fab fa-github"></i>
+</a>
+<a href="https://github.com/sponsors/awvwgk" target="_blank">
+    <i class="fa fa-heart"></i>
+</a>
+</div>
+"""
+
 html_theme_options = {
     "repository_url": "https://github.com/toml-f/toml-f",
     "repository_branch": "main",
@@ -42,6 +59,7 @@ html_theme_options = {
     "use_edit_page_button": True,
     "use_download_button": False,
     "path_to_docs": "doc",
+    "extra_navbar": _extra_navbar,
 }
 
 html_css_files = ["css/custom.css"]
