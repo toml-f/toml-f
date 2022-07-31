@@ -18,6 +18,7 @@ list(
   "${dir}/array.f90"
   "${dir}/keyval.f90"
   "${dir}/merge.f90"
+  "${dir}/path.f90"
   "${dir}/table.f90"
 )
 

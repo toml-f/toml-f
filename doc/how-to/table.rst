@@ -92,6 +92,30 @@ However, for larger program inputs such a structure can help to ensure that inpu
       :language: fortran
 
 
+Direct access via key paths
+---------------------------
+
+If only a deeply nested value of a data structure is needed it can be retrieved by using a key path.
+The build interface will internally walk the key path, resolve the child tables and create them as necessary.
+
+.. warning::
+
+   Repeatly accessing values via a key path from the document root, rather than retrieving the reference the desired child table, will introduce an overhead each time the key path is resolved.
+
+For the previous example we can use the key path access to retrieve the most deeply nested value as shown below.
+
+.. code-block:: fortran
+
+   block
+     use tomlf, only : get_value, toml_path, toml_key
+     character(:), allocatable :: format_string
+
+     call get_value(table, toml_path("hamiltonian", "dftb", "skf", "format"), format_string)
+   end block
+
+Similar like other build interfaces it can be used to create the subtables as well as the string value by providing a default.
+
+
 Iterating over keys
 -------------------
 

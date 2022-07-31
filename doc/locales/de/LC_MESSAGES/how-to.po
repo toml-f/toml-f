@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toml-f 0.2.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-31 14:30+0200\n"
+"POT-Creation-Date: 2022-07-31 17:47+0200\n"
 "PO-Revision-Date: 2022-07-31 14:30+0200\n"
 "Last-Translator: Sebastian Ehlert\n"
 "Language-Team: \n"
@@ -153,11 +153,10 @@ msgid ""
 "interface can be extended to also support common date time libraries."
 msgstr ""
 "TOML Werte können Datum- und Zeitangaben representieren und sind auch "
-"über die Build-Interfaces *get_value* und *set_value* zugänglich. "
-"Die interne Repräsentation eines Datum- und Zeitwertes kann zu anderen "
-"Bibliotheken inkompatibel sein kann. Dieses Rezept zeigt wie das "
-"Build-Interface erweitert werden kann, um andere Bibliotheken zu "
-"unterstützen."
+"über die Build-Interfaces *get_value* und *set_value* zugänglich. Die "
+"interne Repräsentation eines Datum- und Zeitwertes kann zu anderen "
+"Bibliotheken inkompatibel sein kann. Dieses Rezept zeigt wie das Build-"
+"Interface erweitert werden kann, um andere Bibliotheken zu unterstützen."
 
 #: ../how-to/datetime.rst:9
 msgid ""
@@ -174,8 +173,8 @@ msgid ""
 msgstr ""
 "Die *datetime-fortran*-Bibliothek bietet ein opaques Objekt, das eine "
 "Datum- und Zeitangabe repräsentiert und verschiedene Funktionen zur "
-"Verarbeitung und Manipulation bereitstellt. Ein fpm-Projekt, das "
-"TOML-Fortran und *datetime-fortran* verwendet, kann mit dem folgenden "
+"Verarbeitung und Manipulation bereitstellt. Ein fpm-Projekt, das TOML-"
+"Fortran und *datetime-fortran* verwendet, kann mit dem folgenden "
 "Dependencies-Abschnitt im Manifest eingerichtet werden."
 
 #: ../how-to/datetime.rst:20 ../how-to/datetime.rst:39
@@ -184,8 +183,9 @@ msgid ""
 "date time value we extend the *get_value* and *set_value* generic "
 "interfaces."
 msgstr ""
-"Um eine Kompatibilität zwischen den beiden abgeleiteten Typen zu definieren, "
-"erweitern wir die *get_value* und *set_value* generische Interfaces."
+"Um eine Kompatibilität zwischen den beiden abgeleiteten Typen zu "
+"definieren, erweitern wir die *get_value* und *set_value* generische "
+"Interfaces."
 
 #: ../how-to/datetime.rst:22 ../how-to/datetime.rst:41
 msgid "src/compat.f90"
@@ -202,8 +202,8 @@ msgid ""
 " and manipulating it. An fpm project using both TOML Fortran and *M_time*"
 " can be setup using the following dependencies section in the manifest."
 msgstr ""
-"Die *M_time*-Bibliothek bietet ein transparentes Objekt, das eine Datum- und "
-"Zeitangabe repräsentiert, mit einem reichhaltigen Funktions- und "
+"Die *M_time*-Bibliothek bietet ein transparentes Objekt, das eine Datum- "
+"und Zeitangabe repräsentiert, mit einem reichhaltigen Funktions- und "
 "Objektorientierten API zur Inspektion und Manipulation. Ein fpm-Projekt, "
 "das TOML-Fortran und *M_time* verwendet, kann mit dem folgenden "
 "Dependencies-Abschnitt im Manifest eingerichtet werden."
@@ -1546,19 +1546,61 @@ msgstr "Vollständiger Quellcode"
 msgid "The full module implementing the *simulation_input* reading"
 msgstr "Die vollständige Modul-Implementierung des *simulation_input*"
 
-#: ../how-to/table.rst:88 ../how-to/table.rst:161
+#: ../how-to/table.rst:88 ../how-to/table.rst:185
 msgid "The auxiliary module providing the error handler"
 msgstr "Hilfsmodul um Fehlerbehandlung zu ermöglichen"
 
-#: ../how-to/table.rst:90 ../how-to/table.rst:163
+#: ../how-to/table.rst:90 ../how-to/table.rst:187
 msgid "src/error.f90"
 msgstr ""
 
 #: ../how-to/table.rst:96
+msgid "Direct access via key paths"
+msgstr "Direkter Zugriff über Schlüsselpfad"
+
+#: ../how-to/table.rst:98
+msgid ""
+"If only a deeply nested value of a data structure is needed it can be "
+"retrieved by using a key path. The build interface will internally walk "
+"the key path, resolve the child tables and create them as necessary."
+msgstr ""
+"Wenn nur ein tiefgeschachtelter Wert einer Datenstruktur benötigt wird, "
+"kann dieser über einen Schlüsselpfad abgefragt werden. Im Build-Interface"
+" wird intern der Schlüsselpfad aufgebaut, Untertabellen aufgelöst, und "
+"wenn nötig erstellt."
+
+#: ../how-to/table.rst:103
+msgid ""
+"Repeatly accessing values via a key path from the document root, rather "
+"than retrieving the reference the desired child table, will introduce an "
+"overhead each time the key path is resolved."
+msgstr ""
+"Wiederholter Zugriff auf Werte über einen Schlüsselpfad von der Dokument-"
+"wurzel, anstelle von der Referenz auf die gewünschte Untertabelle, "
+"braucht zusätzliche Ressourcen, da der Schlüsselpfad jedes Mal erneut "
+"aufgelöst wird."
+
+#: ../how-to/table.rst:105
+msgid ""
+"For the previous example we can use the key path access to retrieve the "
+"most deeply nested value as shown below."
+msgstr ""
+"Für das vorherigen Beispiel kann der Schlüsselpfad zum Abfragen des "
+"am tiefsten geschachtelten Wertes wie unten angegeben benutzt werden."
+
+#: ../how-to/table.rst:116
+msgid ""
+"Similar like other build interfaces it can be used to create the "
+"subtables as well as the string value by providing a default."
+msgstr ""
+"Ähnlich wie andere Build-Interfaces kann auch ein Standardwert angegeben "
+"werden, um die Untertabelle zu erstellen."
+
+#: ../how-to/table.rst:120
 msgid "Iterating over keys"
 msgstr "Iterieren über Einträge"
 
-#: ../how-to/table.rst:98
+#: ../how-to/table.rst:122
 msgid ""
 "An expressive way to organize data is by providing a table where the keys"
 " of each entry describe the object that should be initialized. For "
@@ -1574,7 +1616,7 @@ msgstr ""
 "Zusätzlich kann der einfachheitshalber ein String angeben werden, der als"
 " Versions-Einschränkung für die Untertabelle interpretiert wird."
 
-#: ../how-to/table.rst:102
+#: ../how-to/table.rst:126
 msgid ""
 "The final usage of this in a *requirements* table could look like the "
 "snippet shown below."
@@ -1582,7 +1624,7 @@ msgstr ""
 "Die Implementierung in einer *requirements* Tabelle könnte wie folgt "
 "aussehen:"
 
-#: ../how-to/table.rst:114
+#: ../how-to/table.rst:138
 msgid ""
 "The first three entries provide a string value, while the fourth entry "
 "provides a subtable implicitly by using dotted key-value pairs and the "
@@ -1592,7 +1634,7 @@ msgstr ""
 "vierte Eintrag eine implizite Untertabelle über ein Punktgetrenntes "
 "Werte-Paar nutzt und der letzte Eintrag eine Inline-Tabelle ist."
 
-#: ../how-to/table.rst:116
+#: ../how-to/table.rst:140
 msgid ""
 "Here we want to focus on the iteration and the default initialization, "
 "the internal structure of the *requirement_type* is secondary for this "
@@ -1605,12 +1647,12 @@ msgstr ""
 "nur die minimale Definition an, die ausschließlich den Namen der "
 "Abhängigkeiten enthält."
 
-#: ../how-to/table.rst:119 ../how-to/table.rst:129 ../how-to/table.rst:144
-#: ../how-to/table.rst:157
+#: ../how-to/table.rst:143 ../how-to/table.rst:153 ../how-to/table.rst:168
+#: ../how-to/table.rst:181
 msgid "src/requirements.f90"
 msgstr ""
 
-#: ../how-to/table.rst:124
+#: ../how-to/table.rst:148
 msgid ""
 "For the actual implementation of reading all entries from the table, we "
 "will use a one-dimensional array of *requirement_type* values. Using the "
@@ -1636,7 +1678,7 @@ msgstr ""
 "Konstruktor des *requirement_type* Datentyps auf die Untertabelle-"
 "Referenzen mit dem ``child`` Zeiger aufgerufen werden."
 
-#: ../how-to/table.rst:134
+#: ../how-to/table.rst:158
 msgid ""
 "The other scenario we want to support is the presence of a string rather "
 "than a subtable. In this case, the ``get_value`` interface will fail, "
@@ -1670,7 +1712,7 @@ msgstr ""
 "Datentyps mit einer Dummy Tabelle aufrufen auf die wir mit dem ``child`` "
 "Zeiger referenziert haben."
 
-#: ../how-to/table.rst:142
+#: ../how-to/table.rst:166
 msgid ""
 "The actual constructor for our example is very minimalistic and only "
 "recovers the name of the dependency which is passed as a separate "
@@ -1680,7 +1722,7 @@ msgstr ""
 "und spezifiziert nur den Namen der Abhängigkeit, welcher als separates "
 "Argument übergeben wird."
 
-#: ../how-to/table.rst:151
+#: ../how-to/table.rst:175
 msgid ""
 "While we provide an error handler in the example, we also ensure that the"
 " allocation status of the *requirement_type* values communicates the "
@@ -1690,15 +1732,15 @@ msgstr ""
 " stellen wir sicher, dass der Zuweisungs-Status des *requirement_type* "
 "Feldes die Status-Informationen der Operation ebenfalls kommuniziert."
 
-#: ../how-to/table.rst:155
+#: ../how-to/table.rst:179
 msgid "The full module implementing the *requirement_type* reading"
 msgstr "Das vollständige Modul zum Einlesen des *requirement_type*"
 
-#: ../how-to/table.rst:169
+#: ../how-to/table.rst:193
 msgid "Array of tables"
 msgstr "Feld von Tabellen"
 
-#: ../how-to/table.rst:171
+#: ../how-to/table.rst:195
 msgid ""
 "A special construct in TOML is the array of tables syntax, it provides a "
 "more verbose form to declare several tables in an array, which are "
@@ -1709,7 +1751,7 @@ msgstr ""
 "anbietet. Normalerweise wird dies durch Inline-Tabellen angegeben wie "
 "unten gezeigt."
 
-#: ../how-to/table.rst:182
+#: ../how-to/table.rst:206
 msgid ""
 "Comparing the above example to the snippet below using an array of tables"
 " for the *tasks* array, the more verbose form becomes preferable in case "
@@ -1721,7 +1763,7 @@ msgstr ""
 "weitere Untertabelle benötigen. In beiden Beispielen werden bis auf die "
 "*config* Untertabelle die gleichen Daten angegeben."
 
-#: ../how-to/table.rst:210
+#: ../how-to/table.rst:234
 msgid ""
 "To represent this data we can use a single *task_config* derived type "
 "with a polymorphic *driver_config* member identifying the actual task. "
@@ -1734,12 +1776,12 @@ msgstr ""
 "werden zwei Implementierungen wie LBFGS und Velocity Verlet definiert, "
 "welche in den folgenden Codeblöcken angegeben sind."
 
-#: ../how-to/table.rst:213 ../how-to/table.rst:222 ../how-to/table.rst:236
-#: ../how-to/table.rst:244 ../how-to/table.rst:255
+#: ../how-to/table.rst:237 ../how-to/table.rst:246 ../how-to/table.rst:260
+#: ../how-to/table.rst:268 ../how-to/table.rst:279
 msgid "src/task.f90"
 msgstr ""
 
-#: ../how-to/table.rst:218
+#: ../how-to/table.rst:242
 msgid ""
 "To read the array of tables we start from the root document and fetch the"
 " *tasks* entry as an array using the ``get_value`` interface. The length "
@@ -1755,7 +1797,7 @@ msgstr ""
 "Tabellen in dem Feld können mit der ``get_value`` Routine anhand der "
 "(1-basierten) Indexposition abgefragt werden."
 
-#: ../how-to/table.rst:229
+#: ../how-to/table.rst:253
 msgid ""
 "In the setup above, if the *tasks* entry is not present it will be "
 "implicitly created as an empty array. The allocation and the loop over "
@@ -1768,7 +1810,7 @@ msgstr ""
 "prüfen, ob eine Simulation ohne Aufgaben Sinn hat oder einen Fehler "
 "erzeugen."
 
-#: ../how-to/table.rst:232
+#: ../how-to/table.rst:256
 msgid ""
 "To read the individual tasks we define a separate procedure to make it "
 "easily reusable and hide the fact that we are working with a subtable. To"
@@ -1792,7 +1834,7 @@ msgstr ""
 " spezifischen Typen zu allokieren und diese mit *move_alloc* in die "
 "*task_config* Instanz zu transferieren."
 
-#: ../how-to/table.rst:241
+#: ../how-to/table.rst:265
 msgid ""
 "For reading the actual driver configuration we use the ``get_value`` "
 "interface to obtain the settings. We use the same defaulting mechanism as"
@@ -1802,7 +1844,7 @@ msgstr ""
 "Routine, um die Einstellungen zu lesen. Wir nutzen dieselbe Defaultwert "
 "Mechanismus wie für den *name* Eintrag hier."
 
-#: ../how-to/table.rst:249
+#: ../how-to/table.rst:273
 msgid ""
 "Note that this example does not propagate back errors but directly calls "
 "*error stop*, for a more robust error reporting this can be changed by a "
@@ -1813,7 +1855,6 @@ msgstr ""
 "durch einen kleineren Fehlerbehandlungs-Typ oder einen Kontexttyp "
 "implementiert werden."
 
-#: ../how-to/table.rst:253
+#: ../how-to/table.rst:277
 msgid "The full module implementing the *task_config* reading"
 msgstr "Die vollständige Modul-Implementierung um *task_config* zu lesen"
-

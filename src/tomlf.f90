@@ -13,7 +13,7 @@
 
 !> Minimal public API for TOML-Fortran
 module tomlf
-   use tomlf_build, only : get_value, set_value
+   use tomlf_build, only : get_value, set_value, toml_path
    use tomlf_datetime, only : toml_datetime, to_string
    use tomlf_de, only : toml_parse, toml_load, toml_loads, &
       & toml_context, toml_parser_config, toml_level
