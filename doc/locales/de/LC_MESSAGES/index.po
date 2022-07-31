@@ -78,7 +78,7 @@ msgid ""
 "examples."
 msgstr ""
 "Anleitungen und Kurse zur Verwendung von TOML mit kompletten und "
-"selbstverständlichen Beispielen."
+"eigenständigen Beispielen."
 
 #: ../index.rst:60
 msgid ":octicon:`book` Recipes"

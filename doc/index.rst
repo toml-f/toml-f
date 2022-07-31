@@ -114,5 +114,5 @@ TOML Fortran is used for example in the Fortran package manager (`fpm <https://f
 
    Tutorials <tutorial/index>
    How-Tos <how-to/index>
-   References <https://toml-f.github.io/toml-f>
+   References <reference/index>
    external

@@ -33,6 +33,7 @@ module tomlf_build_table
    use tomlf_build_keyval, only : get_value, set_value
    use tomlf_constants, only : tfc, tfi, tfr, tf_i1, tf_i2, tf_i4, tf_i8, &
       & tf_sp, tf_dp
+   use tomlf_datetime, only : toml_datetime
    use tomlf_error, only : toml_stat
    use tomlf_type, only : toml_value, toml_table, toml_array, toml_keyval, &
       & new_table, new_array, new_keyval, add_table, add_array, add_keyval, &
@@ -52,6 +53,7 @@ module tomlf_build_table
       module procedure :: set_child_value_integer_i4
       module procedure :: set_child_value_integer_i8
       module procedure :: set_child_value_bool
+      module procedure :: set_child_value_datetime
       module procedure :: set_child_value_string
       module procedure :: set_key_value_float_sp
       module procedure :: set_key_value_float_dp
@@ -60,6 +62,7 @@ module tomlf_build_table
       module procedure :: set_key_value_integer_i4
       module procedure :: set_key_value_integer_i8
       module procedure :: set_key_value_bool
+      module procedure :: set_key_value_datetime
       module procedure :: set_key_value_string
    end interface set_value
 
@@ -76,6 +79,7 @@ module tomlf_build_table
       module procedure :: get_child_value_integer_i4
       module procedure :: get_child_value_integer_i8
       module procedure :: get_child_value_bool
+      module procedure :: get_child_value_datetime
       module procedure :: get_child_value_string
       module procedure :: get_key_table
       module procedure :: get_key_array
@@ -87,6 +91,7 @@ module tomlf_build_table
       module procedure :: get_key_value_integer_i4
       module procedure :: get_key_value_integer_i8
       module procedure :: get_key_value_bool
+      module procedure :: get_key_value_datetime
       module procedure :: get_key_value_string
    end interface get_value
 
@@ -351,6 +356,32 @@ subroutine get_key_value_bool(table, key, val, default, stat, origin)
 end subroutine get_key_value_bool
 
 
+!> Retrieve TOML value as datetime
+subroutine get_key_value_datetime(table, key, val, default, stat, origin)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Datetime value
+   type(toml_datetime), intent(out) :: val
+
+   !> Default datetime value
+   type(toml_datetime), intent(in), optional :: default
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   call get_value(table, key%key, val, default, stat, origin)
+
+end subroutine get_key_value_datetime
+
+
 !> Retrieve TOML value as deferred-length character
 subroutine get_key_value_string(table, key, val, default, stat, origin)
 
@@ -536,6 +567,29 @@ subroutine set_key_value_bool(table, key, val, stat, origin)
    call set_value(table, key%key, val, stat, origin)
 
 end subroutine set_key_value_bool
+
+
+!> Set TOML value to datetime
+subroutine set_key_value_datetime(table, key, val, stat, origin)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   type(toml_key), intent(in) :: key
+
+   !> Datetime value
+   type(toml_datetime), intent(in) :: val
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   call set_value(table, key%key, val, stat, origin)
+
+end subroutine set_key_value_datetime
 
 
 !> Set TOML value to deferred-length character
@@ -1013,6 +1067,47 @@ subroutine get_child_value_bool(table, key, val, default, stat, origin)
 end subroutine get_child_value_bool
 
 
+!> Retrieve TOML value as datetime
+subroutine get_child_value_datetime(table, key, val, default, stat, origin)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   character(kind=tfc, len=*), intent(in) :: key
+
+   !> Datetime value
+   type(toml_datetime), intent(out) :: val
+
+   !> Default datetime value
+   type(toml_datetime), intent(in), optional :: default
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   type(toml_keyval), pointer :: ptr
+
+   call get_value(table, key, ptr, present(default), stat, origin)
+
+   if (associated(ptr)) then
+      if (allocated(ptr%val)) then
+         call get_value(ptr, val, stat, origin)
+      else
+         if (present(default)) then
+            call set_value(ptr, default)
+            call get_value(ptr, val, stat=stat)
+         else
+            if (present(stat)) stat = toml_stat%fatal
+         end if
+      end if
+   end if
+
+end subroutine get_child_value_datetime
+
+
 !> Retrieve TOML value as deferred-length character
 subroutine get_child_value_string(table, key, val, default, stat, origin)
 
@@ -1283,6 +1378,39 @@ subroutine set_child_value_bool(table, key, val, stat, origin)
    end if
 
 end subroutine set_child_value_bool
+
+
+!> Set TOML value to datetime
+subroutine set_child_value_datetime(table, key, val, stat, origin)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: table
+
+   !> Key in this TOML table
+   character(kind=tfc, len=*), intent(in) :: key
+
+   !> Datetime value
+   type(toml_datetime), intent(in) :: val
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   type(toml_keyval), pointer :: ptr
+
+   call get_value(table, key, ptr, .true., stat, origin)
+
+   if (associated(ptr)) then
+      call set_value(ptr, val, stat, origin)
+   else
+      if (present(stat)) then
+         if (stat == toml_stat%success) stat = toml_stat%fatal
+      end if
+   end if
+
+end subroutine set_child_value_datetime
 
 
 !> Set TOML value to deferred-length character

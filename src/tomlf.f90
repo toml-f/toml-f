@@ -14,13 +14,14 @@
 !> Minimal public API for TOML-Fortran
 module tomlf
    use tomlf_build, only : get_value, set_value
+   use tomlf_datetime, only : toml_datetime, to_string
    use tomlf_de, only : toml_parse, toml_load, toml_loads, &
       & toml_context, toml_parser_config, toml_level
    use tomlf_error, only : toml_error, toml_stat
    use tomlf_ser, only : toml_serializer
    use tomlf_terminal, only : toml_terminal
-   use tomlf_type, only : toml_table, toml_array, toml_key, is_array_of_tables, &
-      & new_table, add_table, add_array, len
+   use tomlf_type, only : toml_table, toml_array, toml_keyval, toml_key, is_array_of_tables, &
+      & new_table, add_table, add_array, add_keyval, len
    use tomlf_utils_sort, only : sort
    use tomlf_version, only : tomlf_version_string, tomlf_version_compact, &
       & get_tomlf_version

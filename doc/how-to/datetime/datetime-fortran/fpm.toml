@@ -1,0 +1,5 @@
+name = "demo"
+
+[dependencies]
+toml-f.path = "../../../.."
+datetime.git = "https://github.com/wavebitscientific/datetime-fortran.git"
