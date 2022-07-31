@@ -11,6 +11,7 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
+!> Support for retrieving and setting values using a key path.
 module tomlf_build_path
    use tomlf_build_table, only : get_value, set_value
    use tomlf_constants, only : tfc, tfi, tfr, tf_i1, tf_i2, tf_i4, tf_i8, &
@@ -22,6 +23,7 @@ module tomlf_build_path
    private
 
    public :: toml_path, get_value, set_value
+
 
    !> Setter functions to manipulate TOML tables
    interface set_value
@@ -35,6 +37,7 @@ module tomlf_build_path
       module procedure :: set_path_value_datetime
       module procedure :: set_path_value_string
    end interface set_value
+
 
    !> Getter functions to manipulate TOML tables
    interface get_value
@@ -52,22 +55,33 @@ module tomlf_build_path
       module procedure :: get_path_value_string
    end interface get_value
 
+
+   !> Wrapper for storing key paths
    type :: toml_path
+      !> Path components
       type(toml_key), allocatable :: path(:)
    end type toml_path
 
+
+   !> Convenience constructors for building key paths from strings instead of keys
    interface toml_path
       module procedure :: new_path2
       module procedure :: new_path3
    end interface toml_path
 
+
 contains
 
+
+!> Create a new path with two components
 pure function new_path2(key1, key2) result(path)
+
    !> First key to retrieve
    character(*), intent(in) :: key1
+
    !> Second key to retrieve
    character(*), intent(in) :: key2
+
    !> New path
    type(toml_path) :: path
 
@@ -75,13 +89,19 @@ pure function new_path2(key1, key2) result(path)
    path%path(:) = [toml_key(key1), toml_key(key2)]
 end function new_path2
 
+
+!> Create a new path with three components
 pure function new_path3(key1, key2, key3) result(path)
+
    !> First key to retrieve
    character(*, tfc), intent(in) :: key1
+
    !> Second key to retrieve
    character(*, tfc), intent(in) :: key2
+
    !> Third key to retrieve
    character(*, tfc), intent(in) :: key3
+
    !> New path
    type(toml_path) :: path
 
@@ -753,5 +773,6 @@ subroutine walk_path(table, path, ptr, requested, stat, origin)
    end do
    ptr => current
 end subroutine walk_path
+
 
 end module tomlf_build_path
