@@ -517,6 +517,17 @@ subroutine table_array(error)
    end select
    if (allocated(error)) return
 
+   call get_value(table, toml_path("tables", "with", "array"), children, &
+      & requested=.false., stat=stat)
+   call check(error, .not.associated(children), "Should not create array")
+   if (allocated(error)) return
+   call check(error, stat, "Not finding a not required value shouldn't be an error")
+   if (allocated(error)) return
+
+   call get_value(table, toml_path("tables", "with", "array"), children, &
+      & requested=.true.)
+   call check(error, associated(children), "Array was not created")
+   if (allocated(error)) return
 end subroutine table_array
 
 

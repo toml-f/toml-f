@@ -111,11 +111,17 @@ subroutine get_path_table(table, path, ptr, requested, stat, origin)
    integer, intent(out), optional :: origin
 
    type(toml_table), pointer :: child
+   logical :: is_requested
+
+   is_requested = .true.
+   if (present(requested)) is_requested = requested
 
    nullify(ptr)
-   call walk_path(table, path, child, requested, stat, origin)
+   call walk_path(table, path, child, is_requested, stat, origin)
    if (associated(child)) then
-      call get_value(child, path%path(size(path%path)), ptr, requested, stat, origin)
+      call get_value(child, path%path(size(path%path)), ptr, is_requested, stat, origin)
+   else
+      if (.not.is_requested .and. present(stat)) stat = toml_stat%success
    end if
 end subroutine get_path_table
 
@@ -141,11 +147,17 @@ subroutine get_path_array(table, path, ptr, requested, stat, origin)
    integer, intent(out), optional :: origin
 
    type(toml_table), pointer :: child
+   logical :: is_requested
+
+   is_requested = .true.
+   if (present(requested)) is_requested = requested
 
    nullify(ptr)
-   call walk_path(table, path, child, requested, stat, origin)
+   call walk_path(table, path, child, is_requested, stat, origin)
    if (associated(child)) then
-      call get_value(child, path%path(size(path%path)), ptr, requested, stat, origin)
+      call get_value(child, path%path(size(path%path)), ptr, is_requested, stat, origin)
+   else
+      if (.not.is_requested .and. present(stat)) stat = toml_stat%success
    end if
 end subroutine get_path_array
 
@@ -171,11 +183,17 @@ subroutine get_path_keyval(table, path, ptr, requested, stat, origin)
    integer, intent(out), optional :: origin
 
    type(toml_table), pointer :: child
+   logical :: is_requested
+
+   is_requested = .true.
+   if (present(requested)) is_requested = requested
 
    nullify(ptr)
-   call walk_path(table, path, child, requested, stat, origin)
+   call walk_path(table, path, child, is_requested, stat, origin)
    if (associated(child)) then
-      call get_value(child, path%path(size(path%path)), ptr, requested, stat, origin)
+      call get_value(child, path%path(size(path%path)), ptr, is_requested, stat, origin)
+   else
+      if (.not.is_requested .and. present(stat)) stat = toml_stat%success
    end if
 end subroutine get_path_keyval
 
