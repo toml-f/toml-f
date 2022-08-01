@@ -42,6 +42,18 @@ This is achieved through the generic ``get_value`` interface, which automaticall
    By passing an integer value to the optional *stat* argument, the procedure will return a non-zero value to indicate an error.
 
 
+Accessing whole arrays
+----------------------
+
+If the entries of an array are all of the same type or can be safely casted to a common type it is possible to retrieve a whole array using a single call to ``get_value``.
+
+.. literalinclude:: array/whole/app/main.f90
+  :caption: app/parse_array.f90
+  :language: Fortran
+
+The build interface will allocate the array to the correct size and then iterate over all elements and assign them to the array.
+
+
 Accessing nested arrays
 -----------------------
 
