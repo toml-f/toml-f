@@ -24,6 +24,7 @@ version = "0.3.0"
 release = version
 
 extensions = [
+    "ablog",
     "sphinx_design",
     "sphinx_copybutton",
     "sphinx.ext.intersphinx",
@@ -67,5 +68,7 @@ html_static_path = ["_static"]
 templates_path = ["_templates"]
 locale_dirs = ["locales"]
 copybutton_selector = "div:not(.no-copybutton) > div.highlight > pre"
+blog_path = "news/index"
+blog_post_pattern = "news/**"
 
 master_doc = "index"
