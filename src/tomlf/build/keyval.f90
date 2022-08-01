@@ -81,16 +81,29 @@ subroutine get_value_float_sp(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
+   integer :: info
    real(tfr), pointer :: dummy
+   integer(tfi), pointer :: idummy
 
    call self%get(dummy)
    if (associated(dummy)) then
       val = real(dummy, tf_sp)
-      if (present(stat)) stat = toml_stat%success
+      info = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%type_mismatch
+      call self%get(idummy)
+      if (associated(idummy)) then
+         val = real(idummy, tf_sp)
+         if (nint(val, tfi) == idummy) then
+            info = toml_stat%success
+         else
+            info = toml_stat%conversion_error
+         end if
+      else
+         info = toml_stat%type_mismatch
+      end if
    end if
 
+   if (present(stat)) stat = info
    if (present(origin)) origin = self%origin_value
 end subroutine get_value_float_sp
 
@@ -110,16 +123,29 @@ subroutine get_value_float_dp(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
+   integer :: info
    real(tfr), pointer :: dummy
+   integer(tfi), pointer :: idummy
 
    call self%get(dummy)
    if (associated(dummy)) then
       val = real(dummy, tf_dp)
-      if (present(stat)) stat = toml_stat%success
+      info = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%type_mismatch
+      call self%get(idummy)
+      if (associated(idummy)) then
+         val = real(idummy, tf_dp)
+         if (nint(val, tfi) == idummy) then
+            info = toml_stat%success
+         else
+            info = toml_stat%conversion_error
+         end if
+      else
+         info = toml_stat%type_mismatch
+      end if
    end if
 
+   if (present(stat)) stat = info
    if (present(origin)) origin = self%origin_value
 end subroutine get_value_float_dp
 
@@ -139,16 +165,22 @@ subroutine get_value_integer_i1(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
+   integer :: info
    integer(tfi), pointer :: dummy
 
    call self%get(dummy)
    if (associated(dummy)) then
       val = int(dummy, tf_i1)
-      if (present(stat)) stat = toml_stat%success
+      if (dummy <= huge(val) .and. dummy >= -huge(val)-1) then
+         info = toml_stat%success
+      else
+         info = toml_stat%conversion_error
+      end if
    else
-      if (present(stat)) stat = toml_stat%type_mismatch
+      info = toml_stat%type_mismatch
    end if
 
+   if (present(stat)) stat = info
    if (present(origin)) origin = self%origin_value
 end subroutine get_value_integer_i1
 
@@ -168,16 +200,22 @@ subroutine get_value_integer_i2(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
+   integer :: info
    integer(tfi), pointer :: dummy
 
    call self%get(dummy)
    if (associated(dummy)) then
       val = int(dummy, tf_i2)
-      if (present(stat)) stat = toml_stat%success
+      if (dummy <= huge(val) .and. dummy >= -huge(val)-1) then
+         info = toml_stat%success
+      else
+         info = toml_stat%conversion_error
+      end if
    else
-      if (present(stat)) stat = toml_stat%type_mismatch
+      info = toml_stat%type_mismatch
    end if
 
+   if (present(stat)) stat = info
    if (present(origin)) origin = self%origin_value
 end subroutine get_value_integer_i2
 
@@ -197,16 +235,22 @@ subroutine get_value_integer_i4(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
+   integer :: info
    integer(tfi), pointer :: dummy
 
    call self%get(dummy)
    if (associated(dummy)) then
       val = int(dummy, tf_i4)
-      if (present(stat)) stat = toml_stat%success
+      if (dummy <= huge(val) .and. dummy >= -huge(val)-1) then
+         info = toml_stat%success
+      else
+         info = toml_stat%conversion_error
+      end if
    else
-      if (present(stat)) stat = toml_stat%type_mismatch
+      info = toml_stat%type_mismatch
    end if
 
+   if (present(stat)) stat = info
    if (present(origin)) origin = self%origin_value
 end subroutine get_value_integer_i4
 
@@ -226,16 +270,18 @@ subroutine get_value_integer_i8(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
+   integer :: info
    integer(tfi), pointer :: dummy
 
    call self%get(dummy)
    if (associated(dummy)) then
       val = int(dummy, tf_i8)
-      if (present(stat)) stat = toml_stat%success
+      info = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%type_mismatch
+      info = toml_stat%type_mismatch
    end if
 
+   if (present(stat)) stat = info
    if (present(origin)) origin = self%origin_value
 end subroutine get_value_integer_i8
 
@@ -255,16 +301,18 @@ subroutine get_value_bool(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
+   integer :: info
    logical, pointer :: dummy
 
    call self%get(dummy)
    if (associated(dummy)) then
       val = dummy
-      if (present(stat)) stat = toml_stat%success
+      info = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%type_mismatch
+      info = toml_stat%type_mismatch
    end if
 
+   if (present(stat)) stat = info
    if (present(origin)) origin = self%origin_value
 end subroutine get_value_bool
 
@@ -284,16 +332,18 @@ subroutine get_value_datetime(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
+   integer :: info
    type(toml_datetime), pointer :: dummy
 
    call self%get(dummy)
    if (associated(dummy)) then
       val = dummy
-      if (present(stat)) stat = toml_stat%success
+      info = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%type_mismatch
+      info = toml_stat%type_mismatch
    end if
 
+   if (present(stat)) stat = info
    if (present(origin)) origin = self%origin_value
 end subroutine get_value_datetime
 
@@ -313,16 +363,18 @@ subroutine get_value_string(self, val, stat, origin)
    !> Origin in the data structure
    integer, intent(out), optional :: origin
 
+   integer :: info
    character(:, tfc), pointer :: dummy
 
    call self%get(dummy)
    if (associated(dummy)) then
       val = dummy
-      if (present(stat)) stat = toml_stat%success
+      info = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%type_mismatch
+      info = toml_stat%type_mismatch
    end if
 
+   if (present(stat)) stat = info
    if (present(origin)) origin = self%origin_value
 end subroutine get_value_string
 

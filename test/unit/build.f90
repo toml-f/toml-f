@@ -60,7 +60,7 @@ end subroutine collect_build
 
 !> Check double precision floating point numbers (default)
 subroutine table_real_dp(error)
-   use tomlf_constants, only : tf_dp
+   use tomlf_constants, only : tf_dp, tfi
    use tomlf_type, only : new_table, toml_table, toml_key
 
    !> Error handling
@@ -99,15 +99,33 @@ subroutine table_real_dp(error)
    call check(error, val, in3)
    if (allocated(error)) return
 
+   call set_value(table, "int", huge(1_tfi), stat=stat)
+   call get_value(table, "int", val, stat=stat)
+
+   call check(error, stat, toml_stat%conversion_error)
+   if (allocated(error)) return
+
+   call set_value(table, "int", 1_tfi, stat=stat)
+   call get_value(table, "int", val, stat=stat)
+
+   call check(error, val, 1.0_tf_dp)
+   if (allocated(error)) return
+
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
+   if (allocated(error)) return
+
 end subroutine table_real_dp
 
 
 !> Check single precision floating point numbers
-!
-!  Since TOML requires to store them as double precision numbers, we might find
-!  larger deviations here than just epsilon.
+!>
+!> Since TOML requires to store them as double precision numbers, we might find
+!> larger deviations here than just epsilon.
 subroutine table_real_sp(error)
-   use tomlf_constants, only : tf_sp
+   use tomlf_constants, only : tf_sp, tfi
    use tomlf_type, only : new_table, toml_table, toml_key
 
    !> Error handling
@@ -147,12 +165,30 @@ subroutine table_real_sp(error)
    call check(error, val, in3)
    if (allocated(error)) return
 
+   call set_value(table, "int", huge(1_tfi), stat=stat)
+   call get_value(table, "int", val, stat=stat)
+
+   call check(error, stat, toml_stat%conversion_error)
+   if (allocated(error)) return
+
+   call set_value(table, "int", 1_tfi, stat=stat)
+   call get_value(table, "int", val, stat=stat)
+
+   call check(error, val, 1.0_tf_sp)
+   if (allocated(error)) return
+
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
+   if (allocated(error)) return
+
 end subroutine table_real_sp
 
 
 !> Check smallest integers (char)
 subroutine table_int_i1(error)
-   use tomlf_constants, only : tf_i1
+   use tomlf_constants, only : tf_i1, tfi
    use tomlf_type, only : new_table, toml_table, toml_key
 
    !> Error handling
@@ -191,12 +227,24 @@ subroutine table_int_i1(error)
    call check(error, val, in3)
    if (allocated(error)) return
 
+   call set_value(table, "huge", huge(1_tfi), stat=stat)
+   call get_value(table, "huge", val, stat=stat)
+
+   call check(error, stat, toml_stat%conversion_error)
+   if (allocated(error)) return
+
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
+   if (allocated(error)) return
+
 end subroutine table_int_i1
 
 
 !> Check short integers
 subroutine table_int_i2(error)
-   use tomlf_constants, only : tf_i2
+   use tomlf_constants, only : tf_i2, tfi
    use tomlf_type, only : new_table, toml_table
 
    !> Error handling
@@ -235,12 +283,24 @@ subroutine table_int_i2(error)
    call check(error, val, in3)
    if (allocated(error)) return
 
+   call set_value(table, "huge", huge(1_tfi), stat=stat)
+   call get_value(table, "huge", val, stat=stat)
+
+   call check(error, stat, toml_stat%conversion_error)
+   if (allocated(error)) return
+
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
+   if (allocated(error)) return
+
 end subroutine table_int_i2
 
 
 !> Check default integers
 subroutine table_int_i4(error)
-   use tomlf_constants, only : tf_i4
+   use tomlf_constants, only : tf_i4, tfi
    use tomlf_type, only : new_table, toml_table, toml_key
 
    !> Error handling
@@ -277,6 +337,18 @@ subroutine table_int_i4(error)
    call get_value(table, "int", val, in3, stat=stat)
 
    call check(error, val, in3)
+   if (allocated(error)) return
+
+   call set_value(table, "huge", huge(1_tfi), stat=stat)
+   call get_value(table, "huge", val, stat=stat)
+
+   call check(error, stat, toml_stat%conversion_error)
+   if (allocated(error)) return
+
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
    if (allocated(error)) return
 
 end subroutine table_int_i4
@@ -323,6 +395,12 @@ subroutine table_int_i8(error)
    call check(error, val, in3)
    if (allocated(error)) return
 
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
+   if (allocated(error)) return
+
 end subroutine table_int_i8
 
 
@@ -364,6 +442,12 @@ subroutine table_bool(error)
    call get_value(table, "logic", val, true, stat=stat)
 
    call check(error, val, true)
+   if (allocated(error)) return
+
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
    if (allocated(error)) return
 
 end subroutine table_bool
@@ -414,6 +498,12 @@ subroutine table_datetime(error)
 
    call check(error, val == ts1, &
       & "Expected '"//to_string(ts1)//"' but got '"//to_string(val)//"'")
+   if (allocated(error)) return
+
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
    if (allocated(error)) return
 
 end subroutine table_datetime
@@ -541,6 +631,7 @@ subroutine array_real_sp(error)
 
    type(toml_array) :: array
    real(tf_sp) :: val
+   real(tf_sp), allocatable :: vals(:)
    integer :: ii
    integer :: stat
 
@@ -556,6 +647,20 @@ subroutine array_real_sp(error)
    call check(error, val, sqrt(7.0_tf_sp), rel=.true.)
    if (allocated(error)) return
 
+   call get_value(array, vals, stat=stat)
+   call check(error, allocated(vals))
+   call check(error, vals(7), val, rel=.true.)
+   if (allocated(error)) return
+
+   vals = 2*vals(:9)
+   call set_value(array, vals, stat=stat)
+   call check(error, len(array), 9)
+   if (allocated(error)) return
+
+   call get_value(array, ii, val, stat=stat)
+   call check(error, val, 2*sqrt(7.0_tf_sp), rel=.true.)
+   if (allocated(error)) return
+
 end subroutine array_real_sp
 
 
@@ -569,6 +674,7 @@ subroutine array_real_dp(error)
 
    type(toml_array) :: array
    real(tf_dp) :: val
+   real(tf_dp), allocatable :: vals(:)
    integer :: ii
    integer :: stat
 
@@ -584,6 +690,20 @@ subroutine array_real_dp(error)
    call check(error, val, sqrt(7.0_tf_dp), rel=.true.)
    if (allocated(error)) return
 
+   call get_value(array, vals, stat=stat)
+   call check(error, allocated(vals))
+   call check(error, vals(7), val, rel=.true.)
+   if (allocated(error)) return
+
+   vals = 2*vals(:9)
+   call set_value(array, vals, stat=stat)
+   call check(error, len(array), 9)
+   if (allocated(error)) return
+
+   call get_value(array, ii, val, stat=stat)
+   call check(error, val, 2*sqrt(7.0_tf_dp), rel=.true.)
+   if (allocated(error)) return
+
 end subroutine array_real_dp
 
 
@@ -597,6 +717,7 @@ subroutine array_int_i1(error)
 
    type(toml_array) :: array
    integer(tf_i1) :: val
+   integer(tf_i1), allocatable :: vals(:)
    integer(tf_i1), parameter :: ref(4) = [integer(tf_i1) :: 1, 3, 5, 7]
    integer :: ii
    integer :: stat
@@ -613,6 +734,20 @@ subroutine array_int_i1(error)
    call check(error, val, ref(ii))
    if (allocated(error)) return
 
+   call get_value(array, vals, stat=stat)
+   call check(error, allocated(vals))
+   call check(error, vals(ii), val)
+   if (allocated(error)) return
+
+   vals = -vals(:ii)
+   call set_value(array, vals, stat=stat)
+   call check(error, len(array), ii)
+   if (allocated(error)) return
+
+   call get_value(array, ii, val, stat=stat)
+   call check(error, val, -ref(ii))
+   if (allocated(error)) return
+
 end subroutine array_int_i1
 
 
@@ -626,6 +761,7 @@ subroutine array_int_i2(error)
 
    type(toml_array) :: array
    integer(tf_i2) :: val
+   integer(tf_i2), allocatable :: vals(:)
    integer(tf_i2), parameter :: ref(4) = [integer(tf_i2) :: 1, 3, 5, 7]
    integer :: ii
    integer :: stat
@@ -642,6 +778,20 @@ subroutine array_int_i2(error)
    call check(error, val, ref(ii))
    if (allocated(error)) return
 
+   call get_value(array, vals, stat=stat)
+   call check(error, allocated(vals))
+   call check(error, vals(ii), val)
+   if (allocated(error)) return
+
+   vals = -vals(:ii)
+   call set_value(array, vals, stat=stat)
+   call check(error, len(array), ii)
+   if (allocated(error)) return
+
+   call get_value(array, ii, val, stat=stat)
+   call check(error, val, -ref(ii))
+   if (allocated(error)) return
+
 end subroutine array_int_i2
 
 
@@ -655,6 +805,7 @@ subroutine array_int_i4(error)
 
    type(toml_array) :: array
    integer(tf_i4) :: val
+   integer(tf_i4), allocatable :: vals(:)
    integer(tf_i4), parameter :: ref(4) = [integer(tf_i4) :: 1, 3, 5, 7]
    integer :: ii
    integer :: stat
@@ -671,6 +822,20 @@ subroutine array_int_i4(error)
    call check(error, val, ref(ii))
    if (allocated(error)) return
 
+   call get_value(array, vals, stat=stat)
+   call check(error, allocated(vals))
+   call check(error, vals(ii), val)
+   if (allocated(error)) return
+
+   vals = -vals(:ii)
+   call set_value(array, vals, stat=stat)
+   call check(error, len(array), ii)
+   if (allocated(error)) return
+
+   call get_value(array, ii, val, stat=stat)
+   call check(error, val, -ref(ii))
+   if (allocated(error)) return
+
 end subroutine array_int_i4
 
 
@@ -684,6 +849,7 @@ subroutine array_int_i8(error)
 
    type(toml_array) :: array
    integer(tf_i8) :: val
+   integer(tf_i8), allocatable :: vals(:)
    integer(tf_i8), parameter :: ref(4) = [integer(tf_i8) :: 1, 3, 5, 7]
    integer :: ii
    integer :: stat
@@ -700,6 +866,20 @@ subroutine array_int_i8(error)
    call check(error, val, ref(ii))
    if (allocated(error)) return
 
+   call get_value(array, vals, stat=stat)
+   call check(error, allocated(vals))
+   call check(error, vals(ii), val)
+   if (allocated(error)) return
+
+   vals = -vals(:ii)
+   call set_value(array, vals, stat=stat)
+   call check(error, len(array), ii)
+   if (allocated(error)) return
+
+   call get_value(array, ii, val, stat=stat)
+   call check(error, val, -ref(ii))
+   if (allocated(error)) return
+
 end subroutine array_int_i8
 
 
@@ -712,6 +892,7 @@ subroutine array_bool(error)
 
    type(toml_array) :: array
    logical :: val
+   logical, allocatable :: vals(:)
    integer :: ii
    integer :: stat
 
@@ -727,6 +908,20 @@ subroutine array_bool(error)
    call check(error, val, mod(ii, 2) == 1)
    if (allocated(error)) return
 
+   call get_value(array, vals, stat=stat)
+   call check(error, allocated(vals))
+   call check(error, vals(7), val)
+   if (allocated(error)) return
+
+   vals = .not.vals(:9)
+   call set_value(array, vals, stat=stat)
+   call check(error, len(array), 9)
+   if (allocated(error)) return
+
+   call get_value(array, ii, val, stat=stat)
+   call check(error, val, mod(ii, 2) /= 1)
+   if (allocated(error)) return
+
 end subroutine array_bool
 
 
@@ -740,6 +935,7 @@ subroutine array_datetime(error)
 
    type(toml_array) :: array
    type(toml_datetime) :: val, ts
+   type(toml_datetime), allocatable :: vals(:)
    integer :: ii
    integer :: stat
 
@@ -755,6 +951,21 @@ subroutine array_datetime(error)
    ts = toml_datetime(toml_date(2022, ii, 7), toml_time())
    call check(error, val == ts, &
       & "Expected '"//to_string(ts)//"' but got '"//to_string(val)//"'")
+   if (allocated(error)) return
+
+   call get_value(array, vals, stat=stat)
+   call check(error, vals(ii) == val, &
+      & "Expected '"//to_string(val)//"' but got '"//to_string(vals(ii))//"'")
+   if (allocated(error)) return
+
+   vals = [(toml_datetime(toml_date(2022, ii, 8), toml_time()), ii = 1, 9)]
+   call set_value(array, vals, stat=stat)
+   call check(error, len(array), 9)
+   if (allocated(error)) return
+
+   call get_value(array, ii, val, stat=stat)
+   call check(error, val == vals(ii), &
+      & "Expected '"//to_string(vals(ii))//"' but got '"//to_string(val)//"'")
    if (allocated(error)) return
 
 end subroutine array_datetime
