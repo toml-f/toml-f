@@ -82,13 +82,24 @@ subroutine get_value_float_sp(self, val, stat, origin)
    integer, intent(out), optional :: origin
 
    real(tfr), pointer :: dummy
+   integer(tfi), pointer :: idummy
 
    call self%get(dummy)
    if (associated(dummy)) then
       val = real(dummy, tf_sp)
       if (present(stat)) stat = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%type_mismatch
+      call self%get(idummy)
+      if (associated(idummy)) then
+         val = real(idummy, tf_sp)
+         if (nint(val, tfi) == idummy) then
+            if (present(stat)) stat = toml_stat%success
+         else
+            if (present(stat)) stat = toml_stat%conversion_error
+         end if
+      else
+         if (present(stat)) stat = toml_stat%type_mismatch
+      end if
    end if
 
    if (present(origin)) origin = self%origin_value
@@ -111,13 +122,24 @@ subroutine get_value_float_dp(self, val, stat, origin)
    integer, intent(out), optional :: origin
 
    real(tfr), pointer :: dummy
+   integer(tfi), pointer :: idummy
 
    call self%get(dummy)
    if (associated(dummy)) then
       val = real(dummy, tf_dp)
       if (present(stat)) stat = toml_stat%success
    else
-      if (present(stat)) stat = toml_stat%type_mismatch
+      call self%get(idummy)
+      if (associated(idummy)) then
+         val = real(idummy, tf_dp)
+         if (nint(val, tfi) == idummy) then
+            if (present(stat)) stat = toml_stat%success
+         else
+            if (present(stat)) stat = toml_stat%conversion_error
+         end if
+      else
+         if (present(stat)) stat = toml_stat%type_mismatch
+      end if
    end if
 
    if (present(origin)) origin = self%origin_value
@@ -144,7 +166,11 @@ subroutine get_value_integer_i1(self, val, stat, origin)
    call self%get(dummy)
    if (associated(dummy)) then
       val = int(dummy, tf_i1)
-      if (present(stat)) stat = toml_stat%success
+      if (dummy <= huge(val) .and. dummy >= -huge(val)-1) then
+         if (present(stat)) stat = toml_stat%success
+      else
+         if (present(stat)) stat = toml_stat%conversion_error
+      end if
    else
       if (present(stat)) stat = toml_stat%type_mismatch
    end if
@@ -173,7 +199,11 @@ subroutine get_value_integer_i2(self, val, stat, origin)
    call self%get(dummy)
    if (associated(dummy)) then
       val = int(dummy, tf_i2)
-      if (present(stat)) stat = toml_stat%success
+      if (dummy <= huge(val) .and. dummy >= -huge(val)-1) then
+         if (present(stat)) stat = toml_stat%success
+      else
+         if (present(stat)) stat = toml_stat%conversion_error
+      end if
    else
       if (present(stat)) stat = toml_stat%type_mismatch
    end if
@@ -202,7 +232,11 @@ subroutine get_value_integer_i4(self, val, stat, origin)
    call self%get(dummy)
    if (associated(dummy)) then
       val = int(dummy, tf_i4)
-      if (present(stat)) stat = toml_stat%success
+      if (dummy <= huge(val) .and. dummy >= -huge(val)-1) then
+         if (present(stat)) stat = toml_stat%success
+      else
+         if (present(stat)) stat = toml_stat%conversion_error
+      end if
    else
       if (present(stat)) stat = toml_stat%type_mismatch
    end if

@@ -37,6 +37,9 @@ module tomlf_error
       !> Incorrect type when reading a value
       integer :: type_mismatch = -3
 
+      !> Conversion error when downcasting a value
+      integer :: conversion_error = -4
+
    end type enum_stat
 
    !> Actual enumerator for return states

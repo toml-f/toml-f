@@ -60,6 +60,14 @@ module tomlf_build_array
       module procedure :: set_elem_value_int_i8
       module procedure :: set_elem_value_bool
       module procedure :: set_elem_value_datetime
+      module procedure :: set_array_value_float_sp
+      module procedure :: set_array_value_float_dp
+      module procedure :: set_array_value_int_i1
+      module procedure :: set_array_value_int_i2
+      module procedure :: set_array_value_int_i4
+      module procedure :: set_array_value_int_i8
+      module procedure :: set_array_value_bool
+      module procedure :: set_array_value_datetime
    end interface set_value
 
 
@@ -77,6 +85,14 @@ module tomlf_build_array
       module procedure :: get_elem_value_int_i8
       module procedure :: get_elem_value_bool
       module procedure :: get_elem_value_datetime
+      module procedure :: get_array_value_float_sp
+      module procedure :: get_array_value_float_dp
+      module procedure :: get_array_value_int_i1
+      module procedure :: get_array_value_int_i2
+      module procedure :: get_array_value_int_i4
+      module procedure :: get_array_value_int_i8
+      module procedure :: get_array_value_bool
+      module procedure :: get_array_value_datetime
    end interface get_value
 
 
@@ -816,6 +832,478 @@ subroutine set_elem_value_datetime(array, pos, val, stat, origin)
    end if
 
 end subroutine set_elem_value_datetime
+
+
+!> Retrieve TOML value as single precision floating point number
+subroutine get_array_value_float_sp(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Floating point value
+   real(tf_sp), allocatable, intent(out) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it, info
+
+   allocate(val(len(array)))
+   do it = 1, size(val)
+      call get_value(array, it, val(it), info, origin)
+      if (info /= 0) exit
+   end do
+   if (info /= 0) deallocate(val)
+   if (present(stat)) stat = info
+   if (present(origin) .and. info == 0) origin = array%origin
+
+end subroutine get_array_value_float_sp
+
+
+!> Retrieve TOML value as double precision floating point number
+subroutine get_array_value_float_dp(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Floating point value
+   real(tf_dp), allocatable, intent(out) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it, info
+
+   allocate(val(len(array)))
+   do it = 1, size(val)
+      call get_value(array, it, val(it), info, origin)
+      if (info /= 0) exit
+   end do
+   if (info /= 0) deallocate(val)
+   if (present(stat)) stat = info
+   if (present(origin) .and. info == 0) origin = array%origin
+
+end subroutine get_array_value_float_dp
+
+
+!> Retrieve TOML value as integer value
+subroutine get_array_value_int_i1(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Integer value
+   integer(tf_i1), allocatable, intent(out) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it, info
+
+   allocate(val(len(array)))
+   do it = 1, size(val)
+      call get_value(array, it, val(it), info, origin)
+      if (info /= 0) exit
+   end do
+   if (info /= 0) deallocate(val)
+   if (present(stat)) stat = info
+   if (present(origin) .and. info == 0) origin = array%origin
+
+end subroutine get_array_value_int_i1
+
+
+!> Retrieve TOML value as integer value
+subroutine get_array_value_int_i2(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Integer value
+   integer(tf_i2), allocatable, intent(out) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it, info
+
+   allocate(val(len(array)))
+   do it = 1, size(val)
+      call get_value(array, it, val(it), info, origin)
+      if (info /= 0) exit
+   end do
+   if (info /= 0) deallocate(val)
+   if (present(stat)) stat = info
+   if (present(origin) .and. info == 0) origin = array%origin
+
+end subroutine get_array_value_int_i2
+
+
+!> Retrieve TOML value as integer value
+subroutine get_array_value_int_i4(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Integer value
+   integer(tf_i4), allocatable, intent(out) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it, info
+
+   allocate(val(len(array)))
+   do it = 1, size(val)
+      call get_value(array, it, val(it), info, origin)
+      if (info /= 0) exit
+   end do
+   if (info /= 0) deallocate(val)
+   if (present(stat)) stat = info
+   if (present(origin) .and. info == 0) origin = array%origin
+
+end subroutine get_array_value_int_i4
+
+
+!> Retrieve TOML value as integer value
+subroutine get_array_value_int_i8(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Integer value
+   integer(tf_i8), allocatable, intent(out) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it, info
+
+   allocate(val(len(array)))
+   do it = 1, size(val)
+      call get_value(array, it, val(it), info, origin)
+      if (info /= 0) exit
+   end do
+   if (info /= 0) deallocate(val)
+   if (present(stat)) stat = info
+   if (present(origin) .and. info == 0) origin = array%origin
+
+end subroutine get_array_value_int_i8
+
+
+!> Retrieve TOML value as boolean
+subroutine get_array_value_bool(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Integer value
+   logical, allocatable, intent(out) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it, info
+
+   allocate(val(len(array)))
+   do it = 1, size(val)
+      call get_value(array, it, val(it), info, origin)
+      if (info /= 0) exit
+   end do
+   if (info /= 0) deallocate(val)
+   if (present(stat)) stat = info
+   if (present(origin) .and. info == 0) origin = array%origin
+
+end subroutine get_array_value_bool
+
+
+!> Retrieve TOML value as datetime
+subroutine get_array_value_datetime(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Integer value
+   type(toml_datetime), allocatable, intent(out) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it, info
+
+   allocate(val(len(array)))
+   do it = 1, size(val)
+      call get_value(array, it, val(it), info, origin)
+      if (info /= 0) exit
+   end do
+   if (info /= 0) deallocate(val)
+   if (present(stat)) stat = info
+   if (present(origin) .and. info == 0) origin = array%origin
+
+end subroutine get_array_value_datetime
+
+
+!> Retrieve TOML value as single precision floating point number
+subroutine set_array_value_float_sp(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Floating point value
+   real(tf_sp), intent(in) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it
+   class(toml_value), allocatable :: ptr
+
+   do while(len(array) > size(val))
+      call array%pop(ptr)
+   end do
+
+   do it = 1, size(val)
+      call set_value(array, it, val(it), stat, origin)
+   end do
+   if (present(origin)) origin = array%origin
+
+end subroutine set_array_value_float_sp
+
+
+!> Retrieve TOML value as double precision floating point number
+subroutine set_array_value_float_dp(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Floating point value
+   real(tf_dp), intent(in) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it
+   class(toml_value), allocatable :: ptr
+
+   do while(len(array) > size(val))
+      call array%pop(ptr)
+   end do
+
+   do it = 1, size(val)
+      call set_value(array, it, val(it), stat, origin)
+   end do
+   if (present(origin)) origin = array%origin
+
+end subroutine set_array_value_float_dp
+
+
+!> Retrieve TOML value as integer value
+subroutine set_array_value_int_i1(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Integer value
+   integer(tf_i1), intent(in) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it
+   class(toml_value), allocatable :: ptr
+
+   do while(len(array) > size(val))
+      call array%pop(ptr)
+   end do
+
+   do it = 1, size(val)
+      call set_value(array, it, val(it), stat, origin)
+   end do
+   if (present(origin)) origin = array%origin
+
+end subroutine set_array_value_int_i1
+
+
+!> Retrieve TOML value as integer value
+subroutine set_array_value_int_i2(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Integer value
+   integer(tf_i2), intent(in) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it
+   class(toml_value), allocatable :: ptr
+
+   do while(len(array) > size(val))
+      call array%pop(ptr)
+   end do
+
+   do it = 1, size(val)
+      call set_value(array, it, val(it), stat, origin)
+   end do
+   if (present(origin)) origin = array%origin
+
+end subroutine set_array_value_int_i2
+
+
+!> Retrieve TOML value as integer value
+subroutine set_array_value_int_i4(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Integer value
+   integer(tf_i4), intent(in) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it
+   class(toml_value), allocatable :: ptr
+
+   do while(len(array) > size(val))
+      call array%pop(ptr)
+   end do
+
+   do it = 1, size(val)
+      call set_value(array, it, val(it), stat, origin)
+   end do
+   if (present(origin)) origin = array%origin
+
+end subroutine set_array_value_int_i4
+
+
+!> Retrieve TOML value as integer value
+subroutine set_array_value_int_i8(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Integer value
+   integer(tf_i8), intent(in) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it
+   class(toml_value), allocatable :: ptr
+
+   do while(len(array) > size(val))
+      call array%pop(ptr)
+   end do
+
+   do it = 1, size(val)
+      call set_value(array, it, val(it), stat, origin)
+   end do
+   if (present(origin)) origin = array%origin
+
+end subroutine set_array_value_int_i8
+
+
+!> Retrieve TOML value as boolean value
+subroutine set_array_value_bool(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Boolean value
+   logical, intent(in) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it
+   class(toml_value), allocatable :: ptr
+
+   do while(len(array) > size(val))
+      call array%pop(ptr)
+   end do
+
+   do it = 1, size(val)
+      call set_value(array, it, val(it), stat, origin)
+   end do
+   if (present(origin)) origin = array%origin
+
+end subroutine set_array_value_bool
+
+
+!> Retrieve TOML value as datetime value
+subroutine set_array_value_datetime(array, val, stat, origin)
+
+   !> Instance of the TOML array
+   class(toml_array), intent(inout) :: array
+
+   !> Datetime value
+   type(toml_datetime), intent(in) :: val(:)
+
+   !> Status of operation
+   integer, intent(out), optional :: stat
+
+   !> Origin in the data structure
+   integer, intent(out), optional :: origin
+
+   integer :: it
+   class(toml_value), allocatable :: ptr
+
+   do while(len(array) > size(val))
+      call array%pop(ptr)
+   end do
+
+   do it = 1, size(val)
+      call set_value(array, it, val(it), stat, origin)
+   end do
+   if (present(origin)) origin = array%origin
+
+end subroutine set_array_value_datetime
 
 
 end module tomlf_build_array
