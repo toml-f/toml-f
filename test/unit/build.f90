@@ -111,6 +111,12 @@ subroutine table_real_dp(error)
    call check(error, val, 1.0_tf_dp)
    if (allocated(error)) return
 
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
+   if (allocated(error)) return
+
 end subroutine table_real_dp
 
 
@@ -171,6 +177,12 @@ subroutine table_real_sp(error)
    call check(error, val, 1.0_tf_sp)
    if (allocated(error)) return
 
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
+   if (allocated(error)) return
+
 end subroutine table_real_sp
 
 
@@ -219,6 +231,12 @@ subroutine table_int_i1(error)
    call get_value(table, "huge", val, stat=stat)
 
    call check(error, stat, toml_stat%conversion_error)
+   if (allocated(error)) return
+
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
    if (allocated(error)) return
 
 end subroutine table_int_i1
@@ -271,6 +289,12 @@ subroutine table_int_i2(error)
    call check(error, stat, toml_stat%conversion_error)
    if (allocated(error)) return
 
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
+   if (allocated(error)) return
+
 end subroutine table_int_i2
 
 
@@ -321,6 +345,12 @@ subroutine table_int_i4(error)
    call check(error, stat, toml_stat%conversion_error)
    if (allocated(error)) return
 
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
+   if (allocated(error)) return
+
 end subroutine table_int_i4
 
 
@@ -365,6 +395,12 @@ subroutine table_int_i8(error)
    call check(error, val, in3)
    if (allocated(error)) return
 
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
+   if (allocated(error)) return
+
 end subroutine table_int_i8
 
 
@@ -406,6 +442,12 @@ subroutine table_bool(error)
    call get_value(table, "logic", val, true, stat=stat)
 
    call check(error, val, true)
+   if (allocated(error)) return
+
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
    if (allocated(error)) return
 
 end subroutine table_bool
@@ -456,6 +498,12 @@ subroutine table_datetime(error)
 
    call check(error, val == ts1, &
       & "Expected '"//to_string(ts1)//"' but got '"//to_string(val)//"'")
+   if (allocated(error)) return
+
+   call set_value(table, "str", "1", stat=stat)
+   call get_value(table, "str", val, stat=stat)
+
+   call check(error, stat, toml_stat%type_mismatch)
    if (allocated(error)) return
 
 end subroutine table_datetime
