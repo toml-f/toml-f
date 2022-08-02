@@ -45,9 +45,6 @@ module tomlf_structure_ordered_map
 
    contains
 
-      !> Get number of TOML values in the structure
-      procedure :: get_len
-
       !> Get TOML value at a given key
       procedure :: get
 
@@ -93,20 +90,6 @@ subroutine new_ordered_map(self, n)
    end if
 
 end subroutine new_ordered_map
-
-
-!> Get number of TOML values in the structure
-pure function get_len(self) result(length)
-
-   !> Instance of the structure
-   class(toml_ordered_map), intent(in), target :: self
-
-   !> Current length of the ordered structure
-   integer :: length
-
-   length = self%n
-
-end function get_len
 
 
 !> Get TOML value at a given key
