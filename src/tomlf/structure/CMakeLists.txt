@@ -18,6 +18,7 @@ list(
   "${dir}/array_list.f90"
   "${dir}/list.f90"
   "${dir}/map.f90"
+  "${dir}/node.f90"
   "${dir}/ordered_map.f90"
 )
 

@@ -18,20 +18,12 @@
 module tomlf_structure_ordered_map
    use tomlf_constants, only : tfc
    use tomlf_structure_map, only : toml_map_structure
+   use tomlf_structure_node, only : toml_node, resize
    use tomlf_type_value, only : toml_value, toml_key
    implicit none
    private
 
    public :: toml_ordered_map, new_ordered_map
-
-
-   !> Wrapped TOML value to generate pointer list
-   type :: toml_node
-
-      !> TOML value payload
-      class(toml_value), allocatable :: val
-
-   end type toml_node
 
 
    !> Stores TOML values in a list of pointers
@@ -223,44 +215,6 @@ subroutine delete(self, key)
    end if
 
 end subroutine delete
-
-
-!> Change size of the TOML value vector
-subroutine resize(list, n)
-
-   !> Array of TOML values to be resized
-   type(toml_node), allocatable, intent(inout), target :: list(:)
-
-   !> New size of the list
-   integer, intent(in) :: n
-
-   type(toml_node), allocatable, target :: tmp(:)
-   integer :: i
-
-
-   if (allocated(list)) then
-      call move_alloc(list, tmp)
-      allocate(list(n))
-
-      do i = 1, min(size(tmp), n)
-         if (allocated(tmp(i)%val)) then
-            call move_alloc(tmp(i)%val, list(i)%val)
-         end if
-      end do
-
-      do i = n+1, size(tmp)
-         if (allocated(tmp(i)%val)) then
-            call tmp(i)%val%destroy
-            deallocate(tmp(i)%val)
-         end if
-      end do
-
-      deallocate(tmp)
-   else
-      allocate(list(n))
-   end if
-
-end subroutine resize
 
 
 !> Deconstructor for data structure
