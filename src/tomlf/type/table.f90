@@ -19,7 +19,7 @@ module tomlf_type_table
    use tomlf_constants, only : tfc
    use tomlf_error, only : toml_stat
    use tomlf_type_value, only : toml_value, toml_visitor, toml_key
-   use tomlf_structure, only : toml_structure, new_structure
+   use tomlf_structure, only : toml_map_structure, new_map_structure
    implicit none
    private
 
@@ -36,7 +36,7 @@ module tomlf_type_table
       logical :: inline = .false.
 
       !> Storage unit for TOML values of this table
-      class(toml_structure), allocatable :: list
+      class(toml_map_structure), allocatable, private :: map
 
    contains
 
@@ -51,6 +51,9 @@ module tomlf_type_table
 
       !> Append value to table (checks automatically for key)
       procedure :: push_back
+
+      !> Remove TOML value at a given key and return it
+      procedure :: pop
 
       !> Delete TOML value at a given key
       procedure :: delete
@@ -82,7 +85,7 @@ subroutine new_table(self)
    !> Instance of the TOML table
    type(toml_table), intent(out) :: self
 
-   call new_structure(self%list)
+   call new_map_structure(self%map)
 
 end subroutine new_table
 
@@ -110,7 +113,7 @@ subroutine get(self, key, ptr)
    !> Pointer to the TOML value
    class(toml_value), pointer, intent(out) :: ptr
 
-   call self%list%find(key, ptr)
+   call self%map%get(key, ptr)
 
 end subroutine get
 
@@ -124,7 +127,7 @@ subroutine get_keys(self, list)
    !> List of all keys
    type(toml_key), allocatable, intent(out) :: list(:)
 
-   call self%list%get_keys(list)
+   call self%map%get_keys(list)
 
 end subroutine get_keys
 
@@ -143,7 +146,7 @@ function has_key(self, key) result(found)
 
    class(toml_value), pointer :: ptr
 
-   call self%list%find(key, ptr)
+   call self%map%get(key, ptr)
 
    found = associated(ptr)
 
@@ -180,11 +183,28 @@ subroutine push_back(self, val, stat)
       return
    end if
 
-   call self%list%push_back(val)
+   call self%map%push_back(val)
 
    stat = toml_stat%success
 
 end subroutine push_back
+
+
+!> Remove TOML value at a given key and return it
+subroutine pop(self, key, val)
+
+   !> Instance of the TOML table
+   class(toml_table), intent(inout) :: self
+
+   !> Key to the TOML value
+   character(kind=tfc, len=*), intent(in) :: key
+
+   !> Removed TOML value to return
+   class(toml_value), allocatable, intent(out) :: val
+
+   call self%map%pop(key, val)
+
+end subroutine pop
 
 
 !> Delete TOML value at a given key
@@ -196,7 +216,7 @@ subroutine delete(self, key)
    !> Key to the TOML value
    character(kind=tfc, len=*), intent(in) :: key
 
-   call self%list%delete(key)
+   call self%map%delete(key)
 
 end subroutine delete
 
@@ -211,9 +231,9 @@ subroutine destroy(self)
       deallocate(self%key)
    end if
 
-   if (allocated(self%list)) then
-      call self%list%destroy
-      deallocate(self%list)
+   if (allocated(self%map)) then
+      call self%map%destroy
+      deallocate(self%map)
    end if
 
 end subroutine destroy

@@ -15,8 +15,10 @@ set(dir "${CMAKE_CURRENT_SOURCE_DIR}")
 
 list(
   APPEND srcs
-  "${dir}/base.f90"
-  "${dir}/vector.f90"
+  "${dir}/array_list.f90"
+  "${dir}/list.f90"
+  "${dir}/map.f90"
+  "${dir}/ordered_map.f90"
 )
 
 set(srcs "${srcs}" PARENT_SCOPE)

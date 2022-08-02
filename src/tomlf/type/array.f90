@@ -15,7 +15,7 @@
 module tomlf_type_array
    use tomlf_error, only : toml_stat
    use tomlf_type_value, only : toml_value, toml_visitor
-   use tomlf_structure, only : toml_ordered, new_ordered
+   use tomlf_structure, only : toml_list_structure, new_list_structure
    implicit none
    private
 
@@ -29,7 +29,7 @@ module tomlf_type_array
       logical :: inline = .true.
 
       !> Storage unit for TOML values of this array
-      class(toml_ordered), allocatable :: list
+      class(toml_list_structure), allocatable, private :: list
 
    contains
 
@@ -78,7 +78,7 @@ subroutine new_array(self)
    !> Instance of the TOML array
    type(toml_array), intent(out) :: self
 
-   call new_ordered(self%list)
+   call new_list_structure(self%list)
 
 end subroutine new_array
 
