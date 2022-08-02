@@ -19,10 +19,9 @@ program json2toml
    implicit none
    integer :: iarg, length
    character(len=:), allocatable :: argument
-   type(toml_table), allocatable :: table
+   class(toml_value), allocatable :: object
    type(toml_error), allocatable :: error
    type(toml_serializer) :: ser
-   integer :: unit
    logical :: exist
 
    if (command_argument_count() > 0) then
@@ -36,21 +35,21 @@ program json2toml
             inquire(file=argument, exist=exist)
          end if
          if (exist) then
-            if (allocated(table)) deallocate(table)
-            call json_load(table, argument, error=error)
+            if (allocated(object)) deallocate(object)
+            call json_load(object, argument, error=error)
             if (allocated(error)) print '(a)', error%message
-            if (allocated(table)) then
-               call table%accept(ser)
-               call table%destroy
+            if (allocated(object)) then
+               call object%accept(ser)
+               call object%destroy
             end if
          end if
       end do
    else
-      call json_load(table, input_unit, error=error)
+      call json_load(object, input_unit, error=error)
       if (allocated(error)) print '(a)', error%message
-      if (allocated(table)) then
-         call table%accept(ser)
-         call table%destroy
+      if (allocated(object)) then
+         call object%accept(ser)
+         call object%destroy
       else
          error stop
       end if

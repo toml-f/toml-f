@@ -51,9 +51,10 @@ module tjson_parser
 contains
 
 !> Load TOML data structure from file
-subroutine json_load_file(table, filename, config, context, error)
+subroutine json_load_file(object, filename, config, context, error)
    !> Instance of the TOML data structure, not allocated in case of error
-   type(toml_table), allocatable, intent(out) :: table
+   class(toml_value), allocatable, intent(out) :: object
+   !> Name of the file to load
    character(*, tfc), intent(in) :: filename
    !> Configuration for the parser
    type(toml_parser_config), intent(in), optional :: config
@@ -64,20 +65,21 @@ subroutine json_load_file(table, filename, config, context, error)
 
    type(json_lexer) :: lexer
    type(toml_error), allocatable :: error_
+   type(toml_table), allocatable :: table
 
    call new_lexer_from_file(lexer, filename, error_)
    if (.not.allocated(error_)) then
       call parse(lexer, table, config, context, error)
-      if (allocated(table)) call prune(table)
+      if (allocated(table)) call prune(object, table)
    else
       if (present(error)) call move_alloc(error_, error)
    end if
 end subroutine json_load_file
 
 !> Load TOML data structure from unit
-subroutine json_load_unit(table, io, config, context, error)
+subroutine json_load_unit(object, io, config, context, error)
    !> Instance of the TOML data structure, not allocated in case of error
-   type(toml_table), allocatable, intent(out) :: table
+   class(toml_value), allocatable, intent(out) :: object
    !> Unit to read from
    integer, intent(in) :: io
    !> Configuration for the parser
@@ -89,20 +91,21 @@ subroutine json_load_unit(table, io, config, context, error)
 
    type(json_lexer) :: lexer
    type(toml_error), allocatable :: error_
+   type(toml_table), allocatable :: table
 
    call new_lexer_from_unit(lexer, io, error_)
    if (.not.allocated(error_)) then
       call parse(lexer, table, config, context, error)
-      if (allocated(table)) call prune(table)
+      if (allocated(table)) call prune(object, table)
    else
       if (present(error)) call move_alloc(error_, error)
    end if
 end subroutine json_load_unit
 
 !> Load TOML data structure from string
-subroutine json_load_string(table, string, config, context, error)
+subroutine json_load_string(object, string, config, context, error)
    !> Instance of the TOML data structure, not allocated in case of error
-   type(toml_table), allocatable, intent(out) :: table
+   class(toml_value), allocatable, intent(out) :: object
    !> String containing TOML document
    character(*, tfc), intent(in) :: string
    !> Configuration for the parser
@@ -113,29 +116,25 @@ subroutine json_load_string(table, string, config, context, error)
    type(toml_error), allocatable, intent(out), optional :: error
 
    type(json_lexer) :: lexer
+   type(toml_table), allocatable :: table
 
    call new_lexer_from_string(lexer, string)
    call parse(lexer, table, config, context, error)
-   if (allocated(table)) call prune(table)
+   if (allocated(table)) call prune(object, table)
 end subroutine json_load_string
 
 !> Prune the artificial root table inserted by the lexer
-subroutine prune(table)
+subroutine prune(object, table)
+   !> Instance of the TOML data structure, not allocated in case of error
+   class(toml_value), allocatable, intent(inout) :: object
    !> Instance of the TOML data structure, not allocated in case of error
    type(toml_table), allocatable, intent(inout) :: table
 
-   type(toml_table), allocatable :: root
-   type(toml_table), pointer :: ptr
-   class(toml_value), pointer :: child
    type(json_prune) :: pruner
 
-   call move_alloc(table, root)
-   call root%get("_", child)
+   call table%pop("_", object)
 
-   ptr => cast_to_table(child)
-   if (associated(ptr)) table = ptr
-
-   if (allocated(table)) call table%accept(pruner)
+   if (allocated(object)) call object%accept(pruner)
 end subroutine prune
 
 !> Visit a TOML value
