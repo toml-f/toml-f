@@ -14,7 +14,7 @@ It is available from the `toml-f/jonquil <https://github.com/toml-f/jonquil`__ r
 Using Jonquil
 -------------
 
-You can follow all recipes and tutorials in this documentation using Jonquil, by just replacing the *tomlf* module with the *jonquil* module.
+You can follow all recipes and tutorials in this documentation using Jonquil by just replacing the *tomlf* module with the *jonquil* module.
 All derived types, procedure names and interfaces use the *json_* prefix instead of *toml_*, with the exception of the *toml_table* type which becomes a *json_object*.
 
 The following example program shows how to load JSON data from a string and access the value using the build interface.
