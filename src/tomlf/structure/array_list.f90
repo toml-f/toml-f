@@ -40,9 +40,6 @@ module tomlf_structure_array_list
       !> Get number of TOML values in the structure
       procedure :: get_len
 
-      !> Find a TOML value based on its key
-      procedure :: find
-
       !> Get TOML value at a given index
       procedure :: get
 
@@ -54,12 +51,6 @@ module tomlf_structure_array_list
 
       !> Remove the last element from the structure
       procedure :: pop
-
-      !> Get list of all keys in the structure
-      procedure :: get_keys
-
-      !> Delete TOML value at a given key
-      procedure :: delete
 
       !> Destroy the data structure
       procedure :: destroy
@@ -105,34 +96,6 @@ pure function get_len(self) result(length)
    length = self%n
 
 end function get_len
-
-
-!> Find a TOML value based on its key
-subroutine find(self, key, ptr)
-
-   !> Instance of the structure
-   class(toml_array_list), intent(inout), target :: self
-
-   !> Key to the TOML value
-   character(kind=tfc, len=*), intent(in) :: key
-
-   !> Pointer to the stored value at given key
-   class(toml_value), pointer, intent(out) :: ptr
-
-   integer :: i
-
-   nullify(ptr)
-
-   do i = 1, self%n
-      if (allocated(self%lst(i)%val)) then
-         if (self%lst(i)%val%match_key(key)) then
-            ptr => self%lst(i)%val
-            exit
-         end if
-      end if
-   end do
-
-end subroutine find
 
 
 !> Get TOML value at a given index
@@ -221,63 +184,6 @@ subroutine pop(self, val)
    end if
 
 end subroutine pop
-
-
-!> Get list of all keys in the structure
-subroutine get_keys(self, list)
-
-   !> Instance of the structure
-   class(toml_array_list), intent(inout), target :: self
-
-   !> List of all keys
-   type(toml_key), allocatable, intent(out) :: list(:)
-
-   integer :: i
-
-   allocate(list(self%n))
-
-   do i = 1, self%n
-      if (allocated(self%lst(i)%val)) then
-         if (allocated(self%lst(i)%val%key)) then
-            list(i)%key = self%lst(i)%val%key
-            list(i)%origin = self%lst(i)%val%origin
-         end if
-      end if
-   end do
-
-end subroutine get_keys
-
-
-!> Delete TOML value at a given key
-subroutine delete(self, key)
-
-   !> Instance of the structure
-   class(toml_array_list), intent(inout), target :: self
-
-   !> Key to the TOML value
-   character(kind=tfc, len=*), intent(in) :: key
-
-   integer :: idx, i
-
-   idx = 0
-   do i = 1, self%n
-      if (allocated(self%lst(i)%val)) then
-         if (self%lst(i)%val%match_key(key)) then
-            idx = i
-            exit
-         end if
-      end if
-   end do
-
-   if (idx > 0) then
-      call self%lst(idx)%val%destroy
-      do i = idx+1, self%n
-         call move_alloc(self%lst(i)%val, self%lst(i-1)%val)
-      end do
-      self%n = self%n - 1
-   end if
-
-end subroutine delete
 
 
 !> Deconstructor for data structure

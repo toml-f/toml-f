@@ -33,13 +33,6 @@ module tomlf_structure
 
    public :: toml_list_structure, toml_map_structure
    public :: new_list_structure, new_map_structure
-   public :: len
-
-
-   !> Overload len function
-   interface len
-      module procedure :: get_len
-   end interface
 
 
 contains
@@ -77,20 +70,6 @@ subroutine new_map_structure(self)
    end block
 
 end subroutine new_map_structure
-
-
-!> Get number of TOML values in the structure
-pure function get_len(self) result(length)
-
-   !> Instance of the structure
-   class(toml_list_structure), intent(in) :: self
-
-   !> Current length of the ordered structure
-   integer :: length
-
-   length = self%get_len()
-
-end function get_len
 
 
 end module tomlf_structure
