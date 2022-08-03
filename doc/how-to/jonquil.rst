@@ -1,3 +1,5 @@
+.. _jonquil:
+
 Compatibility with JSON
 =======================
 
