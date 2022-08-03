@@ -23,7 +23,7 @@ target_link_libraries(
   "${PROJECT_NAME}-lib"
 )
 add_test(
-  ${PROJECT_NAME}/"version"
+  "${PROJECT_NAME}/version"
   ${PROJECT_NAME}-test-version
   "${PROJECT_VERSION}"
 )

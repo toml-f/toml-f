@@ -1,3 +1,5 @@
+.. _json-lexer:
+
 Writing a custom lexer
 ======================
 
