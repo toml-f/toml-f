@@ -301,21 +301,21 @@ The former is a wrapper that is using the *new_lexer_from_file* constructor.
 .. literalinclude:: ../../test/compliance/json_parser.f90
    :language: fortran
    :caption: src/json_parser.f90 (json_load_file)
-   :lines: 53-75
+   :lines: 53-77
 
 The latter wraps the *new_lexer_from_unit* constructor.
 
 .. literalinclude:: ../../test/compliance/json_parser.f90
    :language: fortran
    :caption: src/json_parser.f90 (json_load_unit)
-   :lines: 77-100
+   :lines: 79-103
 
 Finally, we also provide *json_loads* by implementing *json_load_string* using our *new_lexer_from_string* constructor.
 
 .. literalinclude:: ../../test/compliance/json_parser.f90
    :language: fortran
    :caption: src/json_parser.f90 (json_load_unit)
-   :lines: 102-120
+   :lines: 105-124
 
 These wrappers so far are very straightforward, first setting up a lexer instance and invoking the *parse* procedure which will construct the actual parser instance and process the token stream.
 After a successful run, the *table* instance will be allocated, for the post-processing, we invoke the *prune* routine.
@@ -323,15 +323,15 @@ After a successful run, the *table* instance will be allocated, for the post-pro
 .. literalinclude:: ../../test/compliance/json_parser.f90
    :language: fortran
    :caption: src/json_parser.f90 (prune)
-   :lines: 122-129,131-137,139
+   :lines: 127-131,134-135,138
 
-Where we effectively retrieve the first child from the root table and create a deep copy of it which is then returned.
+Where we effectively remove the first child from the root table and return is a polymorphic *toml_value*.
+This has the advantage that we can support arrays and values at the root level with our JSON loader.
 
 .. tip::
 
-   An alternative approach would be to *pop* the value from the root table and return the polymorphic *toml_value* instance.
-   This would have the advantage that we can support arrays and values at the root level with our JSON loader.
-   The user than has to dispatch the value using a *select type* construct or by creating a view using the *cast_to_table* / *cast_to_array* / *cast_to_keyval* functions.
+   The user can dispatch the value using a *select type* construct or by creating a view using the *cast_to_table* / *cast_to_array* / *cast_to_keyval* functions.
+
 
 .. dropdown:: full source
 

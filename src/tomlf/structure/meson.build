@@ -12,6 +12,9 @@
 # limitations under the License.
 
 srcs += files(
-  'base.f90',
-  'vector.f90',
+  'array_list.f90',
+  'list.f90',
+  'map.f90',
+  'node.f90',
+  'ordered_map.f90',
 )

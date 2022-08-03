@@ -15,27 +15,19 @@
 !>
 !> This implementation does purposely not use pointer attributes in the
 !> datastructure to make it safer to work with.
-module tomlf_structure_vector
+module tomlf_structure_array_list
    use tomlf_constants, only : tfc
-   use tomlf_structure_base, only : toml_ordered
+   use tomlf_structure_list, only : toml_list_structure
+   use tomlf_structure_node, only : toml_node, resize
    use tomlf_type_value, only : toml_value, toml_key
    implicit none
    private
 
-   public :: toml_vector, new_vector
-
-
-   !> Wrapped TOML value to generate pointer list
-   type :: toml_node
-
-      !> TOML value payload
-      class(toml_value), allocatable :: val
-
-   end type toml_node
+   public :: toml_array_list, new_array_list
 
 
    !> Stores TOML values in a list of pointers
-   type, extends(toml_ordered) :: toml_vector
+   type, extends(toml_list_structure) :: toml_array_list
 
       !> Current number of stored TOML values
       integer :: n = 0
@@ -47,9 +39,6 @@ module tomlf_structure_vector
 
       !> Get number of TOML values in the structure
       procedure :: get_len
-
-      !> Find a TOML value based on its key
-      procedure :: find
 
       !> Get TOML value at a given index
       procedure :: get
@@ -63,16 +52,10 @@ module tomlf_structure_vector
       !> Remove the last element from the structure
       procedure :: pop
 
-      !> Get list of all keys in the structure
-      procedure :: get_keys
-
-      !> Delete TOML value at a given key
-      procedure :: delete
-
       !> Destroy the data structure
       procedure :: destroy
 
-   end type toml_vector
+   end type toml_array_list
 
 
    !> Initial storage capacity of the datastructure
@@ -83,10 +66,10 @@ contains
 
 
 !> Constructor for the storage data structure
-subroutine new_vector(self, n)
+subroutine new_array_list(self, n)
 
    !> Instance of the structure
-   type(toml_vector), intent(out) :: self
+   type(toml_array_list), intent(out) :: self
 
    !> Initial storage capacity
    integer, intent(in), optional :: n
@@ -98,14 +81,14 @@ subroutine new_vector(self, n)
       allocate(self%lst(initial_size))
    end if
 
-end subroutine new_vector
+end subroutine new_array_list
 
 
 !> Get number of TOML values in the structure
 pure function get_len(self) result(length)
 
    !> Instance of the structure
-   class(toml_vector), intent(in), target :: self
+   class(toml_array_list), intent(in), target :: self
 
    !> Current length of the ordered structure
    integer :: length
@@ -115,39 +98,11 @@ pure function get_len(self) result(length)
 end function get_len
 
 
-!> Find a TOML value based on its key
-subroutine find(self, key, ptr)
-
-   !> Instance of the structure
-   class(toml_vector), intent(inout), target :: self
-
-   !> Key to the TOML value
-   character(kind=tfc, len=*), intent(in) :: key
-
-   !> Pointer to the stored value at given key
-   class(toml_value), pointer, intent(out) :: ptr
-
-   integer :: i
-
-   nullify(ptr)
-
-   do i = 1, self%n
-      if (allocated(self%lst(i)%val)) then
-         if (self%lst(i)%val%match_key(key)) then
-            ptr => self%lst(i)%val
-            exit
-         end if
-      end if
-   end do
-
-end subroutine find
-
-
 !> Get TOML value at a given index
 subroutine get(self, idx, ptr)
 
    !> Instance of the structure
-   class(toml_vector), intent(inout), target :: self
+   class(toml_array_list), intent(inout), target :: self
 
    !> Position in the ordered structure
    integer, intent(in) :: idx
@@ -170,7 +125,7 @@ end subroutine get
 subroutine push_back(self, val)
 
    !> Instance of the structure
-   class(toml_vector), intent(inout), target :: self
+   class(toml_array_list), intent(inout), target :: self
 
    !> TOML value to be stored
    class(toml_value), allocatable, intent(inout) :: val
@@ -196,7 +151,7 @@ end subroutine push_back
 subroutine shift(self, val)
 
    !> Instance of the structure
-   class(toml_vector), intent(inout), target :: self
+   class(toml_array_list), intent(inout), target :: self
 
    !> TOML value to be retrieved
    class(toml_value), allocatable, intent(out) :: val
@@ -218,7 +173,7 @@ end subroutine shift
 subroutine pop(self, val)
 
    !> Instance of the structure
-   class(toml_vector), intent(inout), target :: self
+   class(toml_array_list), intent(inout), target :: self
 
    !> TOML value to be retrieved
    class(toml_value), allocatable, intent(out) :: val
@@ -231,106 +186,11 @@ subroutine pop(self, val)
 end subroutine pop
 
 
-!> Get list of all keys in the structure
-subroutine get_keys(self, list)
-
-   !> Instance of the structure
-   class(toml_vector), intent(inout), target :: self
-
-   !> List of all keys
-   type(toml_key), allocatable, intent(out) :: list(:)
-
-   integer :: i
-
-   allocate(list(self%n))
-
-   do i = 1, self%n
-      if (allocated(self%lst(i)%val)) then
-         if (allocated(self%lst(i)%val%key)) then
-            list(i)%key = self%lst(i)%val%key
-            list(i)%origin = self%lst(i)%val%origin
-         end if
-      end if
-   end do
-
-end subroutine get_keys
-
-
-!> Delete TOML value at a given key
-subroutine delete(self, key)
-
-   !> Instance of the structure
-   class(toml_vector), intent(inout), target :: self
-
-   !> Key to the TOML value
-   character(kind=tfc, len=*), intent(in) :: key
-
-   integer :: idx, i
-
-   idx = 0
-   do i = 1, self%n
-      if (allocated(self%lst(i)%val)) then
-         if (self%lst(i)%val%match_key(key)) then
-            idx = i
-            exit
-         end if
-      end if
-   end do
-
-   if (idx > 0) then
-      call self%lst(idx)%val%destroy
-      do i = idx+1, self%n
-         call move_alloc(self%lst(i)%val, self%lst(i-1)%val)
-      end do
-      self%n = self%n - 1
-   end if
-
-end subroutine delete
-
-
-!> Change size of the TOML value vector
-subroutine resize(list, n)
-
-   !> Array of TOML values to be resized
-   type(toml_node), allocatable, intent(inout), target :: list(:)
-
-   !> New size of the list
-   integer, intent(in) :: n
-
-   type(toml_node), allocatable, target :: tmp(:)
-   integer :: i
-
-
-   if (allocated(list)) then
-      call move_alloc(list, tmp)
-      allocate(list(n))
-
-      do i = 1, min(size(tmp), n)
-         if (allocated(tmp(i)%val)) then
-            call move_alloc(tmp(i)%val, list(i)%val)
-         end if
-      end do
-
-      do i = n+1, size(tmp)
-         if (allocated(tmp(i)%val)) then
-            call tmp(i)%val%destroy
-            deallocate(tmp(i)%val)
-         end if
-      end do
-
-      deallocate(tmp)
-   else
-      allocate(list(n))
-   end if
-
-end subroutine resize
-
-
 !> Deconstructor for data structure
 subroutine destroy(self)
 
    !> Instance of the structure
-   class(toml_vector), intent(inout), target :: self
+   class(toml_array_list), intent(inout), target :: self
 
    integer :: i
 
@@ -346,4 +206,4 @@ subroutine destroy(self)
 end subroutine destroy
 
 
-end module tomlf_structure_vector
+end module tomlf_structure_array_list

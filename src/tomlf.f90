@@ -20,8 +20,8 @@ module tomlf
    use tomlf_error, only : toml_error, toml_stat
    use tomlf_ser, only : toml_serializer
    use tomlf_terminal, only : toml_terminal
-   use tomlf_type, only : toml_table, toml_array, toml_keyval, toml_key, is_array_of_tables, &
-      & new_table, add_table, add_array, add_keyval, len
+   use tomlf_type, only : toml_table, toml_array, toml_keyval, toml_key, toml_value, &
+      & is_array_of_tables, new_table, add_table, add_array, add_keyval, len
    use tomlf_utils_sort, only : sort
    use tomlf_version, only : tomlf_version_string, tomlf_version_compact, &
       & get_tomlf_version

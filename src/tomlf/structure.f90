@@ -24,67 +24,52 @@
 !> requiring pointer attributes have to define an assignment(=) interface to
 !> allow deep-copying of TOML values.
 module tomlf_structure
-   use tomlf_structure_base, only : toml_structure, toml_ordered
-   use tomlf_structure_vector, only : toml_vector, new_vector
+   use tomlf_structure_list, only : toml_list_structure
+   use tomlf_structure_map, only : toml_map_structure
+   use tomlf_structure_array_list, only : toml_array_list, new_array_list
+   use tomlf_structure_ordered_map, only : toml_ordered_map, new_ordered_map
    implicit none
    private
 
-   public :: toml_structure, toml_ordered
-   public :: new_structure, new_ordered
-   public :: len
-
-
-   !> Overload len function
-   interface len
-      module procedure :: get_len
-   end interface
+   public :: toml_list_structure, toml_map_structure
+   public :: new_list_structure, new_map_structure
 
 
 contains
 
 
-!> Constructor for the storage data structure
-subroutine new_structure(self)
-
-   !> Instance of the structure
-   class(toml_structure), allocatable, intent(out) :: self
-
-   type(toml_vector), allocatable :: vect
-
-   allocate(vect)
-   call new_vector(vect)
-   call move_alloc(vect, self)
-
-end subroutine new_structure
-
-
 !> Constructor for the ordered storage data structure
-subroutine new_ordered(self)
+subroutine new_list_structure(self)
 
    !> Instance of the structure
-   class(toml_ordered), allocatable, intent(out) :: self
+   class(toml_list_structure), allocatable, intent(out) :: self
 
-   type(toml_vector), allocatable :: vect
+   block
+      type(toml_array_list), allocatable :: list
 
-   allocate(vect)
-   call new_vector(vect)
-   call move_alloc(vect, self)
+      allocate(list)
+      call new_array_list(list)
+      call move_alloc(list, self)
+   end block
 
-end subroutine new_ordered
+end subroutine new_list_structure
 
 
-!> Get number of TOML values in the structure
-pure function get_len(self) result(length)
+!> Constructor for the storage data structure
+subroutine new_map_structure(self)
 
    !> Instance of the structure
-   class(toml_ordered), intent(in) :: self
+   class(toml_map_structure), allocatable, intent(out) :: self
 
-   !> Current length of the ordered structure
-   integer :: length
+   block
+      type(toml_ordered_map), allocatable :: map
 
-   length = self%get_len()
+      allocate(map)
+      call new_ordered_map(map)
+      call move_alloc(map, self)
+   end block
 
-end function get_len
+end subroutine new_map_structure
 
 
 end module tomlf_structure
