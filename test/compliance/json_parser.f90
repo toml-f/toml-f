@@ -233,7 +233,6 @@ subroutine prune_value(val, table, str)
 
    class(toml_value), pointer :: ptr
    character(:, tfc), pointer :: sval
-   character(kind=tfc, len=:), allocatable :: tmp
    integer :: stat
    type(toml_datetime) :: dval
    integer(tfi) :: ival

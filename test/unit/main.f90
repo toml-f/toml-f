@@ -29,6 +29,7 @@ program tftester
 
    stat = 0
 
+   allocate(testsuites(0))  ! avoid compiler warning
    testsuites = [ &
       & new_testsuite("build", collect_build), &
       & new_testsuite("lexer", collect_lexer), &

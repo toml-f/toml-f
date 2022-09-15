@@ -1274,7 +1274,6 @@ subroutine check_token(error, string, expected, keypath)
 
    integer :: it
    logical :: okay
-   character(len=:), allocatable :: msg
    type(toml_lexer) :: lexer
    type(toml_token) :: token
    type(toml_label), allocatable :: label(:)

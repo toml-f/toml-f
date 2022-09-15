@@ -48,6 +48,7 @@ subroutine test_sorted(error)
    character(len=*), parameter :: expected(10) = &
       & ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
+   allocate(list(0))  ! avoid compiler warning
    list = [ &
       & toml_key("0"), &
       & toml_key("1"), &
@@ -83,6 +84,7 @@ subroutine test_reversed(error)
    character(len=*), parameter :: expected(10) = &
       & ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
+   allocate(list(0))  ! avoid compiler warning
    list = [ &
       & toml_key("9"), &
       & toml_key("8"), &
@@ -118,6 +120,7 @@ subroutine test_unsorted(error)
    character(len=*), parameter :: expected(10) = &
       & ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
+   allocate(list(0))  ! avoid compiler warning
    list = [ &
       & toml_key("7"), &
       & toml_key("9"), &

@@ -851,6 +851,7 @@ subroutine get_array_value_float_sp(array, val, stat, origin)
 
    integer :: it, info
 
+   info = 0
    allocate(val(len(array)))
    do it = 1, size(val)
       call get_value(array, it, val(it), info, origin)
@@ -880,6 +881,7 @@ subroutine get_array_value_float_dp(array, val, stat, origin)
 
    integer :: it, info
 
+   info = 0
    allocate(val(len(array)))
    do it = 1, size(val)
       call get_value(array, it, val(it), info, origin)
@@ -909,6 +911,7 @@ subroutine get_array_value_int_i1(array, val, stat, origin)
 
    integer :: it, info
 
+   info = 0
    allocate(val(len(array)))
    do it = 1, size(val)
       call get_value(array, it, val(it), info, origin)
@@ -938,6 +941,7 @@ subroutine get_array_value_int_i2(array, val, stat, origin)
 
    integer :: it, info
 
+   info = 0
    allocate(val(len(array)))
    do it = 1, size(val)
       call get_value(array, it, val(it), info, origin)
@@ -967,6 +971,7 @@ subroutine get_array_value_int_i4(array, val, stat, origin)
 
    integer :: it, info
 
+   info = 0
    allocate(val(len(array)))
    do it = 1, size(val)
       call get_value(array, it, val(it), info, origin)
@@ -996,6 +1001,7 @@ subroutine get_array_value_int_i8(array, val, stat, origin)
 
    integer :: it, info
 
+   info = 0
    allocate(val(len(array)))
    do it = 1, size(val)
       call get_value(array, it, val(it), info, origin)
@@ -1025,6 +1031,7 @@ subroutine get_array_value_bool(array, val, stat, origin)
 
    integer :: it, info
 
+   info = 0
    allocate(val(len(array)))
    do it = 1, size(val)
       call get_value(array, it, val(it), info, origin)
@@ -1054,6 +1061,7 @@ subroutine get_array_value_datetime(array, val, stat, origin)
 
    integer :: it, info
 
+   info = 0
    allocate(val(len(array)))
    do it = 1, size(val)
       call get_value(array, it, val(it), info, origin)

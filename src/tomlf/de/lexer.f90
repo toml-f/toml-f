@@ -214,7 +214,6 @@ subroutine new_lexer_from_string(lexer, string)
    character(*, tfc), intent(in) :: string
 
    integer :: length
-   character(1, tfc) :: ch
 
    length = len(string)
    lexer%pos = 0
@@ -441,6 +440,7 @@ subroutine next_dstring(lexer, token)
 
    prev = lexer%pos
    pos = lexer%pos
+   hex = 0
 
    if (all(match(lexer, [pos+1, pos+2], char_kind%dquote))) then
       pos = pos + 3
@@ -1139,22 +1139,6 @@ contains
    end function compute_lps
 
 end function strstr
-
-!> Extract raw value of token
-subroutine extract_raw(lexer, token, string)
-   !> Instance of the lexer
-   class(toml_lexer), intent(in) :: lexer
-   !> Token to extract raw value from
-   type(toml_token), intent(in) :: token
-   !> Raw value of token
-   character(len=:), allocatable, intent(out) :: string
-
-   integer :: length
-
-   length = token%last - token%first + 1
-   allocate(character(length) :: string)
-   string = lexer%chunk(token%first:token%last)
-end subroutine extract_raw
 
 !> Extract string value of token, works for keypath, string, multiline string, literal,
 !> and mulitline literal tokens.

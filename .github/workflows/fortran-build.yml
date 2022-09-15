@@ -103,6 +103,7 @@ jobs:
       run: meson setup build ${{ env.meson_args }}
       env:
         meson_args: >-
+          ${{ matrix.gcc-v == '9' && '-Dwerror=true' || '' }}
           ${{ matrix.build-type == 'coverage' && '-Db_coverage=true' || '' }}
 
     - name: Build library (meson)

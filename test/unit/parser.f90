@@ -585,8 +585,6 @@ subroutine new_lexer(lexer, string, token)
    character(len=*), intent(in) :: string
    type(toml_token), intent(in) :: token(:)
 
-   character(1) :: ch
-
    lexer%filename = "mocked"
    lexer%pos = 0
    lexer%chunk = string
