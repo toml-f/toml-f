@@ -152,8 +152,6 @@ recursive pure function render_diagnostic(diag, input, color) result(string)
    type(toml_terminal), intent(in) :: color
    character(len=:), allocatable :: string
 
-   integer :: is
-
    string = &
       render_message(diag%level, diag%message, color)
 
@@ -218,6 +216,7 @@ function render_text(input, color, source) result(string)
    integer :: it, offset
    type(line_token), allocatable :: token(:)
 
+   allocate(token(0))  ! avoid compiler warning
    token = line_tokens(input)
    offset = integer_width(size(token))
 
@@ -248,6 +247,7 @@ function render_text_with_label(input, label, color, source) result(string)
    integer :: it, offset, first, last, line, shift
    type(line_token), allocatable :: token(:)
 
+   allocate(token(0))  ! avoid compiler warning
    token = line_tokens(input)
    line = count(token%first < label%first)
    associate(first => token%first)
@@ -294,6 +294,7 @@ pure function render_text_with_labels(input, label, color, source) result(string
    type(line_token), allocatable :: token(:)
    logical, allocatable :: display(:)
 
+   allocate(token(0))  ! avoid compiler warning
    token = line_tokens(input)
    line(:) = [(count(token%first <= label(it)%first), it = 1, size(label))]
    associate(first => token%first)

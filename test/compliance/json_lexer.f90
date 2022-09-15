@@ -232,8 +232,8 @@ subroutine next_string(lexer, token)
 
    character(1, tfc) :: ch
    character(*, tfc), parameter :: valid_escape = 'btnfr\"'
-   integer :: prev, pos, it
-   logical :: escape, valid, space
+   integer :: prev, pos
+   logical :: escape, valid
 
    prev = lexer%pos
    pos = lexer%pos
@@ -271,7 +271,7 @@ subroutine next_number(lexer, token)
    type(toml_token), intent(inout) :: token
 
    integer :: prev, pos, point, expo
-   logical :: minus, okay, zero, first
+   logical :: minus, zero, first
    character(1, tfc) :: ch
    integer, parameter :: offset(*) = [0, 1, 2]
 
@@ -476,6 +476,9 @@ subroutine extract_datetime(lexer, token, val)
    type(toml_token), intent(in) :: token
    !> Datetime value of token
    type(toml_datetime), intent(out) :: val
+
+   associate(lexer => lexer, token => token)  ! ignore unused dummy arguments
+   end associate
 end subroutine extract_datetime
 
 end module tjson_lexer
