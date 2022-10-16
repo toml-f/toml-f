@@ -131,6 +131,45 @@ TOML Fortran is used for example in the Fortran package manager (`fpm <https://f
    :language: toml
    :caption: fpm.toml
 
+A collection projects using TOML Fortran is shown below:
+
+.. grid:: 2
+
+   .. grid-item::
+
+      .. figure:: https://opengraph.githubassets.com/x/fortran-lang/fpm
+         :alt: GitHub Preview
+         :target: https://github.com/fortran-lang/fpm
+
+      Fortran package manager and build system.
+
+   .. grid-item::
+
+      .. figure:: https://opengraph.githubassets.com/x/tblite/tblite
+         :alt: GitHub Preview
+         :target: https://github.com/tblite/tblite
+
+      Light-weight tight-binding framework.
+
+   .. grid-item::
+
+      .. figure:: https://opengraph.githubassets.com/x/popelier-group/FEREBUS-v7
+         :alt: GitHub Preview
+         :target: https://github.com/popelier-group/FEREBUS-v7
+
+      Gaussian Process Regression engine written in Fortran90 designed to produce models for atomistic simulations.
+
+   .. grid-item::
+
+      .. figure:: https://opengraph.githubassets.com/x/lewisfish/signedMCRT
+         :alt: GitHub Preview
+         :target: https://github.com/lewisfish/signedMCRT
+
+      Signed distance fields in Monte Carlo Radiative Transfer for modelling of smooth surfaces without the need to use triangle or similar meshes.
+
+Your project is using TOML Fortran but not listed here?
+Let us know of your work by opening a `discussion on GitHub <https://github.com/orgs/toml-f/discussions>`__ or create a `pull request <https://github.com/toml-f/toml-f/blob/main/CONTRIBUTING.md>`__ to add it to the selection above.
+
 
 .. toctree::
    :maxdepth: 2
