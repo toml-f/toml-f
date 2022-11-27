@@ -131,7 +131,7 @@ TOML Fortran is used for example in the Fortran package manager (`fpm <https://f
    :language: toml
    :caption: fpm.toml
 
-A collection projects using TOML Fortran is shown below:
+A collection of projects using TOML Fortran is shown below:
 
 .. grid:: 2
 
