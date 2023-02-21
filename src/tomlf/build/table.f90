@@ -816,6 +816,8 @@ subroutine get_child_value_float_sp(table, key, val, default, stat, origin)
             if (present(stat)) stat = toml_stat%fatal
          end if
       end if
+   else if (.not.present(default)) then
+      if (present(stat)) stat = merge(toml_stat%missing_key, stat, stat == toml_stat%success)
    end if
 
 end subroutine get_child_value_float_sp
@@ -857,6 +859,8 @@ subroutine get_child_value_float_dp(table, key, val, default, stat, origin)
             if (present(stat)) stat = toml_stat%fatal
          end if
       end if
+   else if (.not.present(default)) then
+      if (present(stat)) stat = merge(toml_stat%missing_key, stat, stat == toml_stat%success)
    end if
 
 end subroutine get_child_value_float_dp
@@ -898,6 +902,8 @@ subroutine get_child_value_integer_i1(table, key, val, default, stat, origin)
             if (present(stat)) stat = toml_stat%fatal
          end if
       end if
+   else if (.not.present(default)) then
+      if (present(stat)) stat = merge(toml_stat%missing_key, stat, stat == toml_stat%success)
    end if
 
 end subroutine get_child_value_integer_i1
@@ -939,6 +945,8 @@ subroutine get_child_value_integer_i2(table, key, val, default, stat, origin)
             if (present(stat)) stat = toml_stat%fatal
          end if
       end if
+   else if (.not.present(default)) then
+      if (present(stat)) stat = merge(toml_stat%missing_key, stat, stat == toml_stat%success)
    end if
 
 end subroutine get_child_value_integer_i2
@@ -980,6 +988,8 @@ subroutine get_child_value_integer_i4(table, key, val, default, stat, origin)
             if (present(stat)) stat = toml_stat%fatal
          end if
       end if
+   else if (.not.present(default)) then
+      if (present(stat)) stat = merge(toml_stat%missing_key, stat, stat == toml_stat%success)
    end if
 
 end subroutine get_child_value_integer_i4
@@ -1021,6 +1031,8 @@ subroutine get_child_value_integer_i8(table, key, val, default, stat, origin)
             if (present(stat)) stat = toml_stat%fatal
          end if
       end if
+   else if (.not.present(default)) then
+      if (present(stat)) stat = merge(toml_stat%missing_key, stat, stat == toml_stat%success)
    end if
 
 end subroutine get_child_value_integer_i8
@@ -1062,6 +1074,8 @@ subroutine get_child_value_bool(table, key, val, default, stat, origin)
             if (present(stat)) stat = toml_stat%fatal
          end if
       end if
+   else if (.not.present(default)) then
+      if (present(stat)) stat = merge(toml_stat%missing_key, stat, stat == toml_stat%success)
    end if
 
 end subroutine get_child_value_bool
@@ -1103,6 +1117,8 @@ subroutine get_child_value_datetime(table, key, val, default, stat, origin)
             if (present(stat)) stat = toml_stat%fatal
          end if
       end if
+   else if (.not.present(default)) then
+      if (present(stat)) stat = merge(toml_stat%missing_key, stat, stat == toml_stat%success)
    end if
 
 end subroutine get_child_value_datetime
@@ -1144,6 +1160,8 @@ subroutine get_child_value_string(table, key, val, default, stat, origin)
             if (present(stat)) stat = toml_stat%fatal
          end if
       end if
+   else if (.not.present(default)) then
+      if (present(stat)) stat = merge(toml_stat%missing_key, stat, stat == toml_stat%success)
    end if
 
 end subroutine get_child_value_string
