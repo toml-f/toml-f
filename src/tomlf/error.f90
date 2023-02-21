@@ -40,6 +40,9 @@ module tomlf_error
       !> Conversion error when downcasting a value
       integer :: conversion_error = -4
 
+      !> Key not present in table
+      integer :: missing_key = -5
+
    end type enum_stat
 
    !> Actual enumerator for return states

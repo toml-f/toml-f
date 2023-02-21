@@ -8,18 +8,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        gcc-v: [9]
+        gcc-v: [10]
         build-type: [default]
 
         include:
           - os: macos-latest
             gcc-v: 6
-            build-type: default
-          - os: ubuntu-latest
-            gcc-v: 7
-            build-type: default
-          - os: ubuntu-latest
-            gcc-v: 8
             build-type: default
           - os: ubuntu-latest
             gcc-v: 9
@@ -29,6 +23,9 @@ jobs:
             build-type: coverage
           - os: ubuntu-latest
             gcc-v: 11
+            build-type: coverage
+          - os: ubuntu-latest
+            gcc-v: 12
             build-type: coverage
 
     defaults:
