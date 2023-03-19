@@ -2,7 +2,7 @@
 !> Each data record knows how to serialize and deserialize itself.
 module serde_class
   use serde_error, only : error_type, fatal_error
-  use tomlf, only : toml_table, toml_error, toml_load, toml_serializer
+  use tomlf, only : toml_table, toml_error, toml_load, toml_dump
   implicit none
   private
 
@@ -130,14 +130,14 @@ contains
     type(error_type), allocatable, intent(out) :: error
 
     type(toml_table) :: table
-    type(toml_serializer) :: ser
 
     table = toml_table()
-    ser = toml_serializer(unit)
 
     call self%dump(table, error)
 
-    call table%accept(ser)
+    if (.not.allocated(error)) then
+      call toml_dump(table, unit, error)
+    end if
 
   end subroutine dump_to_unit
 

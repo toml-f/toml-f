@@ -18,7 +18,7 @@ module tomlf
    use tomlf_de, only : toml_parse, toml_load, toml_loads, &
       & toml_context, toml_parser_config, toml_level
    use tomlf_error, only : toml_error, toml_stat
-   use tomlf_ser, only : toml_serializer
+   use tomlf_ser, only : toml_serializer, toml_serialize, toml_dump, toml_dumps
    use tomlf_terminal, only : toml_terminal
    use tomlf_type, only : toml_table, toml_array, toml_keyval, toml_key, toml_value, &
       & is_array_of_tables, new_table, add_table, add_array, add_keyval, len

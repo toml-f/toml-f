@@ -24,12 +24,11 @@ program demo
   end if
 
   block
-    use tomlf, only : toml_table, toml_array, add_array, set_value, toml_serializer
+    use tomlf, only : toml_table, toml_array, add_array, set_value, toml_serialize
 
     integer :: it
     type(toml_table), pointer :: table
     type(toml_array), pointer :: array
-    type(toml_serializer) :: ser
 
     ! Add an array to the object
     call add_array(object, "c", array)
@@ -40,7 +39,7 @@ program demo
     call set_value(table, "sub", "table")
 
     print '(a)', "# representation in TOML land"
-    call object%accept(ser)
+    print '(a)', toml_serialize(object)
   end block
 
 end program demo
