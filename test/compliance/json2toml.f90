@@ -13,7 +13,7 @@
 
 !> Example executable to read and emit a TOML document
 program json2toml
-   use, intrinsic :: iso_fortran_env, only : input_unit
+   use, intrinsic :: iso_fortran_env, only : input_unit, output_unit
    use tomlf
    use tjson_parser
    implicit none
@@ -21,7 +21,6 @@ program json2toml
    character(len=:), allocatable :: argument
    class(toml_value), allocatable :: object
    type(toml_error), allocatable :: error
-   type(toml_serializer) :: ser
    logical :: exist
 
    if (command_argument_count() > 0) then
@@ -39,7 +38,7 @@ program json2toml
             call json_load(object, argument, error=error)
             if (allocated(error)) print '(a)', error%message
             if (allocated(object)) then
-               call object%accept(ser)
+               call toml_dump(object, output_unit, error)
                call object%destroy
             end if
          end if
@@ -48,7 +47,7 @@ program json2toml
       call json_load(object, input_unit, error=error)
       if (allocated(error)) print '(a)', error%message
       if (allocated(object)) then
-         call object%accept(ser)
+         call toml_dump(object, output_unit, error)
          call object%destroy
       else
          error stop
