@@ -65,6 +65,8 @@ module tomlf_de_token
       integer :: bool = 17
       !> Datetime value
       integer :: datetime = 18
+      !> Absence of value
+      integer :: nil = 19
    end type enum_token
 
    !> Actual enumerator for token kinds

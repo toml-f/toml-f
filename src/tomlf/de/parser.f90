@@ -482,6 +482,9 @@ recursive subroutine parse_keyval(parser, lexer, table)
       call add_keyval(table, key, vptr)
       call parse_value(parser, lexer, vptr)
 
+   case(token_kind%nil)
+      call next_token(parser, lexer)
+
    case(token_kind%lbracket)
       call add_array(table, key, aptr)
       call parse_inline_array(parser, lexer, aptr)
@@ -529,6 +532,9 @@ recursive subroutine parse_inline_array(parser, lexer, array)
       case default
          call add_keyval(array, vptr)
          call parse_value(parser, lexer, vptr)
+
+      case(token_kind%nil)
+         call next_token(parser, lexer)
 
       case(token_kind%lbracket)
          call add_array(array, aptr)
