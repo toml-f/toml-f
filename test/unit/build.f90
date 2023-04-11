@@ -199,7 +199,7 @@ subroutine table_int_i1(error)
    integer(tf_i1) :: val
    integer :: stat
 
-   call new_table(table)
+   ! table uninitialized
    call set_value(table, toml_key("int"), in2, stat=stat)
    call get_value(table, "int", val, stat=stat)
 
@@ -674,7 +674,7 @@ subroutine array_real_sp(error)
    integer :: ii
    integer :: stat
 
-   call new_array(array)
+   ! array not initialized
    do ii = 1, 10
       call set_value(array, ii, sqrt(real(ii, tf_sp)), stat=stat)
    end do
