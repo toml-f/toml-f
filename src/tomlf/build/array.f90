@@ -42,7 +42,7 @@ module tomlf_build_array
    use tomlf_error, only : toml_stat
    use tomlf_type, only : toml_value, toml_table, toml_array, toml_keyval, &
       & new_table, new_array, new_keyval, add_table, add_array, add_keyval, &
-      & cast_to_table, cast_to_array, cast_to_keyval, len
+      & cast_to_table, cast_to_array, cast_to_keyval, initialized, len
    implicit none
    private
 
@@ -118,6 +118,8 @@ subroutine get_elem_table(array, pos, ptr, stat, origin)
 
    class(toml_value), pointer :: tmp
 
+   if (.not.initialized(array)) call new_array(array)
+
    nullify(ptr)
 
    call array%get(pos, tmp)
@@ -159,6 +161,8 @@ subroutine get_elem_array(array, pos, ptr, stat, origin)
 
    class(toml_value), pointer :: tmp
 
+   if (.not.initialized(array)) call new_array(array)
+
    nullify(ptr)
 
    call array%get(pos, tmp)
@@ -199,6 +203,8 @@ subroutine get_elem_keyval(array, pos, ptr, stat, origin)
    integer, intent(out), optional :: origin
 
    class(toml_value), pointer :: tmp
+
+   if (.not.initialized(array)) call new_array(array)
 
    nullify(ptr)
 

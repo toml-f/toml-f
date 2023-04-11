@@ -37,7 +37,8 @@ module tomlf_build_table
    use tomlf_error, only : toml_stat
    use tomlf_type, only : toml_value, toml_table, toml_array, toml_keyval, &
       & new_table, new_array, new_keyval, add_table, add_array, add_keyval, &
-      & toml_key, cast_to_table, cast_to_array, cast_to_keyval, len
+      & toml_key, cast_to_table, cast_to_array, cast_to_keyval, initialized, &
+      & len
    implicit none
    private
 
@@ -638,6 +639,8 @@ subroutine get_child_table(table, key, ptr, requested, stat, origin)
    class(toml_value), pointer :: tmp
    logical :: is_requested
 
+   if (.not.initialized(table)) call new_table(table)
+
    if (present(requested)) then
       is_requested = requested
    else
@@ -693,6 +696,8 @@ subroutine get_child_array(table, key, ptr, requested, stat, origin)
    class(toml_value), pointer :: tmp
    logical :: is_requested
 
+   if (.not.initialized(table)) call new_table(table)
+
    if (present(requested)) then
       is_requested = requested
    else
@@ -747,6 +752,8 @@ subroutine get_child_keyval(table, key, ptr, requested, stat, origin)
 
    class(toml_value), pointer :: tmp
    logical :: is_requested
+
+   if (.not.initialized(table)) call new_table(table)
 
    if (present(requested)) then
       is_requested = requested

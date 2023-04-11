@@ -23,7 +23,7 @@ module tomlf_type_table
    implicit none
    private
 
-   public :: toml_table, new_table, new
+   public :: toml_table, new_table, new, initialized
 
 
    !> TOML table
@@ -76,6 +76,12 @@ module tomlf_type_table
    end interface
 
 
+   !> Check whether data structure is initialized properly
+   interface initialized
+      module procedure :: table_initialized
+   end interface initialized
+
+
 contains
 
 
@@ -99,6 +105,19 @@ function new_table_func() result(self)
    call new_table(self)
 
 end function new_table_func
+
+
+!> Check whether data structure is initialized properly
+pure function table_initialized(self) result(okay)
+
+   !> Instance of the TOML table
+   type(toml_table), intent(in) :: self
+
+   !> Data structure is initialized
+   logical :: okay
+
+   okay = allocated(self%map)
+end function table_initialized
 
 
 !> Get the TOML value associated with the respective key

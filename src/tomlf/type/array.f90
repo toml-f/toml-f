@@ -19,7 +19,7 @@ module tomlf_type_array
    implicit none
    private
 
-   public :: toml_array, new_array, new, len
+   public :: toml_array, new_array, new, initialized, len
 
 
    !> TOML array
@@ -69,6 +69,12 @@ module tomlf_type_array
    end interface
 
 
+   !> Check whether data structure is initialized properly
+   interface initialized
+      module procedure :: array_initialized
+   end interface initialized
+
+
 contains
 
 
@@ -92,6 +98,19 @@ function new_array_func() result(self)
    call new_array(self)
 
 end function new_array_func
+
+
+!> Check whether data structure is initialized properly
+pure function array_initialized(self) result(okay)
+
+   !> Instance of the TOML array
+   type(toml_array), intent(in) :: self
+
+   !> Data structure is initialized
+   logical :: okay
+
+   okay = allocated(self%list)
+end function array_initialized
 
 
 !> Get number of TOML values in the array
