@@ -1275,8 +1275,9 @@ end subroutine extract_integer
 
 !> Extract floating point value of token
 subroutine extract_float(lexer, token, val)
-   use, intrinsic :: ieee_arithmetic, only : ieee_value, &
-      & ieee_positive_inf, ieee_negative_inf, ieee_quiet_nan
+   ! Not useable since unsupported with GFortran on some platforms (MacOS/ppc)
+   ! use, intrinsic :: ieee_arithmetic, only : ieee_value, ieee_quite_nan, &
+   !    & ieee_positive_inf, ieee_negative_inf
    !> Instance of the lexer
    class(toml_lexer), intent(in) :: lexer
    !> Token to extract floating point value from
@@ -1295,16 +1296,17 @@ subroutine extract_float(lexer, token, val)
    if (any(peek(lexer, first) == ["+", "-"])) first = first + 1
 
    if (match(lexer, first, "n")) then
-      val = ieee_value(val, ieee_quiet_nan)
+      ! val = ieee_value(val, ieee_quite_nan)
+      buffer = "NaN"
+      read(buffer, *, iostat=ic) val
       return
    end if
 
    if (match(lexer, first, "i")) then
-      if (match(lexer, token%first, char_kind%minus)) then
-         val = ieee_value(val, ieee_negative_inf)
-      else
-         val = ieee_value(val, ieee_positive_inf)
-      end if
+      ! val = ieee_value(val, ieee_positive_inf)
+      buffer = "Inf"
+      read(buffer, *, iostat=ic) val
+      if (match(lexer, token%first, char_kind%minus)) val = -val
       return
    end if
 
