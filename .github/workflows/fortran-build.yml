@@ -139,6 +139,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
+        fc: [ifort, ifx]
 
     env:
       FC: ifort
@@ -185,6 +186,8 @@ jobs:
 
     - name: Configure meson build
       run: meson setup build
+      env:
+        FC: ${{ matrix.fc }}
 
     - name: Build library (meson)
       run: meson compile -C build
@@ -194,6 +197,8 @@ jobs:
 
     - name: Configure cmake build
       run: cmake -B _build -G Ninja
+      env:
+        FC: ${{ matrix.fc }}
 
     - name: Build library (CMake)
       run: cmake --build _build
