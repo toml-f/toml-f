@@ -250,9 +250,7 @@ function render_text_with_label(input, label, color, source) result(string)
    allocate(token(0))  ! avoid compiler warning
    token = line_tokens(input)
    line = count(token%first < label%first)
-   associate(first => token%first)
-      shift = first(line) - 1
-   end associate
+   shift = token%first(line) - 1
    first = max(1, line - 1)
    last = min(size(token), line + 1)
    offset = integer_width(last)
