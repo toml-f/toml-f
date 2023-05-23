@@ -11,6 +11,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+if(${CMAKE_VERSION} VERSION_GREATER "3.18")
+  # Required for policy change
+  cmake_policy(SET CMP0110 NEW)
+endif()
+
 # Check for consistency of the internal version number with the one defined
 # in the projects meson.build
 add_executable(
