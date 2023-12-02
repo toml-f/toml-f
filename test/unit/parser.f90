@@ -52,6 +52,8 @@ subroutine collect_parser(testsuite)
       & new_unittest("table-header-trailing-comment", table_header_trailing_comment), &
       & new_unittest("aot-body", aot_body), &
       & new_unittest("aot-inline", aot_inline, should_fail=.true.), &
+      & new_unittest("aot-header-whitespace1", aot_header_whitespace1), &
+      & new_unittest("aot-header-whitespace2", aot_header_whitespace2), &
       & new_unittest("aot-header-empty", aot_header_empty, should_fail=.true.), &
       & new_unittest("aot-header-unclosed1", aot_header_unclosed1, should_fail=.true.), &
       & new_unittest("aot-header-unclosed2", aot_header_unclosed2, should_fail=.true.), &
@@ -250,6 +252,28 @@ subroutine table_header_trailing_comment(error)
       &  toml_token(token_kind%rbracket, 5, 5), toml_token(token_kind%comment, 6, 6), &
       &  toml_token(token_kind%eof, 7, 7)])
 end subroutine table_header_trailing_comment
+
+subroutine aot_header_whitespace1(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check_parser(error, "[[ a]]", &
+      & [toml_token(token_kind%lbracket, 1, 1), toml_token(token_kind%lbracket, 2, 2), &
+      &  toml_token(token_kind%whitespace, 3, 3), toml_token(token_kind%keypath, 4, 4), &
+      &  toml_token(token_kind%rbracket, 5, 5), toml_token(token_kind%rbracket, 6, 6), &
+      &  toml_token(token_kind%eof, 7, 7)])
+end subroutine aot_header_whitespace1
+
+subroutine aot_header_whitespace2(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check_parser(error, "[[a ]]", &
+      & [toml_token(token_kind%lbracket, 1, 1), toml_token(token_kind%lbracket, 2, 2), &
+      &  toml_token(token_kind%keypath, 3, 3), toml_token(token_kind%whitespace, 4, 4), &
+      &  toml_token(token_kind%rbracket, 5, 5), toml_token(token_kind%rbracket, 6, 6), &
+      &  toml_token(token_kind%eof, 7, 7)])
+end subroutine aot_header_whitespace2
 
 subroutine aot_header_empty(error)
    !> Error handling
