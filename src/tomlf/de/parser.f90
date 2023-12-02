@@ -174,8 +174,11 @@ subroutine parse_table_header(parser, lexer)
 
    array_of_tables = parser%token%kind == token_kind%lbracket
 
-   if (array_of_tables .or. parser%token%kind == token_kind%whitespace) then
+   if (array_of_tables) then
       call next_token(parser, lexer)
+      if (parser%token%kind == token_kind%whitespace) then
+         call next_token(parser, lexer)
+      end if
    end if
 
    call fill_stack(lexer, parser, top, stack)
