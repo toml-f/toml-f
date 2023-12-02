@@ -118,7 +118,9 @@ subroutine collect_lexer(testsuite)
       & new_unittest("string-unicode-escape", string_unicode_escape), &
       & new_unittest("string-triple", string_triple), &
       & new_unittest("string-multiline", string_multiline), &
-      & new_unittest("string-multiline-unclosed", string_multiline_unclosed), &
+      & new_unittest("string-multiline-unclosed1", string_multiline_unclosed1), &
+      & new_unittest("string-multiline-unclosed2", string_multiline_unclosed2), &
+      & new_unittest("string-multiline-unclosed3", string_multiline_unclosed3), &
       & new_unittest("string-multiline-escape", string_multiline_escape), &
       & new_unittest("token-keypath-string", token_keypath_string), &
       & new_unittest("token-keypath-mstring", token_keypath_mstring), &
@@ -508,13 +510,29 @@ subroutine string_multiline(error)
       & [token_kind%mstring, token_kind%eof], .false.)
 end subroutine string_multiline
 
-subroutine string_multiline_unclosed(error)
+subroutine string_multiline_unclosed1(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
    call check_token(error, """""""", &
       & [token_kind%invalid, token_kind%eof], .false.)
-end subroutine string_multiline_unclosed
+end subroutine string_multiline_unclosed1
+
+subroutine string_multiline_unclosed2(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check_token(error, """""""\", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_multiline_unclosed2
+
+subroutine string_multiline_unclosed3(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check_token(error, """""""\""""""", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_multiline_unclosed3
 
 subroutine string_multiline_escape(error)
    !> Error handling

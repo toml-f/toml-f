@@ -446,8 +446,9 @@ subroutine next_dstring(lexer, token)
       pos = pos + 3
 
       do
-         pos = strstr(lexer%chunk(pos:), char_kind%dquote3) + pos - 1
-         if (pos < prev + 3) then
+         it = strstr(lexer%chunk(pos:), char_kind%dquote3)
+         pos = it + pos - 1
+         if (pos < prev + 3 .or. it == 0) then
             token = toml_token(token_kind%invalid, prev, len(lexer%chunk))
             return
          end if
