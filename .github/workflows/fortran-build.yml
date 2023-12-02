@@ -12,9 +12,6 @@ jobs:
         build-type: [default]
 
         include:
-          - os: macos-latest
-            toolchain: {compiler: gcc, version: 6}
-            build-type: default
           - os: ubuntu-latest
             toolchain: {compiler: gcc, version: 9}
             build-type: coverage
