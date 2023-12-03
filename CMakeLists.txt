@@ -17,7 +17,7 @@ get_directory_property(is-subproject PARENT_DIRECTORY)
 project(
   "toml-f"
   LANGUAGES "Fortran"
-  VERSION "0.4.1"
+  VERSION "0.4.2"
   DESCRIPTION "A TOML parser implementation for data serialization and deserialization in Fortran"
 )
 

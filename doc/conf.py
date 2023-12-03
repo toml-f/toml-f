@@ -20,7 +20,7 @@ project = "toml-f"
 author = "Sebastian Ehlert"
 copyright = f"2019-2022, {author}"
 
-version = "0.4.1"
+version = "0.4.2"
 release = version
 
 extensions = [
