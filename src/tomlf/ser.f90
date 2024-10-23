@@ -111,7 +111,8 @@ function toml_serialize(val, config) result(string)
 
    call toml_dumps(val, string, error, config=config)
    if (allocated(error)) then
-      error stop error%message
+      print '(a)', "Error: " // error%message
+      error stop 1
    end if
 end function toml_serialize
 
