@@ -141,7 +141,7 @@ end subroutine get
 subroutine get_keys(self, list)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout) :: self
+   class(toml_table), intent(in) :: self
 
    !> List of all keys
    type(toml_key), allocatable, intent(out) :: list(:)
@@ -155,7 +155,7 @@ end subroutine get_keys
 function has_key(self, key) result(found)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout) :: self
+   class(toml_table), intent(in) :: self
 
    !> Key to the TOML value
    character(kind=tfc, len=*), intent(in) :: key

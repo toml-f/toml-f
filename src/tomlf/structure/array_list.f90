@@ -102,7 +102,7 @@ end function get_len
 subroutine get(self, idx, ptr)
 
    !> Instance of the structure
-   class(toml_array_list), intent(inout), target :: self
+   class(toml_array_list), intent(in), target :: self
 
    !> Position in the ordered structure
    integer, intent(in) :: idx

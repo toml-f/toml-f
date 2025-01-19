@@ -52,7 +52,7 @@ module tomlf_structure_map
          import :: toml_map_structure, toml_value, tfc
 
          !> Instance of the structure
-         class(toml_map_structure), intent(inout), target :: self
+         class(toml_map_structure), intent(in), target :: self
 
          !> Key to the TOML value
          character(kind=tfc, len=*), intent(in) :: key
@@ -80,7 +80,7 @@ module tomlf_structure_map
          import :: toml_map_structure, toml_key
 
          !> Instance of the structure
-         class(toml_map_structure), intent(inout), target :: self
+         class(toml_map_structure), intent(in), target :: self
 
          !> List of all keys
          type(toml_key), allocatable, intent(out) :: list(:)
