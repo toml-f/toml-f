@@ -124,7 +124,7 @@ end function table_initialized
 subroutine get(self, key, ptr)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout) :: self
+   class(toml_table), intent(in) :: self
 
    !> Key to the TOML value
    character(kind=tfc, len=*), intent(in) :: key
