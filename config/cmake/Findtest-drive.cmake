@@ -75,7 +75,7 @@ foreach(method in ITEMS ${${_pkg}_FIND_METHOD})
 
       # We need the module directory in the subproject before we finish the configure stage
       if(NOT EXISTS "${${_pkg}_BINARY_DIR}/include")
-        make_directory("${${_pkg}_BINARY_DIR}/include")
+        file(MAKE_DIRECTORY "${${_pkg}_BINARY_DIR}/include")
       endif()
 
       break()
@@ -98,7 +98,7 @@ foreach(method in ITEMS ${${_pkg}_FIND_METHOD})
     # We need the module directory in the subproject before we finish the configure stage
     FetchContent_GetProperties("${_lib}" BINARY_DIR "${_pkg}_BINARY_DIR")
     if(NOT EXISTS "${${_pkg}_BINARY_DIR}/include")
-      make_directory("${${_pkg}_BINARY_DIR}/include")
+      file(MAKE_DIRECTORY "${${_pkg}_BINARY_DIR}/include")
     endif()
 
     break()
