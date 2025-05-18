@@ -1,0 +1,205 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019-2022, Sebastian Ehlert
+# This file is distributed under the same license as the toml-f package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: toml-f 0.2.3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-06-19 18:08-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Asdrubal Lozada-Blanco\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: ../doc/tutorial/getting-started.rst:2
+msgid "Getting started"
+msgstr "Iniciando"
+
+#: ../doc/tutorial/getting-started.rst:4
+msgid ""
+"This tutorial provides a gentle introduction to the use of TOML Fortran. "
+"It will deal with reading as well as creating TOML data structures using "
+"the high-level build interface and discuss how to obtain a data structure"
+" from a TOML document or turn a data structure to TOML document again."
+msgstr ""
+"Este tutorial proporciona una introducción amable para el uso de TOML Fortran. "
+"Tratará de la lectura y creacción de estructuras de datos TOML usando "
+"la interfaz de construcción de alto nivel y como obtener una estructura de datos "
+"desde un documento TOML o convertir una estrutura de datos en un documento TOML "
+"totalmente nuevo."
+
+#: ../doc/tutorial/getting-started.rst:7
+msgid ""
+"For this project we will be working with fpm, however you can use any "
+"build tool you are familar with, checkout the :ref:`integration guide "
+"<integration>` to find a matching setup. We start with creating a minimal"
+" package manifest to use TOML Fortran in our fpm project."
+msgstr ""
+"En este proyecto trabajaremos con fpm, no obstante usted puede usar cualquier "
+"herramienta de construcción con la que esté familiarizado, consulte la :ref:`guía de integración "
+"<integration>` para encontrar una configuración coincidente. Comenzamos creando un manifiesto "
+" de paquete mínimo para usar TOML Fortran en nuestro proyecto fpm."
+
+#: ../doc/tutorial/getting-started.rst:10
+msgid "fpm.toml"
+msgstr ""
+
+#: ../doc/tutorial/getting-started.rst:18
+msgid ""
+"The public TOML Fortran API is defined in the ``tomlf`` module, we will "
+"only use this module for this entire course. The main data structures we "
+"are going to interact with are ``toml_table`` and ``toml_array`` "
+"instances, which we can conveniently manipulate with the generic "
+"interface ``get_value``."
+msgstr ""
+"La API pública TOML Fortran es definida en el módulo ``tomlf``, en este curso completo "
+"solo usaremos este módulo. Las estructuras de datos principales con las que interactuaremos son las
+instancias ``toml_table  and ``toml_array``, que pueden ser convenientemente manipuladas con la "
+"la interfaz genérica ``get_value``."
+
+#: ../doc/tutorial/getting-started.rst:21
+msgid "src/reader.f90"
+msgstr ""
+
+#: ../doc/tutorial/getting-started.rst:25
+msgid ""
+"Note that we declare the TOML data structure as mutable, *i.e.* "
+"``intent(inout)`` rather than just ``intent(in)``, as the ``get_value`` "
+"interface can modify the data structure. We start with a simple test "
+"program which is not actually reading any TOML document, but just passing"
+" an empty table to our reader."
+msgstr ""
+"Note que definimos la estructura de datos TOML como mutable, es decir, "
+"``intent(inout)`` en lugar de solo ``intent(in)``, como la interfaz ``get_value`` "
+"puede modificar la estructura de datos. Iniciamos con un programa de prueba simple, que realmente "
+"no está leyendo ningún documento TOML, sino solo pasando una tabla vacía a nuesto lector."
+#: ../doc/tutorial/getting-started.rst:28
+msgid "app/defaults.f90"
+msgstr ""
+
+#: ../doc/tutorial/getting-started.rst:32
+msgid ""
+"The ``get_value`` interface for processing the TOML data structure "
+"ensures that the data structure is complete throughout the whole process "
+"of reading it and will add the requested nodes if there are not present "
+"or will fill them in with default values. Convince yourself that the "
+"empty table indeed changed while reading by passing a serializer to it."
+msgstr ""
+"La interfaz ``get_value`` para el procesamiento de la estructura de datos TOML "
+"asegura que la estructura de datos esté completa a lo largo del proceso "
+"de lectura y agregará los nodos solicitados sino están presentes o los completará con "
+"valores predeterminados. Verifique que la tabla vacía realmente cambió durante la lectura "
+"pasandole un serializador."
+
+#: ../doc/tutorial/getting-started.rst:51
+msgid ""
+"This behavior is very convenient because it allows us to define our "
+"default values while defining how we read the TOML data structure."
+msgstr ""
+"Este comportamiento es muy conveniente porque nos permite definir nuestros "
+"valores predeterminados al definir como leemos la estructura de datos TOML."
+
+#: ../doc/tutorial/getting-started.rst:55
+msgid ""
+"The ``get_value`` build interface is only one way of accessing the TOML "
+"data structure provided by TOML Fortran. It takes an opinionated approach"
+" towards reading and modifying the data structure, which is suitable the "
+"majority of applications."
+msgstr ""
+"La interfaz de construcción ``get_value`` es solo una forma de acceder a la "
+"estrutura de datos TOML proporcionado por TOML Fortran. Este toma una aproximación "
+"pragmática para la lectura y modificación de la estructura de datos, que es apropiada "
+"en la mayoria de las aplicaciones."
+
+#: ../doc/tutorial/getting-started.rst:58
+msgid "Now we will actually read a TOML document and pass it to our reader."
+msgstr "Ahora leeremos realmente un documento TOML y pasaremos este a nuestro lector."
+
+#: ../doc/tutorial/getting-started.rst:60
+msgid "input.toml"
+msgstr ""
+
+#: ../doc/tutorial/getting-started.rst:66
+msgid ""
+"We adapt our command line driver to read the file ``input.toml`` and "
+"output the values as before"
+msgstr ""
+"Adaptamos nuestro controlador de linea de comandos para leer el archivo ``input.toml`` y "
+"muestra los valores como antes"
+
+#: ../doc/tutorial/getting-started.rst:68
+msgid "app/readin.f90"
+msgstr ""
+
+#: ../doc/tutorial/getting-started.rst:72
+msgid ""
+"Running the program with fpm shows that we were able to read the correct "
+"values from the document"
+msgstr ""
+"Ejecutar el programa con fpm muestra que pudimos leer los valores correctos desde el documento"
+
+#: ../doc/tutorial/getting-started.rst:81
+msgid ""
+"You can again use the serializer to write the final data structure, if "
+"you want to check whether the ``get_value`` interface has added default "
+"values."
+msgstr ""
+"Usted puede volver a usar el serializador para escribir la estructura de datos final, si "
+"desea verficar si la interfaz ``get_value`` ha adicionado los valores predeterminados."
+
+#: ../doc/tutorial/getting-started.rst:85
+msgid ""
+"In this tutorial you have learned out to read simple data structures from"
+" TOML documents. You can now"
+msgstr ""
+"En este tutorial usted ha aprendido a leer estructuras de datos desde documentos TOML. Ahora puede"
+
+#: ../doc/tutorial/getting-started.rst:88
+msgid "define the logic to read data from TOML structures"
+msgstr "definir la lógica para leer datos desde estructuras TOML"
+
+#: ../doc/tutorial/getting-started.rst:89
+msgid "provide default values in your parser as you define the input structure"
+msgstr ""
+"proporcione valores predeterminados en su analizador a medida que define la estructura de entrada"
+
+#: ../doc/tutorial/getting-started.rst:90
+msgid "read an actual TOML document from a file"
+msgstr "leer un documento TOML real desde un archivo"
+
+#: ../doc/tutorial/getting-started.rst:91
+msgid "write TOML documents from your data structures"
+msgstr "escribir documentos TOML desde sus estructuras de datos"
+
+#: ../doc/tutorial/index.rst:4
+msgid "Tutorial courses"
+msgstr "Cursos tutoriales"
+
+#: ../doc/tutorial/index.rst:6
+msgid ""
+"This section contains self-contained courses teaching the usage of TOML "
+"Fortran. Each tutorial is a full example for a specific application "
+"covering several aspects of the library."
+msgstr ""
+"Esta sección contiene cursos autocontenidos que enseñan como usar TOML "
+"Fortran. Cada tutorial es un ejemplo completo para una aplicación específica "
+"cubriendo múltiples aspectos de la biblioteca."
+
+#: ../doc/tutorial/index.rst:9
+msgid "Contributions are welcome!"
+msgstr "¡Contribuciones son bienvenidas!"
+
+#: ../doc/tutorial/index.rst:12
+msgid ""
+"If you have written on TOML Fortran and want to contribute to the "
+"documentation, feel free to fork the repository and submit a pull "
+"request."
+msgstr ""
+"Si usted ha escrito sobre TOML Fortran y desea contribuir a la "
+"documentación, siéntase libre de bifurcar el repositório y envie una solicitud de integración."

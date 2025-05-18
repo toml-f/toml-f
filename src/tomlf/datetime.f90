@@ -141,8 +141,8 @@ pure function new_datetime_from_string(string) result(datetime)
       datetime%date = date
    end if
 
-   if (all([string(first+3:first+3), string(first+6:first+6)] == ":") &
-      & .and. first < len(string)) then
+   if (first >= len(string)) return
+   if (all([string(first+3:first+3), string(first+6:first+6)] == ":")) then
       time%hour = 0
       do it = first + 1, first + 2
          tmp = scan(num, string(it:it)) - 1

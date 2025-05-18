@@ -115,9 +115,12 @@ subroutine collect_lexer(testsuite)
       & new_unittest("string-control", string_control), &
       & new_unittest("string-escape", string_escape), &
       & new_unittest("string-escape-invalid", string_escape_invalid), &
+      & new_unittest("string-unicode-escape", string_unicode_escape), &
       & new_unittest("string-triple", string_triple), &
       & new_unittest("string-multiline", string_multiline), &
-      & new_unittest("string-multiline-unclosed", string_multiline_unclosed), &
+      & new_unittest("string-multiline-unclosed1", string_multiline_unclosed1), &
+      & new_unittest("string-multiline-unclosed2", string_multiline_unclosed2), &
+      & new_unittest("string-multiline-unclosed3", string_multiline_unclosed3), &
       & new_unittest("string-multiline-escape", string_multiline_escape), &
       & new_unittest("token-keypath-string", token_keypath_string), &
       & new_unittest("token-keypath-mstring", token_keypath_mstring), &
@@ -131,6 +134,7 @@ subroutine collect_lexer(testsuite)
       & new_unittest("token-float-exceptional", token_float_exceptional), &
       & new_unittest("token-float-fuzz", token_float_fuzz), &
       & new_unittest("token-datetime", token_datetime), &
+      & new_unittest("token-string", token_string), &
       & new_unittest("token-bool", token_bool), &
       & new_unittest("whitespace-blank", whitespace_blank), &
       & new_unittest("whitespace-tab", whitespace_tab), &
@@ -480,6 +484,16 @@ subroutine string_escape_invalid(error)
       & [token_kind%invalid, token_kind%comma, token_kind%invalid, token_kind%eof], .false.)
 end subroutine string_escape_invalid
 
+subroutine string_unicode_escape(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   character(len=*), parameter :: nl = new_line('a')
+
+   call check_token(error, """\uD800"",""\ufffe""", &
+      & [token_kind%invalid, token_kind%comma, token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_unicode_escape
+
 subroutine string_triple(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -496,13 +510,29 @@ subroutine string_multiline(error)
       & [token_kind%mstring, token_kind%eof], .false.)
 end subroutine string_multiline
 
-subroutine string_multiline_unclosed(error)
+subroutine string_multiline_unclosed1(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
    call check_token(error, """""""", &
       & [token_kind%invalid, token_kind%eof], .false.)
-end subroutine string_multiline_unclosed
+end subroutine string_multiline_unclosed1
+
+subroutine string_multiline_unclosed2(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check_token(error, """""""\", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_multiline_unclosed2
+
+subroutine string_multiline_unclosed3(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check_token(error, """""""\""""""", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_multiline_unclosed3
 
 subroutine string_multiline_escape(error)
    !> Error handling
@@ -1207,6 +1237,22 @@ subroutine token_bool(error)
    if (allocated(error)) return
 end subroutine token_bool
 
+subroutine token_string(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   type(toml_lexer) :: lexer
+   character(:), allocatable :: val
+
+   call new_lexer_from_string(lexer, """\u03B4"",""\U000003B4""")
+   call lexer%extract(toml_token(token_kind%string, 1, 8), val)
+   call check(error, val, "δ")
+   if (allocated(error)) return
+   call lexer%extract(toml_token(token_kind%string, 10, 21), val)
+   call check(error, val, "δ")
+   if (allocated(error)) return
+end subroutine token_string
+
 subroutine lexer_from_sequential(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1246,7 +1292,6 @@ subroutine check_token(error, string, expected, keypath)
 
    integer :: it
    logical :: okay
-   character(len=:), allocatable :: msg
    type(toml_lexer) :: lexer
    type(toml_token) :: token
    type(toml_label), allocatable :: label(:)

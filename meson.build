@@ -14,7 +14,7 @@
 project(
   'toml-f',
   'fortran',
-  version: '0.3.0',
+  version: '0.4.2',
   license: 'Apache-2.0 OR MIT',
   meson_version: '>=0.55',
   default_options: [
@@ -59,7 +59,7 @@ if install
     install_dir: get_option('datadir')/'licenses'/meson.project_name()
   )
 
-  module_id = meson.project_name() / fc_id + '-' + fc.version()
+  module_id = meson.project_name() / 'modules'
   meson.add_install_script(
     find_program(files('config'/'install-mod.py')),
     get_option('includedir') / module_id,

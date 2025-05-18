@@ -65,6 +65,8 @@ module tomlf_de_token
       integer :: bool = 17
       !> Datetime value
       integer :: datetime = 18
+      !> Absence of value
+      integer :: nil = 19
    end type enum_token
 
    !> Actual enumerator for token kinds
@@ -154,6 +156,7 @@ pure function stringify(token) result(str)
    case(token_kind%float); str = "float"
    case(token_kind%bool); str = "bool"
    case(token_kind%datetime); str = "datetime"
+   case(token_kind%nil); str = "nil"
    end select
 end function stringify
 

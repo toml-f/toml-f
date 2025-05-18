@@ -17,7 +17,7 @@ get_directory_property(is-subproject PARENT_DIRECTORY)
 project(
   "toml-f"
   LANGUAGES "Fortran"
-  VERSION "0.3.0"
+  VERSION "0.4.2"
   DESCRIPTION "A TOML parser implementation for data serialization and deserialization in Fortran"
 )
 
@@ -53,7 +53,7 @@ target_include_directories(
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${module-dir}>
 )
 if(NOT EXISTS "${PROJECT_BINARY_DIR}/include")
-   make_directory("${PROJECT_BINARY_DIR}/include")
+   file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/include")
 endif()
 
 # Export targets for other projects

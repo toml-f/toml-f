@@ -176,8 +176,11 @@ subroutine parse_table_header(parser, lexer)
 
    array_of_tables = parser%token%kind == token_kind%lbracket
 
-   if (array_of_tables .or. parser%token%kind == token_kind%whitespace) then
+   if (array_of_tables) then
       call next_token(parser, lexer)
+      if (parser%token%kind == token_kind%whitespace) then
+         call next_token(parser, lexer)
+      end if
    end if
 
    call fill_stack(lexer, parser, top, stack)
@@ -484,6 +487,9 @@ recursive subroutine parse_keyval(parser, lexer, table)
       call add_keyval(table, key, vptr)
       call parse_value(parser, lexer, vptr)
 
+   case(token_kind%nil)
+      call next_token(parser, lexer)
+
    case(token_kind%lbracket)
       call add_array(table, key, aptr)
       call parse_inline_array(parser, lexer, aptr)
@@ -535,6 +541,9 @@ recursive subroutine parse_inline_array(parser, lexer, array)
       case default
          call add_keyval(array, vptr)
          call parse_value(parser, lexer, vptr)
+
+      case(token_kind%nil)
+         call next_token(parser, lexer)
 
       case(token_kind%lbracket)
          call add_array(array, aptr)

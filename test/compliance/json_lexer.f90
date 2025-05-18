@@ -211,6 +211,9 @@ subroutine next_token(lexer, token)
    case("t", "f")
       call next_boolean(lexer, token)
       return
+   case("n")
+      call next_null(lexer, token)
+      return
    case(",")
       token = toml_token(token_kind%comma, prev, pos)
       return
@@ -232,8 +235,8 @@ subroutine next_string(lexer, token)
 
    character(1, tfc) :: ch
    character(*, tfc), parameter :: valid_escape = 'btnfr\"'
-   integer :: prev, pos, it
-   logical :: escape, valid, space
+   integer :: prev, pos
+   logical :: escape, valid
 
    prev = lexer%pos
    pos = lexer%pos
@@ -271,7 +274,7 @@ subroutine next_number(lexer, token)
    type(toml_token), intent(inout) :: token
 
    integer :: prev, pos, point, expo
-   logical :: minus, okay, zero, first
+   logical :: minus, zero, first
    character(1, tfc) :: ch
    integer, parameter :: offset(*) = [0, 1, 2]
 
@@ -349,6 +352,27 @@ subroutine next_boolean(lexer, token)
       token = toml_token(token_kind%bool, prev, pos)
    end select
 end subroutine next_boolean
+
+!> Process next null token
+subroutine next_null(lexer, token)
+   !> Instance of the lexer
+   type(json_lexer), intent(inout) :: lexer
+   !> Current token
+   type(toml_token), intent(inout) :: token
+
+   integer :: pos, prev
+
+   prev = lexer%pos
+   pos = lexer%pos
+
+   do while(verify(lexer%chunk(pos+1:pos+1), terminated) > 0 .and. pos < len(lexer%chunk))
+      pos = pos + 1
+   end do
+
+   token = toml_token( &
+      & merge(token_kind%nil, token_kind%invalid, lexer%chunk(prev:pos) == "null"), &
+      & prev, pos)
+end subroutine next_null
 
 !> Validate characters in string, non-printable characters are invalid in this context
 pure function valid_string(ch) result(valid)
@@ -476,6 +500,9 @@ subroutine extract_datetime(lexer, token, val)
    type(toml_token), intent(in) :: token
    !> Datetime value of token
    type(toml_datetime), intent(out) :: val
+
+   associate(lexer => lexer, token => token)  ! ignore unused dummy arguments
+   end associate
 end subroutine extract_datetime
 
 end module tjson_lexer

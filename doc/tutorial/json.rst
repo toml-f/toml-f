@@ -1,3 +1,5 @@
+.. _json-lexer:
+
 Writing a custom lexer
 ======================
 
@@ -126,7 +128,7 @@ We use a select case statement to decide which token to produce.
 .. literalinclude:: ../../test/compliance/json_lexer.f90
    :language: fortran
    :caption: src/json_lexer.f90 (next_token, continued)
-   :lines: 182-224
+   :lines: 182-227
 
 To wrap up the lexing we will try to identify unknown tokens as well as possible trying to advance to the next terminating character.
 For the terminating characters, we choose whitespace as well as control characters and place those in the module scope.
@@ -150,28 +152,35 @@ While doing so we can also ensure that the escape sequences found are valid and 
 .. literalinclude:: ../../test/compliance/json_lexer.f90
    :language: fortran
    :caption: src/json_lexer.f90 (next_string)
-   :lines: 226-264
+   :lines: 229-267
 
 Strings can only contain printable characters, therefore we check for valid string characters using a small *valid_string* function for each character.
 
 .. literalinclude:: ../../test/compliance/json_lexer.f90
    :language: fortran
    :caption: src/json_lexer.f90 (valid_string)
-   :lines: 353-365
+   :lines: 377-389
 
 We also need to identify numbers, mapping to either integers or floats in TOML, which is done via *next_number*.
 
 .. literalinclude:: ../../test/compliance/json_lexer.f90
    :language: fortran
    :caption: src/json_lexer.f90 (next_number)
-   :lines: 266-327
+   :lines: 269-330
 
 To support boolean values we implement a *next_boolean* procedure.
 
 .. literalinclude:: ../../test/compliance/json_lexer.f90
    :language: fortran
    :caption: src/json_lexer.f90 (next_boolean)
-   :lines: 329-351
+   :lines: 332-354
+
+Finally, we also want to parse null values using the *next_null* procedure.
+
+.. literalinclude:: ../../test/compliance/json_lexer.f90
+   :language: fortran
+   :caption: src/json_lexer.f90 (next_null)
+   :lines: 356-375
 
 With this logic available we can now generate all required tokens for parsing JSON.
 
@@ -191,6 +200,7 @@ This will direct the parser to leave the root document where newlines are semant
 
 .. admonition:: Exercise
 
+   The *nil* token will make the parser skip the respective value.
    If we want to support *null* values, how would we have to modify our lexer to produce for example an empty table ``{}`` instead, *i.e.* a *lbrace* and *rbrace* token?
 
 
@@ -206,35 +216,35 @@ We will also use the *extract_string* routine to catch the *keypath* token we in
 .. literalinclude:: ../../test/compliance/json_lexer.f90
    :language: fortran
    :caption: src/json_lexer.f90 (extract_string)
-   :lines: 367-406
+   :lines: 391-430
 
 Similarly, we implement the *extract_integer*, instead of using an internal read, we implement the reading ourselves.
 
 .. literalinclude:: ../../test/compliance/json_lexer.f90
    :language: fortran
    :caption: src/json_lexer.f90 (extract_integer)
-   :lines: 408-437
+   :lines: 432-461
 
 For floating point numbers implemented in *extract_float* we will just use an internal read.
 
 .. literalinclude:: ../../test/compliance/json_lexer.f90
    :language: fortran
    :caption: src/json_lexer.f90 (extract_float)
-   :lines: 439-455
+   :lines: 463-479
 
 The last token we can produce and extract from our lexer is are boolean values, which we implement in *extract_boolean*.
 
 .. literalinclude:: ../../test/compliance/json_lexer.f90
    :language: fortran
    :caption: src/json_lexer.f90 (extract_boolean)
-   :lines: 457-469
+   :lines: 481-493
 
 We create a mocked routine for *extract_datetime* since we cannot produce this token in JSON.
 
 .. literalinclude:: ../../test/compliance/json_lexer.f90
    :language: fortran
    :caption: src/json_lexer.f90 (extract_datetime)
-   :lines: 471-479
+   :lines: 495-506
 
 This provides our lexer with full functionality regarding the extraction of values needed for parsing and creating data structures.
 
@@ -301,21 +311,21 @@ The former is a wrapper that is using the *new_lexer_from_file* constructor.
 .. literalinclude:: ../../test/compliance/json_parser.f90
    :language: fortran
    :caption: src/json_parser.f90 (json_load_file)
-   :lines: 53-75
+   :lines: 53-77
 
 The latter wraps the *new_lexer_from_unit* constructor.
 
 .. literalinclude:: ../../test/compliance/json_parser.f90
    :language: fortran
    :caption: src/json_parser.f90 (json_load_unit)
-   :lines: 77-100
+   :lines: 79-103
 
 Finally, we also provide *json_loads* by implementing *json_load_string* using our *new_lexer_from_string* constructor.
 
 .. literalinclude:: ../../test/compliance/json_parser.f90
    :language: fortran
    :caption: src/json_parser.f90 (json_load_unit)
-   :lines: 102-120
+   :lines: 105-124
 
 These wrappers so far are very straightforward, first setting up a lexer instance and invoking the *parse* procedure which will construct the actual parser instance and process the token stream.
 After a successful run, the *table* instance will be allocated, for the post-processing, we invoke the *prune* routine.
@@ -323,19 +333,19 @@ After a successful run, the *table* instance will be allocated, for the post-pro
 .. literalinclude:: ../../test/compliance/json_parser.f90
    :language: fortran
    :caption: src/json_parser.f90 (prune)
-   :lines: 122-129,131-137,139
+   :lines: 127-131,134-135,138
 
-Where we effectively retrieve the first child from the root table and create a deep copy of it which is then returned.
+Where we effectively remove the first child from the root table and return is a polymorphic *toml_value*.
+This has the advantage that we can support arrays and values at the root level with our JSON loader.
 
 .. tip::
 
-   An alternative approach would be to *pop* the value from the root table and return the polymorphic *toml_value* instance.
-   This would have the advantage that we can support arrays and values at the root level with our JSON loader.
-   The user than has to dispatch the value using a *select type* construct or by creating a view using the *cast_to_table* / *cast_to_array* / *cast_to_keyval* functions.
+   The user can dispatch the value using a *select type* construct or by creating a view using the *cast_to_table* / *cast_to_array* / *cast_to_keyval* functions.
+
 
 .. dropdown:: full source
 
-   For completeness here is again the full source of our lexer implementation.
+   For completeness here is again the full source of our parser implementation.
 
    Note that this implementation also contains an implementation of a *toml_visitor* to prune type annotations used in the validation test suite to represent TOML values.
 

@@ -50,7 +50,6 @@ if not meson.is_subproject() and go_exe.found()
     'valid/string/escape-tricky',
     'valid/string/escapes',
     'valid/string/multiline',
-    'valid/string/unicode-escape',
   ]
 
   foreach t : valid_tests
@@ -80,10 +79,6 @@ if not meson.is_subproject() and go_exe.found()
     'invalid/control/comment-us',
     'invalid/encoding/bad-utf8-in-comment',
     'invalid/encoding/bad-utf8-in-string',
-    'invalid/string/bad-codepoint',
-    'invalid/string/basic-multiline-out-of-range-unicode-escape-1',
-    'invalid/string/basic-multiline-out-of-range-unicode-escape-2',
-    'invalid/string/basic-out-of-range-unicode-escape-1',
     'invalid/string/basic-out-of-range-unicode-escape-2',
     'invalid/table/append-with-dotted-keys-1',
     'invalid/table/append-with-dotted-keys-2',

@@ -39,12 +39,10 @@ Convince yourself that the empty table indeed changed while reading by passing a
 .. code-block:: fortran
 
    block
-     use tomlf, only : toml_serializer
-     type(toml_serializer) :: ser
+     use tomlf, only : toml_serialize
 
      print '(a)', "# Final TOML data structure"
-     ser = toml_serializer()
-     call table%accept(ser)
+     print '(a)', toml_serialize(table)
    end block
    ! Expected output:
    ! # Final TOML data structure

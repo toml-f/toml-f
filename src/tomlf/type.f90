@@ -29,16 +29,16 @@
 module tomlf_type
    use tomlf_constants, only : tfc
    use tomlf_error, only : toml_stat
-   use tomlf_type_array, only : toml_array, new_array, new, len
+   use tomlf_type_array, only : toml_array, new_array, new, initialized, len
    use tomlf_type_keyval, only : toml_keyval, new_keyval, new
-   use tomlf_type_table, only : toml_table, new_table, new
+   use tomlf_type_table, only : toml_table, new_table, new, initialized
    use tomlf_type_value, only : toml_value, toml_visitor, toml_key
    implicit none
    private
 
    public :: toml_value, toml_visitor, toml_table, toml_array, toml_keyval
    public :: toml_key
-   public :: new, new_table, new_array, new_keyval, len
+   public :: new, new_table, new_array, new_keyval, initialized, len
    public :: add_table, add_array, add_keyval
    public :: is_array_of_tables
    public :: cast_to_table, cast_to_array, cast_to_keyval

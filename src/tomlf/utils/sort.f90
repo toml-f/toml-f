@@ -62,7 +62,7 @@ contains
       low = 1
       high = size(list)
 
-      sorted = list
+      allocate(sorted, source=list)
 
       allocate(indexarray(high), source=[(i, i=low, high)])
 

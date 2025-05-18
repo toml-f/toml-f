@@ -15,11 +15,11 @@
 module tomlf_type_array
    use tomlf_error, only : toml_stat
    use tomlf_type_value, only : toml_value, toml_visitor
-   use tomlf_structure, only : toml_ordered, new_ordered
+   use tomlf_structure, only : toml_list_structure, new_list_structure
    implicit none
    private
 
-   public :: toml_array, new_array, new, len
+   public :: toml_array, new_array, new, initialized, len
 
 
    !> TOML array
@@ -29,7 +29,7 @@ module tomlf_type_array
       logical :: inline = .true.
 
       !> Storage unit for TOML values of this array
-      class(toml_ordered), allocatable :: list
+      class(toml_list_structure), allocatable, private :: list
 
    contains
 
@@ -69,6 +69,12 @@ module tomlf_type_array
    end interface
 
 
+   !> Check whether data structure is initialized properly
+   interface initialized
+      module procedure :: array_initialized
+   end interface initialized
+
+
 contains
 
 
@@ -78,7 +84,7 @@ subroutine new_array(self)
    !> Instance of the TOML array
    type(toml_array), intent(out) :: self
 
-   call new_ordered(self%list)
+   call new_list_structure(self%list)
 
 end subroutine new_array
 
@@ -92,6 +98,19 @@ function new_array_func() result(self)
    call new_array(self)
 
 end function new_array_func
+
+
+!> Check whether data structure is initialized properly
+pure function array_initialized(self) result(okay)
+
+   !> Instance of the TOML array
+   type(toml_array), intent(in) :: self
+
+   !> Data structure is initialized
+   logical :: okay
+
+   okay = allocated(self%list)
+end function array_initialized
 
 
 !> Get number of TOML values in the array

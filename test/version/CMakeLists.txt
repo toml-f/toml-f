@@ -11,6 +11,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+if(POLICY CMP0110)
+  # Required for policy change
+  cmake_policy(SET CMP0110 NEW)
+endif()
+
 # Check for consistency of the internal version number with the one defined
 # in the projects meson.build
 add_executable(
@@ -23,7 +28,7 @@ target_link_libraries(
   "${PROJECT_NAME}-lib"
 )
 add_test(
-  ${PROJECT_NAME}/"version"
+  "${PROJECT_NAME}/version"
   ${PROJECT_NAME}-test-version
   "${PROJECT_VERSION}"
 )

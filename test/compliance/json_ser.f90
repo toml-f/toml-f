@@ -82,7 +82,6 @@ subroutine visit_keyval(visitor, keyval)
    integer(tfi), pointer :: idummy
    real(tfr), pointer :: fdummy
    logical, pointer :: ldummy
-   logical :: stat
 
    call indent(visitor)
 
