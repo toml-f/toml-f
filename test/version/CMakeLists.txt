@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.19")
+if(POLICY CMP0110)
   # Required for policy change
   cmake_policy(SET CMP0110 NEW)
 endif()
