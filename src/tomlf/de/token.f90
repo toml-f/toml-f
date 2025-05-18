@@ -156,6 +156,7 @@ pure function stringify(token) result(str)
    case(token_kind%float); str = "float"
    case(token_kind%bool); str = "bool"
    case(token_kind%datetime); str = "datetime"
+   case(token_kind%nil); str = "nil"
    end select
 end function stringify
 

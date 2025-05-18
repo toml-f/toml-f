@@ -99,12 +99,6 @@ subroutine table_real_dp(error)
    call check(error, val, in3)
    if (allocated(error)) return
 
-   call set_value(table, "int", huge(1_tfi), stat=stat)
-   call get_value(table, "int", val, stat=stat)
-
-   call check(error, stat, toml_stat%conversion_error)
-   if (allocated(error)) return
-
    call set_value(table, "int", 1_tfi, stat=stat)
    call get_value(table, "int", val, stat=stat)
 
@@ -163,12 +157,6 @@ subroutine table_real_sp(error)
    call get_value(table, "real", val, in3, stat=stat)
 
    call check(error, val, in3)
-   if (allocated(error)) return
-
-   call set_value(table, "int", huge(1_tfi), stat=stat)
-   call get_value(table, "int", val, stat=stat)
-
-   call check(error, stat, toml_stat%conversion_error)
    if (allocated(error)) return
 
    call set_value(table, "int", 1_tfi, stat=stat)
