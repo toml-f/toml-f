@@ -74,5 +74,7 @@ if install
 endif
 
 # add the testsuite
-fpm_toml = meson.current_source_dir()/'fpm.toml'
-subdir('test')
+if get_option('tests')
+  fpm_toml = meson.current_source_dir()/'fpm.toml'
+  subdir('test')
+endif
