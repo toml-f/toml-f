@@ -23,6 +23,7 @@ project(
 
 # Follow GNU conventions for installing directories
 include(GNUInstallDirs)
+include(CTest) # option(BUILD_TESTING). ON by default.
 
 # General configuration information
 add_subdirectory("config")
@@ -89,6 +90,8 @@ install(
 )
 
 # add the testsuite
-enable_testing()
-set(fpm-toml "${PROJECT_SOURCE_DIR}/fpm.toml")
-add_subdirectory("test")
+if(BUILD_TESTING)
+  enable_testing()
+  set(fpm-toml "${PROJECT_SOURCE_DIR}/fpm.toml")
+  add_subdirectory("test")
+endif()
