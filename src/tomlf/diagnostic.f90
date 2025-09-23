@@ -293,6 +293,7 @@ pure function render_text_with_labels(input, label, color, source) result(string
    logical, allocatable :: display(:)
 
    allocate(token(0))  ! avoid compiler warning
+   allocate(character(len=0) :: string) ! Allocate to avoid referencing an unallocated variable
    token = line_tokens(input)
    line(:) = [(count(token%first <= label(it)%first), it = 1, size(label))]
    shift(:) = token(line)%first - 1
