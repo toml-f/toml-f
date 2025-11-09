@@ -35,6 +35,8 @@ module tomlf_de_parser
       type(toml_terminal) :: color = toml_terminal()
       !> Record all tokens
       integer :: context_detail = 0
+      !> Enable features from unreleased TOML standards
+      logical :: future = .false.
    end type toml_parser_config
 
    interface toml_parser_config
@@ -494,7 +496,11 @@ recursive subroutine parse_keyval(parser, lexer, table)
 
    case(token_kind%lbrace)
       call add_table(table, key, tptr)
-      call parse_inline_table(parser, lexer, tptr)
+      if (parser%config%future) then
+         call parse_inline_table_future(parser, lexer, tptr)
+      else
+         call parse_inline_table(parser, lexer, tptr)
+      end if
 
    end select
    if (allocated(parser%diagnostic)) return
@@ -545,7 +551,11 @@ recursive subroutine parse_inline_array(parser, lexer, array)
 
       case(token_kind%lbrace)
          call add_table(array, tptr)
-         call parse_inline_table(parser, lexer, tptr)
+         if (parser%config%future) then
+            call parse_inline_table_future(parser, lexer, tptr)
+         else
+            call parse_inline_table(parser, lexer, tptr)
+         end if
 
       end select
       if (allocated(parser%diagnostic)) exit inline_array
@@ -613,6 +623,55 @@ recursive subroutine parse_inline_table(parser, lexer, table)
 
    call consume(parser, lexer, token_kind%rbrace)
 end subroutine parse_inline_table
+
+recursive subroutine parse_inline_table_future(parser, lexer, table)
+   !> Instance of the parser
+   class(toml_parser), intent(inout) :: parser
+   !> Instance of the lexer
+   class(toml_lexer), intent(inout) :: lexer
+   !> Current table
+   type(toml_table), intent(inout) :: table
+
+   integer, parameter :: skip_tokens(*) = &
+      [token_kind%whitespace, token_kind%comment, token_kind%newline]
+
+   table%inline = .true.
+   call consume(parser, lexer, token_kind%lbrace)
+
+   inline_table: do while(.not.allocated(parser%diagnostic))
+      do while(any(parser%token%kind == skip_tokens))
+         call next_token(parser, lexer)
+      end do
+
+      select case(parser%token%kind)
+      case(token_kind%rbrace)
+         exit inline_table
+
+      case default
+         call syntax_error(parser%diagnostic, lexer, parser%token, &
+            & "Invalid character in inline table", &
+            & "unexpected "//stringify(parser%token))
+
+      case(token_kind%keypath, token_kind%string, token_kind%literal)
+         call parse_keyval(parser, lexer, table)
+
+      end select
+      if (allocated(parser%diagnostic)) exit inline_table
+
+      do while(any(parser%token%kind == skip_tokens))
+         call next_token(parser, lexer)
+      end do
+
+      if (parser%token%kind == token_kind%comma) then
+         call next_token(parser, lexer)
+         cycle inline_table
+      end if
+      exit inline_table
+   end do inline_table
+   if (allocated(parser%diagnostic)) return
+
+   call consume(parser, lexer, token_kind%rbrace)
+end subroutine parse_inline_table_future
 
 subroutine parse_value(parser, lexer, kval)
    !> Instance of the parser
