@@ -1,0 +1,541 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="TOML parser implementation for data serialization and deserialization in Fortran.">
+    <meta name="author" content="Sebastian Ehlert" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>All Procedures &ndash; TOML-Fortran
+</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">TOML-Fortran </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/absint.html">Abstract Interfaces</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12" id='text'>
+			 <h1>Procedures</h1>
+			 <table class="table table-striped">
+			 <thead><tr><th>Procedure</th><th>Location</th><th>Procedure Type</th><th>Description</th></tr></thead>
+			 <tbody>
+			   <tr>
+                 <td><a href='../interface/add_array.html'>add_array</a></td>
+                 <td><a href='../module/tomlf_type.html'>tomlf_type</a></td>
+                 <td>Interface</td>
+                 <td><p>Interface to build new arrays</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/add_keyval.html'>add_keyval</a></td>
+                 <td><a href='../module/tomlf_type.html'>tomlf_type</a></td>
+                 <td>Interface</td>
+                 <td><p>Interface to build new key-value pairs</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/add_table.html'>add_table</a></td>
+                 <td><a href='../module/tomlf_type.html'>tomlf_type</a></td>
+                 <td>Interface</td>
+                 <td><p>Interface to build new tables</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cast_to_array.html'>cast_to_array</a></td>
+                 <td><a href='../module/tomlf_type.html'>tomlf_type</a></td>
+                 <td>Function</td>
+                 <td><p>Cast an abstract TOML value to a TOML array</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cast_to_keyval.html'>cast_to_keyval</a></td>
+                 <td><a href='../module/tomlf_type.html'>tomlf_type</a></td>
+                 <td>Function</td>
+                 <td><p>Cast an abstract TOML value to a TOML key-value pair</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cast_to_table.html'>cast_to_table</a></td>
+                 <td><a href='../module/tomlf_type.html'>tomlf_type</a></td>
+                 <td>Function</td>
+                 <td><p>Cast an abstract TOML value to a TOML table</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/escape.html'>escape</a></td>
+                 <td><a href='../module/tomlf_terminal.html'>tomlf_terminal</a></td>
+                 <td>Function</td>
+                 <td><p>Transform a color code into an actual ANSI escape sequence</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/get_tomlf_version.html'>get_tomlf_version</a></td>
+                 <td><a href='../module/tomlf_version.html'>tomlf_version</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Getter function to retrieve TOML-Fortran version</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/get_value.html'>get_value</a></td>
+                 <td><a href='../module/tomlf_build_keyval.html'>tomlf_build_keyval</a></td>
+                 <td>Interface</td>
+                 <td><p>Getter functions to manipulate TOML values</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/get_value~2.html'>get_value</a></td>
+                 <td><a href='../module/tomlf_build_path.html'>tomlf_build_path</a></td>
+                 <td>Interface</td>
+                 <td><p>Getter functions to manipulate TOML tables</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/get_value~3.html'>get_value</a></td>
+                 <td><a href='../module/tomlf_build_array.html'>tomlf_build_array</a></td>
+                 <td>Interface</td>
+                 <td><p>Getter functions to manipulate TOML arrays</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/get_value~4.html'>get_value</a></td>
+                 <td><a href='../module/tomlf_build_table.html'>tomlf_build_table</a></td>
+                 <td>Interface</td>
+                 <td><p>Getter functions to manipulate TOML tables</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/has_date.html'>has_date</a></td>
+                 <td><a href='../module/tomlf_datetime.html'>tomlf_datetime</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/has_time.html'>has_time</a></td>
+                 <td><a href='../module/tomlf_datetime.html'>tomlf_datetime</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/initialized.html'>initialized</a></td>
+                 <td><a href='../module/tomlf_type_array.html'>tomlf_type_array</a></td>
+                 <td>Interface</td>
+                 <td><p>Check whether data structure is initialized properly</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/initialized~2.html'>initialized</a></td>
+                 <td><a href='../module/tomlf_type_table.html'>tomlf_type_table</a></td>
+                 <td>Interface</td>
+                 <td><p>Check whether data structure is initialized properly</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/is_array_of_tables.html'>is_array_of_tables</a></td>
+                 <td><a href='../module/tomlf_type.html'>tomlf_type</a></td>
+                 <td>Function</td>
+                 <td><p>Determine if array contains only tables</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/len.html'>len</a></td>
+                 <td><a href='../module/tomlf_type_array.html'>tomlf_type_array</a></td>
+                 <td>Interface</td>
+                 <td><p>Overload len function</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/make_error.html'>make_error</a></td>
+                 <td><a href='../module/tomlf_error.html'>tomlf_error</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Create new error message</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/merge_array.html'>merge_array</a></td>
+                 <td><a href='../module/tomlf_build_merge.html'>tomlf_build_merge</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Append values from one TOML array to another</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/merge_table.html'>merge_table</a></td>
+                 <td><a href='../module/tomlf_build_merge.html'>tomlf_build_merge</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Merge TOML tables by appending their values</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/new.html'>new</a></td>
+                 <td><a href='../module/tomlf_type_array.html'>tomlf_type_array</a></td>
+                 <td>Interface</td>
+                 <td><p>Overloaded constructor for TOML values</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/new~2.html'>new</a></td>
+                 <td><a href='../module/tomlf_type_table.html'>tomlf_type_table</a></td>
+                 <td>Interface</td>
+                 <td><p>Overloaded constructor for TOML values</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/new~3.html'>new</a></td>
+                 <td><a href='../module/tomlf_type_keyval.html'>tomlf_type_keyval</a></td>
+                 <td>Interface</td>
+                 <td><p>Overloaded constructor for TOML values</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/new~4.html'>new</a></td>
+                 <td><a href='../module/tomlf_ser.html'>tomlf_ser</a></td>
+                 <td>Interface</td>
+                 <td><p>Overloaded constructor for TOML serializers</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/new_array.html'>new_array</a></td>
+                 <td><a href='../module/tomlf_type_array.html'>tomlf_type_array</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Constructor to create a new TOML array and allocate the internal storage</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/new_array_list.html'>new_array_list</a></td>
+                 <td><a href='../module/tomlf_structure_array_list.html'>tomlf_structure_array_list</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Constructor for the storage data structure</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/new_keyval.html'>new_keyval</a></td>
+                 <td><a href='../module/tomlf_type_keyval.html'>tomlf_type_keyval</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Constructor to create a new TOML key-value pair</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/new_lexer_from_file.html'>new_lexer_from_file</a></td>
+                 <td><a href='../module/tomlf_de_lexer.html'>tomlf_de_lexer</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Create a new instance of a lexer by reading from a file</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/new_lexer_from_string.html'>new_lexer_from_string</a></td>
+                 <td><a href='../module/tomlf_de_lexer.html'>tomlf_de_lexer</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Create a new instance of a lexer by reading from a string.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/new_lexer_from_unit.html'>new_lexer_from_unit</a></td>
+                 <td><a href='../module/tomlf_de_lexer.html'>tomlf_de_lexer</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Create a new instance of a lexer by reading from a unit.</p><a href="../proc/new_lexer_from_unit.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/new_list_structure.html'>new_list_structure</a></td>
+                 <td><a href='../module/tomlf_structure.html'>tomlf_structure</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Constructor for the ordered storage data structure</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/new_map_structure.html'>new_map_structure</a></td>
+                 <td><a href='../module/tomlf_structure.html'>tomlf_structure</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Constructor for the storage data structure</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/new_ordered_map.html'>new_ordered_map</a></td>
+                 <td><a href='../module/tomlf_structure_ordered_map.html'>tomlf_structure_ordered_map</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Constructor for the storage data structure</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/new_serializer.html'>new_serializer</a></td>
+                 <td><a href='../module/tomlf_ser.html'>tomlf_ser</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Constructor to create new serializer instance</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/new_table.html'>new_table</a></td>
+                 <td><a href='../module/tomlf_type_table.html'>tomlf_type_table</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Constructor to create a new TOML table and allocate the internal storage</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(+).html'>operator(+)</a></td>
+                 <td><a href='../module/tomlf_terminal.html'>tomlf_terminal</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(SLASHSLASH).html'>operator(//)</a></td>
+                 <td><a href='../module/tomlf_terminal.html'>tomlf_terminal</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(==).html'>operator(==)</a></td>
+                 <td><a href='../module/tomlf_datetime.html'>tomlf_datetime</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/parse.html'>parse</a></td>
+                 <td><a href='../module/tomlf_de_parser.html'>tomlf_de_parser</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Parse TOML document and return root table</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/read_whole_file.html'>read_whole_file</a></td>
+                 <td><a href='../module/tomlf_utils_io.html'>tomlf_utils_io</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Read a whole file into an array of characters</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/read_whole_line.html'>read_whole_line</a></td>
+                 <td><a href='../module/tomlf_utils_io.html'>tomlf_utils_io</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Read a whole line from a formatted unit into a deferred length character variable</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/render.html'>render</a></td>
+                 <td><a href='../module/tomlf_diagnostic.html'>tomlf_diagnostic</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/resize.html'>resize</a></td>
+                 <td><a href='../module/tomlf_de_token.html'>tomlf_de_token</a></td>
+                 <td>Interface</td>
+                 <td><p>Reallocate a list of tokens</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/resize.html'>resize</a></td>
+                 <td><a href='../module/tomlf_structure_node.html'>tomlf_structure_node</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Change size of the TOML value list</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/set_value.html'>set_value</a></td>
+                 <td><a href='../module/tomlf_build_keyval.html'>tomlf_build_keyval</a></td>
+                 <td>Interface</td>
+                 <td><p>Setter functions to manipulate TOML values</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/set_value~2.html'>set_value</a></td>
+                 <td><a href='../module/tomlf_build_path.html'>tomlf_build_path</a></td>
+                 <td>Interface</td>
+                 <td><p>Setter functions to manipulate TOML tables</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/set_value~3.html'>set_value</a></td>
+                 <td><a href='../module/tomlf_build_array.html'>tomlf_build_array</a></td>
+                 <td>Interface</td>
+                 <td><p>Setter functions to manipulate TOML arrays</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/set_value~4.html'>set_value</a></td>
+                 <td><a href='../module/tomlf_build_table.html'>tomlf_build_table</a></td>
+                 <td>Interface</td>
+                 <td><p>Setter functions to manipulate TOML tables</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/sort.html'>sort</a></td>
+                 <td><a href='../module/tomlf_utils_sort.html'>tomlf_utils_sort</a></td>
+                 <td>Interface</td>
+                 <td><p>Create overloaded interface for export</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/stringify.html'>stringify</a></td>
+                 <td><a href='../module/tomlf_de_token.html'>tomlf_de_token</a></td>
+                 <td>Function</td>
+                 <td><p>Represent a token as string</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/to_string.html'>to_string</a></td>
+                 <td><a href='../module/tomlf_datetime.html'>tomlf_datetime</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/to_string~2.html'>to_string</a></td>
+                 <td><a href='../module/tomlf_utils.html'>tomlf_utils</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_array.html'>toml_array</a></td>
+                 <td><a href='../module/tomlf_type_array.html'>tomlf_type_array</a></td>
+                 <td>Interface</td>
+                 <td><p>Create standard constructor</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_datetime.html'>toml_datetime</a></td>
+                 <td><a href='../module/tomlf_datetime.html'>tomlf_datetime</a></td>
+                 <td>Interface</td>
+                 <td><p>Create a new TOML datetime value</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_diagnostic.html'>toml_diagnostic</a></td>
+                 <td><a href='../module/tomlf_diagnostic.html'>tomlf_diagnostic</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_dump.html'>toml_dump</a></td>
+                 <td><a href='../module/tomlf_ser.html'>tomlf_ser</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_dumps.html'>toml_dumps</a></td>
+                 <td><a href='../module/tomlf_ser.html'>tomlf_ser</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/toml_escape_string.html'>toml_escape_string</a></td>
+                 <td><a href='../module/tomlf_utils.html'>tomlf_utils</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Escape all special characters in a TOML string</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_label.html'>toml_label</a></td>
+                 <td><a href='../module/tomlf_diagnostic.html'>tomlf_diagnostic</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_load.html'>toml_load</a></td>
+                 <td><a href='../module/tomlf_de.html'>tomlf_de</a></td>
+                 <td>Interface</td>
+                 <td><p>Load a TOML data structure from the provided source</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_loads.html'>toml_loads</a></td>
+                 <td><a href='../module/tomlf_de.html'>tomlf_de</a></td>
+                 <td>Interface</td>
+                 <td><p>Load a TOML data structure from a string</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_merge_config.html'>toml_merge_config</a></td>
+                 <td><a href='../module/tomlf_build_merge.html'>tomlf_build_merge</a></td>
+                 <td>Interface</td>
+                 <td><p>Constructor for merge configuration</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_parse.html'>toml_parse</a></td>
+                 <td><a href='../module/tomlf_de.html'>tomlf_de</a></td>
+                 <td>Interface</td>
+                 <td><p>Parse a TOML document.</p><a href="../interface/toml_parse.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_parser_config.html'>toml_parser_config</a></td>
+                 <td><a href='../module/tomlf_de_parser.html'>tomlf_de_parser</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_path.html'>toml_path</a></td>
+                 <td><a href='../module/tomlf_build_path.html'>tomlf_build_path</a></td>
+                 <td>Interface</td>
+                 <td><p>Convenience constructors for building key paths from strings instead of keys</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/toml_serialize.html'>toml_serialize</a></td>
+                 <td><a href='../module/tomlf_ser.html'>tomlf_ser</a></td>
+                 <td>Function</td>
+                 <td><p>Serialize a JSON value to a string and return it.</p><a href="../proc/toml_serialize.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_serializer.html'>toml_serializer</a></td>
+                 <td><a href='../module/tomlf_ser.html'>tomlf_ser</a></td>
+                 <td>Interface</td>
+                 <td><p>Create standard constructor</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_table.html'>toml_table</a></td>
+                 <td><a href='../module/tomlf_type_table.html'>tomlf_type_table</a></td>
+                 <td>Interface</td>
+                 <td><p>Create standard constructor</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_terminal.html'>toml_terminal</a></td>
+                 <td><a href='../module/tomlf_terminal.html'>tomlf_terminal</a></td>
+                 <td>Interface</td>
+                 <td><p>Constructor to create new terminal</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/toml_time.html'>toml_time</a></td>
+                 <td><a href='../module/tomlf_datetime.html'>tomlf_datetime</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			 </tbody></table>
+             
+        </div>
+      </div>
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              TOML-Fortran
+ was developed by Sebastian Ehlert<br>              &copy; 2025 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2025-11-10 09:30 +0000             </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>

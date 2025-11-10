@@ -1,0 +1,442 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="TOML parser implementation for data serialization and deserialization in Fortran.">
+    <meta name="author" content="Sebastian Ehlert" >
+    <link rel="icon" href="./favicon.png">
+
+    <title> TOML-Fortran </title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="./css/fontawesome.min.css" rel="stylesheet">
+    <link href="./css/brands.min.css" rel="stylesheet">
+    <link href="./css/regular.min.css" rel="stylesheet">
+    <link href="./css/solid.min.css" rel="stylesheet">
+    <link href="./css/v4-font-face.min.css" rel="stylesheet">
+    <link href="./css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="./css/local.css" rel="stylesheet">
+    <link href="./css/pygments.css" rel="stylesheet">
+    <script src="./js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="./index.html">TOML-Fortran </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="./lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="./lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="./lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="./lists/absint.html">Abstract Interfaces</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="./lists/types.html">Derived Types</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="./search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <!-- Main component for a primary marketing message or call to action -->
+    <div class="p-5 mb-4 bg-light border rounded-3" id="jumbotron">
+      <p>TOML parser implementation for data serialization and deserialization in Fortran.</p>
+        <p> Find us on&hellip;</p>
+      <p>
+        <a class="btn btn-lg btn-primary" href="https://github.com/toml-f/toml-f" role="button">GitHub</a>
+        
+        
+        
+        <a class="btn btn-lg btn-primary" href="https://toml-f.readthedocs.io" role="button">The Web</a>
+        <a class="btn btn-lg btn-danger" style="float:right" href="https://github.com/toml-f/toml-f/releases" role="button">Download the Source</a>
+      </p>
+    </div>
+
+      <div class="row" id='text'>
+        <div class=col-md-8>
+          <h1>TOML-Fortran</h1>
+          <h1 id="toml-parser-for-fortran-projects">TOML parser for Fortran projects</h1>
+<p><a href="LICENSE-Apache"><img alt="License" src="https://img.shields.io/badge/license-MIT%7CApache%202.0-blue"></a>
+<a href="https://github.com/toml-f/toml-f/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/toml-f/toml-f"></a>
+<a href="https://github.com/toml-f/toml-f/actions"><img alt="Build" src="https://github.com/toml-f/toml-f/workflows/CI/badge.svg"></a>
+<a href="https://toml-f.github.io/toml-f"><img alt="docs" src="https://github.com/toml-f/toml-f/workflows/docs/badge.svg"></a>
+<a href="https://toml-f.readthedocs.io"><img alt="Documentation Status" src="https://readthedocs.org/projects/toml-f/badge/?version=latest"></a>
+<a href="https://codecov.io/gh/toml-f/toml-f"><img alt="codecov" src="https://codecov.io/gh/toml-f/toml-f/branch/main/graph/badge.svg"></a></p>
+<p>A TOML parser implementation for data serialization and deserialization in Fortran.</p>
+<ul>
+<li>the <a href="https://toml.io">TOML standard</a></li>
+<li>currently supported <a href="https://toml.io/en/v1.0.0">TOML v1.0.0 specification</a></li>
+<li><a href="https://toml-f.readthedocs.io">TOML Fortran documentation</a></li>
+</ul>
+<div align="center">
+<img src="./assets/toml-f.png" alt="TOML-Fortran" width="220">
+</div>
+
+<h2 id="installation">Installation</h2>
+<p>The TOML Fortran library is available via various distribution channels.
+If your channel is not found here, please checkout the instructions for <a href="#building-from-source">building from source</a>.
+You can also find these instructions in the user documentation at <a href="https://toml-f.readthedocs.io/en/latest/how-to/installation.html">Installing TOML Fortran</a>.</p>
+<h3 id="conda-package">Conda package</h3>
+<p><a href="https://github.com/conda-forge/toml-f-feedstock"><img alt="Conda" src="https://img.shields.io/conda/vn/conda-forge/toml-f"></a>
+<a href="https://github.com/conda-forge/toml-f-feedstock"><img alt="Conda" src="https://img.shields.io/conda/pn/conda-forge/toml-f"></a></p>
+<p>This project is packaged for the <em>mamba</em> package manager and available on the <em>conda-forge</em> channel.
+To install the <em>mamba</em> package manager we recommend the <a href="https://github.com/conda-forge/miniforge/releases">mambaforge</a> installer.
+If the <em>conda-forge</em> channel is not yet enabled, add it to your channels with</p>
+<div class="codehilite"><pre><span></span><code>mamba config --add channels conda-forge
+mamba config --set channel_priority strict
+</code></pre></div>
+
+<p>Once the <em>conda-forge</em> channel has been enabled, TOML Fortran can be installed with <em>mamba</em>:</p>
+<div class="codehilite"><pre><span></span><code>mamba install toml-f
+</code></pre></div>
+
+<p>It is possible to list all of the versions of TOML Fortran available on your platform with <em>mamba</em>:</p>
+<div class="codehilite"><pre><span></span><code>mamba repoquery search toml-f --channel conda-forge
+</code></pre></div>
+
+<h3 id="freebsd-port">FreeBSD port</h3>
+<p><a href="https://www.freshports.org/textproc/toml-f/"><img alt="FreeBSD port" src="https://repology.org/badge/version-for-repo/freebsd/toml-f.svg"></a></p>
+<p>A port for FreeBSD is available and can be installed using</p>
+<div class="codehilite"><pre><span></span><code>pkg install textproc/toml-f
+</code></pre></div>
+
+<p>In case no package is available build the port using</p>
+<div class="codehilite"><pre><span></span><code>cd /usr/ports/textproc/toml-f
+make install clean
+</code></pre></div>
+
+<p>For more information see the <a href="https://www.freshports.org/textproc/toml-f/">toml-f port details</a>.</p>
+<h3 id="alternative-distributions">Alternative distributions</h3>
+<p>Please let us know if you are packaging TOML Fortran.
+Other available distributions of TOML Fortran currently include</p>
+<ul>
+<li>Homebrew tap at <a href="https://github.com/grimme-lab/homebrew-qc">grimme-lab/homebrew-qc</a></li>
+<li>Easy-build config at <a href="https://github.com/easybuilders/easybuild-easyconfigs/tree/develop/easybuild/easyconfigs/t/TOML-Fortran">easybuilders/easybuild-easyconfigs</a></li>
+<li>spack package in <a href="https://github.com/spack/spack/blob/develop/var/spack/repos/builtin/packages/toml-f/package.py">develop</a></li>
+</ul>
+<p>An overview of the availability of TOML Fortran in distributions tracked by <a href="https://repology.org">Repology</a> is provided here:</p>
+<p><a href="https://repology.org/project/toml-f/versions"><img alt="Packaging status" src="https://repology.org/badge/vertical-allrepos/toml-f.svg"></a></p>
+<h3 id="building-from-source">Building from source</h3>
+<p>To build this project from the source code in this repository you need to have</p>
+<ul>
+<li>
+<p>a Fortran compiler supporting Fortran 2008</p>
+</li>
+<li>
+<p>GFortran 5 or newer</p>
+</li>
+<li>Intel Fortran 18 or newer</li>
+<li>
+<p>NAG 7 or newer</p>
+</li>
+<li>
+<p>One of the supported build systems</p>
+</li>
+<li>
+<p><a href="https://mesonbuild.com">meson</a> version 0.55 or newer</p>
+</li>
+<li><a href="https://cmake.org/">CMake</a> version 3.9 or newer</li>
+<li><a href="https://github.com/fortran-lang/fpm">Fortran package manager (fpm)</a> version 0.2.0 or newer</li>
+</ul>
+<p>Get the source by cloning the repository</p>
+<div class="codehilite"><pre><span></span><code>git clone https://github.com/toml-f/toml-f
+cd toml-f
+</code></pre></div>
+
+<h4 id="building-with-meson">Building with meson</h4>
+<p>To integrate TOML Fortran in your meson project checkout the <a href="https://toml-f.readthedocs.io/en/latest/how-to/integration.html#integrate-with-meson">Integrate with meson</a> recipe.</p>
+<p>To build this project with meson a build-system backend is required, <em>i.e.</em> <a href="https://ninja-build.org">ninja</a> version 1.7 or newer.
+Setup a build with</p>
+<div class="codehilite"><pre><span></span><code>meson setup _build --prefix=/path/to/install
+</code></pre></div>
+
+<p>You can select the Fortran compiler by the <code>FC</code> environment variable.
+To compile the project run</p>
+<div class="codehilite"><pre><span></span><code>meson compile -C _build
+</code></pre></div>
+
+<p>We employ a <a href="https://github.com/BurntSushi/toml-test">validator suite</a> to test the standard compliance of this implementation.
+To use this testing a <code>go</code> installation is required.
+The installation of the validator suite will be handled by meson automatically without installing into the users <code>go</code> workspace.
+Run the tests with</p>
+<div class="codehilite"><pre><span></span><code>meson test -C _build --print-errorlogs
+</code></pre></div>
+
+<p>The binary used for transcribing the TOML documents to the testing format is <code>_build/test/toml2json</code> and can be used to check on per test basis.</p>
+<p>Finally, you can install TOML Fortran using</p>
+<div class="codehilite"><pre><span></span><code>meson install -C _build
+</code></pre></div>
+
+<h3 id="building-with-cmake">Building with CMake</h3>
+<p>To integrate TOML Fortran in your CMake project checkout the <a href="https://toml-f.readthedocs.io/en/latest/how-to/integration.html#integrate-with-cmake">Integrate with CMake</a> recipe.</p>
+<p>While meson is the preferred way to build this project it also offers CMake support.
+Configure the CMake build with</p>
+<div class="codehilite"><pre><span></span><code>cmake -B _build -G Ninja -DCMAKE_INSTALL_PREFIX=/path/to/install
+</code></pre></div>
+
+<p>Similar to meson the compiler can be selected with the <code>FC</code> environment variable.
+You can build the project using</p>
+<div class="codehilite"><pre><span></span><code>cmake --build _build
+</code></pre></div>
+
+<p>You can run basic unit tests using</p>
+<div class="codehilite"><pre><span></span><code>ctest --test-dir _build
+</code></pre></div>
+
+<p>The validation suite is currently not supported as unit test for CMake builds and requires a manual setup instead using the <code>toml2json</code> binary.</p>
+<p>Finally, you can install TOML Fortran using</p>
+<div class="codehilite"><pre><span></span><code>cmake --install _build
+</code></pre></div>
+
+<h3 id="building-with-fpm">Building with fpm</h3>
+<p>To integrate TOML Fortran in your fpm project checkout the <a href="https://toml-f.readthedocs.io/en/latest/how-to/integration.html#using-the-fortran-package-manager">Using the Fortran package manager</a> recipe.</p>
+<p>The Fortran package manager (<a href="https://github.com/fortran-lang/fpm">fpm</a>) supports the addition of TOML Fortran as a dependency.
+In the package manifest, <code>fpm.toml</code>, you can add TOML Fortran dependency via:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[dependencies]</span>
+<span class="n">toml-f</span><span class="p">.</span><span class="n">git</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/toml-f/toml-f&quot;</span>
+</code></pre></div>
+
+<p>Then build and test normally.</p>
+<div class="codehilite"><pre><span></span><code>fpm build
+fpm test
+</code></pre></div>
+
+<p>A more detailed example is described in <a href="test/example-1">example 1</a>.</p>
+<h2 id="documentation">Documentation</h2>
+<p>The user documentation is available at <a href="https://toml-f.readthedocs.io">readthedocs</a>.
+Additionally, the <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a> generated API documentation is available <a href="https://toml-f.github.io/toml-f">here</a>.</p>
+<p>To build the user documentation locally we use sphinx, install the dependencies you can use the <em>mamba</em> package manager</p>
+<div class="codehilite"><pre><span></span><code>mamba create -n sphinx --file doc/requirements.txt
+mamba activate sphinx
+</code></pre></div>
+
+<p>The documentation is build with</p>
+<div class="codehilite"><pre><span></span><code>sphinx-build doc _doc
+</code></pre></div>
+
+<p>You can inspect the generated documentation by starting a webserver</p>
+<div class="codehilite"><pre><span></span><code>python3 -m http.server -d _doc
+</code></pre></div>
+
+<p>And open the down URL in a browser.</p>
+<h3 id="translating-the-documentation">Translating the documentation</h3>
+<p>The documentation of TOML Fortran can be fully translated.
+Before adding a translation, reach out to the repository maintainers by creating and issue or starting a discussion thread.</p>
+<p>To start a new translation you need the <code>sphinx-intl</code> package which can be installed with <em>mamba</em></p>
+<div class="codehilite"><pre><span></span><code>mamba install -n sphinx sphinx-intl
+</code></pre></div>
+
+<p>To add a new language to the translation extract the text with <code>sphinx-build</code> and create the respective locales with <code>sphinx-intl</code> using the commands shown below.</p>
+<div class="codehilite"><pre><span></span><code>sphinx-build -b gettext doc _gettext
+sphinx-intl update -l en -p _gettext -d doc/locales
+</code></pre></div>
+
+<p>Replace the argument to the language flag <code>-l</code> with your target language, the language keys are listed <a href="https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-language">here</a>.
+The same workflow can be used for updating existing locales.
+The translation files are available in <code>doc/locales</code> and can be translated using a translation-editor, like <a href="https://wiki.gnome.org/Apps/Gtranslator">gtranslator</a> or <a href="https://poedit.net/">poedit</a>.</p>
+<p>After a new translation is merged, a maintainer will create a new translation for the readthedocs to ensure it shows up at the pages.</p>
+<h3 id="generating-the-api-docs">Generating the API docs</h3>
+<p>The API documentation is generated with <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>.
+We are looking for a better tool to automatically extract the documentation, suggestions and help with this effort are welcome.</p>
+<p>The required programs can be installed with <em>mamba</em></p>
+<div class="codehilite"><pre><span></span><code>mamba create -n ford ford
+mamba activate ford
+</code></pre></div>
+
+<p>To generate the pages use</p>
+<div class="codehilite"><pre><span></span><code>ford docs.md -o _ford
+</code></pre></div>
+
+<p>You can inspect the generated documentation by starting a webserver</p>
+<div class="codehilite"><pre><span></span><code>python3 -m http.server -d _ford
+</code></pre></div>
+
+<h2 id="usage">Usage</h2>
+<p>To make use this library use the <code>tomlf</code> module in your projects.
+You can access the individual modules but those are not considered part of the public API and might change between versions.</p>
+<p>An example program to load and dump a TOML file would look like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">use </span><span class="n">tomlf</span>
+<span class="k">implicit none</span>
+<span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=*</span><span class="p">),</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">new_line</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">table</span>
+<span class="kt">character</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">tfc</span><span class="p">,</span><span class="w"> </span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">input_string</span>
+<span class="k">type</span><span class="p">(</span><span class="n">toml_serializer</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ser</span>
+
+<span class="n">input_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;# This is a TOML document.&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;title = &quot;TOML Example&quot;&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;[owner]&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;name = &quot;Tom Preston-Werner&quot;&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;dob = 1979-05-27T07:32:00-08:00 # First class dates&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;[database]&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;server = &quot;192.168.1.1&quot;&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;ports = [ 8001, 8001, 8002 ]&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;connection_max = 5000&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;enabled = true&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;[servers]&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;  # Indentation (tabs and/or spaces) is allowed but not required&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;  [servers.alpha]&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;  ip = &quot;10.0.0.1&quot;&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;  dc = &quot;eqdc10&quot;&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;  [servers.beta]&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;  ip = &quot;10.0.0.2&quot;&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;  dc = &quot;eqdc10&quot;&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;[clients]&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;data = [ [&quot;gamma&quot;, &quot;delta&quot;], [1, 2] ]&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;# Line breaks are OK when inside arrays&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;hosts = [&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;  &quot;alpha&quot;,&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;  &quot;omega&quot;&#39;</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">   </span><span class="p">&amp;</span><span class="w"> </span><span class="s1">&#39;]&#39;</span>
+
+<span class="k">call </span><span class="n">toml_loads</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">input_string</span><span class="p">)</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">table</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">   call </span><span class="n">table</span><span class="p">%</span><span class="k">accept</span><span class="p">(</span><span class="n">ser</span><span class="p">)</span>
+<span class="w">   </span><span class="k">call </span><span class="n">table</span><span class="p">%</span><span class="n">destroy</span><span class="w">  </span><span class="c">! not necessary</span>
+<span class="k">end if</span>
+<span class="k">end</span>
+</code></pre></div>
+
+<p>Here the TOML document is provided as string, notice that you have to add a newline character by using the intrinsic function <code>new_line("a")</code> to get the lines correctly.</p>
+<p>Alternatively, a file can be loaded from any connected, formatted unit using the same overloaded function.
+For the standard input the intrinsic <code>input_unit</code> should be passed.
+If the TOML file is successfully parsed the table will be allocated and can be written to the standard output by passing the <code>toml_serializer</code> as visitor to the table.</p>
+<p>For more details checkout the <a href="https://toml-f.readthedocs.io">documentation pages</a>.
+If you find an error in the documentation or a part is incomplete, please <a href="https://github.com/toml-f/toml-f/issues">open an issue</a> or start a <a href="https://github.com/orgs/toml-f/discussions">discussion thread</a>.</p>
+<h2 id="contributing">Contributing</h2>
+<p>This is a volunteer open source projects and contributions are always welcome.
+Please, take a moment to read the <a href="CONTRIBUTING.md">contributing guidelines</a> on how to get involved in TOML-Fortran.</p>
+<h2 id="license">License</h2>
+<p>TOML-Fortran is free software: you can redistribute it and/or modify it under the terms of the <a href="LICENSE-Apache">Apache License, Version 2.0</a> or <a href="LICENSE-MIT">MIT license</a> at your opinion.</p>
+<p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an <em>as is</em> basis, without warranties or conditions of any kind, either express or implied. See the License for the specific language governing permissions and limitations under the License.</p>
+<p>Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in TOML-Fortran by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.</p>
+        </div>
+          <div class="col-md-4">
+            <div class="card card-body bg-light">
+              <h2 class="card-title">Developer Info</h2>
+              <h4 class="card-text">Sebastian Ehlert</h4>
+              <p class="card-text"></p>
+                <div class="text-center"><div class="btn-group" role="group">
+                    
+                    <a class="btn btn-lg btn-primary" href="https://github.com/awvwgk"><i class="fa fa-github fa-lg"></i></a>
+                    
+                    
+                    
+                    
+                    
+                    
+                </div></div>
+            </div>
+          </div>
+      </div>
+        <div class="row">
+          <hr>
+          <div class="col-xs-6 col-sm-3">
+            <div>
+              <h3>Source Files</h3>
+              <ul><li><a href='sourcefile/abc.f90.html'>abc.f90</a></li><li><a href='sourcefile/all.f90.html'>all.f90</a></li><li><a href='sourcefile/array.f90.html'>array.f90</a></li><li><a href='sourcefile/array.f90~2.html'>array.f90</a></li><li><a href='sourcefile/array_list.f90.html'>array_list.f90</a></li><li><a href='sourcefile/build.f90.html'>build.f90</a></li><li><a href='sourcefile/constants.f90.html'>constants.f90</a></li><li><a href='sourcefile/context.f90.html'>context.f90</a></li><li><a href='sourcefile/datetime.f90.html'>datetime.f90</a></li><li><a href='sourcefile/de.f90.html'>de.f90</a></li></ul>
+            </div>
+            <div>
+              <ul>
+                <li><a href="./lists/files.html"><em>All source files&hellip;</em></a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-3">
+            <div>
+              <h3>Modules</h3>
+              <ul><li><a href='module/tomlf.html'>tomlf</a></li><li><a href='module/tomlf_all.html'>tomlf_all</a></li><li><a href='module/tomlf_build.html'>tomlf_build</a></li><li><a href='module/tomlf_build_array.html'>tomlf_build_array</a></li><li><a href='module/tomlf_build_keyval.html'>tomlf_build_keyval</a></li><li><a href='module/tomlf_build_merge.html'>tomlf_build_merge</a></li><li><a href='module/tomlf_build_path.html'>tomlf_build_path</a></li><li><a href='module/tomlf_build_table.html'>tomlf_build_table</a></li><li><a href='module/tomlf_constants.html'>tomlf_constants</a></li><li><a href='module/tomlf_datetime.html'>tomlf_datetime</a></li></ul>
+            </div>
+            <div>
+              <ul>
+                <li><a href="./lists/modules.html"><em>All modules&hellip;</em></a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-3">
+            <div>
+              <h3>Procedures</h3>
+              <ul><li><a href='interface/add_array.html'>add_array</a></li><li><a href='interface/add_keyval.html'>add_keyval</a></li><li><a href='interface/add_table.html'>add_table</a></li><li><a href='proc/cast_to_array.html'>cast_to_array</a></li><li><a href='proc/cast_to_keyval.html'>cast_to_keyval</a></li><li><a href='proc/cast_to_table.html'>cast_to_table</a></li><li><a href='proc/escape.html'>escape</a></li><li><a href='proc/get_tomlf_version.html'>get_tomlf_version</a></li><li><a href='interface/get_value.html'>get_value</a></li><li><a href='interface/get_value~2.html'>get_value</a></li></ul>
+            </div>
+            <div>
+              <ul>
+                <li><a href="./lists/procedures.html"><em>All procedures&hellip;</em></a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-3">
+            <div>
+              <h3>Derived Types</h3>
+              <ul><li><a href='type/abstract_lexer.html'>abstract_lexer</a></li><li><a href='type/ansi_code.html'>ansi_code</a></li><li><a href='type/toml_array.html'>toml_array</a></li><li><a href='type/toml_array_list.html'>toml_array_list</a></li><li><a href='type/toml_context.html'>toml_context</a></li><li><a href='type/toml_date.html'>toml_date</a></li><li><a href='type/toml_datetime.html'>toml_datetime</a></li><li><a href='type/toml_diagnostic.html'>toml_diagnostic</a></li><li><a href='type/toml_error.html'>toml_error</a></li><li><a href='type/toml_key.html'>toml_key</a></li></ul>
+            </div>
+            <div>
+              <ul>
+                <li><a href="./lists/types.html"><em>All derived types&hellip;</em></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              TOML-Fortran
+ was developed by Sebastian Ehlert<br>              &copy; 2025 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2025-11-10 09:30 +0000             </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>

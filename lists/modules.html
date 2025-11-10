@@ -1,0 +1,290 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="TOML parser implementation for data serialization and deserialization in Fortran.">
+    <meta name="author" content="Sebastian Ehlert" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>All Modules &ndash; TOML-Fortran
+</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">TOML-Fortran </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/absint.html">Abstract Interfaces</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12" id='text'>
+			 <h1>Modules</h1>
+			 <table class="table">
+			 <thead><tr><th>Module</th><th>Source File</th><th>Description</th></tr></thead>
+			 <tbody>
+			   <tr class="active">
+                 <td><a href='../module/tomlf.html'>tomlf</a></td>
+                 <td><a href='../sourcefile/tomlf.f90.html'>tomlf.f90</a></td>
+                 <td><p>Minimal public API for TOML-Fortran</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_all.html'>tomlf_all</a></td>
+                 <td><a href='../sourcefile/all.f90.html'>all.f90</a></td>
+                 <td><p>Complete reexport of the public API of TOML-Fortran</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_build.html'>tomlf_build</a></td>
+                 <td><a href='../sourcefile/build.f90.html'>build.f90</a></td>
+                 <td><p>Functions to build a TOML data structures</p><a href="../module/tomlf_build.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_build_array.html'>tomlf_build_array</a></td>
+                 <td><a href='../sourcefile/array.f90~2.html'>array.f90</a></td>
+                 <td><p>Functions to build TOML arrays.</p><a href="../module/tomlf_build_array.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_build_keyval.html'>tomlf_build_keyval</a></td>
+                 <td><a href='../sourcefile/keyval.f90.html'>keyval.f90</a></td>
+                 <td><p>Functions to build a TOML values</p><a href="../module/tomlf_build_keyval.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_build_merge.html'>tomlf_build_merge</a></td>
+                 <td><a href='../sourcefile/merge.f90.html'>merge.f90</a></td>
+                 <td><p>Merge TOML data structures, the merge policy can be adjusted.</p><a href="../module/tomlf_build_merge.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_build_path.html'>tomlf_build_path</a></td>
+                 <td><a href='../sourcefile/path.f90.html'>path.f90</a></td>
+                 <td><p>Support for retrieving and setting values using a key path.</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_build_table.html'>tomlf_build_table</a></td>
+                 <td><a href='../sourcefile/table.f90~2.html'>table.f90</a></td>
+                 <td><p>Functions to build TOML tables</p><a href="../module/tomlf_build_table.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_constants.html'>tomlf_constants</a></td>
+                 <td><a href='../sourcefile/constants.f90.html'>constants.f90</a></td>
+                 <td></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_datetime.html'>tomlf_datetime</a></td>
+                 <td><a href='../sourcefile/datetime.f90.html'>datetime.f90</a></td>
+                 <td><p>Implementation of a TOML datetime value</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_de.html'>tomlf_de</a></td>
+                 <td><a href='../sourcefile/de.f90.html'>de.f90</a></td>
+                 <td><p>Proxy module for providing loading and deserialization of TOML data structures</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_de_abc.html'>tomlf_de_abc</a></td>
+                 <td><a href='../sourcefile/abc.f90.html'>abc.f90</a></td>
+                 <td><p>Defines the abstract base class which is implemented by the TOML lexer.</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_de_context.html'>tomlf_de_context</a></td>
+                 <td><a href='../sourcefile/context.f90.html'>context.f90</a></td>
+                 <td><p>Provides a container to store tokens for later use</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_de_lexer.html'>tomlf_de_lexer</a></td>
+                 <td><a href='../sourcefile/lexer.f90.html'>lexer.f90</a></td>
+                 <td><p>Provides tokenization for TOML documents.</p><a href="../module/tomlf_de_lexer.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_de_parser.html'>tomlf_de_parser</a></td>
+                 <td><a href='../sourcefile/parser.f90.html'>parser.f90</a></td>
+                 <td><p>Implementation of a parser for transforming a token stream to TOML datastructures.</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_de_token.html'>tomlf_de_token</a></td>
+                 <td><a href='../sourcefile/token.f90.html'>token.f90</a></td>
+                 <td><p>Provides a definition for a token</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_diagnostic.html'>tomlf_diagnostic</a></td>
+                 <td><a href='../sourcefile/diagnostic.f90.html'>diagnostic.f90</a></td>
+                 <td><p>Diagnostic message support for TOML Fortran</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_error.html'>tomlf_error</a></td>
+                 <td><a href='../sourcefile/error.f90.html'>error.f90</a></td>
+                 <td><p>Central registry for error codes</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_ser.html'>tomlf_ser</a></td>
+                 <td><a href='../sourcefile/ser.f90.html'>ser.f90</a></td>
+                 <td><p>TOML serializer implementation</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_structure.html'>tomlf_structure</a></td>
+                 <td><a href='../sourcefile/structure.f90.html'>structure.f90</a></td>
+                 <td><p>Abstraction layer for the actual storage of the data structure.</p><a href="../module/tomlf_structure.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_structure_array_list.html'>tomlf_structure_array_list</a></td>
+                 <td><a href='../sourcefile/array_list.f90.html'>array_list.f90</a></td>
+                 <td><p>Implementation of a basic storage structure as pointer list of pointers.</p><a href="../module/tomlf_structure_array_list.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_structure_list.html'>tomlf_structure_list</a></td>
+                 <td><a href='../sourcefile/list.f90.html'>list.f90</a></td>
+                 <td><p>Abstract base class definitions for data structures to store TOML values</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_structure_map.html'>tomlf_structure_map</a></td>
+                 <td><a href='../sourcefile/map.f90.html'>map.f90</a></td>
+                 <td><p>Abstract base class definitions for data structures to store TOML values</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_structure_node.html'>tomlf_structure_node</a></td>
+                 <td><a href='../sourcefile/node.f90.html'>node.f90</a></td>
+                 <td><p>Implementation of a basic storage structure as pointer list of pointers.</p><a href="../module/tomlf_structure_node.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_structure_ordered_map.html'>tomlf_structure_ordered_map</a></td>
+                 <td><a href='../sourcefile/ordered_map.f90.html'>ordered_map.f90</a></td>
+                 <td><p>Implementation of a basic storage structure as pointer list of pointers.</p><a href="../module/tomlf_structure_ordered_map.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_terminal.html'>tomlf_terminal</a></td>
+                 <td><a href='../sourcefile/terminal.f90.html'>terminal.f90</a></td>
+                 <td><p>Implementation of a terminal to provide ANSI escape sequences</p><a href="../module/tomlf_terminal.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_type.html'>tomlf_type</a></td>
+                 <td><a href='../sourcefile/type.f90.html'>type.f90</a></td>
+                 <td><p>Collection of the central datatypes to define TOML data structures</p><a href="../module/tomlf_type.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_type_array.html'>tomlf_type_array</a></td>
+                 <td><a href='../sourcefile/array.f90.html'>array.f90</a></td>
+                 <td><p>Implementation of the TOML array data type.</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_type_keyval.html'>tomlf_type_keyval</a></td>
+                 <td><a href='../sourcefile/keyval.f90~2.html'>keyval.f90</a></td>
+                 <td><p>TOML key-value pair</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_type_table.html'>tomlf_type_table</a></td>
+                 <td><a href='../sourcefile/table.f90.html'>table.f90</a></td>
+                 <td><p>Implementation of the TOML table data type.</p><a href="../module/tomlf_type_table.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_type_value.html'>tomlf_type_value</a></td>
+                 <td><a href='../sourcefile/value.f90.html'>value.f90</a></td>
+                 <td><p>Class definitions for basic data types used for handling TOML</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_utils.html'>tomlf_utils</a></td>
+                 <td><a href='../sourcefile/utils.f90.html'>utils.f90</a></td>
+                 <td></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_utils_io.html'>tomlf_utils_io</a></td>
+                 <td><a href='../sourcefile/io.f90.html'>io.f90</a></td>
+                 <td><p>Utilities for handling input and output operations</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/tomlf_utils_sort.html'>tomlf_utils_sort</a></td>
+                 <td><a href='../sourcefile/sort.f90.html'>sort.f90</a></td>
+                 <td><p>Sorting algorithms to work with hash maps</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/tomlf_version.html'>tomlf_version</a></td>
+                 <td><a href='../sourcefile/version.f90.html'>version.f90</a></td>
+                 <td><p>Version information on TOML-Fortran</p></td>
+               </tr>
+<!--active-->			 </tbody></table>
+             
+        </div>
+      </div>
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              TOML-Fortran
+ was developed by Sebastian Ehlert<br>              &copy; 2025 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2025-11-10 09:30 +0000             </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>
