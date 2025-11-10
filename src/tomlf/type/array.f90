@@ -122,6 +122,12 @@ pure function get_len(self) result(length)
    !> Current length of the array
    integer :: length
 
+   ! If calling get_len return 0 
+   if (.not. array_initialized(self)) then
+      length = 0
+      return
+   end if
+
    length = self%list%get_len()
 
 end function get_len
@@ -131,13 +137,16 @@ end function get_len
 subroutine get(self, idx, ptr)
 
    !> Instance of the TOML array
-   class(toml_array), intent(inout) :: self
+   class(toml_array), intent(in) :: self
 
    !> Index to the TOML value
    integer, intent(in) :: idx
 
    !> Pointer to the TOML value
    class(toml_value), pointer, intent(out) :: ptr
+
+   ! If a empty array
+   if (.not. array_initialized(self)) return 
 
    call self%list%get(idx, ptr)
 
@@ -161,6 +170,11 @@ subroutine push_back(self, val, stat)
       return
    end if
 
+   ! If a empty array
+   if (.not. array_initialized(self)) then
+      call new_array(self)
+   end if
+
    call self%list%push_back(val)
 
    stat = toml_stat%success
@@ -177,6 +191,11 @@ subroutine shift(self, val)
    !> TOML value to be retrieved
    class(toml_value), allocatable, intent(out) :: val
 
+   ! If a empty array
+   if (.not. array_initialized(self)) then
+      call new_array(self)
+   end if
+
    call self%list%shift(val)
 
 end subroutine shift
@@ -190,6 +209,11 @@ subroutine pop(self, val)
 
    !> TOML value to be retrieved
    class(toml_value), allocatable, intent(out) :: val
+
+   ! If a empty array
+   if (.not. array_initialized(self)) then
+      call new_array(self)
+   end if
 
    call self%list%pop(val)
 
