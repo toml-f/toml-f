@@ -20,8 +20,8 @@ toml-f/
 │       ├── build/         # Builder utilities (get_value, set_value)
 │       ├── de/            # Deserializer (parser, lexer)
 │       ├── ser.f90        # Serializer
-│       ├── structure/     # Data structures (tables, arrays, keyvals)
-│       ├── type/          # Type definitions
+│       ├── structure/     # Internal generic data structures (list, map, ordered_map, etc.)
+│       ├── type/          # Type definitions (TOML types: toml_table, toml_array, toml_keyval)
 │       ├── utils/         # Utility functions
 │       └── ...
 ├── test/                  # Test suite
@@ -166,7 +166,7 @@ Tokenizes TOML input into a stream of tokens.
 ### Parser (`src/tomlf/de/parser.f90`)
 Parses token stream into TOML data structures.
 
-### Data Structures (`src/tomlf/structure/`)
+### TOML Types (`src/tomlf/type/`)
 - `toml_table` - TOML table (hash map)
 - `toml_array` - TOML array
 - `toml_keyval` - Key-value pair
