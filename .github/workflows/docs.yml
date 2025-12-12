@@ -1,29 +1,51 @@
 name: docs
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-    - id: deploy-on-push
-      run:
-        echo "::set-output name=result::${{ env.DEPLOY_BRANCH }}"
-      env:
-        DEPLOY_BRANCH: ${{ secrets.DEPLOY_BRANCH && contains(github.ref, secrets.DEPLOY_BRANCH) && 1 || 0 }}
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.x'
+
     - name: Install dependencies
       run: pip install ford
-    - name: Build Documentation
+
+    - name: Build documentation
       run: ford docs.md -o _ford
-    - uses: JamesIves/github-pages-deploy-action@4.1.6
-      if: ${{ github.event_name == 'push' && steps.deploy-on-push.outputs.result != 0 }}
+
+    - name: Upload artifact
+      if: github.event_name != 'pull_request'
+      uses: actions/upload-pages-artifact@v3
       with:
-        branch: gh-pages
-        folder: _ford
-        single-commit: true
-        git-config-email: 70317824+toml-f@users.noreply.github.com
-        git-config-name: TOML-Fortran
+        path: _ford
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
