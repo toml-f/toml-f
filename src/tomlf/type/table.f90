@@ -11,10 +11,15 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-!> Implementation of the TOML table data type.
+!> TOML table data type
 !>
-!> Every TOML document contains at least one (root) table which holds key-value
-!> pairs, arrays and other tables.
+!> A [[toml_table]] represents a TOML table (also known as a hash table or
+!> dictionary). Every TOML document contains at least one root table which
+!> holds key-value pairs, arrays, and nested tables.
+!>
+!> Tables are the primary way to access parsed TOML data. Use [[get_value]]
+!> from the build module to retrieve values by key, or the type-bound
+!> procedures for direct access.
 module tomlf_type_table
    use tomlf_constants, only : tfc
    use tomlf_error, only : toml_stat

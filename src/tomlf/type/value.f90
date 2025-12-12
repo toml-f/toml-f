@@ -11,7 +11,16 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-!> Class definitions for basic data types used for handling TOML
+!> Abstract base types for TOML values
+!>
+!> This module defines the abstract [[toml_value]] base type from which all
+!> concrete TOML types ([[toml_table]], [[toml_array]], [[toml_keyval]])
+!> inherit. It also provides the [[toml_visitor]] abstract type for
+!> implementing the visitor pattern.
+!>
+!> Most users will not need to work with these types directly, but they
+!> are useful for implementing custom algorithms that traverse TOML
+!> data structures.
 module tomlf_type_value
    use tomlf_constants, only : tfc, TOML_BAREKEY
    use tomlf_utils, only : toml_escape_string

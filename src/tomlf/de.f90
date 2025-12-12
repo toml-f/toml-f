@@ -11,7 +11,19 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-!> Proxy module for providing loading and deserialization of TOML data structures
+!> TOML deserialization module
+!>
+!> This module provides interfaces for loading and parsing TOML documents
+!> from various sources (files, strings, and I/O units).
+!>
+!> The primary interfaces are:
+!>
+!> - [[toml_load]]: Load TOML from a file path or connected unit
+!> - [[toml_loads]]: Parse TOML from a string
+!>
+!> All parsing functions return an allocatable [[toml_table]] that contains
+!> the parsed document. If parsing fails, the table will not be allocated
+!> and error information is provided via the optional error argument.
 module tomlf_de
    use tomlf_constants, only : tfc, TOML_NEWLINE
    use tomlf_de_context, only : toml_context
