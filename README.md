@@ -31,7 +31,7 @@ You can also find these instructions in the user documentation at [Installing TO
 [![Conda](https://img.shields.io/conda/pn/conda-forge/toml-f)](https://github.com/conda-forge/toml-f-feedstock)
 
 This project is packaged for the *mamba* package manager and available on the *conda-forge* channel.
-To install the *mamba* package manager we recommend the [mambaforge](https://github.com/conda-forge/miniforge/releases) installer.
+To install the *mamba* package manager we recommend the [miniforge](https://github.com/conda-forge/miniforge/releases) installer.
 If the *conda-forge* channel is not yet enabled, add it to your channels with
 
 ```
@@ -225,7 +225,7 @@ You can inspect the generated documentation by starting a webserver
 python3 -m http.server -d _doc
 ```
 
-And open the down URL in a browser.
+And open the shown URL in a browser.
 
 
 ### Translating the documentation
@@ -280,7 +280,7 @@ python3 -m http.server -d _ford
 
 ## Usage
 
-To make use this library use the `tomlf` module in your projects.
+To make use of this library use the `tomlf` module in your projects.
 You can access the individual modules but those are not considered part of the public API and might change between versions.
 
 An example program to load and dump a TOML file would look like this:
@@ -290,7 +290,7 @@ use tomlf
 implicit none
 character(len=*), parameter :: nl = new_line("a")
 type(toml_table), allocatable :: table
-character(kind=tfc, len=:), allocatable :: input_string
+character(len=:), allocatable :: input_string
 type(toml_serializer) :: ser
 
 input_string = &
@@ -340,7 +340,7 @@ If you find an error in the documentation or a part is incomplete, please [open 
 
 ## Contributing
 
-This is a volunteer open source projects and contributions are always welcome.
+This is a volunteer open source project and contributions are always welcome.
 Please, take a moment to read the [contributing guidelines](CONTRIBUTING.md) on how to get involved in TOML-Fortran.
 
 

@@ -11,7 +11,14 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-!> TOML key-value pair
+!> TOML key-value pair data type
+!>
+!> A [[toml_keyval]] represents a single key-value pair in a TOML document.
+!> It can hold any of the TOML value types: strings, integers, floats,
+!> booleans, and datetimes.
+!>
+!> Key-value pairs are typically accessed through their parent table using
+!> [[get_value]] rather than directly manipulating this type.
 module tomlf_type_keyval
    use tomlf_constants, only : tfc, tfr, tfi, toml_type
    use tomlf_datetime, only : toml_datetime

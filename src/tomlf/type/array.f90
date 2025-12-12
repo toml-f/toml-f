@@ -11,7 +11,15 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-!> Implementation of the TOML array data type.
+!> TOML array data type
+!>
+!> A [[toml_array]] represents a TOML array, which is an ordered sequence
+!> of values. TOML arrays can contain values of any type, including nested
+!> arrays and tables (arrays of tables).
+!>
+!> Use [[get_value]] from the build module to retrieve array elements by
+!> index, or the type-bound procedures for direct access. The intrinsic
+!> [[len]] function is overloaded to return the number of elements.
 module tomlf_type_array
    use tomlf_error, only : toml_stat
    use tomlf_type_value, only : toml_value, toml_visitor

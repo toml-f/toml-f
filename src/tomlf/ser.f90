@@ -11,7 +11,17 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-!> TOML serializer implementation
+!> TOML serialization module
+!>
+!> This module provides interfaces for serializing TOML data structures
+!> back to TOML format. The primary interfaces are:
+!>
+!> - [[toml_dump]]: Write a TOML table to a file or I/O unit
+!> - [[toml_dumps]]: Serialize a TOML table to a string
+!> - [[toml_serialize]]: Low-level serialization using the visitor pattern
+!>
+!> The [[toml_serializer]] type implements the visitor pattern and can be
+!> used directly for custom serialization workflows.
 module tomlf_ser
    use tomlf_constants, only : tfc, tfi, tfr, tfout, toml_type
    use tomlf_datetime, only : toml_datetime, to_string

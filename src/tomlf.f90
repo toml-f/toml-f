@@ -11,7 +11,41 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-!> Minimal public API for TOML-Fortran
+!> Public API for TOML Fortran
+!>
+!> This module provides the main entry point to the TOML Fortran library.
+!> It re-exports all public types and procedures needed for parsing, manipulating,
+!> and serializing TOML documents.
+!>
+!> ## Parsing TOML
+!>
+!> Use [[toml_load]] to load a TOML document from a file or unit, or [[toml_loads]]
+!> to parse a TOML string directly:
+!>
+!>```fortran
+!> type(toml_table), allocatable :: table
+!> call toml_load(table, "config.toml")
+!>```
+!>
+!> ## Accessing Values
+!>
+!> Use [[get_value]] to retrieve values from tables and arrays, and [[set_value]]
+!> to modify or create new values:
+!>
+!>```fortran
+!> character(len=:), allocatable :: name
+!> call get_value(table, "name", name)
+!>```
+!>
+!> ## Serialization
+!>
+!> Use [[toml_dump]] to write a table to a file or [[toml_dumps]] to serialize
+!> to a string:
+!>
+!>```fortran
+!> character(len=:), allocatable :: output
+!> call toml_dumps(table, output)
+!>```
 module tomlf
    use tomlf_build, only : get_value, set_value, toml_path
    use tomlf_datetime, only : toml_datetime, to_string

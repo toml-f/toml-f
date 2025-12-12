@@ -11,7 +11,28 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-!> Central registry for error codes
+!> Error handling for TOML Fortran
+!>
+!> This module provides the [[toml_error]] type for error reporting and
+!> the [[toml_stat]] enumerator for status codes returned by various
+!> TOML Fortran procedures.
+!>
+!> ## Error Handling
+!>
+!> Most parsing and access functions accept an optional `error` argument
+!> of type [[toml_error]]. If an error occurs, this will be allocated
+!> and contain a descriptive message:
+!>
+!>```fortran
+!> type(toml_error), allocatable :: error
+!> call toml_load(table, "config.toml", error=error)
+!> if (allocated(error)) print '(a)', error%message
+!>```
+!>
+!> ## Status Codes
+!>
+!> The [[toml_stat]] enumerator provides named constants for common
+!> error conditions like `toml_stat%duplicate_key` or `toml_stat%type_mismatch`.
 module tomlf_error
    use tomlf_constants, only : tfc, TOML_NEWLINE
    implicit none
@@ -20,7 +41,7 @@ module tomlf_error
    public :: toml_stat, toml_error, make_error
 
 
-   !> Possible TOML-Fortran error codes
+   !> Possible TOML Fortran status codes
    type :: enum_stat
 
       !> Successful run
@@ -46,6 +67,15 @@ module tomlf_error
    end type enum_stat
 
    !> Actual enumerator for return states
+   !>
+   !> | Name | Description |
+   !> |------|-------------|
+   !> | `success` | Operation completed successfully |
+   !> | `fatal` | Internal error or undefined error state |
+   !> | `duplicate_key` | Duplicate key encountered in table |
+   !> | `type_mismatch` | Incorrect type when reading a value |
+   !> | `conversion_error` | Error when converting or downcasting a value |
+   !> | `missing_key` | Requested key not present in table |
    type(enum_stat), parameter :: toml_stat = enum_stat()
 
 

@@ -11,7 +11,18 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 
-!> Implementation of a TOML datetime value
+!> TOML datetime value representation
+!>
+!> This module provides the [[toml_datetime]] type for representing TOML
+!> datetime values. TOML supports four datetime formats:
+!>
+!> - Offset date-time: `1979-05-27T07:32:00Z`
+!> - Local date-time: `1979-05-27T07:32:00`
+!> - Local date: `1979-05-27`
+!> - Local time: `07:32:00`
+!>
+!> The [[toml_datetime]] type combines [[toml_date]] and [[toml_time]]
+!> components to represent any of these formats.
 module tomlf_datetime
    use tomlf_constants, only : tfc
    implicit none
