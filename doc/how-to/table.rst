@@ -44,7 +44,6 @@ This is useful if the value is present, but the value is not a table.
      integer :: stat
 
      table = toml_table() ! create an empty table
-     
      call get_value(table, "optional", child, stat=stat)
      ! child pointer is associated, since "optional" table is created implicitly
      print *, associated(child)  ! expect T
