@@ -579,8 +579,7 @@ subroutine table_string(error)
 end subroutine table_string
 
 subroutine table_table(error)
-   use tomlf_type, only : toml_value, new_table, toml_table, add_table, new_array, &
-      & toml_array, toml_key, add_array, len
+   use tomlf_type, only : new_table, toml_table, toml_key
 
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
