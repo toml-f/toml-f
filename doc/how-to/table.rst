@@ -41,7 +41,7 @@ This is useful if the value is present, but the value is not a table.
 
      type(toml_table) :: table
      type(toml_table), pointer :: child
-     type(toml_error_type) :: stat
+     integer :: stat
 
      table = toml_table() ! create an empty table
      
