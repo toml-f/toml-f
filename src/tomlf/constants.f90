@@ -117,7 +117,7 @@ module tomlf_constants
    character(kind=tfc, len=*), public, parameter :: TOML_FORMFEED = achar(12) ! \f
    character(kind=tfc, len=*), public, parameter :: TOML_CARRIAGE_RETURN = achar(13) ! \r
    character(kind=tfc, len=*), public, parameter :: TOML_BACKSPACE = achar(8) ! \b
-   character(kind=tfc, len=*), public, parameter :: TOML_ESCAPE = achar(27) ! \e
+   character(kind=tfc, len=*), public, parameter :: TOML_ESC = achar(27) ! \e
    character(kind=tfc, len=*), public, parameter :: TOML_LOWERCASE = &
       & 'abcdefghijklmnopqrstuvwxyz'
    character(kind=tfc, len=*), public, parameter :: TOML_UPPERCASE = &
