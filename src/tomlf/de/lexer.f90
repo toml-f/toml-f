@@ -497,6 +497,11 @@ subroutine next_dstring(lexer, token)
             escape = .false.
             space = .false.
             if (verify(ch, valid_escape) == 0) cycle
+            if (ch == "x") then
+               expect = 2
+               hex = it + 1
+               cycle
+            end if
             if (ch == "u") then
                expect = 4
                hex = pos + 1
@@ -537,6 +542,11 @@ subroutine next_dstring(lexer, token)
       if (escape) then
          escape = .false.
          if (verify(ch, valid_escape) == 0) cycle
+         if (ch == "x") then
+            expect = 2
+            hex = it + 1
+            cycle
+         end if
          if (ch == "u") then
             expect = 4
             hex = pos + 1
@@ -1174,6 +1184,7 @@ subroutine extract_string(lexer, token, string)
             case("n"); string = string // TOML_NEWLINE
             case("r"); string = string // TOML_CARRIAGE_RETURN
             case("f"); string = string // TOML_FORMFEED
+            case("x"); string = string // convert_ucs(lexer%chunk(it+1:it+2)); it = it + 3
             case("u"); string = string // convert_ucs(lexer%chunk(it+1:it+4)); it = it + 5
             case("U"); string = string // convert_ucs(lexer%chunk(it+1:it+8)); it = it + 9
             end select
@@ -1200,6 +1211,7 @@ subroutine extract_string(lexer, token, string)
             case("n"); string = string // TOML_NEWLINE
             case("r"); string = string // TOML_CARRIAGE_RETURN
             case("f"); string = string // TOML_FORMFEED
+            case("x"); string = string // convert_ucs(lexer%chunk(it+1:it+2)); it = it + 3
             case("u"); string = string // convert_ucs(lexer%chunk(it+1:it+4)); it = it + 5
             case("U"); string = string // convert_ucs(lexer%chunk(it+1:it+8)); it = it + 9
             case(char_kind%space, char_kind%tab, char_kind%carriage_return)
