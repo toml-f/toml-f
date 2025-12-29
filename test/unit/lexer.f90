@@ -461,14 +461,14 @@ subroutine string_escape(error)
    call check_token(error, """a \b backspace character"",""a \t tab character"""//nl//&
       & """a \n new line character"",""a \f form feed character"""//nl//&
       & """a \r carriage return character"",""a \"" quote character"""//nl//&
-      & """a \\ backslash character"""//nl//&
+      & """a \\ backslash character"",""a \e escape character"""//nl//&
       & """not a unicode \\u escape"",""not a unicode \u005Cu escape"""//nl//&
       & """not a unicode \\u0075 escape"",""not a unicode \\\u0075 escape"""//nl//&
       & """a \u007F delete control code"",""a \u001F unit separator control code""", &
       & [token_kind%string, token_kind%comma, token_kind%string, token_kind%newline, &
       &  token_kind%string, token_kind%comma, token_kind%string, token_kind%newline, &
       &  token_kind%string, token_kind%comma, token_kind%string, token_kind%newline, &
-      &  token_kind%string, token_kind%newline, &
+      &  token_kind%string, token_kind%comma, token_kind%string, token_kind%newline, &
       &  token_kind%string, token_kind%comma, token_kind%string, token_kind%newline, &
       &  token_kind%string, token_kind%comma, token_kind%string, token_kind%newline, &
       &  token_kind%string, token_kind%comma, token_kind%string, token_kind%eof], .false.)

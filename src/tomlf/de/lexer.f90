@@ -28,7 +28,7 @@
 !> to allow reporting in the parsing phase.
 module tomlf_de_lexer
    use tomlf_constants, only : tfc, tfi, tfr, TOML_BACKSPACE, TOML_TABULATOR, TOML_NEWLINE, &
-      & TOML_CARRIAGE_RETURN, TOML_FORMFEED
+      & TOML_CARRIAGE_RETURN, TOML_FORMFEED, TOML_ESC
    use tomlf_datetime, only : toml_datetime, toml_date, toml_time
    use tomlf_de_abc, only : abstract_lexer
    use tomlf_de_context, only : toml_context
@@ -434,7 +434,7 @@ subroutine next_dstring(lexer, token)
    type(toml_token), intent(inout) :: token
 
    character(1, tfc) :: ch
-   character(*, tfc), parameter :: hexnum = "0123456789ABCDEF", valid_escape = "btnfr\"""
+   character(*, tfc), parameter :: hexnum = "0123456789ABCDEF", valid_escape = "betnfr\"""
    integer :: prev, pos, expect, it, hex
    logical :: escape, valid, space
 
@@ -1169,6 +1169,7 @@ subroutine extract_string(lexer, token, string)
             select case(ch)
             case("""", "\");  string = string // ch
             case("b"); string = string // TOML_BACKSPACE
+            case("e"); string = string // TOML_ESC
             case("t"); string = string // TOML_TABULATOR
             case("n"); string = string // TOML_NEWLINE
             case("r"); string = string // TOML_CARRIAGE_RETURN
@@ -1194,6 +1195,7 @@ subroutine extract_string(lexer, token, string)
             select case(ch)
             case("""", "\");  string = string // ch
             case("b"); string = string // TOML_BACKSPACE
+            case("e"); string = string // TOML_ESC
             case("t"); string = string // TOML_TABULATOR
             case("n"); string = string // TOML_NEWLINE
             case("r"); string = string // TOML_CARRIAGE_RETURN
