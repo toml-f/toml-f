@@ -1244,13 +1244,18 @@ subroutine token_string(error)
    type(toml_lexer) :: lexer
    character(:), allocatable :: val
 
-   call new_lexer_from_string(lexer, """\u03B4"",""\U000003B4""")
+   call new_lexer_from_string(lexer, """\u03B4"",""\U000003B4"",""\x20"",""\u0020""")
    call lexer%extract(toml_token(token_kind%string, 1, 8), val)
    call check(error, val, "δ")
    if (allocated(error)) return
    call lexer%extract(toml_token(token_kind%string, 10, 21), val)
    call check(error, val, "δ")
    if (allocated(error)) return
+   call lexer%extract(toml_token(token_kind%string, 23, 28), val)
+   call check(error, val, " ")
+   if (allocated(error)) return
+   call lexer%extract(toml_token(token_kind%string, 30, 37), val)
+   call check(error, val, " ")
 end subroutine token_string
 
 subroutine lexer_from_sequential(error)
