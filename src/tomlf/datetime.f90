@@ -176,17 +176,19 @@ pure function new_datetime_from_string(string) result(datetime)
       end do
 
       first = first + 8
-      if (string(first+1:first+1) == ".") then
-         msec = [integer::]
-         do it = first + 2, len(string)
-            tmp = scan(num, string(it:it)) - 1
-            if (tmp < 0) exit
-            msec = [msec, tmp]
-         end do
-         first = it - 1
+      if (first < len(string)) then
+         if (string(first+1:first+1) == ".") then
+            msec = [integer::]
+            do it = first + 2, len(string)
+               tmp = scan(num, string(it:it)) - 1
+               if (tmp < 0) exit
+               msec = [msec, tmp]
+            end do
+            first = it - 1
 
-         msec = [msec, 0, 0, 0, 0, 0, 0]
-         time%msec = sum(msec(1:6) * [100000, 10000, 1000, 100, 10, 1])
+            msec = [msec, 0, 0, 0, 0, 0, 0]
+            time%msec = sum(msec(1:6) * [100000, 10000, 1000, 100, 10, 1])
+         end if
       end if
 
       if (first < len(string)) then
