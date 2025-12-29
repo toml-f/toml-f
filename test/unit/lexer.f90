@@ -468,7 +468,7 @@ subroutine string_escape(error)
       & [token_kind%string, token_kind%comma, token_kind%string, token_kind%newline, &
       &  token_kind%string, token_kind%comma, token_kind%string, token_kind%newline, &
       &  token_kind%string, token_kind%comma, token_kind%string, token_kind%newline, &
-      &  token_kind%string, token_kind%somma, token_kind%string, token_kind%newline, &
+      &  token_kind%string, token_kind%comma, token_kind%string, token_kind%newline, &
       &  token_kind%string, token_kind%comma, token_kind%string, token_kind%newline, &
       &  token_kind%string, token_kind%comma, token_kind%string, token_kind%newline, &
       &  token_kind%string, token_kind%comma, token_kind%string, token_kind%eof], .false.)
