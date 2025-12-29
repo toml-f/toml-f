@@ -35,8 +35,6 @@ module tomlf_de_parser
       type(toml_terminal) :: color = toml_terminal()
       !> Record all tokens
       integer :: context_detail = 0
-      !> Enable features from unreleased TOML standards
-      logical :: future = .false.
    end type toml_parser_config
 
    interface toml_parser_config
@@ -496,11 +494,7 @@ recursive subroutine parse_keyval(parser, lexer, table)
 
    case(token_kind%lbrace)
       call add_table(table, key, tptr)
-      if (parser%config%future) then
-         call parse_inline_table_future(parser, lexer, tptr)
-      else
-         call parse_inline_table(parser, lexer, tptr)
-      end if
+      call parse_inline_table(parser, lexer, tptr)
 
    end select
    if (allocated(parser%diagnostic)) return
@@ -551,11 +545,7 @@ recursive subroutine parse_inline_array(parser, lexer, array)
 
       case(token_kind%lbrace)
          call add_table(array, tptr)
-         if (parser%config%future) then
-            call parse_inline_table_future(parser, lexer, tptr)
-         else
-            call parse_inline_table(parser, lexer, tptr)
-         end if
+         call parse_inline_table(parser, lexer, tptr)
 
       end select
       if (allocated(parser%diagnostic)) exit inline_array
@@ -576,55 +566,6 @@ recursive subroutine parse_inline_array(parser, lexer, array)
 end subroutine parse_inline_array
 
 recursive subroutine parse_inline_table(parser, lexer, table)
-   !> Instance of the parser
-   class(toml_parser), intent(inout) :: parser
-   !> Instance of the lexer
-   class(toml_lexer), intent(inout) :: lexer
-   !> Current table
-   type(toml_table), intent(inout) :: table
-
-   table%inline = .true.
-   call consume(parser, lexer, token_kind%lbrace)
-
-   if (parser%token%kind == token_kind%whitespace) &
-      call next_token(parser, lexer)
-
-   if (parser%token%kind == token_kind%rbrace) then
-      call next_token(parser, lexer)
-      return
-   end if
-
-   inline_table: do while(.not.allocated(parser%diagnostic))
-      if (parser%token%kind == token_kind%whitespace) &
-         call next_token(parser, lexer)
-
-      select case(parser%token%kind)
-      case default
-         call syntax_error(parser%diagnostic, lexer, parser%token, &
-            & "Invalid character in inline table", &
-            & "unexpected "//stringify(parser%token))
-
-      case(token_kind%keypath, token_kind%string, token_kind%literal)
-         call parse_keyval(parser, lexer, table)
-
-      end select
-      if (allocated(parser%diagnostic)) exit inline_table
-
-      if (parser%token%kind == token_kind%whitespace) &
-         call next_token(parser, lexer)
-
-      if (parser%token%kind == token_kind%comma) then
-         call next_token(parser, lexer)
-         cycle inline_table
-      end if
-      if (parser%token%kind == token_kind%rbrace) exit inline_table
-   end do inline_table
-   if (allocated(parser%diagnostic)) return
-
-   call consume(parser, lexer, token_kind%rbrace)
-end subroutine parse_inline_table
-
-recursive subroutine parse_inline_table_future(parser, lexer, table)
    !> Instance of the parser
    class(toml_parser), intent(inout) :: parser
    !> Instance of the lexer
@@ -671,7 +612,7 @@ recursive subroutine parse_inline_table_future(parser, lexer, table)
    if (allocated(parser%diagnostic)) return
 
    call consume(parser, lexer, token_kind%rbrace)
-end subroutine parse_inline_table_future
+end subroutine parse_inline_table
 
 subroutine parse_value(parser, lexer, kval)
    !> Instance of the parser

@@ -75,8 +75,8 @@ subroutine collect_parser(testsuite)
       & new_unittest("inline-table", inline_table), &
       & new_unittest("inline-table-empty", inline_table_empty), &
       & new_unittest("inline-table-whitespace", inline_table_whitespace), &
-      & new_unittest("inline-table-newline", inline_table_newline, should_fail=.true.), &
-      & new_unittest("inline-table-comma", inline_table_comma, should_fail=.true.), &
+      & new_unittest("inline-table-newline", inline_table_newline), &
+      & new_unittest("inline-table-comma", inline_table_comma), &
       & new_unittest("inline-table-modify", inline_table_modify, should_fail=.true.), &
       & new_unittest("empty", empty)]
 
