@@ -573,22 +573,21 @@ recursive subroutine parse_inline_table(parser, lexer, table)
    !> Current table
    type(toml_table), intent(inout) :: table
 
+   integer, parameter :: skip_tokens(*) = &
+      [token_kind%whitespace, token_kind%comment, token_kind%newline]
+
    table%inline = .true.
    call consume(parser, lexer, token_kind%lbrace)
 
-   if (parser%token%kind == token_kind%whitespace) &
-      call next_token(parser, lexer)
-
-   if (parser%token%kind == token_kind%rbrace) then
-      call next_token(parser, lexer)
-      return
-   end if
-
    inline_table: do while(.not.allocated(parser%diagnostic))
-      if (parser%token%kind == token_kind%whitespace) &
+      do while(any(parser%token%kind == skip_tokens))
          call next_token(parser, lexer)
+      end do
 
       select case(parser%token%kind)
+      case(token_kind%rbrace)
+         exit inline_table
+
       case default
          call syntax_error(parser%diagnostic, lexer, parser%token, &
             & "Invalid character in inline table", &
@@ -600,14 +599,15 @@ recursive subroutine parse_inline_table(parser, lexer, table)
       end select
       if (allocated(parser%diagnostic)) exit inline_table
 
-      if (parser%token%kind == token_kind%whitespace) &
+      do while(any(parser%token%kind == skip_tokens))
          call next_token(parser, lexer)
+      end do
 
       if (parser%token%kind == token_kind%comma) then
          call next_token(parser, lexer)
          cycle inline_table
       end if
-      if (parser%token%kind == token_kind%rbrace) exit inline_table
+      exit inline_table
    end do inline_table
    if (allocated(parser%diagnostic)) return
 
