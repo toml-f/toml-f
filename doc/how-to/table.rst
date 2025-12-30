@@ -8,7 +8,7 @@ These recipes describe common scenarios for retrieving data from tables using th
 Accessing tables
 ----------------
 
-When accessing tables there are two main modes, first the default mode which implicitly creates a table if it does not exist yet and second the mode where the absence of the table is treated as an error.
+When accessing tables there are two main modes, first the default mode which implicitly creates a table if it does not exist yet and second the mode where no tables will be inserted.
 The first mode is useful when the presence of a table is optional, for example when reading configuration files where certain features can be activated by providing a subtable with the respective settings.
 The second mode is useful when certain tables are mandatory for the program to work correctly.
 
