@@ -2,4 +2,3 @@ ablog
 sphinx-book-theme~=1.0.0
 sphinx-copybutton
 sphinx-design
-urllib3<2
