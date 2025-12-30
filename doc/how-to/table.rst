@@ -5,6 +5,75 @@ The central data structures in TOML are tables, they contain a map from a key (s
 These recipes describe common scenarios for retrieving data from tables using the TOML Fortran library.
 
 
+Accessing tables
+----------------
+
+When accessing tables there are two main modes, first the default mode which implicitly creates a table if it does not exist yet and second the mode where no tables will be inserted.
+The first mode is useful when the presence of a table is optional, for example when reading configuration files where certain features can be activated by providing a subtable with the respective settings.
+The second mode is useful when certain tables are mandatory for the program to work correctly.
+
+.. code-block:: Fortran
+
+   block
+     use tomlf, only : toml_table, get_value
+
+     type(toml_table) :: table
+     type(toml_table), pointer :: child
+
+     table = toml_table() ! create an empty table
+
+     call get_value(table, "optional", child)
+     ! child pointer is associated, since "optional" table is created implicitly
+     print *, associated(child)  ! expect T
+
+     call get_value(table, "mandatory", child, requested=.false.)
+     ! child pointer is not associated, since "mandatory" table does not exist
+     print *, associated(child)  ! expect F
+   end block
+
+To better distinguish between different results of accessing a table, the status of the operation can be requested as well.
+This is useful if the value is present, but the value is not a table.
+
+.. code-block:: Fortran
+
+   block
+     use tomlf, only : toml_table, get_value, set_value, toml_stat
+
+     type(toml_table) :: table
+     type(toml_table), pointer :: child
+     integer :: stat
+
+     table = toml_table() ! create an empty table
+     call get_value(table, "optional", child, stat=stat)
+     ! child pointer is associated, since "optional" table is created implicitly
+     print *, associated(child)  ! expect T
+     ! status indicates success since the table was created
+     print *, stat == toml_stat%success  ! expect T
+
+     call get_value(table, "mandatory", child, requested=.false., stat=stat)
+     ! child pointer is not associated, since "mandatory" table does not exist
+     print *, associated(child)  ! expect F
+     ! status indicates success, since the key is not requested
+     print *, stat == toml_stat%success  ! expect T
+
+     call set_value(table, "not-a-table", "some string")  ! set a string value
+
+     call get_value(table, "not-a-table", child, stat=stat)
+     ! child pointer is not associated, since "not-a-table" entry is not a table
+     print *, associated(child)  ! expect F
+     ! type mismatch is reported in the status
+     print *, stat == toml_stat%type_mismatch  ! expect T
+
+     call get_value(table, "not-a-table", child, requested=.false., stat=stat)
+     ! child pointer is not associated, since "not-a-table" entry is not a table
+     print *, associated(child)  ! expect F
+     ! type mismatch is reported in the status
+     print *, stat == toml_stat%type_mismatch  ! expect T
+   end block
+
+If you need absence of a table to be handled, the association status of the returned pointer should be used to check whether the table was present or not.
+
+
 Accessing nested tables
 -----------------------
 

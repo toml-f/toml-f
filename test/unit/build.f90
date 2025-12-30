@@ -42,6 +42,7 @@ subroutine collect_build(testsuite)
       & new_unittest("array-datetime", array_datetime), &
       & new_unittest("array-string", array_string), &
       & new_unittest("array-merge", array_merge), &
+      & new_unittest("table-table", table_table), &
       & new_unittest("table-array", table_array), &
       & new_unittest("table-real-sp", table_real_sp), &
       & new_unittest("table-real-dp", table_real_dp), &
@@ -576,6 +577,30 @@ subroutine table_string(error)
    if (allocated(error)) return
 
 end subroutine table_string
+
+subroutine table_table(error)
+   use tomlf_type, only : new_table, toml_table, toml_key
+
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   type(toml_table) :: table
+   type(toml_table), pointer :: child
+   integer :: stat
+
+   call new_table(table)
+   call get_value(table, toml_key("table-of-tables"), child, &
+      & requested=.false.)
+   call check(error, .not.associated(child), "Should not create table")
+   if (allocated(error)) return
+
+   call get_value(table, toml_key("table-of-tables"), child, &
+      & requested=.false., stat=stat)
+   call check(error, .not.associated(child), "Should not create table")
+   if (allocated(error)) return
+   call check(error, stat, toml_stat%success, "Status should be success since key is not requested")
+   if (allocated(error)) return
+end subroutine table_table
 
 subroutine table_array(error)
    use tomlf_type, only : toml_value, new_table, toml_table, add_table, new_array, &
