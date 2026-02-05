@@ -123,6 +123,7 @@ pure function new_datetime_from_string(string) result(datetime)
    integer :: it, tmp, first
    character(*, tfc), parameter :: num = "0123456789"
    integer, allocatable :: msec(:)
+   logical :: has_seconds
 
    first = 0
 
@@ -153,7 +154,8 @@ pure function new_datetime_from_string(string) result(datetime)
    end if
 
    if (first >= len(string)) return
-   if (all([string(first+3:first+3), string(first+6:first+6)] == ":")) then
+   ! Check for time: HH:MM format (colon at position 3)
+   if (string(first+3:first+3) == ":") then
       time%hour = 0
       do it = first + 1, first + 2
          tmp = scan(num, string(it:it)) - 1
@@ -168,14 +170,21 @@ pure function new_datetime_from_string(string) result(datetime)
          time%minute = time%minute * 10 + tmp
       end do
 
-      time%second = 0
-      do it = first + 7, first + 8
-         tmp = scan(num, string(it:it)) - 1
-         if (tmp < 0) exit
-         time%second = time%second * 10 + tmp
-      end do
+      ! Check for optional seconds (TOML 1.1)
+      has_seconds = first + 6 <= len(string) .and. string(first+6:first+6) == ":"
+      if (has_seconds) then
+         time%second = 0
+         do it = first + 7, first + 8
+            tmp = scan(num, string(it:it)) - 1
+            if (tmp < 0) exit
+            time%second = time%second * 10 + tmp
+         end do
+         first = first + 8
+      else
+         ! No seconds - keep time%second as default (-1)
+         first = first + 5
+      end if
 
-      first = first + 8
       if (first < len(string)) then
          if (string(first+1:first+1) == ".") then
             msec = [integer::]
@@ -237,7 +246,13 @@ pure function to_string_time(time) result(str)
    integer :: msec, width
    character(1), parameter :: places(6) = ["1", "2", "3", "4", "5", "6"]
 
-   if (time%msec < 0) then
+   ! Handle optional seconds (TOML 1.1)
+   if (time%second < 0) then
+      ! No seconds - output HH:MM format
+      allocate(character(5, tfc) :: str)
+      write(str, '(i2.2,":",i2.2)') &
+         &  time%hour, time%minute
+   else if (time%msec < 0) then
       allocate(character(8, tfc) :: str)
       write(str, '(i2.2,":",i2.2,":",i2.2)') &
          &  time%hour, time%minute, time%second
@@ -268,8 +283,7 @@ pure function has_time(datetime)
    class(toml_datetime), intent(in) :: datetime
    logical :: has_time
    has_time = (datetime%time%hour >= 0) .and. &
-      & (datetime%time%minute >= 0) .and. &
-      & (datetime%time%second >= 0)
+      & (datetime%time%minute >= 0)
 end function has_time
 
 

@@ -864,10 +864,10 @@ subroutine next_datetime(lexer, token)
    !> Current lexeme
    type(toml_token), intent(inout) :: token
 
-   logical :: has_date, has_time, has_millisec, has_local, okay
-   integer :: prev, pos, it
+   logical :: has_date, has_time, has_millisec, has_local, okay, has_seconds
+   integer :: prev, pos, it, time_len
    integer, parameter :: offset(*) = [(it, it = 0, 10)], &
-      & offset_date = 10, offset_time = 8, offset_local = 6
+      & offset_date = 10, offset_time = 8, offset_time_no_sec = 5, offset_local = 6
    character(*, tfc), parameter :: num = "0123456789"
 
    prev = lexer%pos
@@ -882,9 +882,15 @@ subroutine next_datetime(lexer, token)
       end if
    end if
 
-   has_time = valid_time(peek(lexer, pos+offset(:offset_time)))
+   ! Try to validate time - first with 8 characters (HH:MM:SS), then 5 (HH:MM)
+   call valid_time(peek(lexer, pos+offset(:offset_time)), has_time, has_seconds)
    if (has_time) then
-      pos = pos + offset_time - 1
+      if (has_seconds) then
+         time_len = offset_time
+      else
+         time_len = offset_time_no_sec
+      end if
+      pos = pos + time_len - 1
       if (match(lexer, pos+1, char_kind%dot)) then
          it = 1
          do while(verify(peek(lexer, pos+it+1), num) == 0)
@@ -971,19 +977,22 @@ pure function valid_date(string) result(valid)
 end function valid_date
 
 
-!> Validate a string as time
-function valid_time(string) result(valid)
-   !> Input string, 8 characters
+!> Validate a string as time (HH:MM or HH:MM:SS)
+subroutine valid_time(string, valid, has_seconds)
+   !> Input string, 5 characters (HH:MM) or 8 characters (HH:MM:SS)
    character(1, tfc), intent(in) :: string(:)
    !> Valid time
-   logical :: valid
+   logical, intent(out) :: valid
+   !> Whether the time has seconds
+   logical, intent(out) :: has_seconds
 
    integer :: it, val
    character(*, tfc), parameter :: num = "0123456789"
    integer :: hour, minute, second
 
    valid = .false.
-   if (any(string([3, 6]) /= ":")) return
+   has_seconds = .false.
+   if (string(3) /= ":") return
 
    hour = 0
    do it = 1, 2
@@ -999,17 +1008,21 @@ function valid_time(string) result(valid)
       minute = minute * 10 + val
    end do
 
-   second = 0
-   do it = 7, 8
-      val = scan(num, string(it)) - 1
-      if (val < 0) return
-      second = second * 10 + val
-   end do
+   ! Check for seconds (optional in TOML 1.1)
+   if (size(string) >= 8 .and. string(6) == ":") then
+      second = 0
+      do it = 7, 8
+         val = scan(num, string(it)) - 1
+         if (val < 0) return
+         second = second * 10 + val
+      end do
+      if (second < 0 .or. second >= 60) return
+      has_seconds = .true.
+   end if
 
-   valid = second >= 0 .and. second < 60 &
-      & .and. minute >= 0 .and. minute < 60 &
+   valid = minute >= 0 .and. minute < 60 &
       & .and. hour >= 0 .and. hour < 24
-end function valid_time
+end subroutine valid_time
 
 
 !> Validate a string as timezone
