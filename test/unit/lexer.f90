@@ -67,6 +67,16 @@ subroutine collect_lexer(testsuite)
       & new_unittest("datetime-no-separator", datetime_no_separator), &
       & new_unittest("datetime-trailing-separator", datetime_trailing_separator), &
       & new_unittest("datetime-local-timezone", datetime_local_timezone), &
+      & new_unittest("datetime-second-over", datetime_second_over), &
+      & new_unittest("datetime-leap-year-invalid", datetime_leap_year_invalid), &
+      & new_unittest("datetime-leap-year-century", datetime_leap_year_century), &
+      & new_unittest("datetime-month-days-30", datetime_month_days_30), &
+      & new_unittest("datetime-month-days-31", datetime_month_days_31), &
+      & new_unittest("datetime-feb-days-invalid", datetime_feb_days_invalid), &
+      & new_unittest("datetime-time-boundaries", datetime_time_boundaries), &
+      & new_unittest("datetime-tz-zero-offset", datetime_tz_zero_offset), &
+      & new_unittest("datetime-milliseconds-precision", datetime_milliseconds_precision), &
+      & new_unittest("datetime-year-boundaries", datetime_year_boundaries), &
       & new_unittest("dot-keypath", dot_keypath), &
       & new_unittest("dot-invalid", dot_invalid), &
       & new_unittest("empty", empty), &
@@ -1004,6 +1014,120 @@ subroutine datetime_local_timezone(error)
    call check_token(error, "00:00:00-00:00", &
       & [token_kind%invalid, token_kind%eof], .false.)
 end subroutine datetime_local_timezone
+
+subroutine datetime_second_over(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Second=60 is invalid (valid range 0-59)
+   call check_token(error, "2006-01-01T00:00:60-00:00", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine datetime_second_over
+
+subroutine datetime_leap_year_invalid(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Feb 29 in non-leap year (1900 is not a leap year - divisible by 100 but not 400)
+   call check_token(error, "1900-02-29T00:00:00Z", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine datetime_leap_year_invalid
+
+subroutine datetime_leap_year_century(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! 2100 is not a leap year (divisible by 100 but not 400)
+   ! 2000 and 2400 are leap years (divisible by 400)
+   call check_token(error, &
+      & "2100-02-29T00:00:00Z,2000-02-29T00:00:00Z,2400-02-29T00:00:00Z", &
+      & [token_kind%invalid, token_kind%comma, &
+      &  token_kind%datetime, token_kind%comma, &
+      &  token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_leap_year_century
+
+subroutine datetime_month_days_30(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! April, June, September, November have 30 days - day 31 is invalid
+   call check_token(error, &
+      & "2000-04-30T00:00:00Z,2000-04-31T00:00:00Z,2000-06-31T00:00:00Z", &
+      & [token_kind%datetime, token_kind%comma, &
+      &  token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%eof], .false.)
+end subroutine datetime_month_days_30
+
+subroutine datetime_month_days_31(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! January, March, May, July, August, October, December have 31 days
+   call check_token(error, &
+      & "2000-01-31T00:00:00Z,2000-03-31T00:00:00Z,2000-12-31T00:00:00Z", &
+      & [token_kind%datetime, token_kind%comma, &
+      &  token_kind%datetime, token_kind%comma, &
+      &  token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_month_days_31
+
+subroutine datetime_feb_days_invalid(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Feb has max 29 days (leap year) - Feb 30 and 31 are always invalid
+   call check_token(error, &
+      & "2000-02-30T00:00:00Z,2000-02-31T00:00:00Z", &
+      & [token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%eof], .false.)
+end subroutine datetime_feb_days_invalid
+
+subroutine datetime_time_boundaries(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test valid time boundaries: hour=0, hour=23, minute=0, minute=59, second=0, second=59
+   call check_token(error, &
+      & "2000-01-01T00:00:00Z,2000-01-01T23:59:59Z,00:00:00,23:59:59", &
+      & [token_kind%datetime, token_kind%comma, &
+      &  token_kind%datetime, token_kind%comma, &
+      &  token_kind%datetime, token_kind%comma, &
+      &  token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_time_boundaries
+
+subroutine datetime_tz_zero_offset(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test different representations of UTC: Z, +00:00, -00:00
+   call check_token(error, &
+      & "2000-01-01T12:00:00Z,2000-01-01T12:00:00+00:00,2000-01-01T12:00:00-00:00", &
+      & [token_kind%datetime, token_kind%comma, &
+      &  token_kind%datetime, token_kind%comma, &
+      &  token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_tz_zero_offset
+
+subroutine datetime_milliseconds_precision(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test various millisecond precision: 1 digit, 3 digits, 6 digits
+   call check_token(error, &
+      & "2000-01-01T12:00:00.1Z,2000-01-01T12:00:00.123Z,2000-01-01T12:00:00.123456Z", &
+      & [token_kind%datetime, token_kind%comma, &
+      &  token_kind%datetime, token_kind%comma, &
+      &  token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_milliseconds_precision
+
+subroutine datetime_year_boundaries(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test year boundary values: 0001 (minimum valid year), 9999 (maximum 4-digit year)
+   call check_token(error, &
+      & "0001-01-01T00:00:00Z,9999-12-31T23:59:59Z", &
+      & [token_kind%datetime, token_kind%comma, &
+      &  token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_year_boundaries
 
 subroutine token_keypath_string(error)
    !> Error handling
