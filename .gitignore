@@ -34,9 +34,3 @@
 # Directories
 /build*/
 /_*/
-
-# Subprojects (downloaded during build)
-/subprojects/test-drive/
-/subprojects/toml-test-*/
-/subprojects/packagecache/
-/subprojects/.wraplock
