@@ -883,7 +883,7 @@ subroutine next_datetime(lexer, token)
    end if
 
    ! Try to validate time - first with 8 characters (HH:MM:SS), then 5 (HH:MM)
-   has_time = valid_time(peek(lexer, pos+offset(:offset_time)), has_seconds)
+   call valid_time(peek(lexer, pos+offset(:offset_time)), has_time, has_seconds)
    if (has_time) then
       if (has_seconds) then
          time_len = offset_time
@@ -978,22 +978,20 @@ end function valid_date
 
 
 !> Validate a string as time (HH:MM or HH:MM:SS)
-function valid_time(string, has_seconds) result(valid)
+subroutine valid_time(string, valid, has_seconds)
    !> Input string, 5 characters (HH:MM) or 8 characters (HH:MM:SS)
    character(1, tfc), intent(in) :: string(:)
-   !> Whether the time has seconds
-   logical, intent(out), optional :: has_seconds
    !> Valid time
-   logical :: valid
+   logical, intent(out) :: valid
+   !> Whether the time has seconds
+   logical, intent(out) :: has_seconds
 
    integer :: it, val
    character(*, tfc), parameter :: num = "0123456789"
    integer :: hour, minute, second
-   logical :: has_sec
 
    valid = .false.
-   has_sec = .false.
-   if (present(has_seconds)) has_seconds = .false.
+   has_seconds = .false.
    if (string(3) /= ":") return
 
    hour = 0
@@ -1019,13 +1017,12 @@ function valid_time(string, has_seconds) result(valid)
          second = second * 10 + val
       end do
       if (second < 0 .or. second >= 60) return
-      has_sec = .true.
+      has_seconds = .true.
    end if
 
    valid = minute >= 0 .and. minute < 60 &
       & .and. hour >= 0 .and. hour < 24
-   if (present(has_seconds)) has_seconds = has_sec
-end function valid_time
+end subroutine valid_time
 
 
 !> Validate a string as timezone
