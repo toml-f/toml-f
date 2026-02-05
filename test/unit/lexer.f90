@@ -61,6 +61,9 @@ subroutine collect_lexer(testsuite)
       & new_unittest("datetime-month-under", datetime_month_under), &
       & new_unittest("datetime-no-leading-zeros", datetime_no_leading_zeros), &
       & new_unittest("datetime-no-seconds", datetime_no_seconds), &
+      & new_unittest("datetime-no-seconds-local", datetime_no_seconds_local), &
+      & new_unittest("datetime-no-seconds-offset", datetime_no_seconds_offset), &
+      & new_unittest("datetime-no-seconds-localtime", datetime_no_seconds_localtime), &
       & new_unittest("datetime-no-separator", datetime_no_separator), &
       & new_unittest("datetime-trailing-separator", datetime_trailing_separator), &
       & new_unittest("datetime-local-timezone", datetime_local_timezone), &
@@ -946,9 +949,37 @@ subroutine datetime_no_seconds(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
+   ! TOML 1.1 allows optional seconds in datetime values
    call check_token(error, "1987-07-05T17:45Z", &
-      & [token_kind%invalid, token_kind%eof], .false.)
+      & [token_kind%datetime, token_kind%eof], .false.)
 end subroutine datetime_no_seconds
+
+subroutine datetime_no_seconds_local(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! TOML 1.1 allows optional seconds - local datetime without seconds
+   call check_token(error, "1987-07-05T17:45", &
+      & [token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_no_seconds_local
+
+subroutine datetime_no_seconds_offset(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! TOML 1.1 allows optional seconds - datetime with offset without seconds
+   call check_token(error, "1987-07-05T17:45+05:30", &
+      & [token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_no_seconds_offset
+
+subroutine datetime_no_seconds_localtime(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! TOML 1.1 allows optional seconds - local time without seconds
+   call check_token(error, "17:45", &
+      & [token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_no_seconds_localtime
 
 subroutine datetime_no_separator(error)
    !> Error handling
