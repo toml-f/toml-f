@@ -73,6 +73,8 @@ subroutine collect_lexer(testsuite)
       & new_unittest("datetime-month-days-30", datetime_month_days_30), &
       & new_unittest("datetime-month-days-31", datetime_month_days_31), &
       & new_unittest("datetime-feb-days-invalid", datetime_feb_days_invalid), &
+      & new_unittest("datetime-month-days-30-more", datetime_month_days_30_more), &
+      & new_unittest("datetime-month-days-31-more", datetime_month_days_31_more), &
       & new_unittest("datetime-time-boundaries", datetime_time_boundaries), &
       & new_unittest("datetime-tz-zero-offset", datetime_tz_zero_offset), &
       & new_unittest("datetime-milliseconds-precision", datetime_milliseconds_precision), &
@@ -1050,7 +1052,7 @@ subroutine datetime_month_days_30(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
-   ! April, June, September, November have 30 days - day 31 is invalid
+   ! April and June have 30 days - day 31 is invalid (see datetime_month_days_30_more for Sep/Nov)
    call check_token(error, &
       & "2000-04-30T00:00:00Z,2000-04-31T00:00:00Z,2000-06-31T00:00:00Z", &
       & [token_kind%datetime, token_kind%comma, &
@@ -1062,7 +1064,7 @@ subroutine datetime_month_days_31(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
-   ! January, March, May, July, August, October, December have 31 days
+   ! January, March, December have 31 days (see datetime_month_days_31_more for others)
    call check_token(error, &
       & "2000-01-31T00:00:00Z,2000-03-31T00:00:00Z,2000-12-31T00:00:00Z", &
       & [token_kind%datetime, token_kind%comma, &
@@ -1080,6 +1082,31 @@ subroutine datetime_feb_days_invalid(error)
       & [token_kind%invalid, token_kind%comma, &
       &  token_kind%invalid, token_kind%eof], .false.)
 end subroutine datetime_feb_days_invalid
+
+subroutine datetime_month_days_30_more(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Complete test for September and November (30-day months) - day 31 is invalid
+   call check_token(error, &
+      & "2000-09-30T00:00:00Z,2000-09-31T00:00:00Z,2000-11-31T00:00:00Z", &
+      & [token_kind%datetime, token_kind%comma, &
+      &  token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%eof], .false.)
+end subroutine datetime_month_days_30_more
+
+subroutine datetime_month_days_31_more(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Complete test for May, July, August, October (31-day months)
+   call check_token(error, &
+      & "2000-05-31T00:00:00Z,2000-07-31T00:00:00Z,2000-08-31T00:00:00Z,2000-10-31T00:00:00Z", &
+      & [token_kind%datetime, token_kind%comma, &
+      &  token_kind%datetime, token_kind%comma, &
+      &  token_kind%datetime, token_kind%comma, &
+      &  token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_month_days_31_more
 
 subroutine datetime_time_boundaries(error)
    !> Error handling
