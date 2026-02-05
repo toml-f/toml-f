@@ -1,0 +1,48 @@
+:author: Sebastian Ehlert
+:date: 2023-04-01
+:category: release
+:excerpt: 1
+
+TOML Fortran 0.4.0 released
+===========================
+
+This release refactors the internal access of the storage structures to allow more efficient operations like deletion or renaming.
+Additionally, the serialization functionality has been reworked to allow writing to files, units or strings using similar interfaces.
+
+.. admonition:: TOML Fortran is looking for support!
+   :class: attention
+
+   If you are interested in contributing to the project, please checkout the `repository <https://github/toml-f/toml-f>`__, or reach out in `toml-f#62 <https://github.com/toml-f/toml-f/issues/62>`__ to the current maintainer.
+
+
+Full changelog
+--------------
+
+Full commit history available at `v0.3.0...v0.4.0 <https://github.com/toml-f/toml-f/compare/v0.3.0...v0.4.0>`__.
+For release artifacts, like source distributions, checkout `v0.4.0 <https://github.com/toml-f/toml-f/releases/tag/v0.4.0>`_.
+
+Library changes
+~~~~~~~~~~~~~~~
+
+* Refactor storage structure for tables and arrays
+  (`toml-f# <https://github.com/toml-f/toml-f/pull/108>`__)
+* Refactor serialization of TOML data
+  (`toml-f# <https://github.com/toml-f/toml-f/pull/127>`__)
+* Support nil tokens in parser
+  (`toml-f# <https://github.com/toml-f/toml-f/pull/128>`__)
+
+Bugfixes
+~~~~~~~~
+
+* Fix missing recursive attribute required
+  (`toml-f# <https://github.com/toml-f/toml-f/pull/113>`__)
+* Return a missing key error if value is requested without default
+  (`toml-f# <https://github.com/toml-f/toml-f/pull/123>`__)
+* Use -Werror for in CI testing
+  (`toml-f# <https://github.com/toml-f/toml-f/pull/112>`__)
+
+Documentation updates
+~~~~~~~~~~~~~~~~~~~~~
+
+* Add recipe on Jonquil for JSON support
+  (`toml-f#109 <https://github.com/toml-f/toml-f/pull/109>`__)
