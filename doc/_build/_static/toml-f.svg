@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="39.682091mm"
+   height="21.844mm"
+   viewBox="0 0 39.682089 21.844"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="toml-f.svg"
+   inkscape:export-filename="/home/awvwgk/projects/src/git/toml-fortran/assets/toml-f-32x32.png"
+   inkscape:export-xdpi="22.585716"
+   inkscape:export-ydpi="22.585716"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.35012"
+     inkscape:cx="83.696262"
+     inkscape:cy="-107.7682"
+     inkscape:window-width="1920"
+     inkscape:window-height="1020"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="text2102" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-110.18463,-73.235077)">
+    <g
+       aria-label="[T.f]"
+       id="text2102"
+       style="font-weight:600;font-size:25.4px;line-height:1.25;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Semi-Bold';stroke-width:0.265">
+      <path
+         d="m 110.18463,95.079077 h 5.461 v -2.0828 h -2.54 v -17.6784 h 2.54 v -2.0828 h -5.461 z"
+         style="letter-spacing:-0.529167px;fill:#4e52a3"
+         id="path153787" />
+      <path
+         d="m 121.77124,92.747444 h 3.0226 v -14.0716 h 4.7752 v -2.54 h -12.573 v 2.54 h 4.7752 z"
+         style="letter-spacing:-3.43958px;fill:#de955e;fill-opacity:1"
+         id="path153789" />
+      <path
+         d="m 129.96483,93.052244 c 0.8382,0 1.524,-0.6604 1.524,-1.6002 0,-0.9652 -0.6858,-1.6256 -1.524,-1.6256 -0.8382,0 -1.524,0.6604 -1.524,1.6256 0,0.9398 0.6858,1.6002 1.524,1.6002 z"
+         style="font-weight:normal;-inkscape-font-specification:'Source Sans Pro';letter-spacing:-0.529167px;fill:#4e52a3"
+         id="path153791" />
+      <path
+         d="m 133.60121,92.747444 h 2.794 l 2.032,-10.287 h 2.3622 l 0.4572,-2.2098 h -2.3368 l 0.2794,-1.4732 c 0.2794,-1.397 0.9144,-2.032 1.8796,-2.032 0.5334,0 1.0414,0.1524 1.3462,0.3556 l 0.9144,-1.9304 c -0.7112,-0.4064 -1.5494,-0.6604 -2.4892,-0.6604 -2.5146,0 -3.937,1.8288 -4.445,4.3688 l -0.254,1.3716 -1.651,0.1524 -0.4318,2.0574 h 1.6256 z"
+         style="font-style:italic;-inkscape-font-specification:'Source Sans Pro Semi-Bold Italic';letter-spacing:2.24896px;fill:#a34e9c"
+         id="path153793" />
+      <path
+         d="m 144.40572,95.079077 h 5.461 v -21.844 h -5.461 v 2.0828 h 2.54 v 17.6784 h -2.54 z"
+         style="letter-spacing:0.661458px;fill:#4e52a3"
+         id="path153795" />
+    </g>
+  </g>
+</svg>

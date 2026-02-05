@@ -1,0 +1,741 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Using TOML Fortran &#8212; TOML Fortran</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.4cbf315f70debaebd550c87a6162cf0f.min.css" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'how-to/integration';</script>
+    <link rel="icon" href="../_static/toml-f.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Working with tables" href="table.html" />
+    <link rel="prev" title="Installing TOML Fortran" href="installation.html" /> 
+<meta
+  name="description"
+  content="TOML parser implementation for data serialization and deserialization in Fortran"
+/>
+<meta
+  name="keywords"
+  content="TOML parser, TOML, serde, Fortran library, Fortran package manager"
+/>   
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/toml-f.svg" class="logo__image only-light" alt="TOML Fortran - Home"/>
+    <img src="../_static/toml-f.svg" class="logo__image only-dark pst-js-only" alt="TOML Fortran - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorial/index.html">Tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/getting-started.html">Getting started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/fpm-lint.html">Building a linter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/json.html">Writing a custom lexer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">How-Tos</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installing TOML Fortran</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Using TOML Fortran</a></li>
+<li class="toctree-l2"><a class="reference internal" href="table.html">Working with tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array.html">Working with arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error.html">Reporting errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html">Date time compatibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="serde.html">Serializable base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jonquil.html">Compatibility with JSON</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">References</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference external" href="https://toml.io/en/v1.0.0">TOML specification</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://toml-f.github.io/toml-f">API documentation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../news/index.html">News</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../external.html">External resources</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference external" href="https://cyber.dabamos.de/programming/modernfortran/toml.html">Modern Fortran by Philipp Engel (English)</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://fortran-fans.github.io/Fortran-in-Action/Using-Open-Source-Code/Project-Configuration-TOML-F.html">Fortran in Action by Zuo Zhihua (Chinese)</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/toml-f/toml-f" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/toml-f/toml-f/edit/main/doc/how-to/integration.rst" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Using TOML Fortran</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-fortran-package-manager">Using the Fortran package manager</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integrate-with-meson">Integrate with meson</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integrate-with-cmake">Integrate with CMake</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#imported-targets">Imported Targets</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#result-variables">Result Variables</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cache-variables">Cache variables</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-build-systems">Other build systems</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                   <section id="using-toml-fortran">
+<span id="integration"></span><h1>Using TOML Fortran<a class="headerlink" href="#using-toml-fortran" title="Permalink to this heading">#</a></h1>
+<p>This tutorial shows how to integrate the TOML Fortran library with your build system and use it easily in your project.</p>
+<section id="using-the-fortran-package-manager">
+<h2>Using the Fortran package manager<a class="headerlink" href="#using-the-fortran-package-manager" title="Permalink to this heading">#</a></h2>
+<p>The Fortran package manager (<a class="reference external" href="https://fpm.fortran-lang.org">fpm</a>) is a tool for building Fortran projects and managing dependencies on Fortran libraries.
+To enable TOML Fortran in your fpm project add the following entry to your package manifest:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">fpm.toml</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[dependencies]</span>
+<span class="n">toml-f</span><span class="p">.</span><span class="n">git</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/toml-f/toml-f&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>When building your project fpm will automatically fetch TOML Fortran for you and build it as part of your project.
+The TOML Fortran modules become useable in your project.</p>
+</section>
+<section id="integrate-with-meson">
+<h2>Integrate with meson<a class="headerlink" href="#integrate-with-meson" title="Permalink to this heading">#</a></h2>
+<p>To allow meson to use TOML Fortran it is easiest to include it as subproject using a git wrap file placed in the <code class="docutils literal notranslate"><span class="pre">subprojects</span></code> directory.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">subprojects/toml-f.wrap</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[wrap-git]</span>
+<span class="na">directory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">toml-f</span>
+<span class="na">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">https://github.com/toml-f/toml-f</span>
+<span class="na">revision</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">head</span>
+</pre></div>
+</div>
+</div>
+<p>The revision can be adjusted to pin a specific release tag of TOML Fortran for additional stability.
+In the projects meson buid file the dependency method can be used to access TOML Fortran using the wrap file to define a fallback which is built on-demand.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">meson.build</span><a class="headerlink" href="#id3" title="Permalink to this code">#</a></div>
+<div class="highlight-meson notranslate"><div class="highlight"><pre><span></span><span class="c"># Create TOML Fortran as subproject</span>
+<span class="n">tomlf_dep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">dependency</span><span class="p">(</span>
+<span class="w">  </span><span class="s">&#39;toml-f&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&gt;=0.2.0&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">fallback</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s">&#39;toml-f&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;tomlf_dep&#39;</span><span class="p">],</span>
+<span class="w">  </span><span class="n">default_options</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s">&#39;default_library=static&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Finally, you can add <code class="docutils literal notranslate"><span class="pre">tomlf_dep</span></code> as dependency to any of your targets and are done.</p>
+</section>
+<section id="integrate-with-cmake">
+<h2>Integrate with CMake<a class="headerlink" href="#integrate-with-cmake" title="Permalink to this heading">#</a></h2>
+<p>To use TOML Fortran in CMake based projects it is useful to define your own find-module, to allow on-demand compilation of TOML Fortran as well as discovery of installed packages from both meson and CMake based builds.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>.
+├── CMakeLists.txt
+├── cmake
+│   └── Findtoml-f.cmake
+:
+</pre></div>
+</div>
+<p>In your main CMake build file you have to include the custom find-module in your <code class="docutils literal notranslate"><span class="pre">CMAKE_MODULE_PATH</span></code>, afterwards you can just use <code class="docutils literal notranslate"><span class="pre">find_package</span></code> to obtain the <code class="docutils literal notranslate"><span class="pre">toml-f::toml-f</span></code> target and link against it.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">CMakeLists.txt</span><a class="headerlink" href="#id4" title="Permalink to this code">#</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># ...</span>
+
+<span class="c"># Make custom find modules available for project</span>
+<span class="nb">list</span><span class="p">(</span><span class="s">APPEND</span><span class="w"> </span><span class="s">CMAKE_MODULE_PATH</span><span class="w"> </span><span class="s2">&quot;${CMAKE_CURRENT_SOURCE_DIR}/cmake&quot;</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_MODULE_PATH</span><span class="w"> </span><span class="s2">&quot;${CMAKE_MODULE_PATH}&quot;</span><span class="w"> </span><span class="s">PARENT_SCOPE</span><span class="p">)</span>
+
+<span class="c"># Find TOML Fortran, check whether target is already available,</span>
+<span class="c"># e.g. when build as subproject of another project also using TOML Fortran</span>
+<span class="nb">if</span><span class="p">(</span><span class="s">NOT</span><span class="w"> </span><span class="s">TARGET</span><span class="w"> </span><span class="s2">&quot;toml-f::toml-f&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">find_package</span><span class="p">(</span><span class="s">toml-f</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+
+<span class="c"># ...</span>
+
+<span class="c"># Add library target</span>
+<span class="nb">library</span><span class="p">(</span>
+<span class="w">  </span><span class="s2">&quot;${PROJECT_NAME}&quot;</span>
+<span class="p">)</span>
+
+<span class="c"># Link against TOML Fortran library</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span>
+<span class="w">  </span><span class="s2">&quot;${PROJECT_NAME}&quot;</span>
+<span class="w">  </span><span class="s">PUBLIC</span>
+<span class="w">  </span><span class="s2">&quot;toml-f::toml-f&quot;</span>
+<span class="p">)</span>
+
+<span class="c"># ...</span>
+
+<span class="c"># Follow GNU conventions for installation destinations</span>
+<span class="nb">include</span><span class="p">(</span><span class="s">GNUInstallDirs</span><span class="p">)</span>
+
+<span class="c"># Make custom find-modules available when installing project</span>
+<span class="nb">install</span><span class="p">(</span>
+<span class="w">  </span><span class="s">DIRECTORY</span>
+<span class="w">  </span><span class="s2">&quot;${CMAKE_CURRENT_SOURCE_DIR}/cmake/&quot;</span>
+<span class="w">  </span><span class="s">DESTINATION</span><span class="w"> </span><span class="s2">&quot;${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Note that we also install the find-modules, this is important if you want to make your CMake projects reusable in the same way TOML Fortran can be used in your project.
+Finally we need some boilerplate to define the custom find-module is documented below.</p>
+<section id="imported-targets">
+<h3>Imported Targets<a class="headerlink" href="#imported-targets" title="Permalink to this heading">#</a></h3>
+<p>This module provides the following imported target, if found:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">toml-f::toml-f</span></code></dt><dd><p>The toml-f library</p>
+</dd>
+</dl>
+</section>
+<section id="result-variables">
+<h3>Result Variables<a class="headerlink" href="#result-variables" title="Permalink to this heading">#</a></h3>
+<p>This module will define the following variables:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">TOML_FORTRAN_FOUND</span></code></dt><dd><p>True if the toml-f library is available</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">TOML_FORTRAN_SOURCE_DIR</span></code></dt><dd><p>Path to the source directory of the toml-f project,
+only set if the project is included as source.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">TOML_FORTRAN_BINARY_DIR</span></code></dt><dd><p>Path to the binary directory of the toml-f project,
+only set if the project is included as source.</p>
+</dd>
+</dl>
+</section>
+<section id="cache-variables">
+<h3>Cache variables<a class="headerlink" href="#cache-variables" title="Permalink to this heading">#</a></h3>
+<p>The following cache variables may be set to influence the library detection:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">TOML_FORTRAN_FIND_METHOD</span></code></dt><dd><p>Methods to find or make the project available. Available methods are</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cmake</span></code>: Try to find via CMake config file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pkgconf</span></code>: Try to find via pkg-config file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">subproject</span></code>: Use source in subprojects directory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fetch</span></code>: Fetch the source from upstream</p></li>
+</ul>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">TOML_FORTRAN_DIR</span></code></dt><dd><p>Used for searching the CMake config file</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">TOML_FORTRAN_SUBPROJECT</span></code></dt><dd><p>Directory to find the toml-f subproject, relative to the project root</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">cmake/Findtoml-f.cmake</span><a class="headerlink" href="#id5" title="Permalink to this code">#</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nb">set</span><span class="p">(</span><span class="s">_lib</span><span class="w"> </span><span class="s2">&quot;toml-f&quot;</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">_pkg</span><span class="w"> </span><span class="s2">&quot;TOML_FORTRAN&quot;</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">_url</span><span class="w"> </span><span class="s2">&quot;https://github.com/toml-f/toml-f&quot;</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">_rev</span><span class="w"> </span><span class="s2">&quot;HEAD&quot;</span><span class="p">)</span>
+
+<span class="nb">if</span><span class="p">(</span><span class="s">NOT</span><span class="w"> </span><span class="s">DEFINED</span><span class="w"> </span><span class="s2">&quot;${_pkg}_FIND_METHOD&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">if</span><span class="p">(</span><span class="s">DEFINED</span><span class="w"> </span><span class="s2">&quot;${PROJECT_NAME}-dependency-method&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;${_pkg}_FIND_METHOD&quot;</span><span class="w"> </span><span class="s2">&quot;${${PROJECT_NAME}-dependency-method}&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">else</span><span class="p">()</span>
+<span class="w">    </span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;${_pkg}_FIND_METHOD&quot;</span><span class="w"> </span><span class="s2">&quot;cmake&quot;</span><span class="w"> </span><span class="s2">&quot;pkgconf&quot;</span><span class="w"> </span><span class="s2">&quot;subproject&quot;</span><span class="w"> </span><span class="s2">&quot;fetch&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">endif</span><span class="p">()</span>
+<span class="w">  </span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;_${_pkg}_FIND_METHOD&quot;</span><span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+
+<span class="nb">foreach</span><span class="p">(</span><span class="s">method</span><span class="w"> </span><span class="o">${</span><span class="nv">${_pkg</span><span class="o">}</span><span class="s">_FIND_METHOD}</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">if</span><span class="p">(</span><span class="s">TARGET</span><span class="w"> </span><span class="s2">&quot;${_lib}::${_lib}&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">break</span><span class="p">()</span>
+<span class="w">  </span><span class="nb">endif</span><span class="p">()</span>
+
+<span class="w">  </span><span class="nb">if</span><span class="p">(</span><span class="s2">&quot;${method}&quot;</span><span class="w"> </span><span class="s">STREQUAL</span><span class="w"> </span><span class="s2">&quot;cmake&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span><span class="w"> </span><span class="s2">&quot;${_lib}: Find installed package&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">if</span><span class="p">(</span><span class="s">DEFINED</span><span class="w"> </span><span class="s2">&quot;${_pkg}_DIR&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;_${_pkg}_DIR&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;${_lib}_DIR&quot;</span><span class="w"> </span><span class="s2">&quot;${_pkg}_DIR&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">endif</span><span class="p">()</span>
+<span class="w">    </span><span class="nb">find_package</span><span class="p">(</span><span class="s2">&quot;${_lib}&quot;</span><span class="w"> </span><span class="s">CONFIG</span><span class="w"> </span><span class="s">QUIET</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">if</span><span class="p">(</span><span class="s2">&quot;${_lib}_FOUND&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span><span class="w"> </span><span class="s2">&quot;${_lib}: Found installed package&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="nb">break</span><span class="p">()</span>
+<span class="w">    </span><span class="nb">endif</span><span class="p">()</span>
+<span class="w">  </span><span class="nb">endif</span><span class="p">()</span>
+
+<span class="w">  </span><span class="nb">if</span><span class="p">(</span><span class="s2">&quot;${method}&quot;</span><span class="w"> </span><span class="s">STREQUAL</span><span class="w"> </span><span class="s2">&quot;pkgconf&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">find_package</span><span class="p">(</span><span class="s">PkgConfig</span><span class="w"> </span><span class="s">QUIET</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">pkg_check_modules</span><span class="p">(</span><span class="s2">&quot;${_pkg}&quot;</span><span class="w"> </span><span class="s">QUIET</span><span class="w"> </span><span class="s2">&quot;${_lib}&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">if</span><span class="p">(</span><span class="s2">&quot;${_pkg}_FOUND&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span><span class="w"> </span><span class="s2">&quot;Found ${_lib} via pkg-config&quot;</span><span class="p">)</span>
+
+<span class="w">      </span><span class="nb">add_library</span><span class="p">(</span><span class="s2">&quot;${_lib}::${_lib}&quot;</span><span class="w"> </span><span class="s">INTERFACE</span><span class="w"> </span><span class="s">IMPORTED</span><span class="p">)</span>
+<span class="w">      </span><span class="nb">target_link_libraries</span><span class="p">(</span>
+<span class="w">        </span><span class="s2">&quot;${_lib}::${_lib}&quot;</span>
+<span class="w">        </span><span class="s">INTERFACE</span>
+<span class="w">        </span><span class="s2">&quot;${${_pkg}_LINK_LIBRARIES}&quot;</span>
+<span class="w">        </span><span class="p">)</span>
+<span class="w">      </span><span class="nb">target_include_directories</span><span class="p">(</span>
+<span class="w">        </span><span class="s2">&quot;${_lib}::${_lib}&quot;</span>
+<span class="w">        </span><span class="s">INTERFACE</span>
+<span class="w">        </span><span class="s2">&quot;${${_pkg}_INCLUDE_DIRS}&quot;</span>
+<span class="w">        </span><span class="p">)</span>
+
+<span class="w">      </span><span class="nb">break</span><span class="p">()</span>
+<span class="w">    </span><span class="nb">endif</span><span class="p">()</span>
+<span class="w">  </span><span class="nb">endif</span><span class="p">()</span>
+
+<span class="w">  </span><span class="nb">if</span><span class="p">(</span><span class="s2">&quot;${method}&quot;</span><span class="w"> </span><span class="s">STREQUAL</span><span class="w"> </span><span class="s2">&quot;subproject&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">if</span><span class="p">(</span><span class="s">NOT</span><span class="w"> </span><span class="s">DEFINED</span><span class="w"> </span><span class="s2">&quot;${_pkg}_SUBPROJECT&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;_${_pkg}_SUBPROJECT&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;${_pkg}_SUBPROJECT&quot;</span><span class="w"> </span><span class="s2">&quot;subprojects/${_lib}&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">endif</span><span class="p">()</span>
+<span class="w">    </span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;${_pkg}_SOURCE_DIR&quot;</span><span class="w"> </span><span class="s2">&quot;${PROJECT_SOURCE_DIR}/${${_pkg}_SUBPROJECT}&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;${_pkg}_BINARY_DIR&quot;</span><span class="w"> </span><span class="s2">&quot;${PROJECT_BINARY_DIR}/${${_pkg}_SUBPROJECT}&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">if</span><span class="p">(</span><span class="s">EXISTS</span><span class="w"> </span><span class="s2">&quot;${${_pkg}_SOURCE_DIR}/CMakeLists.txt&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span><span class="w"> </span><span class="s2">&quot;Include ${_lib} from ${${_pkg}_SUBPROJECT}&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="nb">add_subdirectory</span><span class="p">(</span>
+<span class="w">        </span><span class="s2">&quot;${${_pkg}_SOURCE_DIR}&quot;</span>
+<span class="w">        </span><span class="s2">&quot;${${_pkg}_BINARY_DIR}&quot;</span>
+<span class="w">      </span><span class="p">)</span>
+
+<span class="w">      </span><span class="nb">add_library</span><span class="p">(</span><span class="s2">&quot;${_lib}::${_lib}&quot;</span><span class="w"> </span><span class="s">INTERFACE</span><span class="w"> </span><span class="s">IMPORTED</span><span class="p">)</span>
+<span class="w">      </span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s2">&quot;${_lib}::${_lib}&quot;</span><span class="w"> </span><span class="s">INTERFACE</span><span class="w"> </span><span class="s2">&quot;${_lib}&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="nb">break</span><span class="p">()</span>
+<span class="w">    </span><span class="nb">endif</span><span class="p">()</span>
+<span class="w">  </span><span class="nb">endif</span><span class="p">()</span>
+
+<span class="w">  </span><span class="nb">if</span><span class="p">(</span><span class="s2">&quot;${method}&quot;</span><span class="w"> </span><span class="s">STREQUAL</span><span class="w"> </span><span class="s2">&quot;fetch&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span><span class="w"> </span><span class="s2">&quot;Retrieving ${_lib} from ${_url}&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">include</span><span class="p">(</span><span class="s">FetchContent</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">FetchContent_Declare</span><span class="p">(</span>
+<span class="w">      </span><span class="s2">&quot;${_lib}&quot;</span>
+<span class="w">      </span><span class="s">GIT_REPOSITORY</span><span class="w"> </span><span class="s2">&quot;${_url}&quot;</span>
+<span class="w">      </span><span class="s">GIT_TAG</span><span class="w"> </span><span class="s2">&quot;${_rev}&quot;</span>
+<span class="w">      </span><span class="p">)</span>
+<span class="w">    </span><span class="nb">FetchContent_MakeAvailable</span><span class="p">(</span><span class="s2">&quot;${_lib}&quot;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="nb">add_library</span><span class="p">(</span><span class="s2">&quot;${_lib}::${_lib}&quot;</span><span class="w"> </span><span class="s">INTERFACE</span><span class="w"> </span><span class="s">IMPORTED</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s2">&quot;${_lib}::${_lib}&quot;</span><span class="w"> </span><span class="s">INTERFACE</span><span class="w"> </span><span class="s2">&quot;${_lib}&quot;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="nb">FetchContent_GetProperties</span><span class="p">(</span><span class="s2">&quot;${_lib}&quot;</span><span class="w"> </span><span class="s">SOURCE_DIR</span><span class="w"> </span><span class="s2">&quot;${_pkg}_SOURCE_DIR&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">FetchContent_GetProperties</span><span class="p">(</span><span class="s2">&quot;${_lib}&quot;</span><span class="w"> </span><span class="s">BINARY_DIR</span><span class="w"> </span><span class="s2">&quot;${_pkg}_BINARY_DIR&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">break</span><span class="p">()</span>
+<span class="w">  </span><span class="nb">endif</span><span class="p">()</span>
+
+<span class="nb">endforeach</span><span class="p">()</span>
+
+<span class="nb">if</span><span class="p">(</span><span class="s">TARGET</span><span class="w"> </span><span class="s2">&quot;${_lib}::${_lib}&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;${_pkg}_FOUND&quot;</span><span class="w"> </span><span class="s">TRUE</span><span class="p">)</span>
+<span class="nb">else</span><span class="p">()</span>
+<span class="w">  </span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;${_pkg}_FOUND&quot;</span><span class="w"> </span><span class="s">FALSE</span><span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+
+<span class="nb">if</span><span class="p">(</span><span class="s">DEFINED</span><span class="w"> </span><span class="s2">&quot;_${_pkg}_SUBPROJECT&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">unset</span><span class="p">(</span><span class="s2">&quot;${_pkg}_SUBPROJECT&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">unset</span><span class="p">(</span><span class="s2">&quot;_${_pkg}_SUBPROJECT&quot;</span><span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+<span class="nb">if</span><span class="p">(</span><span class="s">DEFINED</span><span class="w"> </span><span class="s2">&quot;_${_pkg}_DIR&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">unset</span><span class="p">(</span><span class="s2">&quot;${_lib}_DIR&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">unset</span><span class="p">(</span><span class="s2">&quot;_${_pkg}_DIR&quot;</span><span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+<span class="nb">if</span><span class="p">(</span><span class="s">DEFINED</span><span class="w"> </span><span class="s2">&quot;_${_pkg}_FIND_METHOD&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">unset</span><span class="p">(</span><span class="s2">&quot;${_pkg}_FIND_METHOD&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">unset</span><span class="p">(</span><span class="s2">&quot;_${_pkg}_FIND_METHOD&quot;</span><span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+<span class="nb">unset</span><span class="p">(</span><span class="s">_lib</span><span class="p">)</span>
+<span class="nb">unset</span><span class="p">(</span><span class="s">_pkg</span><span class="p">)</span>
+<span class="nb">unset</span><span class="p">(</span><span class="s">_url</span><span class="p">)</span>
+<span class="nb">unset</span><span class="p">(</span><span class="s">_rev</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="other-build-systems">
+<h2>Other build systems<a class="headerlink" href="#other-build-systems" title="Permalink to this heading">#</a></h2>
+<p>Other build systems must discover a precompiled TOML Fortran library from the system.
+For this purpose the <code class="docutils literal notranslate"><span class="pre">pkg-config</span></code> tool is used.
+After installing TOML Fortran with either meson or CMake a pc-file is generated which can be discovered by <code class="docutils literal notranslate"><span class="pre">pkg-config</span></code> and describes how to compile against the installed module files as well as link against the TOML Fortran library.
+First check if the <code class="docutils literal notranslate"><span class="pre">pkg-config</span></code> tool is available and can discover TOML Fortran</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pkg-config --modversion toml-f
+</pre></div>
+</div>
+<p>Make sure to adjust the <code class="docutils literal notranslate"><span class="pre">PKG_CONFIG_PATH</span></code> environment variable to point to the correct installation directory.
+Using the <code class="docutils literal notranslate"><span class="pre">--libs</span></code> and <code class="docutils literal notranslate"><span class="pre">--cflags</span></code> options the libraries to link against as well as the include directories can be obtained:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pkg-config --cflags toml-f
+pkg-config --libs toml-f
+</pre></div>
+</div>
+<p>In a handwritten Makefile those can be included by</p>
+<div class="highlight-make notranslate"><div class="highlight"><pre><span></span><span class="nv">TOML_FORTRAN_INCLUDE_FLAGS</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>shell<span class="w"> </span>pkg-config<span class="w"> </span>--cflags<span class="w"> </span>toml-f<span class="k">)</span>
+<span class="nv">TOML_FORTRAN_LIBRARY_FLAGS</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>shell<span class="w"> </span>pkg-config<span class="w"> </span>--libs<span class="w"> </span>toml-f<span class="k">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+<div class="section ablog__blog_comments">
+   
+</div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="installation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Installing TOML Fortran</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="table.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Working with tables</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-fortran-package-manager">Using the Fortran package manager</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integrate-with-meson">Integrate with meson</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integrate-with-cmake">Integrate with CMake</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#imported-targets">Imported Targets</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#result-variables">Result Variables</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cache-variables">Cache variables</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-build-systems">Other build systems</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Sebastian Ehlert
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2019-2025, Sebastian Ehlert.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

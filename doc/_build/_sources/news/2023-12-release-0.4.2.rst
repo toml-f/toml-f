@@ -1,0 +1,36 @@
+:author: Sebastian Ehlert
+:date: 2023-12-03
+:category: release
+:excerpt: 1
+
+TOML Fortran 0.4.2 released
+===========================
+
+Maintenance and bugfix release to address issues found for GFortran on MacOS/ppc32 and Cray compilers.
+Furthermore, parsing the header of an array of tables with whitespace and the tokenization of multiline strings with escape characters was fixed.
+
+.. admonition:: TOML Fortran is looking for support!
+   :class: attention
+
+   If you are interested in contributing to the project, please checkout the `repository <https://github/toml-f/toml-f>`__, or reach out in `toml-f#62 <https://github.com/toml-f/toml-f/issues/62>`__ to the current maintainer.
+
+
+Full changelog
+--------------
+
+Full commit history available at `v0.4.0...v0.4.2 <https://github.com/toml-f/toml-f/compare/v0.4.0...v0.4.2>`__.
+For release artifacts, like source distributions, checkout `v0.4.2 <https://github.com/toml-f/toml-f/releases/tag/v0.4.2>`_.
+
+Bugfixes
+~~~~~~~~
+
+* Don't use ``ieee_arithmetic`` in library to support GFortran on MacOS/ppc32
+  (`toml-f#133 <https://github.com/toml-f/toml-f/pull/133>`__)
+* Remove associate construct which breaks for Cray
+  (`toml-f#137 <https://github.com/toml-f/toml-f/pull/137>`__)
+* Fix for change in cmake behaviour
+  (`toml-f#139 <https://github.com/toml-f/toml-f/pull/139>`__)
+* Fix flagging of whitespace in array of table header
+  (`toml-f#142 <https://github.com/toml-f/toml-f/pull/142>`__)
+* Add test for multiline string with escaped quote
+  (`toml-f#146 <https://github.com/toml-f/toml-f/pull/146>`__)
