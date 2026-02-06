@@ -1,0 +1,514 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Compatibility with JSON &#8212; TOML Fortran</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.4cbf315f70debaebd550c87a6162cf0f.min.css" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'how-to/jonquil';</script>
+    <link rel="icon" href="../_static/toml-f.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Reference documentation" href="../reference/index.html" />
+    <link rel="prev" title="Serializable base class" href="serde.html" /> 
+<meta
+  name="description"
+  content="TOML parser implementation for data serialization and deserialization in Fortran"
+/>
+<meta
+  name="keywords"
+  content="TOML parser, TOML, serde, Fortran library, Fortran package manager"
+/>   
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/toml-f.svg" class="logo__image only-light" alt="TOML Fortran - Home"/>
+    <img src="../_static/toml-f.svg" class="logo__image only-dark pst-js-only" alt="TOML Fortran - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorial/index.html">Tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/getting-started.html">Getting started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/namelist-to-toml.html">Converting from Namelist to TOML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/fpm-lint.html">Building a linter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/json.html">Writing a custom lexer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">How-Tos</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installing TOML Fortran</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integration.html">Using TOML Fortran</a></li>
+<li class="toctree-l2"><a class="reference internal" href="table.html">Working with tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array.html">Working with arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error.html">Reporting errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html">Date time compatibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="serde.html">Serializable base class</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Compatibility with JSON</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">References</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference external" href="https://toml.io/en/v1.0.0">TOML specification</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://toml-f.github.io/toml-f">API documentation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../news/index.html">News</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../external.html">External resources</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference external" href="https://cyber.dabamos.de/programming/modernfortran/toml.html">Modern Fortran by Philipp Engel (English)</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://fortran-fans.github.io/Fortran-in-Action/Using-Open-Source-Code/Project-Configuration-TOML-F.html">Fortran in Action by Zuo Zhihua (Chinese)</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/toml-f/toml-f" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/toml-f/toml-f/edit/main/doc/how-to/jonquil.rst" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Compatibility with JSON</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-jonquil">Using Jonquil</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                   <section id="compatibility-with-json">
+<span id="jonquil"></span><h1>Compatibility with JSON<a class="headerlink" href="#compatibility-with-json" title="Permalink to this heading">#</a></h1>
+<p>The Jonquil project provides a flavor of TOML Fortran which can handle JSON.
+It is available from the <a href="#id3"><span class="problematic" id="id4">`toml-f/jonquil &lt;https://github.com/toml-f/jonquil`__</span></a> repository and can be included using the same steps as shown for TOML Fortran in <a class="reference internal" href="integration.html#integration"><span class="std std-ref">Using TOML Fortran</span></a>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>All types and procedures in TOML Fortran and Jonquil are fully compatible.
+Everything that is possible with TOML Fortran can be done with Jonquil, they can be mixed and matched without restriction.
+In short, Jonquil is TOML Fortran.</p>
+</div>
+<section id="using-jonquil">
+<h2>Using Jonquil<a class="headerlink" href="#using-jonquil" title="Permalink to this heading">#</a></h2>
+<p>You can follow all recipes and tutorials in this documentation using Jonquil by just replacing the <em>tomlf</em> module with the <em>jonquil</em> module.
+All derived types, procedure names and interfaces use the <em>json_</em> prefix instead of <em>toml_</em>, with the exception of the <em>toml_table</em> type which becomes a <em>json_object</em>.</p>
+<p>The following example program shows how to load JSON data from a string and access the value using the build interface.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">app/demo.f90</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
+<div class="highlight-Fortran notranslate"><div class="highlight"><pre><span></span><span class="k">program </span><span class="n">demo</span>
+<span class="w">  </span><span class="k">use </span><span class="n">jonquil</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">json_loads</span><span class="p">,</span><span class="w"> </span><span class="n">json_value</span><span class="p">,</span><span class="w"> </span><span class="n">json_object</span><span class="p">,</span><span class="w"> </span><span class="n">json_error</span><span class="p">,</span><span class="w"> </span><span class="n">cast_to_object</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">    </span><span class="p">&amp;</span><span class="w"> </span><span class="n">get_value</span>
+<span class="w">  </span><span class="k">implicit none</span>
+
+<span class="k">  class</span><span class="p">(</span><span class="n">json_value</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">val</span>
+<span class="w">  </span><span class="k">type</span><span class="p">(</span><span class="n">json_object</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">object</span>
+<span class="w">  </span><span class="k">type</span><span class="p">(</span><span class="n">json_error</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">error</span>
+<span class="w">  </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ival</span>
+
+<span class="w">  </span><span class="k">call </span><span class="n">json_loads</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;{&quot;a&quot;:1,&quot;b&quot;:2}&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">)</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">error</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">    print</span><span class="w"> </span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">%</span><span class="n">message</span>
+<span class="w">    </span><span class="k">stop</span>
+<span class="k">  end if</span>
+
+<span class="k">  </span><span class="n">object</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">cast_to_object</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">object</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">    call </span><span class="n">get_value</span><span class="p">(</span><span class="n">object</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;a&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ival</span><span class="p">)</span>
+<span class="w">    </span><span class="k">print</span><span class="w"> </span><span class="s1">&#39;(a,1x,i0)&#39;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;a is&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ival</span>
+
+<span class="w">    </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">object</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;b&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ival</span><span class="p">)</span>
+<span class="w">    </span><span class="k">print</span><span class="w"> </span><span class="s1">&#39;(a,1x,i0)&#39;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;b is&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ival</span>
+<span class="w">  </span><span class="k">end if</span>
+</pre></div>
+</div>
+</div>
+<p>In contrast to TOML Fortran the loaded data structure is always returned as a polymorphic value, which can be dispatched by using a <em>select type</em> construct or by obtaining a pointer using <em>cast_to_object</em> / <em>cast_to_array</em> as appropriate.</p>
+<p>Jonquil promises seamless compatibility with TOML Fortran, the data structure we just loaded can be manipulated with any procedure from the <em>tomlf</em> module and vice versa.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">app/demo.f90</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
+<div class="highlight-Fortran notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="k">block</span>
+<span class="k">    use </span><span class="n">tomlf</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">toml_table</span><span class="p">,</span><span class="w"> </span><span class="n">toml_array</span><span class="p">,</span><span class="w"> </span><span class="n">add_array</span><span class="p">,</span><span class="w"> </span><span class="n">set_value</span><span class="p">,</span><span class="w"> </span><span class="n">toml_serialize</span>
+
+<span class="w">    </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">it</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">table</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">toml_array</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">array</span>
+
+<span class="w">    </span><span class="c">! Add an array to the object</span>
+<span class="w">    </span><span class="k">call </span><span class="n">add_array</span><span class="p">(</span><span class="n">object</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;c&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">array</span><span class="p">)</span>
+<span class="w">    </span><span class="k">call </span><span class="n">set_value</span><span class="p">(</span><span class="k">array</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">])</span>
+
+<span class="w">    </span><span class="c">! Create a new subobject / subtable</span>
+<span class="w">    </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">object</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;d&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">requested</span><span class="o">=</span><span class="p">.</span><span class="n">true</span><span class="p">.)</span>
+<span class="w">    </span><span class="k">call </span><span class="n">set_value</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;sub&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;table&quot;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="k">print</span><span class="w"> </span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;# representation in TOML land&quot;</span>
+<span class="w">    </span><span class="k">print</span><span class="w"> </span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">toml_serialize</span><span class="p">(</span><span class="n">object</span><span class="p">)</span>
+<span class="w">  </span><span class="k">end block</span>
+</pre></div>
+</div>
+</div>
+<p>Since the <em>json_object</em> is just a flavor of the <em>toml_table</em> type, it can be used in the same way as any other table.</p>
+</section>
+</section>
+
+<div class="section ablog__blog_comments">
+   
+</div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="serde.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Serializable base class</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../reference/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Reference documentation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-jonquil">Using Jonquil</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Sebastian Ehlert
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2019-2025, Sebastian Ehlert.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
