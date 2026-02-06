@@ -1,7 +1,7 @@
 name = "namelist-to-toml-tutorial"
 
 [dependencies]
-toml-f.git = "https://github.com/toml-f/toml-f.git"
+toml-f = { git = "https://github.com/toml-f/toml-f.git" }
 
 [[executable]]
 name = "use_namelist"
