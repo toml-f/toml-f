@@ -64,6 +64,29 @@ In case no package is available build the port using
 For more information see the `toml-f port details <https://www.freshports.org/textproc/toml-f/>`_.
 
 
+:fab:`linux` Arch Linux User Repository
+-------------------------------------------
+
+.. image:: https://repology.org/badge/version-for-repo/aur/toml-f.svg
+   :alt: AUR
+   :target: https://aur.archlinux.org/packages/toml-f
+
+TOML Fortran is available in the `Arch User Repository (AUR) <https://aur.archlinux.org/packages/toml-f>`_.
+Install it with an AUR helper like *yay*:
+
+.. code-block:: bash
+
+   yay -S toml-f
+
+or build it manually from the AUR
+
+.. code-block:: bash
+
+   git clone https://aur.archlinux.org/toml-f.git
+   cd toml-f
+   makepkg -si
+
+
 :fab:`apple` :fab:`linux` Building with spack
 ---------------------------------------------
 
