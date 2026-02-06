@@ -41,6 +41,24 @@ It is possible to list all of the versions of TOML Fortran available on your pla
    mamba repoquery search toml-f --channel conda-forge
 
 
+:fab:`linux` Debian
+-------------------
+
+TOML Fortran is available in Debian as `libfortran-toml-dev <https://packages.debian.org/search?keywords=libfortran-toml-dev>`_. To install on Debian forky (or later versions), use:
+
+.. code-block:: bash
+
+   sudo apt install libfortran-toml-dev
+
+This package includes:
+
+- TOML Fortran library files for linking with your Fortran projects
+- Module files for use in your Fortran code
+- pkg-config support for easy integration with build systems
+
+Once installed, you can use TOML Fortran in your Fortran projects by adding the appropriate module use statements and linking against the library. For build system integration examples, see the :ref:`integration guide <integration>`.
+
+
 :fab:`freebsd` FreeBSD ports
 ----------------------------
 
