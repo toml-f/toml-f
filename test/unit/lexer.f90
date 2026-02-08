@@ -154,7 +154,22 @@ subroutine collect_lexer(testsuite)
       & new_unittest("whitespace-blank", whitespace_blank), &
       & new_unittest("whitespace-tab", whitespace_tab), &
       & new_unittest("whitespace-mixed", whitespace_mixed), &
-      & new_unittest("lexer-from-sequential", lexer_from_sequential)]
+      & new_unittest("lexer-from-sequential", lexer_from_sequential), &
+      & new_unittest("datetime-tz-max-positive", datetime_tz_max_positive), &
+      & new_unittest("datetime-tz-max-negative", datetime_tz_max_negative), &
+      & new_unittest("datetime-tz-hour-24", datetime_tz_hour_24), &
+      & new_unittest("datetime-tz-minute-60", datetime_tz_minute_60), &
+      & new_unittest("datetime-milliseconds-7digits", datetime_milliseconds_7digits), &
+      & new_unittest("datetime-milliseconds-zeros", datetime_milliseconds_zeros), &
+      & new_unittest("datetime-milliseconds-1digit", datetime_milliseconds_1digit), &
+      & new_unittest("float-exponent-incomplete-plus", float_exponent_incomplete_plus), &
+      & new_unittest("float-exponent-incomplete-minus", float_exponent_incomplete_minus), &
+      & new_unittest("float-zero-exponent", float_zero_exponent), &
+      & new_unittest("string-unicode-escape-2digits", string_unicode_escape_2digits), &
+      & new_unittest("string-unicode-escape-3digits", string_unicode_escape_3digits), &
+      & new_unittest("string-unicode-escape-5digits", string_unicode_escape_5digits), &
+      & new_unittest("string-unicode-escape-cap-4digits", string_unicode_escape_cap_4digits), &
+      & new_unittest("string-unicode-escape-cap-7digits", string_unicode_escape_cap_7digits)]
 
 end subroutine collect_lexer
 
@@ -1502,6 +1517,158 @@ subroutine check_token(error, string, expected, keypath)
    ! msg = render(string//new_line('a'), label, toml_terminal(.true.))
    ! print '(a)', msg
 end subroutine check_token
+
+!> Edge Case 1: Test timezone boundaries - maximum positive offset
+subroutine datetime_tz_max_positive(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test timezone offset +23:59 (maximum valid positive offset)
+   call check_token(error, "1979-05-27T07:32:00+23:59", &
+      & [token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_tz_max_positive
+
+!> Edge Case 1: Test timezone boundaries - maximum negative offset
+subroutine datetime_tz_max_negative(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test timezone offset -12:00 (extreme negative offset)
+   call check_token(error, "1979-05-27T00:00:00-12:00", &
+      & [token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_tz_max_negative
+
+!> Edge Case 1: Test timezone boundaries - hour exactly 24 should be invalid
+subroutine datetime_tz_hour_24(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test timezone offset +24:00 (should be invalid - hour must be < 24)
+   call check_token(error, "1979-05-27T12:00:00+24:00", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine datetime_tz_hour_24
+
+!> Edge Case 1: Test timezone boundaries - minute exactly 60 should be invalid
+subroutine datetime_tz_minute_60(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test timezone offset +12:60 (should be invalid - minute must be < 60)
+   call check_token(error, "1979-05-27T12:00:00+12:60", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine datetime_tz_minute_60
+
+!> Edge Case 3: Test 7+ digit fractional seconds (truncation)
+subroutine datetime_milliseconds_7digits(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test 7 digits - should parse but only use first 6
+   call check_token(error, "1979-05-27T07:32:00.9999999Z", &
+      & [token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_milliseconds_7digits
+
+!> Edge Case 3: Test all-zero fractional seconds
+subroutine datetime_milliseconds_zeros(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test all zeros in fractional part
+   call check_token(error, "1979-05-27T07:32:00.000000Z", &
+      & [token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_milliseconds_zeros
+
+!> Edge Case 3: Test single digit fractional seconds
+subroutine datetime_milliseconds_1digit(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test single digit - should be equivalent to .100000
+   call check_token(error, "1979-05-27T07:32:00.1Z", &
+      & [token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_milliseconds_1digit
+
+!> Edge Case 4: Test incomplete exponent (e+ with no digits)
+subroutine float_exponent_incomplete_plus(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test incomplete exponent - "1e+" should be invalid
+   call check_token(error, "1e+", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine float_exponent_incomplete_plus
+
+!> Edge Case 4: Test incomplete exponent (e- with no digits)
+subroutine float_exponent_incomplete_minus(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test incomplete exponent - "1e-" should be invalid
+   call check_token(error, "1e-", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine float_exponent_incomplete_minus
+
+!> Edge Case 4: Test zero with various exponents
+subroutine float_zero_exponent(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test zero with exponents: 0e0, +0e0, -0e0
+   call check_token(error, "0e0,+0e0,-0e0", &
+      & [token_kind%float, token_kind%comma, &
+      &  token_kind%float, token_kind%comma, &
+      &  token_kind%float, token_kind%eof], .false.)
+end subroutine float_zero_exponent
+
+!> Edge Case 5: Test incomplete unicode escape (2 digits instead of 4)
+subroutine string_unicode_escape_2digits(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test incomplete \u escape with only 2 hex digits
+   call check_token(error, '"\u00"', &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_unicode_escape_2digits
+
+!> Edge Case 5: Test incomplete unicode escape (3 digits instead of 4)
+subroutine string_unicode_escape_3digits(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test incomplete \u escape with only 3 hex digits
+   call check_token(error, '"\u00F"', &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_unicode_escape_3digits
+
+!> Edge Case 5: Test incomplete unicode escape (5 digits - one too many)
+subroutine string_unicode_escape_5digits(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test \u escape with 5 hex digits - should parse first 4 and treat 5th as regular char
+   call check_token(error, '"\u00041"', &
+      & [token_kind%string, token_kind%eof], .false.)
+end subroutine string_unicode_escape_5digits
+
+!> Edge Case 5: Test incomplete \U escape (4 digits instead of 8)
+subroutine string_unicode_escape_cap_4digits(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test incomplete \U (capital) escape with only 4 hex digits
+   call check_token(error, '"\U0000"', &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_unicode_escape_cap_4digits
+
+!> Edge Case 5: Test incomplete \U escape (7 digits instead of 8)
+subroutine string_unicode_escape_cap_7digits(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test incomplete \U (capital) escape with only 7 hex digits
+   call check_token(error, '"\U000004"', &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_unicode_escape_cap_7digits
 
 subroutine move_error(error, parse_error)
    type(error_type), allocatable, intent(out) :: error
