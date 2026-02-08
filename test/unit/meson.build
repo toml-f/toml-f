@@ -22,6 +22,7 @@ unittests = [
   'build',
   'lexer',
   'parser',
+  'ser',
   'sort',
   'utils',
 ]
