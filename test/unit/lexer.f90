@@ -1518,7 +1518,7 @@ subroutine check_token(error, string, expected, keypath)
    ! print '(a)', msg
 end subroutine check_token
 
-!> Edge Case 1: Test timezone boundaries - maximum positive offset
+!> Datetime timezone boundaries: Test maximum positive offset
 subroutine datetime_tz_max_positive(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1528,7 +1528,7 @@ subroutine datetime_tz_max_positive(error)
       & [token_kind%datetime, token_kind%eof], .false.)
 end subroutine datetime_tz_max_positive
 
-!> Edge Case 1: Test timezone boundaries - maximum negative offset
+!> Datetime timezone boundaries: Test maximum negative offset
 subroutine datetime_tz_max_negative(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1538,7 +1538,7 @@ subroutine datetime_tz_max_negative(error)
       & [token_kind%datetime, token_kind%eof], .false.)
 end subroutine datetime_tz_max_negative
 
-!> Edge Case 1: Test timezone boundaries - hour exactly 24 should be invalid
+!> Datetime timezone boundaries: Test hour exactly 24 should be invalid
 subroutine datetime_tz_hour_24(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1548,7 +1548,7 @@ subroutine datetime_tz_hour_24(error)
       & [token_kind%invalid, token_kind%eof], .false.)
 end subroutine datetime_tz_hour_24
 
-!> Edge Case 1: Test timezone boundaries - minute exactly 60 should be invalid
+!> Datetime timezone boundaries: Test minute exactly 60 should be invalid
 subroutine datetime_tz_minute_60(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1558,7 +1558,7 @@ subroutine datetime_tz_minute_60(error)
       & [token_kind%invalid, token_kind%eof], .false.)
 end subroutine datetime_tz_minute_60
 
-!> Edge Case 3: Test 7+ digit fractional seconds (truncation)
+!> Millisecond precision: Test 7+ digit fractional seconds (truncation)
 subroutine datetime_milliseconds_7digits(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1568,7 +1568,7 @@ subroutine datetime_milliseconds_7digits(error)
       & [token_kind%datetime, token_kind%eof], .false.)
 end subroutine datetime_milliseconds_7digits
 
-!> Edge Case 3: Test all-zero fractional seconds
+!> Millisecond precision: Test all-zero fractional seconds
 subroutine datetime_milliseconds_zeros(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1578,7 +1578,7 @@ subroutine datetime_milliseconds_zeros(error)
       & [token_kind%datetime, token_kind%eof], .false.)
 end subroutine datetime_milliseconds_zeros
 
-!> Edge Case 3: Test single digit fractional seconds
+!> Millisecond precision: Test single digit fractional seconds
 subroutine datetime_milliseconds_1digit(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1588,7 +1588,7 @@ subroutine datetime_milliseconds_1digit(error)
       & [token_kind%datetime, token_kind%eof], .false.)
 end subroutine datetime_milliseconds_1digit
 
-!> Edge Case 4: Test incomplete exponent (e+ with no digits)
+!> Float exponent boundaries: Test incomplete exponent (e+ with no digits)
 subroutine float_exponent_incomplete_plus(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1598,7 +1598,7 @@ subroutine float_exponent_incomplete_plus(error)
       & [token_kind%invalid, token_kind%eof], .false.)
 end subroutine float_exponent_incomplete_plus
 
-!> Edge Case 4: Test incomplete exponent (e- with no digits)
+!> Float exponent boundaries: Test incomplete exponent (e- with no digits)
 subroutine float_exponent_incomplete_minus(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1608,7 +1608,7 @@ subroutine float_exponent_incomplete_minus(error)
       & [token_kind%invalid, token_kind%eof], .false.)
 end subroutine float_exponent_incomplete_minus
 
-!> Edge Case 4: Test zero with various exponents
+!> Float exponent boundaries: Test zero with various exponents
 subroutine float_zero_exponent(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1620,7 +1620,7 @@ subroutine float_zero_exponent(error)
       &  token_kind%float, token_kind%eof], .false.)
 end subroutine float_zero_exponent
 
-!> Edge Case 5: Test incomplete unicode escape (2 digits instead of 4)
+!> Incomplete unicode escapes: Test incomplete \u escape (2 digits instead of 4)
 subroutine string_unicode_escape_2digits(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1630,7 +1630,7 @@ subroutine string_unicode_escape_2digits(error)
       & [token_kind%invalid, token_kind%eof], .false.)
 end subroutine string_unicode_escape_2digits
 
-!> Edge Case 5: Test incomplete unicode escape (3 digits instead of 4)
+!> Incomplete unicode escapes: Test incomplete \u escape (3 digits instead of 4)
 subroutine string_unicode_escape_3digits(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1640,7 +1640,7 @@ subroutine string_unicode_escape_3digits(error)
       & [token_kind%invalid, token_kind%eof], .false.)
 end subroutine string_unicode_escape_3digits
 
-!> Edge Case 5: Test incomplete unicode escape (5 digits - one too many)
+!> Incomplete unicode escapes: Test \u escape with 5 digits (4 valid + 1 char)
 subroutine string_unicode_escape_5digits(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1650,7 +1650,7 @@ subroutine string_unicode_escape_5digits(error)
       & [token_kind%string, token_kind%eof], .false.)
 end subroutine string_unicode_escape_5digits
 
-!> Edge Case 5: Test incomplete \U escape (4 digits instead of 8)
+!> Incomplete unicode escapes: Test incomplete \U escape (4 digits instead of 8)
 subroutine string_unicode_escape_cap_4digits(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1660,7 +1660,7 @@ subroutine string_unicode_escape_cap_4digits(error)
       & [token_kind%invalid, token_kind%eof], .false.)
 end subroutine string_unicode_escape_cap_4digits
 
-!> Edge Case 5: Test incomplete \U escape (7 digits instead of 8)
+!> Incomplete unicode escapes: Test incomplete \U escape (7 digits instead of 8)
 subroutine string_unicode_escape_cap_7digits(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
