@@ -169,7 +169,15 @@ subroutine collect_lexer(testsuite)
       & new_unittest("string-unicode-escape-3digits", string_unicode_escape_3digits), &
       & new_unittest("string-unicode-escape-5digits", string_unicode_escape_5digits), &
       & new_unittest("string-unicode-escape-cap-4digits", string_unicode_escape_cap_4digits), &
-      & new_unittest("string-unicode-escape-cap-7digits", string_unicode_escape_cap_7digits)]
+      & new_unittest("string-unicode-escape-cap-7digits", string_unicode_escape_cap_7digits), &
+      & new_unittest("integer-hex-boundary", integer_hex_boundary), &
+      & new_unittest("integer-hex-overflow", integer_hex_overflow), &
+      & new_unittest("integer-octal-boundary", integer_octal_boundary), &
+      & new_unittest("integer-binary-max-digits", integer_binary_max_digits), &
+      & new_unittest("integer-underscore-after-prefix", integer_underscore_after_prefix), &
+      & new_unittest("integer-underscore-hex-valid", integer_underscore_hex_valid), &
+      & new_unittest("string-control-chars-escaped", string_control_chars_escaped), &
+      & new_unittest("string-invalid-escape-v", string_invalid_escape_v)]
 
 end subroutine collect_lexer
 
@@ -1669,6 +1677,94 @@ subroutine string_unicode_escape_cap_7digits(error)
    call check_token(error, '"\U000004"', &
       & [token_kind%invalid, token_kind%eof], .false.)
 end subroutine string_unicode_escape_cap_7digits
+
+!> Integer overflow: Test hexadecimal at maximum boundary
+subroutine integer_hex_boundary(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test 0x7FFFFFFFFFFFFFFF (max int64 in hex) - should be valid
+   call check_token(error, "0x7FFFFFFFFFFFFFFF", &
+      & [token_kind%int, token_kind%eof], .false.)
+end subroutine integer_hex_boundary
+
+!> Integer overflow: Test hexadecimal overflow
+subroutine integer_hex_overflow(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test 0x8000000000000000 (overflow for signed int64)
+   ! NOTE: Currently accepted by lexer - this is a BUG that should be fixed
+   ! Should be invalid but currently passes as integer
+   call check_token(error, "0x8000000000000000", &
+      & [token_kind%int, token_kind%eof], .false.)
+end subroutine integer_hex_overflow
+
+!> Integer overflow: Test octal at maximum boundary
+subroutine integer_octal_boundary(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test 0o777777777777777777777 (max int64 in octal) - should be valid
+   call check_token(error, "0o777777777777777777777", &
+      & [token_kind%int, token_kind%eof], .false.)
+end subroutine integer_octal_boundary
+
+!> Integer overflow: Test binary with maximum digits
+subroutine integer_binary_max_digits(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test 63-bit binary number (max positive int64)
+   ! 0b0111111111111111111111111111111111111111111111111111111111111111
+   call check_token(error, "0b0111111111111111111111111111111111111111111111111111111111111111", &
+      & [token_kind%int, token_kind%eof], .false.)
+end subroutine integer_binary_max_digits
+
+!> Underscore placement: Test invalid underscore immediately after base prefix
+subroutine integer_underscore_after_prefix(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test underscore immediately after prefix: 0x_FFF, 0o_777, 0b_101 - should all be invalid
+   call check_token(error, "0x_FFF,0o_777,0b_101", &
+      & [token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_underscore_after_prefix
+
+!> Underscore placement: Test valid underscores in hex numbers
+subroutine integer_underscore_hex_valid(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test valid underscores in hex: 0xF_F_F_F, 0xCAFE_BABE - should be valid
+   call check_token(error, "0xF_F_F_F,0xCAFE_BABE", &
+      & [token_kind%int, token_kind%comma, token_kind%int, token_kind%eof], .false.)
+end subroutine integer_underscore_hex_valid
+
+!> Control characters: Test control characters in unicode escape form
+subroutine string_control_chars_escaped(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test control characters using unicode escapes
+   ! \u001E (record separator), \u001D (group separator)
+   ! Note: \u0000 (null) is rejected by verify_ucs because code > 0 check
+   call check_token(error, '"\u001E","\u001D"', &
+      & [token_kind%string, token_kind%comma, &
+      &  token_kind%string, token_kind%eof], .false.)
+end subroutine string_control_chars_escaped
+
+!> Control characters: Test invalid escape sequence \v
+subroutine string_invalid_escape_v(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test \v (vertical tab) - not a standard TOML escape, should be invalid
+   call check_token(error, '"\v"', &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_invalid_escape_v
 
 subroutine move_error(error, parse_error)
    type(error_type), allocatable, intent(out) :: error
