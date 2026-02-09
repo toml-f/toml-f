@@ -1689,15 +1689,15 @@ subroutine integer_hex_boundary(error)
 end subroutine integer_hex_boundary
 
 !> Integer overflow: Test hexadecimal overflow
+!> Integer overflow: Test hexadecimal overflow
 subroutine integer_hex_overflow(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
    ! Test 0x8000000000000000 (overflow for signed int64)
-   ! NOTE: Currently accepted by lexer - this is a BUG that should be fixed
-   ! Should be invalid but currently passes as integer
+   ! This should be rejected as invalid
    call check_token(error, "0x8000000000000000", &
-      & [token_kind%int, token_kind%eof], .false.)
+      & [token_kind%invalid, token_kind%eof], .false.)
 end subroutine integer_hex_overflow
 
 !> Integer overflow: Test octal at maximum boundary
