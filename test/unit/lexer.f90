@@ -145,6 +145,7 @@ subroutine collect_lexer(testsuite)
       & new_unittest("token-integer-binary", token_integer_binary), &
       & new_unittest("token-integer-octal", token_integer_octal), &
       & new_unittest("token-integer-hexadecimal", token_integer_hexadecimal), &
+      & new_unittest("token-integer-twos-complement", token_integer_twos_complement), &
       & new_unittest("token-float", token_float), &
       & new_unittest("token-float-exceptional", token_float_exceptional), &
       & new_unittest("token-float-fuzz", token_float_fuzz), &
@@ -154,7 +155,39 @@ subroutine collect_lexer(testsuite)
       & new_unittest("whitespace-blank", whitespace_blank), &
       & new_unittest("whitespace-tab", whitespace_tab), &
       & new_unittest("whitespace-mixed", whitespace_mixed), &
-      & new_unittest("lexer-from-sequential", lexer_from_sequential)]
+      & new_unittest("lexer-from-sequential", lexer_from_sequential), &
+      & new_unittest("datetime-tz-max-positive", datetime_tz_max_positive), &
+      & new_unittest("datetime-tz-max-negative", datetime_tz_max_negative), &
+      & new_unittest("datetime-tz-hour-24", datetime_tz_hour_24), &
+      & new_unittest("datetime-tz-minute-60", datetime_tz_minute_60), &
+      & new_unittest("datetime-milliseconds-7digits", datetime_milliseconds_7digits), &
+      & new_unittest("datetime-milliseconds-zeros", datetime_milliseconds_zeros), &
+      & new_unittest("datetime-milliseconds-1digit", datetime_milliseconds_1digit), &
+      & new_unittest("float-exponent-incomplete-plus", float_exponent_incomplete_plus), &
+      & new_unittest("float-exponent-incomplete-minus", float_exponent_incomplete_minus), &
+      & new_unittest("float-zero-exponent", float_zero_exponent), &
+      & new_unittest("string-unicode-escape-2digits", string_unicode_escape_2digits), &
+      & new_unittest("string-unicode-escape-3digits", string_unicode_escape_3digits), &
+      & new_unittest("string-unicode-escape-5digits", string_unicode_escape_5digits), &
+      & new_unittest("string-unicode-escape-cap-4digits", string_unicode_escape_cap_4digits), &
+      & new_unittest("string-unicode-escape-cap-7digits", string_unicode_escape_cap_7digits), &
+      & new_unittest("integer-hex-boundary", integer_hex_boundary), &
+      & new_unittest("integer-hex-overflow", integer_hex_overflow), &
+      & new_unittest("integer-octal-boundary", integer_octal_boundary), &
+      & new_unittest("integer-binary-max-digits", integer_binary_max_digits), &
+      & new_unittest("integer-underscore-after-prefix", integer_underscore_after_prefix), &
+      & new_unittest("integer-underscore-hex-valid", integer_underscore_hex_valid), &
+      & new_unittest("string-control-chars-escaped", string_control_chars_escaped), &
+      & new_unittest("string-invalid-escape-v", string_invalid_escape_v), &
+      & new_unittest("integer-hex-negative", integer_hex_negative), &
+      & new_unittest("integer-hex-negative-boundary", integer_hex_negative_boundary), &
+      & new_unittest("integer-hex-negative-overflow", integer_hex_negative_overflow), &
+      & new_unittest("integer-octal-negative", integer_octal_negative), &
+      & new_unittest("integer-octal-negative-boundary", integer_octal_negative_boundary), &
+      & new_unittest("integer-octal-negative-overflow", integer_octal_negative_overflow), &
+      & new_unittest("integer-binary-negative", integer_binary_negative), &
+      & new_unittest("integer-binary-negative-boundary", integer_binary_negative_boundary), &
+      & new_unittest("integer-binary-negative-overflow", integer_binary_negative_overflow)]
 
 end subroutine collect_lexer
 
@@ -1283,6 +1316,32 @@ subroutine token_integer_hexadecimal(error)
    call check(error, val1, -int(z"F1c", tfi))
 end subroutine token_integer_hexadecimal
 
+!> Test extraction of integers using two's complement (sign bit set)
+subroutine token_integer_twos_complement(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   type(toml_lexer) :: lexer
+   integer(tfi) :: val1
+
+   ! Test 0x8000000000000000 extracts as minimum int64 (-9223372036854775808)
+   call new_lexer_from_string(lexer, "0x8000000000000000")
+   call lexer%extract(toml_token(token_kind%int, 1, 18), val1)
+   call check(error, val1, -huge(1_tfi) - 1_tfi)
+   if (allocated(error)) return
+
+   ! Test 0xFFFFFFFFFFFFFFFF extracts as -1
+   call new_lexer_from_string(lexer, "0xFFFFFFFFFFFFFFFF")
+   call lexer%extract(toml_token(token_kind%int, 1, 18), val1)
+   call check(error, val1, -1_tfi)
+   if (allocated(error)) return
+
+   ! Test 0xFFFFFFFFFFFFFFFE extracts as -2
+   call new_lexer_from_string(lexer, "0xFFFFFFFFFFFFFFFE")
+   call lexer%extract(toml_token(token_kind%int, 1, 18), val1)
+   call check(error, val1, -2_tfi)
+end subroutine token_integer_twos_complement
+
 subroutine token_float(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1502,6 +1561,342 @@ subroutine check_token(error, string, expected, keypath)
    ! msg = render(string//new_line('a'), label, toml_terminal(.true.))
    ! print '(a)', msg
 end subroutine check_token
+
+!> Datetime timezone boundaries: Test maximum positive offset
+subroutine datetime_tz_max_positive(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test timezone offset +23:59 (maximum valid positive offset)
+   call check_token(error, "1979-05-27T07:32:00+23:59", &
+      & [token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_tz_max_positive
+
+!> Datetime timezone boundaries: Test maximum negative offset
+subroutine datetime_tz_max_negative(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test timezone offset -12:00 (extreme negative offset)
+   call check_token(error, "1979-05-27T00:00:00-12:00", &
+      & [token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_tz_max_negative
+
+!> Datetime timezone boundaries: Test hour exactly 24 should be invalid
+subroutine datetime_tz_hour_24(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test timezone offset +24:00 (should be invalid - hour must be < 24)
+   call check_token(error, "1979-05-27T12:00:00+24:00", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine datetime_tz_hour_24
+
+!> Datetime timezone boundaries: Test minute exactly 60 should be invalid
+subroutine datetime_tz_minute_60(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test timezone offset +12:60 (should be invalid - minute must be < 60)
+   call check_token(error, "1979-05-27T12:00:00+12:60", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine datetime_tz_minute_60
+
+!> Millisecond precision: Test 7+ digit fractional seconds (truncation)
+subroutine datetime_milliseconds_7digits(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test 7 digits - should parse but only use first 6
+   call check_token(error, "1979-05-27T07:32:00.9999999Z", &
+      & [token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_milliseconds_7digits
+
+!> Millisecond precision: Test all-zero fractional seconds
+subroutine datetime_milliseconds_zeros(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test all zeros in fractional part
+   call check_token(error, "1979-05-27T07:32:00.000000Z", &
+      & [token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_milliseconds_zeros
+
+!> Millisecond precision: Test single digit fractional seconds
+subroutine datetime_milliseconds_1digit(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test single digit - should be equivalent to .100000
+   call check_token(error, "1979-05-27T07:32:00.1Z", &
+      & [token_kind%datetime, token_kind%eof], .false.)
+end subroutine datetime_milliseconds_1digit
+
+!> Float exponent boundaries: Test incomplete exponent (e+ with no digits)
+subroutine float_exponent_incomplete_plus(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test incomplete exponent - "1e+" should be invalid
+   call check_token(error, "1e+", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine float_exponent_incomplete_plus
+
+!> Float exponent boundaries: Test incomplete exponent (e- with no digits)
+subroutine float_exponent_incomplete_minus(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test incomplete exponent - "1e-" should be invalid
+   call check_token(error, "1e-", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine float_exponent_incomplete_minus
+
+!> Float exponent boundaries: Test zero with various exponents
+subroutine float_zero_exponent(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test zero with exponents: 0e0, +0e0, -0e0
+   call check_token(error, "0e0,+0e0,-0e0", &
+      & [token_kind%float, token_kind%comma, &
+      &  token_kind%float, token_kind%comma, &
+      &  token_kind%float, token_kind%eof], .false.)
+end subroutine float_zero_exponent
+
+!> Incomplete unicode escapes: Test incomplete \u escape (2 digits instead of 4)
+subroutine string_unicode_escape_2digits(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test incomplete \u escape with only 2 hex digits
+   call check_token(error, '"\u00"', &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_unicode_escape_2digits
+
+!> Incomplete unicode escapes: Test incomplete \u escape (3 digits instead of 4)
+subroutine string_unicode_escape_3digits(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test incomplete \u escape with only 3 hex digits
+   call check_token(error, '"\u00F"', &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_unicode_escape_3digits
+
+!> Incomplete unicode escapes: Test \u escape with 5 digits (4 valid + 1 char)
+subroutine string_unicode_escape_5digits(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test \u escape with 5 hex digits - should parse first 4 and treat 5th as regular char
+   call check_token(error, '"\u00041"', &
+      & [token_kind%string, token_kind%eof], .false.)
+end subroutine string_unicode_escape_5digits
+
+!> Incomplete unicode escapes: Test incomplete \U escape (4 digits instead of 8)
+subroutine string_unicode_escape_cap_4digits(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test incomplete \U (capital) escape with only 4 hex digits
+   call check_token(error, '"\U0000"', &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_unicode_escape_cap_4digits
+
+!> Incomplete unicode escapes: Test incomplete \U escape (7 digits instead of 8)
+subroutine string_unicode_escape_cap_7digits(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test incomplete \U (capital) escape with only 7 hex digits
+   call check_token(error, '"\U000004"', &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_unicode_escape_cap_7digits
+
+!> Integer overflow: Test hexadecimal at maximum boundary
+subroutine integer_hex_boundary(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test 0x7FFFFFFFFFFFFFFF (max int64 in hex) - should be valid
+   call check_token(error, "0x7FFFFFFFFFFFFFFF", &
+      & [token_kind%int, token_kind%eof], .false.)
+end subroutine integer_hex_boundary
+
+!> Integer overflow: Test hexadecimal with sign bit set (two's complement)
+subroutine integer_hex_overflow(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test 0x8000000000000000 (sign bit set, represents min int64 in two's complement)
+   ! This should now be accepted and extracted as -9223372036854775808
+   call check_token(error, "0x8000000000000000", &
+      & [token_kind%int, token_kind%eof], .false.)
+end subroutine integer_hex_overflow
+
+!> Integer overflow: Test octal at maximum boundary
+subroutine integer_octal_boundary(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test 0o777777777777777777777 (max int64 in octal) - should be valid
+   call check_token(error, "0o777777777777777777777", &
+      & [token_kind%int, token_kind%eof], .false.)
+end subroutine integer_octal_boundary
+
+!> Integer overflow: Test binary with maximum digits
+subroutine integer_binary_max_digits(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test 63-bit binary number (max positive int64)
+   ! 0b0111111111111111111111111111111111111111111111111111111111111111
+   call check_token(error, "0b0111111111111111111111111111111111111111111111111111111111111111", &
+      & [token_kind%int, token_kind%eof], .false.)
+end subroutine integer_binary_max_digits
+
+!> Underscore placement: Test invalid underscore immediately after base prefix
+subroutine integer_underscore_after_prefix(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test underscore immediately after prefix: 0x_FFF, 0o_777, 0b_101 - should all be invalid
+   call check_token(error, "0x_FFF,0o_777,0b_101", &
+      & [token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_underscore_after_prefix
+
+!> Underscore placement: Test valid underscores in hex numbers
+subroutine integer_underscore_hex_valid(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test valid underscores in hex: 0xF_F_F_F, 0xCAFE_BABE - should be valid
+   call check_token(error, "0xF_F_F_F,0xCAFE_BABE", &
+      & [token_kind%int, token_kind%comma, token_kind%int, token_kind%eof], .false.)
+end subroutine integer_underscore_hex_valid
+
+!> Control characters: Test control characters in unicode escape form
+subroutine string_control_chars_escaped(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test control characters using unicode escapes
+   ! \u001E (record separator), \u001D (group separator)
+   ! Note: \u0000 (null) is rejected by verify_ucs because code > 0 check
+   call check_token(error, '"\u001E","\u001D"', &
+      & [token_kind%string, token_kind%comma, &
+      &  token_kind%string, token_kind%eof], .false.)
+end subroutine string_control_chars_escaped
+
+!> Control characters: Test invalid escape sequence \v
+subroutine string_invalid_escape_v(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Test \v (vertical tab) - not a standard TOML escape, should be invalid
+   call check_token(error, '"\v"', &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_invalid_escape_v
+
+!> Negative integers: Test negative hexadecimal literals are invalid per TOML spec
+subroutine integer_hex_negative(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative hex values are NOT allowed per TOML spec - should be invalid
+   ! TOML only allows negative decimal integers
+   call check_token(error, "-0x0,-0xFF,-0xABC", &
+      & [token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_hex_negative
+
+!> Negative integers: Test negative hexadecimal at minimum boundary is invalid
+subroutine integer_hex_negative_boundary(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative hex is not allowed per TOML spec - should be invalid
+   call check_token(error, "-0x8000000000000000", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_hex_negative_boundary
+
+!> Negative integers: Test negative hexadecimal overflow is invalid
+subroutine integer_hex_negative_overflow(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative hex is not allowed per TOML spec - should be invalid
+   call check_token(error, "-0x8000000000000001", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_hex_negative_overflow
+
+!> Negative integers: Test negative octal literals are invalid per TOML spec
+subroutine integer_octal_negative(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative octal values are NOT allowed per TOML spec - should be invalid
+   call check_token(error, "-0o0,-0o777,-0o123", &
+      & [token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_octal_negative
+
+!> Negative integers: Test negative octal at minimum boundary is invalid
+subroutine integer_octal_negative_boundary(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative octal is not allowed per TOML spec - should be invalid
+   call check_token(error, "-0o1000000000000000000000", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_octal_negative_boundary
+
+!> Negative integers: Test negative octal overflow is invalid
+subroutine integer_octal_negative_overflow(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative octal is not allowed per TOML spec - should be invalid
+   call check_token(error, "-0o1000000000000000000001", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_octal_negative_overflow
+
+!> Negative integers: Test negative binary literals are invalid per TOML spec
+subroutine integer_binary_negative(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative binary values are NOT allowed per TOML spec - should be invalid
+   call check_token(error, "-0b0,-0b1010,-0b11", &
+      & [token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_binary_negative
+
+!> Negative integers: Test negative binary at minimum boundary is invalid
+subroutine integer_binary_negative_boundary(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative binary is not allowed per TOML spec - should be invalid
+   call check_token(error, "-0b1000000000000000000000000000000000000000000000000000000000000000", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_binary_negative_boundary
+
+!> Negative integers: Test negative binary overflow is invalid
+subroutine integer_binary_negative_overflow(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative binary is not allowed per TOML spec - should be invalid
+   call check_token(error, "-0b1000000000000000000000000000000000000000000000000000000000000001", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_binary_negative_overflow
 
 subroutine move_error(error, parse_error)
    type(error_type), allocatable, intent(out) :: error

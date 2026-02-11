@@ -19,6 +19,7 @@ program tftester
    use tftest_build, only : collect_build
    use tftest_lexer, only : collect_lexer
    use tftest_parser, only : collect_parser
+   use tftest_ser, only : collect_ser
    use tftest_sort, only : collect_sort
    use tftest_utils, only : collect_utils
    implicit none
@@ -34,6 +35,7 @@ program tftester
       & new_testsuite("build", collect_build), &
       & new_testsuite("lexer", collect_lexer), &
       & new_testsuite("parser", collect_parser), &
+      & new_testsuite("ser", collect_ser), &
       & new_testsuite("sort", collect_sort), &
       & new_testsuite("utils", collect_utils) &
       & ]

@@ -21,6 +21,7 @@ set(
   "lexer.f90"
   "main.f90"
   "parser.f90"
+  "ser.f90"
   "sort.f90"
   "utils.f90"
 )
