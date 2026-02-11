@@ -1,0 +1,14 @@
+name = "namelist-to-toml-tutorial"
+
+[dependencies]
+toml-f = { git = "https://github.com/toml-f/toml-f.git" }
+
+[[executable]]
+name = "use_namelist"
+source-dir = "app"
+main = "use_namelist.f90"
+
+[[executable]]
+name = "use_toml"
+source-dir = "app"
+main = "use_toml.f90"
