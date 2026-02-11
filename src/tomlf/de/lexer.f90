@@ -1299,12 +1299,6 @@ subroutine extract_integer(lexer, token, val)
       if (tmp < 0) cycle
       val = val * base + merge(-tmp, tmp, minus)
    end do
-   
-   ! For non-decimal bases without explicit minus sign, interpret as two's complement
-   ! if the sign bit is set (value appears negative due to bit pattern)
-   ! This allows 0x8000000000000000 to represent -9223372036854775808
-   ! Note: This only applies when there's no explicit minus sign in the source
-   ! Explicit minus signs are only valid for decimal (base 10) per TOML spec
 end subroutine extract_integer
 
 !> Extract floating point value of token
