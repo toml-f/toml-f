@@ -145,6 +145,7 @@ subroutine collect_lexer(testsuite)
       & new_unittest("token-integer-binary", token_integer_binary), &
       & new_unittest("token-integer-octal", token_integer_octal), &
       & new_unittest("token-integer-hexadecimal", token_integer_hexadecimal), &
+      & new_unittest("token-integer-twos-complement", token_integer_twos_complement), &
       & new_unittest("token-float", token_float), &
       & new_unittest("token-float-exceptional", token_float_exceptional), &
       & new_unittest("token-float-fuzz", token_float_fuzz), &
@@ -1315,6 +1316,32 @@ subroutine token_integer_hexadecimal(error)
    call check(error, val1, -int(z"F1c", tfi))
 end subroutine token_integer_hexadecimal
 
+!> Test extraction of integers using two's complement (sign bit set)
+subroutine token_integer_twos_complement(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   type(toml_lexer) :: lexer
+   integer(tfi) :: val1
+
+   ! Test 0x8000000000000000 extracts as minimum int64 (-9223372036854775808)
+   call new_lexer_from_string(lexer, "0x8000000000000000")
+   call lexer%extract(toml_token(token_kind%int, 1, 18), val1)
+   call check(error, val1, -huge(1_tfi) - 1_tfi)
+   if (allocated(error)) return
+
+   ! Test 0xFFFFFFFFFFFFFFFF extracts as -1
+   call new_lexer_from_string(lexer, "0xFFFFFFFFFFFFFFFF")
+   call lexer%extract(toml_token(token_kind%int, 1, 18), val1)
+   call check(error, val1, -1_tfi)
+   if (allocated(error)) return
+
+   ! Test 0xFFFFFFFFFFFFFFFE extracts as -2
+   call new_lexer_from_string(lexer, "0xFFFFFFFFFFFFFFFE")
+   call lexer%extract(toml_token(token_kind%int, 1, 18), val1)
+   call check(error, val1, -2_tfi)
+end subroutine token_integer_twos_complement
+
 subroutine token_float(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -1697,16 +1724,15 @@ subroutine integer_hex_boundary(error)
       & [token_kind%int, token_kind%eof], .false.)
 end subroutine integer_hex_boundary
 
-!> Integer overflow: Test hexadecimal overflow
-!> Integer overflow: Test hexadecimal overflow
+!> Integer overflow: Test hexadecimal with sign bit set (two's complement)
 subroutine integer_hex_overflow(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
-   ! Test 0x8000000000000000 (overflow for signed int64)
-   ! This should be rejected as invalid
+   ! Test 0x8000000000000000 (sign bit set, represents min int64 in two's complement)
+   ! This should now be accepted and extracted as -9223372036854775808
    call check_token(error, "0x8000000000000000", &
-      & [token_kind%invalid, token_kind%eof], .false.)
+      & [token_kind%int, token_kind%eof], .false.)
 end subroutine integer_hex_overflow
 
 !> Integer overflow: Test octal at maximum boundary

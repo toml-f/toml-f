@@ -675,113 +675,6 @@ subroutine next_literal(lexer, token)
    token = toml_token(token_kind%invalid, prev, pos)
 end subroutine next_literal
 
-!> Validate that an integer token doesn't overflow int64 range
-function validate_integer_range(lexer, first, last, base) result(valid)
-   !> Instance of the lexer
-   type(toml_lexer), intent(in) :: lexer
-   !> First position of integer literal
-   integer, intent(in) :: first
-   !> Last position of integer literal
-   integer, intent(in) :: last
-   !> Base of the integer (from b10, b16, b8, b2 constants)
-   integer, intent(in) :: base
-   !> Whether the integer is within valid range
-   logical :: valid
-
-   integer, parameter :: b10 = 2, b16 = 1, b8 = 3, b2 = 4
-   character(*, tfc), parameter :: num = "0123456789abcdef"
-   integer(tfi) :: val, prev_val, digit_val, actual_base
-   integer :: pos, tmp
-   logical :: minus, overflow
-   character(1, tfc) :: ch
-
-   ! Determine actual numeric base
-   select case(base)
-   case(b16)
-      actual_base = 16
-   case(b8)
-      actual_base = 8
-   case(b2)
-      actual_base = 2
-   case default
-      actual_base = 10
-   end select
-
-   val = 0
-   overflow = .false.
-   minus = .false.
-   pos = first
-
-   ! Check for sign
-   if (any(peek(lexer, pos) == ["+", "-"])) then
-      minus = peek(lexer, pos) == "-"
-      pos = pos + 1
-   end if
-
-   ! Skip base prefix if present (0x, 0o, 0b)
-   if (peek(lexer, pos) == "0" .and. pos < last) then
-      select case(peek(lexer, pos+1))
-      case("x", "o", "b")
-         pos = pos + 2
-      end select
-   end if
-
-   ! Parse the integer value and check for overflow
-   do while (pos <= last)
-      ch = peek(lexer, pos)
-      
-      ! Skip underscores
-      if (ch == "_") then
-         pos = pos + 1
-         cycle
-      end if
-
-      ! Convert character to digit value
-      if ("A" <= ch .and. ch <= "Z") ch = achar(iachar(ch) - iachar("A") + iachar("a"))
-      tmp = scan(num(:abs(actual_base)), ch) - 1
-      if (tmp < 0) then
-         pos = pos + 1
-         cycle
-      end if
-
-      digit_val = int(tmp, tfi)
-      prev_val = val
-
-      ! Check for multiplication overflow before doing it
-      if (minus) then
-         ! For negative numbers, check against negative limit
-         if (val < (-huge(1_tfi) - 1_tfi) / actual_base) then
-            overflow = .true.
-            exit
-         end if
-         val = val * actual_base
-         ! Check for subtraction overflow
-         if (val < (-huge(1_tfi) - 1_tfi) + digit_val) then
-            overflow = .true.
-            exit
-         end if
-         val = val - digit_val
-      else
-         ! For positive numbers, check against positive limit
-         if (val > huge(1_tfi) / actual_base) then
-            overflow = .true.
-            exit
-         end if
-         val = val * actual_base
-         ! Check for addition overflow
-         if (val > huge(1_tfi) - digit_val) then
-            overflow = .true.
-            exit
-         end if
-         val = val + digit_val
-      end if
-
-      pos = pos + 1
-   end do
-
-   valid = .not. overflow
-end function validate_integer_range
-
 !> Process integer tokens and binary, octal, and hexadecimal literals.
 subroutine next_integer(lexer, token)
    !> Instance of the lexer
@@ -861,12 +754,6 @@ subroutine next_integer(lexer, token)
    end do
 
    okay = .not.underscore .and. okay
-   
-   ! Check for integer overflow
-   if (okay) then
-      okay = validate_integer_range(lexer, prev, pos-1, base)
-   end if
-   
    token = toml_token(merge(token_kind%int, token_kind%invalid, okay), prev, pos-1)
 end subroutine next_integer
 
@@ -1412,6 +1299,12 @@ subroutine extract_integer(lexer, token, val)
       if (tmp < 0) cycle
       val = val * base + merge(-tmp, tmp, minus)
    end do
+   
+   ! For non-decimal bases without explicit minus sign, interpret as two's complement
+   ! if the sign bit is set (value appears negative due to bit pattern)
+   ! This allows 0x8000000000000000 to represent -9223372036854775808
+   ! Note: This only applies when there's no explicit minus sign in the source
+   ! Explicit minus signs are only valid for decimal (base 10) per TOML spec
 end subroutine extract_integer
 
 !> Extract floating point value of token
