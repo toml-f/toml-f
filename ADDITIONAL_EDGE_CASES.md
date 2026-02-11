@@ -87,9 +87,9 @@ The following edge cases were identified but not added as tests for the reasons 
 - Total unit tests: ~220
 
 ### After Phase 2
-- Total lexer tests: 148 (+8)
-- Total unit tests: ~228 (+8)
-- **New bugs discovered**: 1 (hex overflow)
+- Total lexer tests: 157 (+17 from Phase 1)
+- Total unit tests: ~237 (+17)
+- **New bugs discovered**: 1 (hex overflow) - **FIXED**
 
 ## Bugs Discovered
 
@@ -115,7 +115,8 @@ The following edge cases were identified but not added as tests for the reasons 
 ## Files Modified
 
 1. `test/unit/lexer.f90`:
-   - Added 8 new test functions
+   - Added 8 new test functions (Phase 2a: overflow/underscore/control chars)
+   - Added 9 new test functions (Phase 2b: negative literal validation)
    - Updated test suite array to include new tests
    - Updated `integer_hex_overflow` test to expect correct behavior (invalid token)
    - All tests passing
@@ -136,11 +137,15 @@ The following edge cases were identified but not added as tests for the reasons 
 ## Conclusion
 
 This phase of edge case discovery successfully:
-- ✅ Added 8 new edge case tests
+- ✅ Added 17 new edge case tests (8 in Phase 2a, 9 in Phase 2b)
 - ✅ Discovered 1 actual bug (hex overflow)
 - ✅ **FIXED the hexadecimal overflow bug**
 - ✅ Verified correct handling of underscore placement
 - ✅ Verified correct handling of unicode escape validation
+- ✅ Verified correct rejection of negative hex/octal/binary per TOML spec
 - ✅ Maintained 100% test pass rate
 
-The hexadecimal overflow bug has been fixed with comprehensive overflow validation for all integer bases.
+The most significant findings are:
+1. The hexadecimal overflow bug has been fixed with comprehensive overflow validation
+2. The lexer correctly implements TOML spec by rejecting negative non-decimal integers
+3. Comprehensive test coverage now exists for all integer edge cases

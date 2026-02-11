@@ -177,7 +177,16 @@ subroutine collect_lexer(testsuite)
       & new_unittest("integer-underscore-after-prefix", integer_underscore_after_prefix), &
       & new_unittest("integer-underscore-hex-valid", integer_underscore_hex_valid), &
       & new_unittest("string-control-chars-escaped", string_control_chars_escaped), &
-      & new_unittest("string-invalid-escape-v", string_invalid_escape_v)]
+      & new_unittest("string-invalid-escape-v", string_invalid_escape_v), &
+      & new_unittest("integer-hex-negative", integer_hex_negative), &
+      & new_unittest("integer-hex-negative-boundary", integer_hex_negative_boundary), &
+      & new_unittest("integer-hex-negative-overflow", integer_hex_negative_overflow), &
+      & new_unittest("integer-octal-negative", integer_octal_negative), &
+      & new_unittest("integer-octal-negative-boundary", integer_octal_negative_boundary), &
+      & new_unittest("integer-octal-negative-overflow", integer_octal_negative_overflow), &
+      & new_unittest("integer-binary-negative", integer_binary_negative), &
+      & new_unittest("integer-binary-negative-boundary", integer_binary_negative_boundary), &
+      & new_unittest("integer-binary-negative-overflow", integer_binary_negative_overflow)]
 
 end subroutine collect_lexer
 
@@ -1765,6 +1774,103 @@ subroutine string_invalid_escape_v(error)
    call check_token(error, '"\v"', &
       & [token_kind%invalid, token_kind%eof], .false.)
 end subroutine string_invalid_escape_v
+
+!> Negative integers: Test negative hexadecimal literals are invalid per TOML spec
+subroutine integer_hex_negative(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative hex values are NOT allowed per TOML spec - should be invalid
+   ! TOML only allows negative decimal integers
+   call check_token(error, "-0x0,-0xFF,-0xABC", &
+      & [token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_hex_negative
+
+!> Negative integers: Test negative hexadecimal at minimum boundary is invalid
+subroutine integer_hex_negative_boundary(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative hex is not allowed per TOML spec - should be invalid
+   call check_token(error, "-0x8000000000000000", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_hex_negative_boundary
+
+!> Negative integers: Test negative hexadecimal overflow is invalid
+subroutine integer_hex_negative_overflow(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative hex is not allowed per TOML spec - should be invalid
+   call check_token(error, "-0x8000000000000001", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_hex_negative_overflow
+
+!> Negative integers: Test negative octal literals are invalid per TOML spec
+subroutine integer_octal_negative(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative octal values are NOT allowed per TOML spec - should be invalid
+   call check_token(error, "-0o0,-0o777,-0o123", &
+      & [token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_octal_negative
+
+!> Negative integers: Test negative octal at minimum boundary is invalid
+subroutine integer_octal_negative_boundary(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative octal is not allowed per TOML spec - should be invalid
+   call check_token(error, "-0o1000000000000000000000", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_octal_negative_boundary
+
+!> Negative integers: Test negative octal overflow is invalid
+subroutine integer_octal_negative_overflow(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative octal is not allowed per TOML spec - should be invalid
+   call check_token(error, "-0o1000000000000000000001", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_octal_negative_overflow
+
+!> Negative integers: Test negative binary literals are invalid per TOML spec
+subroutine integer_binary_negative(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative binary values are NOT allowed per TOML spec - should be invalid
+   call check_token(error, "-0b0,-0b1010,-0b11", &
+      & [token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%comma, &
+      &  token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_binary_negative
+
+!> Negative integers: Test negative binary at minimum boundary is invalid
+subroutine integer_binary_negative_boundary(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative binary is not allowed per TOML spec - should be invalid
+   call check_token(error, "-0b1000000000000000000000000000000000000000000000000000000000000000", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_binary_negative_boundary
+
+!> Negative integers: Test negative binary overflow is invalid
+subroutine integer_binary_negative_overflow(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   ! Negative binary is not allowed per TOML spec - should be invalid
+   call check_token(error, "-0b1000000000000000000000000000000000000000000000000000000000000001", &
+      & [token_kind%invalid, token_kind%eof], .false.)
+end subroutine integer_binary_negative_overflow
 
 subroutine move_error(error, parse_error)
    type(error_type), allocatable, intent(out) :: error
