@@ -88,7 +88,7 @@ end subroutine new_ordered_map
 subroutine get(self, key, ptr)
 
    !> Instance of the structure
-   class(toml_ordered_map), intent(inout), target :: self
+   class(toml_ordered_map), intent(in), target :: self
 
    !> Key to the TOML value
    character(kind=tfc, len=*), intent(in) :: key
@@ -142,7 +142,7 @@ end subroutine push_back
 subroutine get_keys(self, list)
 
    !> Instance of the structure
-   class(toml_ordered_map), intent(inout), target :: self
+   class(toml_ordered_map), intent(in), target :: self
 
    !> List of all keys
    type(toml_key), allocatable, intent(out) :: list(:)
