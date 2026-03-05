@@ -18,9 +18,9 @@ sys.path.insert(0, op.abspath(op.join(op.dirname(__file__), "_vendor")))
 
 project = "toml-f"
 author = "Sebastian Ehlert"
-copyright = f"2019-2025, {author}"
+copyright = f"2019-2026, {author}"
 
-version = "0.4.3"
+version = "0.5.0"
 release = version
 
 extensions = [

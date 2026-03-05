@@ -1,0 +1,54 @@
+:author: Sebastian Ehlert
+:date: 2026-03-05
+:category: release
+:excerpt: 1
+
+TOML Fortran 0.5.0 released
+===========================
+
+Support for TOML 1.1.0 is here!
+With this release TOML Fortran introduces full support for the new TOML release, which adds support for newlines and trailing commas to inline tables, new escape sequences, and extends the datetime format with making seconds optional.
+
+The documentation of TOML Fortran was improved with adding installation instructions for Debian and AUR, which started to package TOML Fortran.
+Furthermore, the examples now include cases for handling defaults and absence of tables and arrays. 
+
+
+Full changelog
+--------------
+
+Full commit history available at `v0.4.3...v0.5.0 <https://github.com/toml-f/toml-f/compare/v0.4.3...v0.5.0>`__.
+For release artifacts, like source distributions, checkout `v0.5.0 <https://github.com/toml-f/toml-f/releases/tag/v0.5.0>`_.
+
+New features
+~~~~~~~~~~~~
+
+* Add \e escape sequence
+  (`toml-f#171 <https://github.com/toml-f/toml-f/pull/171>`__)
+* Add \x escape sequence
+  (`toml-f#170 <https://github.com/toml-f/toml-f/pull/170>`__)
+* Support newlines and trailing comma in inline tables
+  (`toml-f#99 <https://github.com/toml-f/toml-f/pull/99>`__)
+* Support optional seconds in datetime and add edge case tests
+  (`toml-f#175 <https://github.com/toml-f/toml-f/pull/175>`__)
+
+Documentation
+~~~~~~~~~~~~~
+
+* Add handling of default arguments to table documentation
+  (`toml-f#173 <https://github.com/toml-f/toml-f/pull/173>`__)
+* Update documentation
+  (`toml-f#168 <https://github.com/toml-f/toml-f/pull/168>`__,
+   `toml-f#167 <https://github.com/toml-f/toml-f/pull/167>`__,
+   `toml-f#174 <https://github.com/toml-f/toml-f/pull/174>`__,
+   `toml-f#178 <https://github.com/toml-f/toml-f/pull/178>`__)
+* Add Debian installation documentation
+  (`toml-f#176 <https://github.com/toml-f/toml-f/pull/176>`__)
+* Document TOML Fortran availability in Arch Linux AUR
+  (`toml-f#180 <https://github.com/toml-f/toml-f/pull/180>`__)
+
+Bugfixes
+~~~~~~~~
+
+* Fix datetime out of bounds access in
+  (`toml-f#172 <https://github.com/toml-f/toml-f/pull/172>`__,
+   `toml-f#182 <https://github.com/toml-f/toml-f/pull/182>`__)
