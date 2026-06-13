@@ -1,0 +1,59 @@
+name: release
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Python
+      uses: mamba-org/setup-micromamba@v1
+      with:
+        environment-file: assets/ci/build-env.yaml
+    - run: |
+        meson setup _build
+        meson dist -C _build --no-tests --include-subprojects
+        mv _build/meson-dist/*.tar.xz .
+    - uses: actions/upload-artifact@v4
+      with:
+        name: toml-f-source
+        path: ./*.tar.xz
+        retention-days: 5
+
+  release:
+    needs:
+      - source
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ${{ github.workspace }}  # This will download all files
+
+      - name: Create SHA256 checksums
+        run: |
+          set -ex
+          for output in toml-f*/toml-f*; do
+            pushd $(dirname "$output")
+            sha256sum $(basename "$output") | tee $(basename "$output").sha256
+            popd
+          done
+
+      - name: Upload assets
+        uses: svenstaro/upload-release-action@v2
+        if: ${{ github.event_name == 'release' }}
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: toml-f*/toml-f*
+          file_glob: true
+          tag: ${{ github.ref }}
+          overwrite: true
