@@ -125,6 +125,43 @@ jobs:
       if: ${{ ! contains(matrix.os, 'windows') }}
       run: pip3 install ${{ env.PIP_PACKAGES }} ${{ env.PIP_EXTRAS }}
 
+    - name: Install toml-test v2.2.0 for compliance tests
+      if: ${{ matrix.toolchain.build == 'meson' && ! contains(matrix.os, 'windows') }}
+      run: |
+        set -euo pipefail
+
+        mkdir -p "$HOME/.local/bin"
+        arch="$(uname -m)"
+
+        case "${RUNNER_OS}" in
+          Linux)
+            case "$arch" in
+              x86_64) asset="toml-test-v2.2.0-linux-amd64.gz" ;;
+              aarch64|arm64) asset="toml-test-v2.2.0-linux-arm64.gz" ;;
+              armv7l|armv6l) asset="toml-test-v2.2.0-linux-arm.gz" ;;
+              *) echo "Unsupported Linux architecture: $arch" >&2; exit 1 ;;
+            esac
+            ;;
+          macOS)
+            case "$arch" in
+              x86_64) asset="toml-test-v2.2.0-darwin-amd64.gz" ;;
+              arm64) asset="toml-test-v2.2.0-darwin-arm64.gz" ;;
+              *) echo "Unsupported macOS architecture: $arch" >&2; exit 1 ;;
+            esac
+            ;;
+          *)
+            echo "Unsupported runner OS: ${RUNNER_OS}" >&2
+            exit 1
+            ;;
+        esac
+
+        curl -fsSL -o "$RUNNER_TEMP/toml-test.gz" \
+          "https://github.com/toml-lang/toml-test/releases/download/v2.2.0/${asset}"
+        gzip -dc "$RUNNER_TEMP/toml-test.gz" > "$HOME/.local/bin/toml-test"
+        chmod +x "$HOME/.local/bin/toml-test"
+
+        echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
     - name: Configure build (meson)
       if: ${{ matrix.toolchain.build == 'meson' }}
       run: >-

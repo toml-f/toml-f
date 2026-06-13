@@ -32,14 +32,23 @@ json2toml_exe = executable(
   dependencies: tomlf_dep,
 )
 
-# We will run a TOML decoder validator, in case we find a go installation
+# We will run a TOML decoder validator, preferring the environment-provided
+# toml-test v2 binary when available and falling back to the vendored 1.x
+# subproject otherwise.
 go_exe = find_program('go', required: false)
-if not meson.is_subproject() and go_exe.found()
+toml_test_exe = find_program('toml-test', required: false)
+if not meson.is_subproject() and (toml_test_exe.found() or go_exe.found())
   toml_test_prj = subproject('toml-test-1.1.0')
-  toml_test_exe = toml_test_prj.get_variable('toml_test_exe')
-  validator_testdir = toml_test_prj.get_variable('compliance_tests')
   valid_tests = toml_test_prj.get_variable('valid_tests')
   invalid_tests = toml_test_prj.get_variable('invalid_tests')
+
+  if toml_test_exe.found()
+    use_v2_toml_test = true
+  else
+    toml_test_exe = toml_test_prj.get_variable('toml_test_exe')
+    validator_testdir = toml_test_prj.get_variable('compliance_tests')
+    use_v2_toml_test = false
+  endif
 
   if not toml_test_exe.found()
     subdir_done()
@@ -53,18 +62,29 @@ if not meson.is_subproject() and go_exe.found()
   ]
 
   foreach t : valid_tests
+    if use_v2_toml_test
+      test_args = [
+        'test',
+        '-toml=1.1',
+        '-decoder=' + toml2json_exe.full_path(),
+        '-run=' + t,
+      ]
+    else
+      test_args = ['-testdir', validator_testdir, '-run', t, '--', toml2json_exe]
+    endif
+
     if not valid_failing.contains(t)
       test(
         t,
         toml_test_exe,
-        args: ['-testdir', validator_testdir, '-run', t, '--', toml2json_exe],
+        args: test_args,
         suite: 'decoder',
       )
     else
       benchmark(
         t,
         toml_test_exe,
-        args: ['-testdir', validator_testdir, '-run', t, '--', toml2json_exe],
+        args: test_args,
         suite: 'decoder',
       )
     endif
@@ -85,18 +105,29 @@ if not meson.is_subproject() and go_exe.found()
   ]
 
   foreach t : invalid_tests
+    if use_v2_toml_test
+      test_args = [
+        'test',
+        '-toml=1.1',
+        '-decoder=' + toml2json_exe.full_path(),
+        '-run=' + t,
+      ]
+    else
+      test_args = ['-testdir', validator_testdir, '-run', t, '--', toml2json_exe]
+    endif
+
     if not invalid_failing.contains(t)
       test(
         t,
         toml_test_exe,
-        args: ['-testdir', validator_testdir, '-run', t, '--', toml2json_exe],
+        args: test_args,
         suite: 'decoder',
       )
     else
       benchmark(
         t,
         toml_test_exe,
-        args: ['-testdir', validator_testdir, '-run', t, '--', toml2json_exe],
+        args: test_args,
         suite: 'decoder',
       )
     endif
@@ -112,18 +143,30 @@ if not meson.is_subproject() and go_exe.found()
   ]
 
   foreach t : valid_tests
+    if use_v2_toml_test
+      test_args = [
+        'test',
+        '-toml=1.1',
+        '-decoder=' + toml2json_exe.full_path(),
+        '-encoder=' + json2toml_exe.full_path(),
+        '-run=' + t,
+      ]
+    else
+      test_args = ['-encoder', '-testdir', validator_testdir, '-run', t, '--', json2toml_exe]
+    endif
+
     if not encoder_failing.contains(t)
       test(
         t,
         toml_test_exe,
-        args: ['-encoder', '-testdir', validator_testdir, '-run', t, '--', json2toml_exe],
+        args: test_args,
         suite: 'encoder',
       )
     else
       benchmark(
         t,
         toml_test_exe,
-        args: ['-encoder', '-testdir', validator_testdir, '-run', t, '--', json2toml_exe],
+        args: test_args,
         suite: 'encoder',
       )
     endif

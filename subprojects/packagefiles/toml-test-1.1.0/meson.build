@@ -10,7 +10,6 @@ if go.found()
       command: [
         go_wrapper, meson.current_source_dir(),
         go, 'build',
-        '-pkgdir', meson.current_build_dir(),
         '-o', '@OUTPUT@',
         '-v', '-x',
         './cmd/toml-test',

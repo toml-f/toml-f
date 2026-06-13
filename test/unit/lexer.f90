@@ -131,6 +131,7 @@ subroutine collect_lexer(testsuite)
       & new_unittest("string-escape", string_escape), &
       & new_unittest("string-escape-invalid", string_escape_invalid), &
       & new_unittest("string-unicode-escape", string_unicode_escape), &
+      & new_unittest("string-unicode-escape-lowercase", string_unicode_escape_lowercase), &
       & new_unittest("string-triple", string_triple), &
       & new_unittest("string-multiline", string_multiline), &
       & new_unittest("string-multiline-unclosed1", string_multiline_unclosed1), &
@@ -541,6 +542,14 @@ subroutine string_unicode_escape(error)
    call check_token(error, """\uD800"",""\ufffe""", &
       & [token_kind%invalid, token_kind%comma, token_kind%invalid, token_kind%eof], .false.)
 end subroutine string_unicode_escape
+
+subroutine string_unicode_escape_lowercase(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check_token(error, '"\u00c0 \u00e9"', &
+      & [token_kind%string, token_kind%eof], .false.)
+end subroutine string_unicode_escape_lowercase
 
 subroutine string_triple(error)
    !> Error handling

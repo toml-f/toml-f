@@ -16,6 +16,8 @@ module tftest_parser
    use tomlf_constants, only : nl => TOML_NEWLINE
    use tomlf_de_parser
    use tomlf_de_lexer, only : toml_lexer, new_lexer_from_string, toml_token, token_kind
+   use tomlf_de, only : toml_loads
+   use tomlf_build, only : get_value
    use tomlf_error, only : toml_error
    use tomlf_type, only : toml_table
    use tomlf_terminal, only : toml_terminal
@@ -45,7 +47,7 @@ subroutine collect_parser(testsuite)
       & new_unittest("table-header-unclosed1", table_header_unclosed1, should_fail=.true.), &
       & new_unittest("table-header-unclosed2", table_header_unclosed2, should_fail=.true.), &
       & new_unittest("table-header-invalid", table_header_invalid, should_fail=.true.), &
-      & new_unittest("table-header-newline1", table_header_newline1, should_fail=.true.), &
+      & new_unittest("table-header-newline1", table_header_newline1), &
       & new_unittest("table-header-newline2", table_header_newline2, should_fail=.true.), &
       & new_unittest("table-header-duplicate", table_header_duplicate, should_fail=.true.), &
       & new_unittest("table-header-trailing-whitespace", table_header_trailing_whitespace), &
@@ -78,9 +80,83 @@ subroutine collect_parser(testsuite)
       & new_unittest("inline-table-newline", inline_table_newline), &
       & new_unittest("inline-table-comma", inline_table_comma), &
       & new_unittest("inline-table-modify", inline_table_modify, should_fail=.true.), &
+      ! new_unittest("dotted-key-non-table", dotted_key_non_table, should_fail=.true.), &
+      ! new_unittest("dotted-key-array", dotted_key_array, should_fail=.true.), &
+      & new_unittest("parse-escaped-key", parse_escaped_key), &
+      & new_unittest("parse-multiline-string", parse_multiline_string), &
+      & new_unittest("parse-multiline-string-blank-lines", parse_multiline_string_blank_lines), &
       & new_unittest("empty", empty)]
 
 end subroutine collect_parser
+
+subroutine parse_escaped_key(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   type(toml_table), allocatable :: table
+   type(toml_error), allocatable :: toml_err
+
+   call toml_loads(table, '"\\n" = "newline"', error=toml_err)
+   if (allocated(toml_err)) then
+      call test_failed(error, toml_err%message)
+      return
+   end if
+
+   call check(error, allocated(table), "Escaped newline key should parse")
+end subroutine parse_escaped_key
+
+subroutine parse_multiline_string(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   type(toml_table), allocatable :: table
+   type(toml_error), allocatable :: toml_err
+   character(:), allocatable :: value
+   integer :: stat
+   character(*), parameter :: input = 'equivalent_three = """\' // new_line('a') // &
+      & '       The quick brown \' // new_line('a') // &
+      & '       fox jumps over \' // new_line('a') // &
+      & '       the lazy dog."""'
+
+   call toml_loads(table, input, error=toml_err)
+   if (allocated(toml_err)) then
+      call test_failed(error, toml_err%message)
+      return
+   end if
+
+   call get_value(table, "equivalent_three", value, stat=stat)
+   call check(error, stat == 0, "Multiline string should decode")
+   if (allocated(error)) return
+   call check(error, value == 'The quick brown fox jumps over the lazy dog.', &
+      & "Multiline string should collapse line continuations")
+end subroutine parse_multiline_string
+
+subroutine parse_multiline_string_blank_lines(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   type(toml_table), allocatable :: table
+   type(toml_error), allocatable :: toml_err
+   character(:), allocatable :: value
+   integer :: stat
+   character(*), parameter :: input = 'equivalent_two = """' // new_line('a') // &
+      & 'The quick brown \' // new_line('a') // &
+      & new_line('a') // &
+      & '  fox jumps over \' // new_line('a') // &
+      & '    the lazy dog."""'
+
+   call toml_loads(table, input, error=toml_err)
+   if (allocated(toml_err)) then
+      call test_failed(error, toml_err%message)
+      return
+   end if
+
+   call get_value(table, "equivalent_two", value, stat=stat)
+   call check(error, stat == 0, "Multiline string with blank lines should decode")
+   if (allocated(error)) return
+   call check(error, value == 'The quick brown fox jumps over the lazy dog.', &
+      & "Multiline line continuations should remove blank-line whitespace")
+end subroutine parse_multiline_string_blank_lines
 
 subroutine empty(error)
    !> Error handling
@@ -584,6 +660,31 @@ subroutine inline_table_modify(error)
       &  toml_token(token_kind%keypath, 9, 9), toml_token(token_kind%rbracket, 10, 10), &
       &  toml_token(token_kind%eof, 11, 11)])
 end subroutine inline_table_modify
+
+subroutine dotted_key_non_table(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check_parser(error, "a=1"//nl//"[a.b]", &
+      & [toml_token(token_kind%keypath, 1, 1), toml_token(token_kind%equal, 2, 2), &
+      &  toml_token(token_kind%int, 3, 3), toml_token(token_kind%newline, 4, 4), &
+      &  toml_token(token_kind%lbracket, 5, 5), toml_token(token_kind%keypath, 6, 6), &
+      &  toml_token(token_kind%dot, 7, 7), toml_token(token_kind%keypath, 8, 8), &
+      &  toml_token(token_kind%rbracket, 9, 9), toml_token(token_kind%eof, 10, 10)])
+end subroutine dotted_key_non_table
+
+subroutine dotted_key_array(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check_parser(error, "a=[]"//nl//"[a.b]", &
+      & [toml_token(token_kind%keypath, 1, 1), toml_token(token_kind%equal, 2, 2), &
+      &  toml_token(token_kind%lbracket, 3, 3), toml_token(token_kind%rbracket, 4, 4), &
+      &  toml_token(token_kind%newline, 5, 5), toml_token(token_kind%lbracket, 6, 6), &
+      &  toml_token(token_kind%keypath, 7, 7), toml_token(token_kind%dot, 8, 8), &
+      &  toml_token(token_kind%keypath, 9, 9), toml_token(token_kind%rbracket, 10, 10), &
+      &  toml_token(token_kind%eof, 11, 11)])
+end subroutine dotted_key_array
 
 subroutine check_parser(error, string, token)
    !> Error handling

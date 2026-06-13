@@ -356,15 +356,22 @@ contains
          table => cast_to_table(ptr)
          if (.not.associated(table)) then
             array => cast_to_array(ptr)
-            if (associated(array)) then
+            if (associated(array) .and. len(array) > 0) then
                call array%get(len(array), ptr)
-               table => cast_to_table(ptr)
+               if (associated(ptr)) table => cast_to_table(ptr)
             end if
             if (.not.associated(table)) then
-               call duplicate_key_error(parser%diagnostic, lexer, &
-                  & parser%context%token(key%origin), &
-                  & parser%context%token(ptr%origin), &
-                  & "Key '"//key%key//"' already exists")
+               if (associated(ptr)) then
+                  call duplicate_key_error(parser%diagnostic, lexer, &
+                     & parser%context%token(key%origin), &
+                     & parser%context%token(ptr%origin), &
+                     & "Key '"//key%key//"' already exists")
+               else
+                  call duplicate_key_error(parser%diagnostic, lexer, &
+                     & parser%context%token(key%origin), &
+                     & parser%context%token(key%origin), &
+                     & "Key '"//key%key//"' already exists")
+               end if
                return
             end if
          end if
@@ -439,7 +446,28 @@ recursive subroutine parse_keyval(parser, lexer, table)
       call next_token(parser, lexer)
 
    if (parser%token%kind == token_kind%dot) then
-      call get_table(table, key, tptr)
+      call table%get(key%key, ptr)
+      if (associated(ptr)) then
+         tptr => cast_to_table(ptr)
+         if (.not.associated(tptr)) then
+            call duplicate_key_error(parser%diagnostic, lexer, &
+               & parser%context%token(key%origin), &
+               & parser%context%token(ptr%origin), &
+               & "Key '"//key%key//"' already exists")
+            return
+         end if
+      else
+         call add_table(table, key, tptr)
+      end if
+
+      if (.not.associated(tptr)) then
+         call duplicate_key_error(parser%diagnostic, lexer, &
+            & parser%context%token(key%origin), &
+            & parser%context%token(key%origin), &
+            & "Key '"//key%key//"' already exists")
+         return
+      end if
+
       if (tptr%inline) then
          call semantic_error(parser%diagnostic, lexer, &
             & parser%context%token(key%origin), &
@@ -787,12 +815,6 @@ subroutine extract_key(parser, lexer, key)
 
    call lexer%extract(parser%token, key%key)
    key%origin = parser%context%top
-   if (scan(key%key, TOML_NEWLINE) > 0) then
-      call syntax_error(parser%diagnostic, lexer, parser%token, &
-         & "Invalid character in key", &
-         & "key cannot contain newline")
-      return
-   end if
 end subroutine extract_key
 
 !> Extract value from token
