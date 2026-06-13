@@ -43,7 +43,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
 
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/template.cmake"
+  "${CMAKE_CURRENT_SOURCE_DIR}/template-config.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
   INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 )

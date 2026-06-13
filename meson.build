@@ -71,6 +71,34 @@ if install
     description: 'A TOML parser implementation for data serialization and deserialization in Fortran',
     subdirs: ['', module_id],
   )
+
+  cmake_data = configuration_data({
+    'PROJECT_NAME': meson.project_name(),
+    'PROJECT_VERSION': meson.project_version(),
+    'PACKAGE_INIT': '',
+    'CMAKE_INSTALL_PREFIX': get_option('prefix'),
+    'CMAKE_INSTALL_INCLUDEDIR': get_option('includedir'),
+    'CMAKE_INSTALL_LIBDIR': get_option('libdir'),
+    'module-dir': module_id,
+  })
+  cmake_files = [
+    configure_file(
+      input: files('config'/'template-config.cmake'),
+      output: meson.project_name() + '-config.cmake',
+      configuration: cmake_data,
+    ),
+    configure_file(
+      input: files('config'/'template-targets.cmake'),
+      output: meson.project_name() + '-targets.cmake',
+      configuration: cmake_data,
+    ),
+    files('config'/'cmake'/'Findtest-drive.cmake'),
+  ]
+  install_data(
+    cmake_files,
+    install_dir: get_option('libdir')/'cmake'/meson.project_name(),
+    install_tag: 'devel',
+  )
 endif
 
 # add the testsuite

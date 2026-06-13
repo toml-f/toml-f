@@ -195,6 +195,18 @@ jobs:
         ninja -C ${{ env.BUILD_DIR }} install
         echo "TOMLF_PREFIX=$PWD/_dist" >> $GITHUB_ENV
 
+    - name: Discover installed files (CMake)
+      if: ${{ matrix.toolchain.build != 'fpm' }}
+      run: |
+        cmake -S test/export -B ${{ env.BUILD_DIR }}/discover-cmake -G Ninja -DCMAKE_PREFIX_PATH=$PWD/_dist/lib/cmake
+        cmake --build ${{ env.BUILD_DIR }}/discover-cmake
+
+    - name: Discover installed files (Meson)
+      if: ${{ matrix.toolchain.build != 'fpm' }}
+      run: |
+        meson setup ${{ env.BUILD_DIR }}/discover-meson test/export --pkg-config-path=$PWD/_dist/lib/pkgconfig
+        meson compile -C ${{ env.BUILD_DIR }}/discover-meson
+
     - name: Upload coverage report
       if: ${{ matrix.toolchain.build == 'meson' && matrix.build-type == 'coverage' }}
       uses: codecov/codecov-action@v4
