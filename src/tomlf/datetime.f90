@@ -170,7 +170,6 @@ pure function new_datetime_from_string(string) result(datetime)
          time%minute = time%minute * 10 + tmp
       end do
 
-      ! Check for optional seconds (TOML 1.1)
       has_seconds = first + 6 <= len(string) .and. string(first+6:first+6) == ":"
       if (has_seconds) then
          time%second = 0
@@ -181,7 +180,6 @@ pure function new_datetime_from_string(string) result(datetime)
          end do
          first = first + 8
       else
-         ! No seconds - keep time%second as default (-1)
          first = first + 5
       end if
 
@@ -224,7 +222,7 @@ pure function to_string_datetime(datetime) result(str)
 
    if (has_time(datetime)) then
       if (has_date(datetime)) then
-         str = str // ' '
+         str = str // 'T'
       end if
       str = str // to_string_time(datetime%time)
    end if
@@ -243,19 +241,21 @@ pure function to_string_time(time) result(str)
    type(toml_time), intent(in) :: time
    character(:, tfc), allocatable :: str
 
-   integer :: msec, width
+   integer :: second, msec, width
    character(1), parameter :: places(6) = ["1", "2", "3", "4", "5", "6"]
 
-   ! Handle optional seconds (TOML 1.1)
+   ! TOML 1.1 allows omitted seconds in the input representation, but the
+   ! compliance JSON format requires canonical RFC 3339 output with seconds.
    if (time%second < 0) then
-      ! No seconds - output HH:MM format
-      allocate(character(5, tfc) :: str)
-      write(str, '(i2.2,":",i2.2)') &
-         &  time%hour, time%minute
-   else if (time%msec < 0) then
+      second = 0
+   else
+      second = time%second
+   end if
+
+   if (time%msec < 0) then
       allocate(character(8, tfc) :: str)
       write(str, '(i2.2,":",i2.2,":",i2.2)') &
-         &  time%hour, time%minute, time%second
+         &  time%hour, time%minute, second
    else
       width = 6
       msec = time%msec
@@ -265,7 +265,7 @@ pure function to_string_time(time) result(str)
       end do
       allocate(character(9 + width, tfc) :: str)
       write(str, '(i2.2,":",i2.2,":",i2.2,".",i'//places(width)//'.'//places(width)//')') &
-         &  time%hour, time%minute, time%second, msec
+         &  time%hour, time%minute, second, msec
    end if
    if (allocated(time%zone)) str = str // trim(time%zone)
 end function to_string_time

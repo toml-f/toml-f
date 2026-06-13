@@ -262,12 +262,22 @@ subroutine escape_string(raw, escaped)
    !> JSON compatible escaped string
    character(len=:), allocatable, intent(out) :: escaped
 
-   integer :: i
+   integer :: i, code
+   character(len=2) :: hex
 
    escaped = ''
    do i = 1, len(raw)
+      code = iachar(raw(i:i))
       select case(raw(i:i))
-      case default; escaped = escaped // raw(i:i)
+      case default
+         if (code < 32 .or. code == 127) then
+            write(hex, '(z2.2)') code
+            if (hex(1:1) >= 'A' .and. hex(1:1) <= 'F') hex(1:1) = achar(iachar(hex(1:1)) + 32)
+            if (hex(2:2) >= 'A' .and. hex(2:2) <= 'F') hex(2:2) = achar(iachar(hex(2:2)) + 32)
+            escaped = escaped // '\u00' // hex
+         else
+            escaped = escaped // raw(i:i)
+         end if
       case('\'); escaped = escaped // '\\'
       case('"'); escaped = escaped // '\"'
       case(TOML_NEWLINE); escaped = escaped // '\n'

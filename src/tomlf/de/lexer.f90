@@ -434,7 +434,7 @@ subroutine next_dstring(lexer, token)
    type(toml_token), intent(inout) :: token
 
    character(1, tfc) :: ch
-   character(*, tfc), parameter :: hexnum = "0123456789ABCDEF", valid_escape = "betnfr\"""
+   character(*, tfc), parameter :: hexnum = "0123456789abcdefABCDEF", valid_escape = "betnfr\"""
    integer :: prev, pos, expect, it, hex
    logical :: escape, valid, space
 
@@ -504,12 +504,12 @@ subroutine next_dstring(lexer, token)
             end if
             if (ch == "u") then
                expect = 4
-               hex = pos + 1
+               hex = it + 1
                cycle
             end if
             if (ch == "U") then
                expect = 8
-               hex = pos + 1
+               hex = it + 1
                cycle
             end if
             valid = .false.
@@ -865,6 +865,7 @@ subroutine next_datetime(lexer, token)
    type(toml_token), intent(inout) :: token
 
    logical :: has_date, has_time, has_millisec, has_local, okay, has_seconds
+   logical :: has_explicit_time
    integer :: prev, pos, it, time_len
    integer, parameter :: offset(*) = [(it, it = 0, 10)], &
       & offset_date = 10, offset_time = 8, offset_time_no_sec = 5, offset_local = 6
@@ -874,24 +875,24 @@ subroutine next_datetime(lexer, token)
    pos = lexer%pos
 
    has_date = valid_date(peek(lexer, pos+offset(:offset_date)))
-   if (has_date) then
-      if (verify(peek(lexer, pos+offset_date), "Tt ") == 0 &
-         & .and. pos + offset_date < len(lexer%chunk) &
-         & .and. verify(peek(lexer, pos+offset_date+1), num) == 0) then
-         pos = pos + offset_date + 1
-      end if
+   has_explicit_time = has_date .and. pos + offset_date + 1 <= len(lexer%chunk) &
+      & .and. verify(peek(lexer, pos+offset_date), "Tt ") == 0 &
+      & .and. verify(peek(lexer, pos+offset_date + 1), num) == 0
+   if (has_explicit_time) then
+      pos = pos + offset_date + 1
    end if
 
-   ! Try to validate time - first with 8 characters (HH:MM:SS), then 5 (HH:MM)
+   ! Validate a strict TOML time with seconds.
    call valid_time(peek(lexer, pos+offset(:offset_time)), has_time, has_seconds)
+   if (has_explicit_time .and. .not.has_time) then
+      token = toml_token(token_kind%invalid, prev, prev)
+      return
+   end if
+
    if (has_time) then
-      if (has_seconds) then
-         time_len = offset_time
-      else
-         time_len = offset_time_no_sec
-      end if
+      time_len = merge(offset_time, offset_time_no_sec, has_seconds)
       pos = pos + time_len - 1
-      if (match(lexer, pos+1, char_kind%dot)) then
+      if (has_seconds .and. match(lexer, pos+1, char_kind%dot)) then
          it = 1
          do while(verify(peek(lexer, pos+it+1), num) == 0)
             it = it + 1
@@ -977,7 +978,7 @@ pure function valid_date(string) result(valid)
 end function valid_date
 
 
-!> Validate a string as time (HH:MM or HH:MM:SS)
+!> Validate a string as time (HH:MM[:SS])
 subroutine valid_time(string, valid, has_seconds)
    !> Input string, 5 characters (HH:MM) or 8 characters (HH:MM:SS)
    character(1, tfc), intent(in) :: string(:)
@@ -992,7 +993,7 @@ subroutine valid_time(string, valid, has_seconds)
 
    valid = .false.
    has_seconds = .false.
-   if (string(3) /= ":") return
+   if (size(string) < 5 .or. string(3) /= ":") return
 
    hour = 0
    do it = 1, 2
@@ -1008,7 +1009,6 @@ subroutine valid_time(string, valid, has_seconds)
       minute = minute * 10 + val
    end do
 
-   ! Check for seconds (optional in TOML 1.1)
    if (size(string) >= 8 .and. string(6) == ":") then
       second = 0
       do it = 7, 8
@@ -1174,9 +1174,10 @@ subroutine extract_string(lexer, token, string)
    !> String value of token
    character(len=:), allocatable, intent(out) :: string
 
-   integer :: it, length
+   integer :: it, length, j
    logical :: escape, leading_newline
    character(1, tfc) :: ch
+   character(len=:), allocatable :: raw
 
    length = token%last - token%first + 1
 
@@ -1190,52 +1191,79 @@ subroutine extract_string(lexer, token, string)
          if (escape) then
             escape = .false.
             select case(ch)
-            case("""", "\");  string = string // ch
+            case("""", "\"); string = string // ch
             case("b"); string = string // TOML_BACKSPACE
             case("e"); string = string // TOML_ESC
             case("t"); string = string // TOML_TABULATOR
             case("n"); string = string // TOML_NEWLINE
             case("r"); string = string // TOML_CARRIAGE_RETURN
             case("f"); string = string // TOML_FORMFEED
-            case("x"); string = string // convert_ucs(lexer%chunk(it+1:it+2)); it = it + 3
-            case("u"); string = string // convert_ucs(lexer%chunk(it+1:it+4)); it = it + 5
-            case("U"); string = string // convert_ucs(lexer%chunk(it+1:it+8)); it = it + 9
+            case("x"); string = string // convert_ucs(lexer%chunk(it+1:it+2)); it = it + 2
+            case("u"); string = string // convert_ucs(lexer%chunk(it+1:it+4)); it = it + 4
+            case("U"); string = string // convert_ucs(lexer%chunk(it+1:it+8)); it = it + 8
+            case default; string = string // ch
             end select
-         else
-            escape = ch == char_kind%backslash
-            if (.not.escape) string = string // ch
+            it = it + 1
+            cycle
          end if
+         escape = ch == char_kind%backslash
+         if (.not.escape) string = string // ch
          it = it + 1
       end do
    case(token_kind%mstring)
       leading_newline = peek(lexer, token%first+3) == char_kind%newline
+      allocate(character(token%last - token%first - merge(5, 4, leading_newline)) :: raw)
+      raw = lexer%chunk(token%first + merge(4, 3, leading_newline):token%last - 3)
       string = ""
       escape = .false.
-      it = token%first + merge(4, 3, leading_newline)
-      do while(it <= token%last - 3)
-         ch = peek(lexer, it)
+      it = 1
+      do while(it <= len(raw))
+         ch = raw(it:it)
          if (escape) then
             escape = .false.
+            if (any(ch == [char_kind%space, char_kind%tab]) .and. it < len(raw)) then
+               j = it
+               do while(j <= len(raw) .and. any(raw(j:j) == [char_kind%space, char_kind%tab]))
+                  j = j + 1
+               end do
+               if (j <= len(raw) .and. (raw(j:j) == char_kind%newline .or. raw(j:j) == char_kind%carriage_return)) then
+                  ch = raw(j:j)
+                  it = j
+               end if
+            end if
+            if (ch == char_kind%newline .or. ch == char_kind%carriage_return) then
+               if (ch == char_kind%carriage_return .and. it < len(raw) .and. raw(it+1:it+1) == char_kind%newline) then
+                  it = it + 1
+               end if
+               it = it + 1
+               do while(it <= len(raw) .and. any(raw(it:it) == [char_kind%space, char_kind%tab, &
+                  & char_kind%newline, char_kind%carriage_return]))
+                  if (raw(it:it) == char_kind%carriage_return .and. it < len(raw) .and. raw(it+1:it+1) == char_kind%newline) then
+                     it = it + 2
+                  else
+                     it = it + 1
+                  end if
+               end do
+               cycle
+            end if
             select case(ch)
-            case("""", "\");  string = string // ch
+            case("""", "\"); string = string // ch
             case("b"); string = string // TOML_BACKSPACE
             case("e"); string = string // TOML_ESC
             case("t"); string = string // TOML_TABULATOR
             case("n"); string = string // TOML_NEWLINE
             case("r"); string = string // TOML_CARRIAGE_RETURN
             case("f"); string = string // TOML_FORMFEED
-            case("x"); string = string // convert_ucs(lexer%chunk(it+1:it+2)); it = it + 3
-            case("u"); string = string // convert_ucs(lexer%chunk(it+1:it+4)); it = it + 5
-            case("U"); string = string // convert_ucs(lexer%chunk(it+1:it+8)); it = it + 9
-            case(char_kind%space, char_kind%tab, char_kind%carriage_return)
-               escape = .true.
-            case(char_kind%newline)
-               continue
+            case("x"); string = string // convert_ucs(raw(it+1:it+2)); it = it + 2
+            case("u"); string = string // convert_ucs(raw(it+1:it+4)); it = it + 4
+            case("U"); string = string // convert_ucs(raw(it+1:it+8)); it = it + 8
+            case default; string = string // ch
             end select
-         else
-            escape = ch == char_kind%backslash
-            if (.not.escape) string = string // ch
+            it = it + 1
+            cycle
          end if
+         escape = ch == char_kind%backslash
+         if (.not.escape) string = string // ch
          it = it + 1
       end do
    case(token_kind%literal)
@@ -1529,7 +1557,7 @@ function verify_ucs(escape) result(valid)
 
    code = hex_to_int(escape)
 
-   valid = code > 0 .and. code < int(z"7FFFFFFF", tfi) &
+   valid = code >= 0_tfi .and. code < int(z"7FFFFFFF", tfi) &
       & .and. (code < int(z"d800", tfi) .or. code > int(z"dfff", tfi)) &
       & .and. (code < int(z"fffe", tfi) .or. code > int(z"ffff", tfi))
 end function verify_ucs
