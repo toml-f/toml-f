@@ -153,19 +153,36 @@ A collection of projects using TOML Fortran is shown below:
 
    .. grid-item::
 
-      .. figure:: https://opengraph.githubassets.com/x/popelier-group/FEREBUS-v7
+      .. figure:: https://opengraph.githubassets.com/x/crest-lab/crest
          :alt: GitHub Preview
-         :target: https://github.com/popelier-group/FEREBUS-v7
+         :target: https://github.com/crest-lab/crest
 
-      Gaussian Process Regression engine written in Fortran90 designed to produce models for atomistic simulations.
+      Program for the automated exploration of low-energy molecular chemical space.
 
    .. grid-item::
 
-      .. figure:: https://opengraph.githubassets.com/x/lewisfish/signedMCRT
+      .. figure:: https://opengraph.githubassets.com/x/oncvpsp/oncvpsp
          :alt: GitHub Preview
-         :target: https://github.com/lewisfish/signedMCRT
+         :target: https://github.com/oncvpsp/oncvpsp
 
-      Signed distance fields in Monte Carlo Radiative Transfer for modelling of smooth surfaces without the need to use triangle or similar meshes.
+      Code to generate optimized norm-conserving Vanderbilt pseudopotentials.
+
+   .. grid-item::
+
+      .. figure:: https://opengraph.githubassets.com/x/tkotani/ecalj
+         :alt: GitHub Preview
+         :target: https://github.com/tkotani/ecalj
+
+      Quasiparticle self-consistent GW method in the PMT method (LAPW+LMTO+Lo).
+
+   .. grid-item::
+
+      .. figure:: https://opengraph.githubassets.com/x/trebonius91/caracal
+         :alt: GitHub Preview
+         :target: https://github.com/trebonius91/caracal
+
+      RPMD and rate constant calculations on black-box and machine-learning potential energy surfaces
+
 
 Your project is using TOML Fortran but not listed here?
 Let us know of your work by opening a `discussion on GitHub <https://github.com/orgs/toml-f/discussions>`__ or create a `pull request <https://github.com/toml-f/toml-f/blob/main/CONTRIBUTING.md>`__ to add it to the selection above.
