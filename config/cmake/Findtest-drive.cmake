@@ -68,10 +68,12 @@ foreach(method in ITEMS ${${_pkg}_FIND_METHOD})
       add_subdirectory(
         "${${_pkg}_SOURCE_DIR}"
         "${${_pkg}_BINARY_DIR}"
-        )
+      )
 
-      add_library("${_lib}::${_lib}" INTERFACE IMPORTED)
-      target_link_libraries("${_lib}::${_lib}" INTERFACE "${_lib}")
+      if(NOT TARGET "${_lib}::${_lib}")
+        add_library("${_lib}::${_lib}" INTERFACE IMPORTED)
+        target_link_libraries("${_lib}::${_lib}" INTERFACE "${_lib}")
+      endif()
 
       # We need the module directory in the subproject before we finish the configure stage
       if(NOT EXISTS "${${_pkg}_BINARY_DIR}/include")
@@ -92,8 +94,10 @@ foreach(method in ITEMS ${${_pkg}_FIND_METHOD})
       )
     FetchContent_MakeAvailable("${_lib}")
 
-    add_library("${_lib}::${_lib}" INTERFACE IMPORTED)
-    target_link_libraries("${_lib}::${_lib}" INTERFACE "${_lib}")
+    if(NOT TARGET "${_lib}::${_lib}")
+      add_library("${_lib}::${_lib}" INTERFACE IMPORTED)
+      target_link_libraries("${_lib}::${_lib}" INTERFACE "${_lib}")
+    endif()
 
     # We need the module directory in the subproject before we finish the configure stage
     FetchContent_GetProperties("${_lib}" BINARY_DIR "${_pkg}_BINARY_DIR")
