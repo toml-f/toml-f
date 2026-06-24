@@ -407,9 +407,9 @@ subroutine table_int_i8(error)
    call table%destroy()
    call new_table(table)
    do ii = 1, 100
-      call set_value(table, to_string(ii), int(ii, tf_i8), stat=stat)
+      call set_value(table, to_string(int(ii, tf_i8)), int(ii, tf_i8), stat=stat)
    end do
-   call get_value(table, to_string(100), val, stat=stat)
+   call get_value(table, to_string(100_tf_i8), val, stat=stat)
    call check(error, val, 100_tf_i8)
    if (allocated(error)) return
 
