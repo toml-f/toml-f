@@ -130,6 +130,7 @@ subroutine collect_lexer(testsuite)
       & new_unittest("string-control", string_control), &
       & new_unittest("string-escape", string_escape), &
       & new_unittest("string-escape-invalid", string_escape_invalid), &
+      & new_unittest("string-byte-escape-invalid", string_byte_escape_invalid), &
       & new_unittest("string-unicode-escape", string_unicode_escape), &
       & new_unittest("string-unicode-escape-lowercase", string_unicode_escape_lowercase), &
       & new_unittest("string-triple", string_triple), &
@@ -532,6 +533,13 @@ subroutine string_escape_invalid(error)
    call check_token(error, """""""something\ """""",""""""anything\u007""""""", &
       & [token_kind%invalid, token_kind%comma, token_kind%invalid, token_kind%eof], .false.)
 end subroutine string_escape_invalid
+
+subroutine string_byte_escape_invalid(error)
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check_token(error, """\xAg""", [token_kind%invalid, token_kind%eof], .false.)
+end subroutine string_byte_escape_invalid
 
 subroutine string_unicode_escape(error)
    !> Error handling
