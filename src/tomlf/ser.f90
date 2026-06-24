@@ -224,6 +224,7 @@ subroutine new_serializer(self, config)
    self%array_of_tables = .false.
    self%inline_array = .false.
    self%top = 0
+   self%config = toml_ser_config()
    if (present(config)) self%config = config
 end subroutine new_serializer
 
