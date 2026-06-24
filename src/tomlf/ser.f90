@@ -63,16 +63,16 @@ module tomlf_ser
       character(:), allocatable :: output
 
       !> Configuration for serializer
-      type(toml_ser_config) :: config = toml_ser_config()
+      type(toml_ser_config) :: config
 
       !> Special mode for printing array of tables
-      logical, private :: array_of_tables = .false.
+      logical, private :: array_of_tables
 
       !> Special mode for printing inline arrays
-      logical, private :: inline_array = .false.
+      logical, private :: inline_array
 
       !> Top of the key stack
-      integer, private :: top = 0
+      integer, private :: top
 
       !> Key stack to create table headers
       type(toml_key), allocatable, private :: stack(:)
@@ -221,6 +221,9 @@ subroutine new_serializer(self, config)
    type(toml_ser_config), intent(in), optional :: config
 
    self%output = ""
+   self%array_of_tables = .false.
+   self%inline_array = .false.
+   self%top = 0
    if (present(config)) self%config = config
 end subroutine new_serializer
 
