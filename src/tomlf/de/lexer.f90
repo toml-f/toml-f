@@ -50,7 +50,7 @@ module tomlf_de_lexer
       character(3, tfc) :: squote3 = repeat(tfc_"'", 3)
       character(1, tfc) :: dquote = tfc_""""
       character(3, tfc) :: dquote3 = repeat(tfc_"""", 3)
-      character(1, tfc) :: backslash = tfc_"\"
+      character(1, tfc) :: backslash = achar(92, kind=tfc)
       character(1, tfc) :: dot = tfc_"."
       character(1, tfc) :: comma = tfc_","
       character(1, tfc) :: equal = tfc_"="

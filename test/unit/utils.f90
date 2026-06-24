@@ -32,7 +32,8 @@ subroutine collect_utils(testsuite)
       & new_unittest("string-i1", string_i1), &
       & new_unittest("string-i2", string_i2), &
       & new_unittest("string-i4", string_i4), &
-      & new_unittest("string-i8", string_i8)]
+      & new_unittest("string-i8", string_i8), &
+      & new_unittest("escape-backslash", escape_backslash)]
 
 end subroutine collect_utils
 
@@ -79,6 +80,16 @@ subroutine string_i8(error)
 
    call check(error, to_string(-huge(1_tfi) - 1_tfi), "-9223372036854775808")
 end subroutine string_i8
+
+
+subroutine escape_backslash(error)
+   use tomlf_constants, only : tfc, toml_escape
+
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   call check(error, toml_escape%backslash, achar(92, kind=tfc))
+end subroutine escape_backslash
 
 
 end module tftest_utils

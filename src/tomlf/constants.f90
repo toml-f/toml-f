@@ -52,7 +52,7 @@ module tomlf_constants
    type :: enum_escape
 
       !> Backslash is used to escape other characters
-      character(kind=tfc, len=1) :: backslash = tfc_'\'
+      character(kind=tfc, len=1) :: backslash = achar(92, kind=tfc)
 
       !> Double quotes signal strings with escape characters enabled
       character(kind=tfc, len=1) :: dquote = tfc_'"'
