@@ -499,7 +499,7 @@ subroutine next_dstring(lexer, token)
             if (verify(ch, valid_escape) == 0) cycle
             if (ch == "x") then
                expect = 2
-               hex = it + 1
+               hex = pos + 1
                cycle
             end if
             if (ch == "u") then
@@ -544,7 +544,7 @@ subroutine next_dstring(lexer, token)
          if (verify(ch, valid_escape) == 0) cycle
          if (ch == "x") then
             expect = 2
-            hex = it + 1
+            hex = pos + 1
             cycle
          end if
          if (ch == "u") then
