@@ -359,7 +359,6 @@ end subroutine table_int_i4
 subroutine table_int_i8(error)
    use tomlf_constants, only : tf_i8
    use tomlf_type, only : new_table, toml_table, toml_key
-   use tomlf_utils, only : to_string
 
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -368,6 +367,8 @@ subroutine table_int_i8(error)
    integer :: ii
    integer(tf_i8), parameter :: in1 = 1_tf_i8, in2 = huge(in1), in3 = -huge(in1)
    integer(tf_i8) :: val
+   character(len=1), parameter :: chars(0:9) = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
+   character(len=3) :: key
    integer :: stat
 
    call new_table(table)
@@ -407,9 +408,10 @@ subroutine table_int_i8(error)
    call table%destroy()
    call new_table(table)
    do ii = 1, 100
-      call set_value(table, to_string(int(ii, tf_i8)), int(ii, tf_i8), stat=stat)
+      key = chars(mod(ii/100, 10))//chars(mod(ii/10, 10))//chars(mod(ii, 10))
+      call set_value(table, key, int(ii, tf_i8), stat=stat)
    end do
-   call get_value(table, to_string(100_tf_i8), val, stat=stat)
+   call get_value(table, "baa", val, stat=stat)
    call check(error, val, 100_tf_i8)
    if (allocated(error)) return
 

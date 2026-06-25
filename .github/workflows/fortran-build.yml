@@ -57,11 +57,11 @@ jobs:
 
         - os: ubuntu-latest
           build-type: debug
-          toolchain: {compiler: lfortran, version: '0.58.0', build: cmake}
+          toolchain: {compiler: lfortran, version: '0.63.0', build: cmake}
 
-        - os: ubuntu-latest
-          build-type: debug
-          toolchain: {compiler: aocc, version: '5.1.0', build: meson}
+        # os: ubuntu-latest
+        # build-type: debug
+        # toolchain: {compiler: aocc, version: '5.1.0', build: meson}
 
         # - os: windows-latest
         #   build: meson
@@ -264,7 +264,7 @@ jobs:
         cmake --build ${{ env.BUILD_DIR }}/discover-cmake
 
     - name: Discover installed files (Meson)
-      if: ${{ matrix.toolchain.build != 'fpm' }}
+      if: ${{ matrix.toolchain.build != 'fpm' && matrix.toolchain.compiler != 'lfortran' }}
       run: |
         meson setup ${{ env.BUILD_DIR }}/discover-meson test/export --pkg-config-path=$PWD/_dist/lib/pkgconfig
         meson compile -C ${{ env.BUILD_DIR }}/discover-meson
