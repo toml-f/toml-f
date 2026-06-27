@@ -14,7 +14,7 @@
 project(
   'toml-f',
   'fortran',
-  version: '0.5.1',
+  version: '0.5.2',
   license: 'Apache-2.0 OR MIT',
   meson_version: '>=0.60',
   default_options: [
