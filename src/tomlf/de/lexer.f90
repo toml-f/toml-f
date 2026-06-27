@@ -187,7 +187,7 @@ subroutine new_lexer_from_unit(lexer, io, error)
       stat = 1
 
    case("sequential", "SEQUENTIAL")
-      allocate(character(0) :: source)
+      allocate(character(len=0, kind=tfc) :: source)
       do 
          call read_whole_line(io, line, stat)
          if (stat > 0) exit
@@ -218,7 +218,7 @@ subroutine new_lexer_from_string(lexer, string)
    length = len(string)
    lexer%pos = 0
    lexer%buffer = 0
-   allocate(character(length) :: lexer%chunk)
+   allocate(character(len=length, kind=tfc) :: lexer%chunk)
    lexer%chunk(:length) = string
    call resize(lexer%stack)
 end subroutine new_lexer_from_string
@@ -1172,12 +1172,12 @@ subroutine extract_string(lexer, token, string)
    !> Token to extract string value from
    type(toml_token), intent(in) :: token
    !> String value of token
-   character(len=:), allocatable, intent(out) :: string
+   character(kind=tfc, len=:), allocatable, intent(out) :: string
 
    integer :: it, length, j
    logical :: escape, leading_newline
    character(1, tfc) :: ch
-   character(len=:), allocatable :: raw
+   character(kind=tfc, len=:), allocatable :: raw
 
    length = token%last - token%first + 1
 
@@ -1212,7 +1212,7 @@ subroutine extract_string(lexer, token, string)
       end do
    case(token_kind%mstring)
       leading_newline = peek(lexer, token%first+3) == char_kind%newline
-      allocate(character(token%last - token%first - merge(5, 4, leading_newline)) :: raw)
+      allocate(character(len=token%last - token%first - merge(5, 4, leading_newline), kind=tfc) :: raw)
       raw = lexer%chunk(token%first + merge(4, 3, leading_newline):token%last - 3)
       string = ""
       escape = .false.
@@ -1267,14 +1267,14 @@ subroutine extract_string(lexer, token, string)
          it = it + 1
       end do
    case(token_kind%literal)
-      allocate(character(length - 2)::string)
+      allocate(character(len=length - 2, kind=tfc) :: string)
       string = lexer%chunk(token%first+1:token%last-1)
    case(token_kind%mliteral)
       leading_newline = peek(lexer, token%first+3) == char_kind%newline
-      allocate(character(length - merge(7, 6, leading_newline))::string)
+      allocate(character(len=length - merge(7, 6, leading_newline), kind=tfc) :: string)
       string = lexer%chunk(token%first+merge(4, 3, leading_newline):token%last-3)
    case(token_kind%keypath)
-      allocate(character(length)::string)
+      allocate(character(len=length, kind=tfc) :: string)
       string = lexer%chunk(token%first:token%last)
    end select
 
@@ -1523,7 +1523,7 @@ subroutine get_info(lexer, meta, output)
    !> Query about the source
    character(*, tfc), intent(in) :: meta
    !> Metadata about the source
-   character(:, tfc), allocatable, intent(out) :: output
+   character(kind=tfc, len=:), allocatable, intent(out) :: output
 
    select case(meta)
    case("source")

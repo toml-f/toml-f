@@ -60,7 +60,7 @@ program toml2json
          call table%accept(ser)
          call table%destroy
       else
-         error stop
+         error stop 1
       end if
    end if
    if (allocated(argument)) deallocate(argument)

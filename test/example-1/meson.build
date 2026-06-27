@@ -11,6 +11,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Skip for nvfortran
+if fc_id == 'pgi' or fc_id == 'nvidia_hpc'
+  subdir_done()
+endif
+
 ex1_srcs = []
 subdir('app')
 subdir('src')

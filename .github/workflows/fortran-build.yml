@@ -35,6 +35,10 @@ jobs:
           build-type: debug
           toolchain: {compiler: gcc, version: '13', build: meson}
 
+        - os: ubuntu-24.04-arm
+          build-type: debug
+          toolchain: {compiler: gcc, version: '14', build: meson}
+
         - os: ubuntu-latest
           build-type: debug
           toolchain: {compiler: gcc, version: '14', build: meson}
@@ -42,6 +46,22 @@ jobs:
         - os: ubuntu-latest
           build-type: debug
           toolchain: {compiler: gcc, version: '12', build: fpm}
+
+        - os: ubuntu-latest
+          build-type: debug
+          toolchain: {compiler: nvidia-hpc, version: '26.1', build: meson}
+
+        - os: ubuntu-latest
+          build-type: debug
+          toolchain: {compiler: intel, version: '2025.2', build: meson}
+
+        - os: ubuntu-latest
+          build-type: debug
+          toolchain: {compiler: lfortran, version: '0.63.0', build: cmake}
+
+        # os: ubuntu-latest
+        # build-type: debug
+        # toolchain: {compiler: aocc, version: '5.1.0', build: meson}
 
         # - os: windows-latest
         #   build: meson
@@ -85,14 +105,15 @@ jobs:
         key: install-${{ matrix.toolchain.compiler }}-${{ matrix.toolchain.version }}-${{ matrix.os }}
 
     - name: Install GCC Compiler
-      if: ${{ contains(matrix.toolchain.compiler, 'gcc') }}
+      if: ${{ matrix.toolchain.compiler != 'intel' }}
       uses: fortran-lang/setup-fortran@v1
       with:
         compiler: ${{ matrix.toolchain.compiler }}
         version: ${{ matrix.toolchain.version }}
 
     - name: Install Intel Compiler (Linux)
-      if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.toolchain.compiler, 'intel') && steps.cache-install.outputs.cache-hit != 'true' }}
+      if: ${{ contains(matrix.toolchain.compiler, 'intel') && steps.cache-install.outputs.cache-hit != 'true' }}
+      id: setup-fortran
       uses: fortran-lang/setup-fortran@v1
       with:
         compiler: ${{ matrix.toolchain.compiler }}
@@ -107,6 +128,8 @@ jobs:
     - name: Setup environment for Fortran and C compilers
       run: |
         if [ ! -n "$FC" ]; then
+          FC=${{ steps.setup-fortran.outputs.fc }}
+          CC=${{ steps.setup-fortran.outputs.cc }}
           if [ "${{ matrix.toolchain.compiler }}" = "gcc" ]; then
             FC="gfortran"
             CC="gcc"
@@ -171,6 +194,8 @@ jobs:
         --libdir=lib
         --warnlevel=0
         -Db_coverage=${{ env.COVERAGE }}
+        -Dtest_drive:qp=disable
+        -Dtest_drive:xdp=disable
         ${{ env.MESON_ARGS }}
       env:
         COVERAGE: ${{ matrix.build-type == 'coverage' }}
@@ -239,7 +264,7 @@ jobs:
         cmake --build ${{ env.BUILD_DIR }}/discover-cmake
 
     - name: Discover installed files (Meson)
-      if: ${{ matrix.toolchain.build != 'fpm' }}
+      if: ${{ matrix.toolchain.build != 'fpm' && matrix.toolchain.compiler != 'lfortran' }}
       run: |
         meson setup ${{ env.BUILD_DIR }}/discover-meson test/export --pkg-config-path=$PWD/_dist/lib/pkgconfig
         meson compile -C ${{ env.BUILD_DIR }}/discover-meson
