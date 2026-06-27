@@ -1,0 +1,8 @@
+&simulation
+  iterations = 200,
+  nx = 128,
+  ny = 128,
+  dt = 0.002,
+  viscosity = 0.0005,
+  mesh_file = '../MESH/mesh_large.h5'
+/

@@ -1,0 +1,29 @@
+# Complex simulation configuration demonstrating TOML's nested structure
+
+[grid]
+nx = 128
+ny = 128
+nz = 64
+
+[solver]
+max_iter = 1000
+tolerance = 1.0e-6
+method = "GMRES"
+
+[output]
+frequency = 10
+format = "HDF5"
+fields = ["velocity", "pressure", "temperature"]
+
+[boundary_conditions]
+# Different boundary types for each face
+[boundary_conditions.inlet]
+type = "velocity"
+value = [1.0, 0.0, 0.0]
+
+[boundary_conditions.outlet]
+type = "pressure"
+value = 0.0
+
+[boundary_conditions.walls]
+type = "no-slip"

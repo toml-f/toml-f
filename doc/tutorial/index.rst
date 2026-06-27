@@ -17,6 +17,7 @@ Each tutorial is a full example for a specific application covering several aspe
    :caption: Difficulty: Beginner
 
    getting-started
+   namelist-to-toml
    fpm-lint
 
 .. toctree::

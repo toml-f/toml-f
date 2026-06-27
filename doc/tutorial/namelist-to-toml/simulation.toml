@@ -1,0 +1,17 @@
+# Simulation Configuration
+# This is a TOML version of the namelist configuration
+
+title = "Example Simulation"
+
+[simulation]
+iterations = 200
+dt = 0.002
+viscosity = 0.0005
+
+[grid]
+nx = 128
+ny = 128
+
+[files]
+mesh = "../MESH/mesh_large.h5"
+output_dir = "./results"
