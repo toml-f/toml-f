@@ -137,7 +137,7 @@ end function new_path4
 subroutine get_path_table(table, path, ptr, requested, stat, origin)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout), target :: table
+   class(toml_table), intent(in), target :: table
 
    !> Path in this TOML table
    type(toml_path), intent(in) :: path
@@ -173,7 +173,7 @@ end subroutine get_path_table
 subroutine get_path_array(table, path, ptr, requested, stat, origin)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout) :: table
+   class(toml_table), intent(in) :: table
 
    !> Path in this TOML table
    type(toml_path), intent(in) :: path
@@ -209,7 +209,7 @@ end subroutine get_path_array
 subroutine get_path_keyval(table, path, ptr, requested, stat, origin)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout) :: table
+   class(toml_table), intent(in) :: table
 
    !> Path in this TOML table
    type(toml_path), intent(in) :: path
@@ -246,7 +246,7 @@ end subroutine get_path_keyval
 subroutine get_path_value_float_sp(table, path, val, default, stat, origin)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout) :: table
+   class(toml_table), intent(in) :: table
 
    !> Path in this TOML table
    type(toml_path), intent(in) :: path
@@ -276,7 +276,7 @@ end subroutine get_path_value_float_sp
 subroutine get_path_value_float_dp(table, path, val, default, stat, origin)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout) :: table
+   class(toml_table), intent(in) :: table
 
    !> Path in this TOML table
    type(toml_path), intent(in) :: path
@@ -306,7 +306,7 @@ end subroutine get_path_value_float_dp
 subroutine get_path_value_integer_i1(table, path, val, default, stat, origin)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout) :: table
+   class(toml_table), intent(in) :: table
 
    !> Path in this TOML table
    type(toml_path), intent(in) :: path
@@ -336,7 +336,7 @@ end subroutine get_path_value_integer_i1
 subroutine get_path_value_integer_i2(table, path, val, default, stat, origin)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout) :: table
+   class(toml_table), intent(in) :: table
 
    !> Path in this TOML table
    type(toml_path), intent(in) :: path
@@ -366,7 +366,7 @@ end subroutine get_path_value_integer_i2
 subroutine get_path_value_integer_i4(table, path, val, default, stat, origin)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout) :: table
+   class(toml_table), intent(in) :: table
 
    !> Path in this TOML table
    type(toml_path), intent(in) :: path
@@ -396,7 +396,7 @@ end subroutine get_path_value_integer_i4
 subroutine get_path_value_integer_i8(table, path, val, default, stat, origin)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout) :: table
+   class(toml_table), intent(in) :: table
 
    !> Path in this TOML table
    type(toml_path), intent(in) :: path
@@ -426,7 +426,7 @@ end subroutine get_path_value_integer_i8
 subroutine get_path_value_bool(table, path, val, default, stat, origin)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout) :: table
+   class(toml_table), intent(in) :: table
 
    !> Path in this TOML table
    type(toml_path), intent(in) :: path
@@ -456,7 +456,7 @@ end subroutine get_path_value_bool
 subroutine get_path_value_datetime(table, path, val, default, stat, origin)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout) :: table
+   class(toml_table), intent(in) :: table
 
    !> Path in this TOML table
    type(toml_path), intent(in) :: path
@@ -486,7 +486,7 @@ end subroutine get_path_value_datetime
 subroutine get_path_value_string(table, path, val, default, stat, origin)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout) :: table
+   class(toml_table), intent(in) :: table
 
    !> Path in this TOML table
    type(toml_path), intent(in) :: path
@@ -758,7 +758,7 @@ end subroutine set_path_value_string
 subroutine walk_path(table, path, ptr, requested, stat, origin)
 
    !> Instance of the TOML table
-   class(toml_table), intent(inout), target :: table
+   class(toml_table), intent(in), target :: table
 
    !> Path in this TOML table
    type(toml_path), intent(in) :: path

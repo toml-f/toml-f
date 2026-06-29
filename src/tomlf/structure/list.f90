@@ -64,7 +64,7 @@ module tomlf_structure_list
          import :: toml_list_structure, toml_value
 
          !> Instance of the structure
-         class(toml_list_structure), intent(inout), target :: self
+         class(toml_list_structure), intent(in), target :: self
 
          !> Position in the ordered structure
          integer, intent(in) :: idx

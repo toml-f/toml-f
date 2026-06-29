@@ -102,7 +102,7 @@ contains
 subroutine get_elem_table(array, pos, ptr, stat, origin)
 
    !> Instance of the TOML array
-   class(toml_array), intent(inout) :: array
+   class(toml_array), intent(in) :: array
 
    !> Position in the array
    integer, intent(in) :: pos
@@ -117,8 +117,6 @@ subroutine get_elem_table(array, pos, ptr, stat, origin)
    integer, intent(out), optional :: origin
 
    class(toml_value), pointer :: tmp
-
-   if (.not.initialized(array)) call new_array(array)
 
    nullify(ptr)
 
@@ -145,7 +143,7 @@ end subroutine get_elem_table
 subroutine get_elem_array(array, pos, ptr, stat, origin)
 
    !> Instance of the TOML array
-   class(toml_array), intent(inout) :: array
+   class(toml_array), intent(in) :: array
 
    !> Position in the array
    integer, intent(in) :: pos
@@ -160,8 +158,6 @@ subroutine get_elem_array(array, pos, ptr, stat, origin)
    integer, intent(out), optional :: origin
 
    class(toml_value), pointer :: tmp
-
-   if (.not.initialized(array)) call new_array(array)
 
    nullify(ptr)
 
@@ -188,7 +184,7 @@ end subroutine get_elem_array
 subroutine get_elem_keyval(array, pos, ptr, stat, origin)
 
    !> Instance of the TOML array
-   class(toml_array), intent(inout) :: array
+   class(toml_array), intent(in) :: array
 
    !> Position in the array
    integer, intent(in) :: pos
@@ -203,8 +199,6 @@ subroutine get_elem_keyval(array, pos, ptr, stat, origin)
    integer, intent(out), optional :: origin
 
    class(toml_value), pointer :: tmp
-
-   if (.not.initialized(array)) call new_array(array)
 
    nullify(ptr)
 
@@ -232,7 +226,7 @@ end subroutine get_elem_keyval
 subroutine get_elem_value_string(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
-   class(toml_array), intent(inout) :: array
+   class(toml_array), intent(in) :: array
 
    !> Position in the array
    integer, intent(in) :: pos
@@ -263,7 +257,7 @@ end subroutine get_elem_value_string
 subroutine get_elem_value_float_sp(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
-   class(toml_array), intent(inout) :: array
+   class(toml_array), intent(in) :: array
 
    !> Position in the array
    integer, intent(in) :: pos
@@ -294,7 +288,7 @@ end subroutine get_elem_value_float_sp
 subroutine get_elem_value_float_dp(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
-   class(toml_array), intent(inout) :: array
+   class(toml_array), intent(in) :: array
 
    !> Position in the array
    integer, intent(in) :: pos
@@ -325,7 +319,7 @@ end subroutine get_elem_value_float_dp
 subroutine get_elem_value_int_i1(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
-   class(toml_array), intent(inout) :: array
+   class(toml_array), intent(in) :: array
 
    !> Position in the array
    integer, intent(in) :: pos
@@ -356,7 +350,7 @@ end subroutine get_elem_value_int_i1
 subroutine get_elem_value_int_i2(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
-   class(toml_array), intent(inout) :: array
+   class(toml_array), intent(in) :: array
 
    !> Position in the array
    integer, intent(in) :: pos
@@ -387,7 +381,7 @@ end subroutine get_elem_value_int_i2
 subroutine get_elem_value_int_i4(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
-   class(toml_array), intent(inout) :: array
+   class(toml_array), intent(in) :: array
 
    !> Position in the array
    integer, intent(in) :: pos
@@ -418,7 +412,7 @@ end subroutine get_elem_value_int_i4
 subroutine get_elem_value_int_i8(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
-   class(toml_array), intent(inout) :: array
+   class(toml_array), intent(in) :: array
 
    !> Position in the array
    integer, intent(in) :: pos
@@ -449,7 +443,7 @@ end subroutine get_elem_value_int_i8
 subroutine get_elem_value_bool(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
-   class(toml_array), intent(inout) :: array
+   class(toml_array), intent(in) :: array
 
    !> Position in the array
    integer, intent(in) :: pos
@@ -480,7 +474,7 @@ end subroutine get_elem_value_bool
 subroutine get_elem_value_datetime(array, pos, val, stat, origin)
 
    !> Instance of the TOML array
-   class(toml_array), intent(inout) :: array
+   class(toml_array), intent(in) :: array
 
    !> Position in the array
    integer, intent(in) :: pos
