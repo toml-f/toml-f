@@ -14,9 +14,9 @@
 !> Wrapper for the testsuites
 program tester
    use, intrinsic :: iso_fortran_env, only : error_unit
+   use test_lexer, only : collect_lexer
    use testdrive, only : run_testsuite, new_testsuite, testsuite_type, &
       & select_suite, run_selected, get_argument
-   use test_lexer, only : collect_lexer
    implicit none
    integer :: stat, is
    character(len=:), allocatable :: suite_name, test_name
@@ -60,7 +60,7 @@ program tester
    end if
 
    if (stat > 0) then
-      write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+      write(error_unit, "(i0, 1x, a)") stat, "test(s) failed!"
       error stop 1
    end if
 end program tester

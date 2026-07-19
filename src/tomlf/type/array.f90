@@ -22,8 +22,8 @@
 !> [[len]] function is overloaded to return the number of elements.
 module tomlf_type_array
    use tomlf_error, only : toml_stat
-   use tomlf_type_value, only : toml_value, toml_visitor
    use tomlf_structure, only : toml_list_structure, new_list_structure
+   use tomlf_type_value, only : toml_value, toml_visitor
    implicit none
    private
 

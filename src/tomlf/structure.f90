@@ -24,9 +24,9 @@
 !> requiring pointer attributes have to define an assignment(=) interface to
 !> allow deep-copying of TOML values.
 module tomlf_structure
+   use tomlf_structure_array_list, only : toml_array_list, new_array_list
    use tomlf_structure_list, only : toml_list_structure
    use tomlf_structure_map, only : toml_map_structure
-   use tomlf_structure_array_list, only : toml_array_list, new_array_list
    use tomlf_structure_ordered_map, only : toml_ordered_map, new_ordered_map
    implicit none
    private

@@ -29,4 +29,4 @@ program array
 
   print*, "data = ", arr_data
 
-end program
+end program array

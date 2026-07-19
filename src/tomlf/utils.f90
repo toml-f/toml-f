@@ -57,18 +57,18 @@ subroutine toml_escape_string(raw, escaped, multiline)
    do i = 1, len(raw)
       select case(raw(i:i))
       case default; escaped = escaped // raw(i:i)
-      case('\'); escaped = escaped // '\\'
+      case("\"); escaped = escaped // "\\"
       case('"'); escaped = escaped // '\"'
       case(TOML_NEWLINE)
          if (preserve_newline) then
             escaped = escaped // raw(i:i)
          else
-            escaped = escaped // '\n'
+            escaped = escaped // "\n"
          end if
-      case(TOML_FORMFEED); escaped = escaped // '\f'
-      case(TOML_CARRIAGE_RETURN); escaped = escaped // '\r'
-      case(TOML_TABULATOR); escaped = escaped // '\t'
-      case(TOML_BACKSPACE); escaped = escaped // '\b'
+      case(TOML_FORMFEED); escaped = escaped // "\f"
+      case(TOML_CARRIAGE_RETURN); escaped = escaped // "\r"
+      case(TOML_TABULATOR); escaped = escaped // "\t"
+      case(TOML_BACKSPACE); escaped = escaped // "\b"
       end select
    end do
    escaped = escaped // '"'
@@ -107,7 +107,7 @@ pure function to_string_i1(val) result(string)
 
    if (val < 0_ik) then
       pos = pos - 1
-      buffer(pos:pos) = '-'
+      buffer(pos:pos) = "-"
    end if
 
    string = buffer(pos:)
@@ -145,7 +145,7 @@ pure function to_string_i2(val) result(string)
 
    if (val < 0_ik) then
       pos = pos - 1
-      buffer(pos:pos) = '-'
+      buffer(pos:pos) = "-"
    end if
 
    string = buffer(pos:)
@@ -183,7 +183,7 @@ pure function to_string_i4(val) result(string)
 
    if (val < 0_ik) then
       pos = pos - 1
-      buffer(pos:pos) = '-'
+      buffer(pos:pos) = "-"
    end if
 
    string = buffer(pos:)
@@ -221,7 +221,7 @@ pure function to_string_i8(val) result(string)
 
    if (val < 0_ik) then
       pos = pos - 1
-      buffer(pos:pos) = '-'
+      buffer(pos:pos) = "-"
    end if
 
    string = buffer(pos:)
@@ -245,13 +245,13 @@ pure function to_string_r8(val) result(string)
       string = "nan"
    else
       if (abs(val) >= 1.0e+100_rk) then
-         write(buffer, '(es24.16e3)') val
+         write(buffer, "(es24.16e3)") val
       else if (abs(val) >= 1.0e+10_rk) then
-         write(buffer, '(es24.16e2)') val
+         write(buffer, "(es24.16e2)") val
       else if (abs(val) >= 1.0e+3_rk) then
-         write(buffer, '(es24.16e1)') val
+         write(buffer, "(es24.16e1)") val
       else
-         write(buffer, '(f24.16)') val
+         write(buffer, "(f24.16)") val
       end if
       string = trim(adjustl(buffer))
    end if

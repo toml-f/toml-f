@@ -29,14 +29,14 @@ program tftest_version
       write(version_string, '(*(i0:, "."))') major, minor, patch
       match = argument == version_string .and. match
       if (.not.match) then
-         write(error_unit, '(a)') &
+         write(error_unit, "(a)") &
             & "Internal version and provided version do not match!"
          write(error_unit, '(a, ":", 1x, a)') &
             & "provided", argument, "internal", version_string
          error stop
       end if
    else
-      write(output_unit, '(a)') version_string
+      write(output_unit, "(a)") version_string
    end if
 
 end program tftest_version

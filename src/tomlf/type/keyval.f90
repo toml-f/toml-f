@@ -57,7 +57,7 @@ module tomlf_type_keyval
    type, extends(generic_value) :: string_value
       character(:, tfc), allocatable :: raw
    end type string_value
-      
+
 
 
    !> TOML key-value pair

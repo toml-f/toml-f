@@ -39,7 +39,7 @@ module tomlf_datetime
       integer :: second = -1
       integer :: msec = -1
       character(len=:), allocatable :: zone
-   end type
+   end type toml_time
 
    interface toml_time
       module procedure :: new_toml_time
@@ -51,14 +51,14 @@ module tomlf_datetime
       integer :: year = -1
       integer :: month = -1
       integer :: day = -1
-   end type
+   end type toml_date
 
 
    !> TOML datatime value type
    type :: toml_datetime
       type(toml_date) :: date
       type(toml_time) :: time
-   end type
+   end type toml_datetime
 
 
    !> Create a new TOML datetime value
@@ -222,7 +222,7 @@ pure function to_string_datetime(datetime) result(str)
 
    if (has_time(datetime)) then
       if (has_date(datetime)) then
-         str = str // 'T'
+         str = str // "T"
       end if
       str = str // to_string_time(datetime%time)
    end if
@@ -264,7 +264,7 @@ pure function to_string_time(time) result(str)
          msec = msec / 10
       end do
       allocate(character(9 + width, tfc) :: str)
-      write(str, '(i2.2,":",i2.2,":",i2.2,".",i'//places(width)//'.'//places(width)//')') &
+      write(str, '(i2.2,":",i2.2,":",i2.2,".",i'//places(width)//"."//places(width)//")") &
          &  time%hour, time%minute, second, msec
    end if
    if (allocated(time%zone)) str = str // trim(time%zone)

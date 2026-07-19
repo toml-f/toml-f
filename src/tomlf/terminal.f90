@@ -75,7 +75,7 @@ module tomlf_terminal
       integer(i1) :: bg = -1_i1
       !> Foreground color descriptor
       integer(i1) :: fg = -1_i1
-   end type
+   end type ansi_code
 
    interface operator(+)
       module procedure :: add

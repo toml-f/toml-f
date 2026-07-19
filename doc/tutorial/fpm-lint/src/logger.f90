@@ -38,7 +38,7 @@ contains
     integer :: it
 
     do it = 1, size(logger%message)
-      write(io, '(a)') logger%message(it)%output
+      write(io, "(a)") logger%message(it)%output
     end do
   end subroutine show_log
 

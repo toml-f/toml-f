@@ -92,7 +92,7 @@ subroutine new_package_data(self, table, error)
          if (.not.allocated(self%license)) then
             call move_alloc(license, self%license)
          else
-            self%license = self%license // ' or ' // license
+            self%license = self%license // " or " // license
          end if
       end do
       if (allocated(error)) return
@@ -158,22 +158,22 @@ subroutine info(self, unit)
 
    integer :: idep, isrc
 
-   write(unit, '(a, t30, a)') "Package name", self%name
-   write(unit, '(a, t30, a)') "Package version", self%version
-   write(unit, '(a, t30, a)') "Package license", self%license
+   write(unit, "(a, t30, a)") "Package name", self%name
+   write(unit, "(a, t30, a)") "Package version", self%version
+   write(unit, "(a, t30, a)") "Package license", self%license
 
-   write(unit, '(a, t30, i0)') "Sources collected", size(self%sources)
+   write(unit, "(a, t30, i0)") "Sources collected", size(self%sources)
    if (allocated(self%dependencies)) then
-      write(unit, '(a, t30, i0)') "Dependencies collected", size(self%dependencies)
+      write(unit, "(a, t30, i0)") "Dependencies collected", size(self%dependencies)
    end if
 
-   write(unit, '(a)') "Source targets:"
+   write(unit, "(a)") "Source targets:"
    do isrc = 1, size(self%sources)
       call self%sources(isrc)%info(unit)
    end do
 
    if (allocated(self%dependencies)) then
-      write(unit, '(a)') "Dependencies:"
+      write(unit, "(a)") "Dependencies:"
       do idep = 1, size(self%dependencies)
          call self%dependencies(idep)%info(unit)
       end do

@@ -13,13 +13,13 @@
 
 module tftest_ser
    use testdrive
+   use tomlf_build, only : set_value
    use tomlf_constants, only : tfi, tfr
+   use tomlf_datetime, only : toml_datetime, toml_date, toml_time
    use tomlf_de, only : toml_parse, toml_loads
+   use tomlf_error, only : toml_error
    use tomlf_ser, only : toml_dumps
    use tomlf_type, only : toml_table, toml_array, new_table, add_table, add_array
-   use tomlf_build, only : set_value
-   use tomlf_datetime, only : toml_datetime, toml_date, toml_time
-   use tomlf_error, only : toml_error
    implicit none
    private
 
@@ -207,7 +207,7 @@ subroutine ser_roundtrip_simple(error)
    type(toml_table), allocatable :: table1, table2
    character(:), allocatable :: output
    type(toml_error), allocatable :: toml_err
-   character(*), parameter :: input = 'key = "value"'//new_line('a')//'number = 42'
+   character(*), parameter :: input = 'key = "value"'//new_line("a")//"number = 42"
 
    ! Parse input
    call toml_loads(table1, input, error=toml_err)

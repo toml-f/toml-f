@@ -428,7 +428,7 @@ subroutine literal_unclosed(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
-   call check_token(error, "'right open"//new_line('a')//"'fully closed'", &
+   call check_token(error, "'right open"//new_line("a")//"'fully closed'", &
       & [token_kind%invalid, token_kind%newline, token_kind%literal, token_kind%eof], .false.)
 end subroutine literal_unclosed
 
@@ -452,7 +452,7 @@ subroutine literal_multiline(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
-   call check_token(error, "'''something"//new_line('a')//"anything'''", &
+   call check_token(error, "'''something"//new_line("a")//"anything'''", &
       & [token_kind%mliteral, token_kind%eof], .false.)
 end subroutine literal_multiline
 
@@ -476,7 +476,7 @@ subroutine literal_multiline_unclosed(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
-   call check_token(error, "'''something,anything''"//new_line('a')//"a.key = 'value'", &
+   call check_token(error, "'''something,anything''"//new_line("a")//"a.key = 'value'", &
       & [token_kind%invalid, token_kind%eof], .false.)
 end subroutine literal_multiline_unclosed
 
@@ -492,7 +492,7 @@ subroutine string_unclosed(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
-   call check_token(error, """right open"//new_line('a')//"""fully closed""", &
+   call check_token(error, """right open"//new_line("a")//"""fully closed""", &
       & [token_kind%invalid, token_kind%newline, token_kind%string, token_kind%eof], .false.)
 end subroutine string_unclosed
 
@@ -528,7 +528,7 @@ subroutine string_escape_invalid(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
-   character(len=*), parameter :: nl = new_line('a')
+   character(len=*), parameter :: nl = new_line("a")
 
    call check_token(error, """""""something\ """""",""""""anything\u007""""""", &
       & [token_kind%invalid, token_kind%comma, token_kind%invalid, token_kind%eof], .false.)
@@ -545,7 +545,7 @@ subroutine string_unicode_escape(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
-   character(len=*), parameter :: nl = new_line('a')
+   character(len=*), parameter :: nl = new_line("a")
 
    call check_token(error, """\uD800"",""\ufffe""", &
       & [token_kind%invalid, token_kind%comma, token_kind%invalid, token_kind%eof], .false.)
@@ -571,7 +571,7 @@ subroutine string_multiline(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
-   call check_token(error, """""""something"//new_line('a')//"anything""""""", &
+   call check_token(error, """""""something"//new_line("a")//"anything""""""", &
       & [token_kind%mstring, token_kind%eof], .false.)
 end subroutine string_multiline
 
@@ -927,7 +927,7 @@ subroutine datetime_milliseconds(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
-   call check_token(error, "1987-07-05T17:45:56.1234Z,1987-07-05T17:45:56.6Z"//new_line('a')//&
+   call check_token(error, "1987-07-05T17:45:56.1234Z,1987-07-05T17:45:56.6Z"//new_line("a")//&
       & "1987-07-05T17:45:56.1234+08:00,1987-07-05T17:45:56.6+08:00", &
       & [token_kind%datetime, token_kind%comma, token_kind%datetime, token_kind%newline, &
       &  token_kind%datetime, token_kind%comma, token_kind%datetime, token_kind%eof], .false.)
@@ -937,7 +937,7 @@ subroutine datetime_timezone(error)
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
 
-   call check_token(error, "1987-07-05T17:45:56Z,1987-07-05T17:45:56-05:00"//new_line('a')//&
+   call check_token(error, "1987-07-05T17:45:56Z,1987-07-05T17:45:56-05:00"//new_line("a")//&
       & "1987-07-05T17:45:56+12:00,1987-07-05T17:45:56+13:00", &
       & [token_kind%datetime, token_kind%comma, token_kind%datetime, token_kind%newline, &
       &  token_kind%datetime, token_kind%comma, token_kind%datetime, token_kind%eof], .false.)
@@ -1932,7 +1932,7 @@ function get_name() result(filename)
    real :: val
 
    call random_number(val)
-   write(filename, '(a, z8.8)') "toml-f-", int(val*1.0e9)
-end function
+   write(filename, "(a, z8.8)") "toml-f-", int(val*1.0e9)
+end function get_name
 
 end module tftest_lexer

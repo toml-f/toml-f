@@ -1,6 +1,6 @@
 program demo
-  use tomlf, only : toml_table, toml_error, toml_context, toml_load
   use demo_config, only : config_type, load_config
+  use tomlf, only : toml_table, toml_error, toml_context, toml_load
   implicit none
 
   type(config_type) :: config
@@ -15,7 +15,7 @@ program demo
 
     call toml_load(table, trim(arg), context=context, error=error)
     if (allocated(error)) then
-      print '(a)', error%message
+      print "(a)", error%message
       stop 1
     end if
 

@@ -7,7 +7,7 @@ program array
   type(toml_table), allocatable       :: table
   type(toml_array), pointer           :: top_array, nested_array
   type(toml_error), allocatable       :: parse_error
-  
+
   open(newunit=io, file="nested_array.toml")
   call toml_parse(table, io, parse_error)
   close(unit=io)
@@ -29,10 +29,10 @@ program array
         do j = 1,nested_len
           call get_value(nested_array, j, elem)
           ! Do something with "elem" here
-          write(*,'(A5,i1,A1,i1,A3,i2)') "data(",i,",",j,") = ",elem
+          write(*,"(A5,i1,A1,i1,A3,i2)") "data(",i,",",j,") = ",elem
         end do
       end if
     end do
   end if
 
-end program
+end program array

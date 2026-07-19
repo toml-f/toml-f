@@ -31,11 +31,11 @@ program tomlf_example
          exist = length > 0
          if (exist) then
             call get_command_argument(iarg, argument)
-            write(output_unit, '(a, 1x, a, 1x, a)') &
+            write(output_unit, "(a, 1x, a, 1x, a)") &
                "Collecting meta data from", argument, "..."
             call get_package_data(pkg_data, argument, error)
             if (allocated(error)) then
-               write(error_unit, '(a, 1x, a, /, a)') &
+               write(error_unit, "(a, 1x, a, /, a)") &
                   & "Error while processing", argument, error%message
                error stop 1
             end if

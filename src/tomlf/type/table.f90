@@ -23,8 +23,8 @@
 module tomlf_type_table
    use tomlf_constants, only : tfc
    use tomlf_error, only : toml_stat
-   use tomlf_type_value, only : toml_value, toml_visitor, toml_key
    use tomlf_structure, only : toml_map_structure, new_map_structure
+   use tomlf_type_value, only : toml_value, toml_visitor, toml_key
    implicit none
    private
 

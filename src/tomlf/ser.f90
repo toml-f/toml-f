@@ -121,7 +121,7 @@ function toml_serialize(val, config) result(string)
 
    call toml_dumps(val, string, error, config=config)
    if (allocated(error)) then
-      print '(a)', "Error: " // error%message
+      print "(a)", "Error: " // error%message
       error stop 1
    end if
 end function toml_serialize
@@ -171,7 +171,7 @@ subroutine toml_dump_to_unit(val, io, error, config)
 
    call toml_dumps(val, string, error, config=config)
    if (allocated(error)) return
-   write(io, '(a)', iostat=stat, iomsg=msg) string
+   write(io, "(a)", iostat=stat, iomsg=msg) string
    if (stat /= 0) then
       call make_error(error, trim(msg))
       return
@@ -308,7 +308,7 @@ subroutine visit_keyval(visitor, keyval)
    end if
    visitor%output = visitor%output // key // " = " // str
    if (.not.visitor%inline_array) then
-      visitor%output = visitor%output // new_line('a')
+      visitor%output = visitor%output // new_line("a")
    end if
 
 end subroutine visit_keyval
@@ -421,7 +421,7 @@ recursive subroutine visit_table(visitor, table)
          visitor%output = visitor%output // visitor%stack(visitor%top)%key
          visitor%output = visitor%output // "]"
          if (visitor%array_of_tables) visitor%output = visitor%output // "]"
-         visitor%output = visitor%output // new_line('a')
+         visitor%output = visitor%output // new_line("a")
          visitor%array_of_tables = .false.
       end if
    end if
@@ -452,7 +452,7 @@ recursive subroutine visit_table(visitor, table)
                visitor%output = visitor%output // key // " ="
                call ptr%accept(visitor)
                visitor%inline_array = .false.
-               visitor%output = visitor%output // new_line('a')
+               visitor%output = visitor%output // new_line("a")
             end if
          end if
       class is(toml_table)
@@ -486,7 +486,7 @@ recursive subroutine visit_table(visitor, table)
                   visitor%output = visitor%output // key // " ="
                   call ptr%accept(visitor)
                   visitor%inline_array = .false.
-                  visitor%output = visitor%output // new_line('a')
+                  visitor%output = visitor%output // new_line("a")
                end if
             end if
          class is(toml_table)

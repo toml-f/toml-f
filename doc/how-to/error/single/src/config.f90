@@ -27,19 +27,19 @@ contains
 
     call get_value(table, "timestep", config%timestep, 0.5, stat=stat, origin=origin)
     if (stat /= 0) then
-      print '(a)', context%report("Cannot read timestep", &
+      print "(a)", context%report("Cannot read timestep", &
         & origin, "expected real value")
       stop 1
     end if
 
     if (config%timestep <= 0) then
-      print '(a)', context%report("Timestep must be positive", &
+      print "(a)", context%report("Timestep must be positive", &
         & origin, "expected positive value")
       stop 1
     end if
 
     if (config%timestep > large_timestep) then
-      print '(a)', context%report("Large timesteps can lead to instable simulations", &
+      print "(a)", context%report("Large timesteps can lead to instable simulations", &
         & origin, level=toml_level%warning)
     end if
 
