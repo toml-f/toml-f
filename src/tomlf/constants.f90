@@ -36,7 +36,7 @@ module tomlf_constants
 
 
    !> Default character kind
-   integer, public, parameter :: tfc = selected_char_kind('DEFAULT')
+   integer, public, parameter :: tfc = selected_char_kind("DEFAULT")
 
    !> Default float precision, IEEE 754 binary64 values expected
    integer, public, parameter :: tfr = tf_dp
@@ -112,34 +112,34 @@ module tomlf_constants
    character(kind=tfc, len=*), public, parameter :: TOML_SQUOTE = "'"
    !> Double quotes denote strings (with escape character possible)
    character(kind=tfc, len=*), public, parameter :: TOML_DQUOTE = '"'
-   character(kind=tfc, len=*), public, parameter :: TOML_NEWLINE = new_line('a') ! \n
+   character(kind=tfc, len=*), public, parameter :: TOML_NEWLINE = new_line("a") ! \n
    character(kind=tfc, len=*), public, parameter :: TOML_TABULATOR = achar(9) ! \t
    character(kind=tfc, len=*), public, parameter :: TOML_FORMFEED = achar(12) ! \f
    character(kind=tfc, len=*), public, parameter :: TOML_CARRIAGE_RETURN = achar(13) ! \r
    character(kind=tfc, len=*), public, parameter :: TOML_BACKSPACE = achar(8) ! \b
    character(kind=tfc, len=*), public, parameter :: TOML_ESC = achar(27) ! \e
    character(kind=tfc, len=*), public, parameter :: TOML_LOWERCASE = &
-      & 'abcdefghijklmnopqrstuvwxyz'
+      & "abcdefghijklmnopqrstuvwxyz"
    character(kind=tfc, len=*), public, parameter :: TOML_UPPERCASE = &
-      & 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      & "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
    character(kind=tfc, len=*), public, parameter :: TOML_LETTERS = &
       & TOML_LOWERCASE//TOML_UPPERCASE
    !> Whitespace in TOML are blanks and tabs.
    character(kind=tfc, len=*), public, parameter :: TOML_WHITESPACE = &
-      & ' '//toml_escape%tabulator
-   character(kind=tfc, len=*), public, parameter :: TOML_DIGITS = '0123456789'
+      & " "//toml_escape%tabulator
+   character(kind=tfc, len=*), public, parameter :: TOML_DIGITS = "0123456789"
    character(kind=tfc, len=*), public, parameter :: TOML_BINDIGITS = &
-      & '01'
+      & "01"
    character(kind=tfc, len=*), public, parameter :: TOML_OCTDIGITS = &
-      & '01234567'
+      & "01234567"
    character(kind=tfc, len=*), public, parameter :: TOML_HEXDIGITS = &
-      & '0123456789ABCDEFabcdef'
+      & "0123456789ABCDEFabcdef"
    character(kind=tfc, len=*), public, parameter :: TOML_TIMESTAMP = &
-      & TOML_DIGITS//'.:+-T Zz'
+      & TOML_DIGITS//".:+-T Zz"
    !> Allowed characters in TOML bare keys.
    character(kind=tfc, len=*), public, parameter :: TOML_BAREKEY = &
-      & TOML_LETTERS//TOML_DIGITS//'_-'
+      & TOML_LETTERS//TOML_DIGITS//"_-"
    character(kind=tfc, len=*), public, parameter :: TOML_LITERALS = &
-      & TOML_LETTERS//TOML_DIGITS//'_-+.'
+      & TOML_LETTERS//TOML_DIGITS//"_-+."
 
 end module tomlf_constants

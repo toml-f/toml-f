@@ -16,7 +16,7 @@ program readin
     call toml_parse(table, io, error)
     close(io)
     if (allocated(error)) then
-      print '(a)', "Error: "//error%message
+      print "(a)", "Error: "//error%message
       stop 1
     end if
   end block
@@ -24,11 +24,11 @@ program readin
   call read_data(table, title, spectrum)
 
   if (allocated(title)) then
-    print '(a)', "Title: '"//title//"'"
+    print "(a)", "Title: '"//title//"'"
   end if
 
-  print '(*(g0, 1x))', "Entries:", size(spectrum)
+  print "(*(g0, 1x))", "Entries:", size(spectrum)
   if (size(spectrum) > 0) then
-    print '(*(g0, 1x))', "Spectrum:", spectrum
+    print "(*(g0, 1x))", "Spectrum:", spectrum
   end if
 end program readin

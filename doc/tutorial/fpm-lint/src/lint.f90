@@ -140,7 +140,7 @@ contains
           call push_back(scopes, top, array_scope)
         end if
 
-      case(token_kind%newline)  ! Close value scope in key-value pair 
+      case(token_kind%newline)  ! Close value scope in key-value pair
         call pop(scopes, top, value_scope)
 
       case(token_kind%rbrace)  ! Close value and table scope in inline table

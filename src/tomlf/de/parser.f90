@@ -15,12 +15,12 @@
 module tomlf_de_parser
    use tomlf_constants, only : tfc, tfr, tfi, TOML_NEWLINE
    use tomlf_datetime, only : toml_datetime
-   use tomlf_de_context, only : toml_context
    use tomlf_de_abc, only : toml_lexer => abstract_lexer
+   use tomlf_de_context, only : toml_context
    use tomlf_de_token, only : toml_token, token_kind, stringify
    use tomlf_diagnostic, only : render, toml_diagnostic, toml_label, toml_level
-   use tomlf_terminal, only : toml_terminal
    use tomlf_error, only : toml_error, toml_stat
+   use tomlf_terminal, only : toml_terminal
    use tomlf_type, only : toml_table, toml_array, toml_keyval, toml_value, toml_key, &
       & add_table, add_array, add_keyval, cast_to_table, cast_to_array, len
    implicit none
@@ -48,7 +48,7 @@ module tomlf_de_parser
       !> Table containing the document root
       type(toml_table), allocatable :: root
       !> Pointer to the currently processed table
-      type(toml_table), pointer :: current
+      type(toml_table), pointer :: current => null()
       !> Diagnostic produced while parsing
       type(toml_diagnostic), allocatable :: diagnostic
       !> Context for producing diagnostics
@@ -307,15 +307,17 @@ contains
          call extract_key(parser, lexer, stack(top))
 
          call next_token(parser, lexer)
-         if (parser%token%kind == token_kind%whitespace) &
-            & call next_token(parser, lexer)
+         if (parser%token%kind == token_kind%whitespace) then
+           call next_token(parser, lexer)
+         end if
 
          if (parser%token%kind == token_kind%rbracket) exit
 
          call consume(parser, lexer, token_kind%dot)
          if (allocated(parser%diagnostic)) return
-         if (parser%token%kind == token_kind%whitespace) &
-            & call next_token(parser, lexer)
+         if (parser%token%kind == token_kind%whitespace) then
+           call next_token(parser, lexer)
+         end if
       end do
 
       if (top <= 0) then
@@ -356,9 +358,11 @@ contains
          table => cast_to_table(ptr)
          if (.not.associated(table)) then
             array => cast_to_array(ptr)
-            if (associated(array) .and. len(array) > 0) then
-               call array%get(len(array), ptr)
-               if (associated(ptr)) table => cast_to_table(ptr)
+            if (associated(array)) then
+               if (len(array) > 0) then
+                  call array%get(len(array), ptr)
+                  if (associated(ptr)) table => cast_to_table(ptr)
+               end if
             end if
             if (.not.associated(table)) then
                if (associated(ptr)) then
@@ -442,8 +446,9 @@ recursive subroutine parse_keyval(parser, lexer, table)
 
    call extract_key(parser, lexer, key)
    call next_token(parser, lexer)
-   if (parser%token%kind == token_kind%whitespace) &
-      call next_token(parser, lexer)
+   if (parser%token%kind == token_kind%whitespace) then
+     call next_token(parser, lexer)
+   end if
 
    if (parser%token%kind == token_kind%dot) then
       call table%get(key%key, ptr)
@@ -479,8 +484,9 @@ recursive subroutine parse_keyval(parser, lexer, table)
       end if
 
       call next_token(parser, lexer)
-      if (parser%token%kind == token_kind%whitespace) &
-         call next_token(parser, lexer)
+      if (parser%token%kind == token_kind%whitespace) then
+        call next_token(parser, lexer)
+      end if
 
       if (any(parser%token%kind == [token_kind%keypath, token_kind%string, &
          & token_kind%literal])) then
@@ -496,8 +502,9 @@ recursive subroutine parse_keyval(parser, lexer, table)
    call consume(parser, lexer, token_kind%equal)
    if (allocated(parser%diagnostic)) return
 
-   if (parser%token%kind == token_kind%whitespace) &
-      call next_token(parser, lexer)
+   if (parser%token%kind == token_kind%whitespace) then
+     call next_token(parser, lexer)
+   end if
 
    call table%get(key%key, ptr)
    if (associated(ptr)) then
@@ -527,11 +534,13 @@ recursive subroutine parse_keyval(parser, lexer, table)
    end select
    if (allocated(parser%diagnostic)) return
 
-   if (parser%token%kind == token_kind%whitespace) &
-      call next_token(parser, lexer)
+   if (parser%token%kind == token_kind%whitespace) then
+     call next_token(parser, lexer)
+   end if
 
-   if (parser%token%kind == token_kind%comment) &
-      call next_token(parser, lexer)
+   if (parser%token%kind == token_kind%comment) then
+     call next_token(parser, lexer)
+   end if
 end subroutine parse_keyval
 
 recursive subroutine parse_inline_array(parser, lexer, array)
@@ -796,11 +805,13 @@ subroutine next_token(parser, lexer)
       call parser%context%push_back(parser%token)
    case(token_kind%newline, token_kind%dot, token_kind%comma, token_kind%equal, &
          & token_kind%lbrace, token_kind%rbrace, token_kind%lbracket, token_kind%rbracket)
-      if (parser%config%context_detail > 0) &
-         call parser%context%push_back(parser%token)
+      if (parser%config%context_detail > 0) then
+        call parser%context%push_back(parser%token)
+      end if
    case default
-      if (parser%config%context_detail > 1) &
-         call parser%context%push_back(parser%token)
+      if (parser%config%context_detail > 1) then
+        call parser%context%push_back(parser%token)
+      end if
    end select
 end subroutine next_token
 

@@ -84,15 +84,15 @@ subroutine info(self, unit)
 
    write(unit, '(" - ", a, t30, a)') "Dependency name", self%name
    if (self%version /= "*") then
-      write(unit, '(3x, a, t30, a)') "Required version", self%version
+      write(unit, "(3x, a, t30, a)") "Required version", self%version
    end if
 
    if (allocated(self%git)) then
-      write(unit, '(3x, a, t30, a)') "Git URL", self%git
+      write(unit, "(3x, a, t30, a)") "Git URL", self%git
    end if
 
    if (allocated(self%variant)) then
-      write(unit, '(3x, a, t30, a)') "Variant used", self%variant
+      write(unit, "(3x, a, t30, a)") "Variant used", self%variant
    end if
 
 end subroutine info

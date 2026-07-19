@@ -35,7 +35,7 @@ subroutine read_whole_file(filename, string, stat)
 
    open(file=filename, &
       & status="old", &
-      & access="stream", & 
+      & access="stream", &
       & position="append", &
       & newunit=io, &
       & iostat=stat)
@@ -80,7 +80,7 @@ subroutine read_whole_line(io, string, stat)
 
    string = ""
    do while (stat == 0)
-      read(io, '(a)', advance='no', iostat=stat, size=chunk) buffer
+      read(io, "(a)", advance="no", iostat=stat, size=chunk) buffer
       if (stat > 0) exit
       string = string // buffer(:chunk)
    end do

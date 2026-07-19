@@ -21,7 +21,7 @@ contains
   subroutine handle_error(error)
     type(toml_error), intent(in), optional :: error
     if (present(error)) then
-      write(stderr, '(a)') error%message
+      write(stderr, "(a)") error%message
       stop 1
     end if
   end subroutine handle_error

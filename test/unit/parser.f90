@@ -13,14 +13,14 @@
 
 module tftest_parser
    use testdrive
-   use tomlf_constants, only : nl => TOML_NEWLINE
-   use tomlf_de_parser
-   use tomlf_de_lexer, only : toml_lexer, new_lexer_from_string, toml_token, token_kind
-   use tomlf_de, only : toml_loads
    use tomlf_build, only : get_value
+   use tomlf_constants, only : nl => TOML_NEWLINE
+   use tomlf_de, only : toml_loads
+   use tomlf_de_lexer, only : toml_lexer, new_lexer_from_string, toml_token, token_kind
+   use tomlf_de_parser
    use tomlf_error, only : toml_error
-   use tomlf_type, only : toml_table
    use tomlf_terminal, only : toml_terminal
+   use tomlf_type, only : toml_table
    implicit none
 
    public :: collect_parser
@@ -113,9 +113,9 @@ subroutine parse_multiline_string(error)
    type(toml_error), allocatable :: toml_err
    character(:), allocatable :: value
    integer :: stat
-   character(*), parameter :: input = 'equivalent_three = """\' // new_line('a') // &
-      & '       The quick brown \' // new_line('a') // &
-      & '       fox jumps over \' // new_line('a') // &
+   character(*), parameter :: input = 'equivalent_three = """\' // new_line("a") // &
+      & "       The quick brown \" // new_line("a") // &
+      & "       fox jumps over \" // new_line("a") // &
       & '       the lazy dog."""'
 
    call toml_loads(table, input, error=toml_err)
@@ -127,7 +127,7 @@ subroutine parse_multiline_string(error)
    call get_value(table, "equivalent_three", value, stat=stat)
    call check(error, stat == 0, "Multiline string should decode")
    if (allocated(error)) return
-   call check(error, value == 'The quick brown fox jumps over the lazy dog.', &
+   call check(error, value == "The quick brown fox jumps over the lazy dog.", &
       & "Multiline string should collapse line continuations")
 end subroutine parse_multiline_string
 
@@ -139,10 +139,10 @@ subroutine parse_multiline_string_blank_lines(error)
    type(toml_error), allocatable :: toml_err
    character(:), allocatable :: value
    integer :: stat
-   character(*), parameter :: input = 'equivalent_two = """' // new_line('a') // &
-      & 'The quick brown \' // new_line('a') // &
-      & new_line('a') // &
-      & '  fox jumps over \' // new_line('a') // &
+   character(*), parameter :: input = 'equivalent_two = """' // new_line("a") // &
+      & "The quick brown \" // new_line("a") // &
+      & new_line("a") // &
+      & "  fox jumps over \" // new_line("a") // &
       & '    the lazy dog."""'
 
    call toml_loads(table, input, error=toml_err)
@@ -154,7 +154,7 @@ subroutine parse_multiline_string_blank_lines(error)
    call get_value(table, "equivalent_two", value, stat=stat)
    call check(error, stat == 0, "Multiline string with blank lines should decode")
    if (allocated(error)) return
-   call check(error, value == 'The quick brown fox jumps over the lazy dog.', &
+   call check(error, value == "The quick brown fox jumps over the lazy dog.", &
       & "Multiline line continuations should remove blank-line whitespace")
 end subroutine parse_multiline_string_blank_lines
 

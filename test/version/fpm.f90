@@ -29,7 +29,7 @@ program tftest_fpm
       allocate(character(len=length) :: argument)
       call get_command_argument(1, argument)
    else
-      argument = 'fpm.toml'
+      argument = "fpm.toml"
    end if
    inquire(file=argument, exist=exist)
    if (.not.exist) then
@@ -41,7 +41,7 @@ program tftest_fpm
    call toml_parse(table, unit)
    close(unit)
    if (.not.allocated(table)) then
-      write(error_unit, '(a, 1x, a)') &
+      write(error_unit, "(a, 1x, a)") &
          & argument, "could not be parsed, check format and/or implementation"
       error stop
    end if
@@ -50,7 +50,7 @@ program tftest_fpm
    match = argument == version_string
 
    if (.not.match) then
-      write(error_unit, '(a)') &
+      write(error_unit, "(a)") &
          & "Internal version and provided version do not match!"
       write(error_unit, '(a, ":", 1x, a)') &
          & "provided", argument, "internal", version_string

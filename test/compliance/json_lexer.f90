@@ -97,7 +97,7 @@ subroutine new_lexer_from_unit(lexer, io, error)
 
    case("sequential", "SEQUENTIAL")
       allocate(character(0) :: source)
-      do 
+      do
          call read_whole_line(io, line, stat)
          if (stat > 0) exit
          source = source // line // toml_escape%newline

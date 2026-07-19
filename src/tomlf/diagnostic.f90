@@ -81,7 +81,7 @@ module tomlf_diagnostic
       integer :: first, last
    end type line_token
 
-   character(len=*), parameter :: nl = new_line('a')
+   character(len=*), parameter :: nl = new_line("a")
 
 
 contains
@@ -447,7 +447,7 @@ pure function to_string(val, width) result(string)
    end do
    if (val < 0) then
       pos = pos - 1
-      buffer(pos:pos) = '-'
+      buffer(pos:pos) = "-"
    end if
 
    if (present(width)) then

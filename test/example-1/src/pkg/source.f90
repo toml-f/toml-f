@@ -107,7 +107,7 @@ subroutine info(self, unit)
    end if
 
    if (self%folder /= ".") then
-      write(unit, '(3x, a, t30, a)') "Relative path", self%folder
+      write(unit, "(3x, a, t30, a)") "Relative path", self%folder
    end if
 
 end subroutine info

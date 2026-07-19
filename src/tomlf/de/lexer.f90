@@ -188,7 +188,7 @@ subroutine new_lexer_from_unit(lexer, io, error)
 
    case("sequential", "SEQUENTIAL")
       allocate(character(len=0, kind=tfc) :: source)
-      do 
+      do
          call read_whole_line(io, line, stat)
          if (stat > 0) exit
          source = source // line // TOML_NEWLINE
@@ -591,7 +591,7 @@ pure function valid_string(ch) result(valid)
       & .not.(x00 <= ch .and. ch <= x08) .and. &
       & .not.(x0b <= ch .and. ch <= x1f) .and. &
       & ch /= x7f
-end function
+end function valid_string
 
 !> Process next bare key token, produces keypath tokens.
 subroutine next_keypath(lexer, token)

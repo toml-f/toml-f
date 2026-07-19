@@ -12,14 +12,14 @@
 ! limitations under the License.
 
 module tjson_parser
+   use tjson_lexer, only : json_lexer, new_lexer_from_string, new_lexer_from_unit, &
+      & new_lexer_from_file
+   use tomlf_build, only : get_value
    use tomlf_constants, only : tfc, tfi, tfr, toml_type
    use tomlf_datetime, only : toml_datetime
    use tomlf_de_context, only : toml_context
-   use tjson_lexer, only : json_lexer, new_lexer_from_string, new_lexer_from_unit, &
-      & new_lexer_from_file
    use tomlf_de_parser, only : parse, toml_parser_config
    use tomlf_diagnostic, only : toml_level
-   use tomlf_build, only : get_value
    use tomlf_error, only : toml_error
    use tomlf_type, only : toml_table, toml_value, cast_to_table, &
       & toml_visitor, toml_array, toml_keyval, toml_key, len

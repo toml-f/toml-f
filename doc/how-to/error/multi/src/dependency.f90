@@ -30,7 +30,7 @@ contains
     do it = 1, size(list)
       call get_value(table, list(it), child, origin=origin)
       if (.not.associated(child)) then
-        print '(a)', context%report("All entries must be subtables", &
+        print "(a)", context%report("All entries must be subtables", &
           & origin, table%origin, "must be a subtable", "required for this table")
         stop 1
       end if
@@ -62,11 +62,11 @@ contains
 
     if (allocated(git) .and. allocated(path)) then
       if (git_origin < path_origin) then
-        print '(a)', context%report("Remote dependency cannot have local path", &
+        print "(a)", context%report("Remote dependency cannot have local path", &
           & path_origin, git_origin, &
           & "cannot have local path", "remote dependency already defined")
       else
-        print '(a)', context%report("Local dependency cannot have remote repository", &
+        print "(a)", context%report("Local dependency cannot have remote repository", &
           & git_origin, path_origin, &
           & "cannot have remote repository", "local dependency already defined")
       end if

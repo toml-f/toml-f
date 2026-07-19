@@ -14,8 +14,8 @@
 !> Testsuite for the `tomlf_build` modules
 module tftest_build
    use testdrive
-   use tomlf_build
    use tomlf
+   use tomlf_build
    implicit none
    private
 
@@ -477,8 +477,8 @@ end subroutine table_bool
 
 !> Check datetime
 subroutine table_datetime(error)
-   use tomlf_type, only : toml_table, toml_key
    use tomlf_datetime, only : toml_datetime, toml_date, toml_time, operator(==), to_string
+   use tomlf_type, only : toml_table, toml_key
 
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
@@ -989,8 +989,8 @@ end subroutine array_bool
 
 !> Check datetime
 subroutine array_datetime(error)
-   use tomlf_type, only : toml_array, len
    use tomlf_datetime, only : toml_datetime, toml_date, toml_time, operator(==), to_string
+   use tomlf_type, only : toml_array, len
 
    !> Error handling
    type(error_type), allocatable, intent(out) :: error
