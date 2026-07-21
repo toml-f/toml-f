@@ -153,6 +153,7 @@ contains
       case(token_kind%rbracket)  ! Close array scope
         call pop(scopes, top, array_scope)
 
+      case default
       end select
     end do
 

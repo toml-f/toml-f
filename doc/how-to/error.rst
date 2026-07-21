@@ -22,14 +22,14 @@ We define a simple data type for a configuration for this recipe.
 .. literalinclude:: error/single/src/config.f90
    :language: fortran
    :caption: src/config.f90
-   :lines: 6-10
+   :lines: 7-11
 
 To report errors, we now not only use the TOML data structure, but also a context object, which allows us to create the report.
 
 .. literalinclude:: error/single/src/config.f90
    :language: fortran
    :caption: src/config.f90
-   :lines: 17-34, 46
+   :lines: 18-35, 47
 
 To provide the data structure we create a simple driver to read a TOML document.
 
@@ -59,7 +59,7 @@ Now we also have to handle the case where the value can be read correctly, but i
 .. literalinclude:: error/single/src/config.f90
    :language: fortran
    :caption: src/config.f90
-   :lines: 35-39
+   :lines: 36-40
 
 The origin information will still be available and allow us to make a rich report about the error in the input.
 
@@ -90,7 +90,7 @@ For this purpose, we select the appropriate ``toml_level`` for the report.
 .. literalinclude:: error/single/src/config.f90
    :language: fortran
    :caption: src/config.f90
-   :lines: 41-44
+   :lines: 42-45
 
 .. tip::
 
@@ -142,7 +142,7 @@ We declare a simple dummy dependency storing only the dependency name for demons
 .. literalinclude:: error/multi/src/dependency.f90
    :language: fortran
    :caption: src/dependency.f90
-   :lines: 6-10
+   :lines: 7-11
 
 We iterate over the list of all subtables in the dependency table and read the actual dependency.
 In case an entry is not a subtable we will raise an error, since a package manifest can contain multiple dependency tables, we will report which table we are currently in as additional context.
@@ -150,7 +150,7 @@ In case an entry is not a subtable we will raise an error, since a package manif
 .. literalinclude:: error/multi/src/dependency.f90
    :language: fortran
    :caption: src/dependency.f90
-   :lines: 14-39
+   :lines: 15-40
 
 To provide the *dependencies* table we create a simple driver to read a TOML document.
 
@@ -185,7 +185,7 @@ Note that the *get_value* interface will not allocate the string if no value is 
 .. literalinclude:: error/multi/src/dependency.f90
    :language: fortran
    :caption: src/dependency.f90
-   :lines: 41-75
+   :lines: 42-76
 
 To preserve the order from the input we can compare the *origin* values of the two retrieved strings and produce the appropriate error message.
 

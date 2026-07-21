@@ -865,6 +865,7 @@ subroutine extract_value(parser, lexer, kval)
    case(token_kind%datetime)
       call lexer%extract_datetime(parser%token, dval)
       call kval%set(dval)
+   case default
    end select
 end subroutine extract_value
 

@@ -137,6 +137,7 @@ subroutine get_info(lexer, meta, output)
       output = lexer%chunk // toml_escape%newline
    case("filename")
       if (allocated(lexer%filename)) output = lexer%filename
+   case default
    end select
 end subroutine get_info
 
@@ -217,6 +218,7 @@ subroutine next_token(lexer, token)
    case(",")
       token = toml_token(token_kind%comma, prev, pos)
       return
+   case default
    end select
 
    ! If the current token is invalid, advance to the next terminator
@@ -420,12 +422,14 @@ subroutine extract_string(lexer, token, string)
             case("n"); string = string // toml_escape%newline
             case("r"); string = string // toml_escape%carriage_return
             case("f"); string = string // toml_escape%formfeed
+            case default
             end select
             cycle
          end if
          escape = ch == toml_escape%backslash
          if (.not.escape) string = string // ch
       end do
+   case default
    end select
 end subroutine extract_string
 
@@ -476,6 +480,7 @@ subroutine extract_float(lexer, token, val)
    if (token%kind /= token_kind%float) return
 
    read(lexer%chunk(token%first:token%last), *, iostat=stat) val
+   if (stat /= 0) val = 0.0_tfr
 end subroutine extract_float
 
 !> Extract boolean value of token

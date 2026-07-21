@@ -3,6 +3,7 @@ module fpm_lint_config
   use tomlf, only : toml_table, toml_context, toml_terminal, toml_error, &
     & toml_stat, get_value
   implicit none
+  public
 
   !> Configuration for the manifest linting
   type :: lint_config

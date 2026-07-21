@@ -301,6 +301,7 @@ subroutine visit_keyval(visitor, keyval)
    case(toml_type%datetime)
       call keyval%get(dval)
       str = to_string(dval)
+   case default
    end select
 
    if (visitor%inline_array) then
@@ -359,6 +360,7 @@ recursive subroutine visit_array(visitor, array)
          case(toml_type%datetime)
             call ptr%get(dval)
             str = to_string(dval)
+         case default
          end select
 
          visitor%output = visitor%output // " " // str

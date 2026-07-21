@@ -22,6 +22,7 @@ module tftest_parser
    use tomlf_terminal, only : toml_terminal
    use tomlf_type, only : toml_table
    implicit none
+   private
 
    public :: collect_parser
 

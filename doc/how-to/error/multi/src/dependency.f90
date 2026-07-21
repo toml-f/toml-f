@@ -2,6 +2,7 @@
 module demo_dependency
   use tomlf, only : toml_table, toml_context, toml_key, get_value
   implicit none
+  public
 
   !> Dummy dependency type storing only the name of the dependency
   type :: dependency_type

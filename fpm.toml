@@ -60,10 +60,6 @@ iso_fortran_env = "https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORTRAN_005fE
 ignore = [
   "C002",  # interface without implicit none
   "C003",  # implicit none(external)
-  "C011",  # no default in select case
-  "C061",  # missing intent attribute
-  "C121",  # use without explicit only
-  "C131",  # default module accessibility
-  "C181",  # iostat not checked
+  "C121",  # use statement missing only clause
 ]
 line-length = 132
