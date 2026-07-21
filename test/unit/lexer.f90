@@ -18,6 +18,7 @@ module tftest_lexer
    use tomlf_de_lexer
    use tomlf_error, only : toml_error
    implicit none
+   private
 
    public :: collect_lexer
 

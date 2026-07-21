@@ -267,6 +267,7 @@ subroutine fill_buffer(lexer)
          select case(lexer%stack(it)%scope)
          case(lexer_scope%table, lexer_scope%array)
             lexer%context%token(lexer%stack(it)%token)%kind = token_kind%unclosed
+         case default
          end select
       end do
    end if
@@ -973,6 +974,7 @@ pure function valid_date(string) result(valid)
       mday = merge(29, 28, leap)
    case(4, 6, 9, 11)
       mday = 30
+   case default
    end select
    valid = day >= 1 .and. day <= mday
 end function valid_date
@@ -1276,6 +1278,7 @@ subroutine extract_string(lexer, token, string)
    case(token_kind%keypath)
       allocate(character(len=length, kind=tfc) :: string)
       string = lexer%chunk(token%first:token%last)
+   case default
    end select
 
 end subroutine extract_string
@@ -1341,7 +1344,7 @@ subroutine extract_float(lexer, token, val)
    !> Floating point value of token
    real(tfr), intent(out) :: val
 
-   integer :: first, it, ic
+   integer :: first, it, ic, read_stat
    character(len=token%last - token%first + 1) :: buffer
    character(1, tfc) :: ch
 
@@ -1354,14 +1357,16 @@ subroutine extract_float(lexer, token, val)
    if (match(lexer, first, "n")) then
       ! val = ieee_value(val, ieee_quite_nan)
       buffer = "NaN"
-      read(buffer, *, iostat=ic) val
+      read(buffer, *, iostat=read_stat) val
+      if (read_stat /= 0) val = 0.0_tfr
       return
    end if
 
    if (match(lexer, first, "i")) then
       ! val = ieee_value(val, ieee_positive_inf)
       buffer = "Inf"
-      read(buffer, *, iostat=ic) val
+      read(buffer, *, iostat=read_stat) val
+      if (read_stat /= 0) val = 0.0_tfr
       if (match(lexer, token%first, char_kind%minus)) val = -val
       return
    end if
@@ -1415,7 +1420,8 @@ subroutine extract_float(lexer, token, val)
       buffer(ic:ic) = ch
    end do
 
-   read(buffer(:ic), *, iostat=it) val
+   read(buffer(:ic), *, iostat=read_stat) val
+   if (read_stat /= 0) val = 0.0_tfr
 end subroutine extract_float
 
 !> Extract boolean value of token
@@ -1530,6 +1536,7 @@ subroutine get_info(lexer, meta, output)
       output = lexer%chunk // TOML_NEWLINE
    case("filename")
       if (allocated(lexer%filename)) output = lexer%filename
+   case default
    end select
 end subroutine get_info
 
@@ -1603,6 +1610,7 @@ function convert_ucs(escape) result(str)
          achar(ior(int(z"80", tfi), iand(ishft(code, -12), int(z"3f", tfi))), kind=tfc) // &
          achar(ior(int(z"80", tfi), iand(ishft(code, -6), int(z"3f", tfi))), kind=tfc) // &
          achar(ior(int(z"80", tfi), iand(code, int(z"3f", tfi))), kind=tfc)
+   case default
    end select
 end function convert_ucs
 

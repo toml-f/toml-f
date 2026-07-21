@@ -143,7 +143,7 @@ Furthermore, we verify that the package name uses only lowercase letters, number
 .. literalinclude:: fpm-lint/src/lint.f90
    :language: fortran
    :caption: src/lint.f90
-   :lines: 1-14, 16-66, 191
+   :lines: 1-14, 16-66, 192
 
 .. tip::
 
@@ -241,7 +241,7 @@ We then can check whether the current scope on the top of the stack allows key p
 .. literalinclude:: fpm-lint/src/lint.f90
    :language: fortran
    :caption: src/lint.f90
-   :lines: 98-189
+   :lines: 98-190
 
 For convenience, we implement a *push_back* and *pop* function to add and remove scopes from our stack.
 The *pop* function will additionally perform a check whether we want to remove a matching scope and save us some repetition in the loop this way.

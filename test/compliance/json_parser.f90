@@ -265,6 +265,7 @@ subroutine prune_value(val, table, str)
          if (stat == 0) then
             call val%set(fval)
          end if
+      case default
       end select
    end select
 end subroutine prune_value

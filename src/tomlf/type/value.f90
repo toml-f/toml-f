@@ -126,7 +126,7 @@ subroutine get_key(self, key)
    class(toml_value), intent(in) :: self
 
    !> Contains valid TOML key on exit
-   character(kind=tfc, len=:), allocatable :: key
+   character(kind=tfc, len=:), allocatable, intent(out) :: key
 
    if (allocated(self%key)) then
       if (verify(self%key, TOML_BAREKEY) == 0 .and. len(self%key) > 0) then

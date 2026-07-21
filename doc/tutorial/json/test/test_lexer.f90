@@ -12,10 +12,11 @@
 ! limitations under the License.
 
 module test_lexer
-   use testdrive
-   use tjson_lexer
+   use testdrive, only : unittest_type, new_unittest, error_type
+   use tjson_lexer, only : token_kind, toml_lexer, toml_token, new_lexer_from_string
    use tomlf_constants, only : tfi, tfr, nl => TOML_NEWLINE
    implicit none
+   private
 
    public :: collect_lexer
 

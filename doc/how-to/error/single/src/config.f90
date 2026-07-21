@@ -2,6 +2,7 @@
 module demo_config
   use tomlf, only : toml_table, toml_context, toml_level, get_value
   implicit none
+  public
 
   !> Configuration data
   type :: config_type

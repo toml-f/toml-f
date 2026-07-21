@@ -58,7 +58,7 @@ contains
   !> Read root document
   subroutine read_simulation(error, input, table)
     !> Error handler
-    type(error_type), allocatable :: error
+    type(error_type), allocatable, intent(inout) :: error
     !> Simulation input to be read
     type(simulation_input), intent(out) :: input
     !> Data structure
@@ -92,7 +92,7 @@ contains
   !> Read Hamiltonian from node
   subroutine read_hamiltonian(error, input, table)
     !> Error handler
-    type(error_type), allocatable :: error
+    type(error_type), allocatable, intent(inout) :: error
     !> Hamiltonian input to be read
     type(hamiltonian_input), intent(out) :: input
     !> Data structure
@@ -113,7 +113,7 @@ contains
   !> Read DFTB Hamiltonian from node
   subroutine read_dftb(error, input, table)
     !> Error handler
-    type(error_type), allocatable :: error
+    type(error_type), allocatable, intent(inout) :: error
     !> DFTB Hamiltonian input to be read
     type(dftb_input), intent(out) :: input
     !> Data structure
@@ -142,7 +142,7 @@ contains
   !> Read SCC from node
   subroutine read_scc(error, input, table)
     !> Error handler
-    type(error_type), allocatable :: error
+    type(error_type), allocatable, intent(inout) :: error
     !> SCC input to be read
     type(scc_input), intent(out) :: input
     !> Data structure
@@ -155,7 +155,7 @@ contains
   !> Read Slater-Koster files from node
   subroutine read_skf(error, input, table)
     !> Error handler
-    type(error_type), allocatable :: error
+    type(error_type), allocatable, intent(inout) :: error
     !> Slater-Koster input to be read
     type(skf_input), intent(out) :: input
     !> Data structure
@@ -168,7 +168,7 @@ contains
   !> Read analysis from node
   subroutine read_analysis(error, input, table)
     !> Error handler
-    type(error_type), allocatable :: error
+    type(error_type), allocatable, intent(inout) :: error
     !> Analysis input to be read
     type(analysis_input), intent(out) :: input
     !> Data structure

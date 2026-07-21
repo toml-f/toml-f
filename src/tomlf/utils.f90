@@ -12,7 +12,9 @@
 ! limitations under the License.
 
 module tomlf_utils
-   use tomlf_constants
+   use tomlf_constants, only : tfc, tfi, tfr, tf_i1, tf_i2, tf_i4, tf_i8, tf_sp, tf_dp, &
+      & TOML_NEWLINE, TOML_FORMFEED, TOML_CARRIAGE_RETURN, TOML_TABULATOR, TOML_BACKSPACE, &
+      & TOML_BAREKEY
    use tomlf_datetime, only : toml_datetime, toml_date, toml_time, to_string
    use tomlf_utils_io, only : read_whole_file, read_whole_line
    implicit none
