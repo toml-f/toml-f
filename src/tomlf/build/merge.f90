@@ -15,7 +15,6 @@
 !>
 !> Note that the context information cannot be preserved.
 module tomlf_build_merge
-   use tomlf_constants, only : tfc
    use tomlf_type, only : toml_table, toml_array, toml_keyval, toml_value, &
       & toml_key, cast_to_keyval, len
    implicit none
@@ -116,8 +115,8 @@ recursive subroutine merge_table(lhs, rhs, config)
    type(toml_merge_config) :: policy
    type(toml_key), allocatable :: list(:)
    class(toml_value), pointer :: ptr1, ptr2
-   class(toml_keyval), pointer :: kv
-   class(toml_value), allocatable :: tmp
+   type(toml_keyval), pointer :: kv
+   class(toml_value), allocatable, target :: tmp
    logical :: has_key
    integer :: i, n, stat
 

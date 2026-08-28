@@ -62,6 +62,7 @@ subroutine read_whole_line(io, string, stat)
 
    integer, parameter :: bufsize = 4096
    character(bufsize, tfc) :: buffer, msg
+   character(9, tfc) :: padding
    integer :: chunk
    logical :: opened
 
@@ -72,7 +73,14 @@ subroutine read_whole_line(io, string, stat)
    end if
 
    if (opened) then
-      open(unit=io, pad="yes", iostat=stat)
+      ! Reconnect only if the pad mode actually has to change: NAG rejects OPEN
+      ! on the negative unit number that NEWUNIT hands out (iostat 147).
+      inquire(unit=io, pad=padding)
+      if (padding == "YES") then
+         stat = 0
+      else
+         open(unit=io, pad="yes", iostat=stat)
+      end if
    else
       stat = 1
       msg = "Unit is not connected"

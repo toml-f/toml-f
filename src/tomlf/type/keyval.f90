@@ -137,7 +137,7 @@ end subroutine destroy
 subroutine get_float(self, val)
 
    !> Instance of the TOML key-value pair
-   class(toml_keyval), intent(in) :: self
+   class(toml_keyval), intent(in), target :: self
 
    !> Value to be assigned
    real(tfr), pointer, intent(out) :: val
@@ -150,7 +150,7 @@ end subroutine get_float
 subroutine get_integer(self, val)
 
    !> Instance of the TOML key-value pair
-   class(toml_keyval), intent(in) :: self
+   class(toml_keyval), intent(in), target :: self
 
    !> Value to be assigned
    integer(tfi), pointer, intent(out) :: val
@@ -163,7 +163,7 @@ end subroutine get_integer
 subroutine get_boolean(self, val)
 
    !> Instance of the TOML key-value pair
-   class(toml_keyval), intent(in) :: self
+   class(toml_keyval), intent(in), target :: self
 
    !> Value to be assigned
    logical, pointer, intent(out) :: val
@@ -176,7 +176,7 @@ end subroutine get_boolean
 subroutine get_datetime(self, val)
 
    !> Instance of the TOML key-value pair
-   class(toml_keyval), intent(in) :: self
+   class(toml_keyval), intent(in), target :: self
 
    !> Value to be assigned
    type(toml_datetime), pointer, intent(out) :: val

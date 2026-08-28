@@ -70,7 +70,7 @@ contains
 subroutine get_value_float_sp(self, val, stat, origin)
 
    !> Instance of the key-value pair
-   class(toml_keyval), intent(in) :: self
+   class(toml_keyval), intent(in), target :: self
 
    !> Real value
    real(tf_sp), intent(out) :: val
@@ -170,10 +170,11 @@ subroutine get_value_integer_i1(self, val, stat, origin)
 
    call self%get(dummy)
    if (associated(dummy)) then
-      val = int(dummy, tf_i1)
       if (dummy <= huge(val) .and. dummy >= -huge(val)-1) then
+         val = int(dummy, tf_i1)
          info = toml_stat%success
       else
+         val = 0_tf_i1
          info = toml_stat%conversion_error
       end if
    else
@@ -189,7 +190,7 @@ end subroutine get_value_integer_i1
 subroutine get_value_integer_i2(self, val, stat, origin)
 
    !> Instance of the key-value pair
-   class(toml_keyval), intent(in) :: self
+   class(toml_keyval), intent(in), target :: self
 
    !> Integer value
    integer(tf_i2), intent(out) :: val
@@ -205,10 +206,11 @@ subroutine get_value_integer_i2(self, val, stat, origin)
 
    call self%get(dummy)
    if (associated(dummy)) then
-      val = int(dummy, tf_i2)
       if (dummy <= huge(val) .and. dummy >= -huge(val)-1) then
+         val = int(dummy, tf_i2)
          info = toml_stat%success
       else
+         val = 0_tf_i2
          info = toml_stat%conversion_error
       end if
    else
@@ -240,10 +242,11 @@ subroutine get_value_integer_i4(self, val, stat, origin)
 
    call self%get(dummy)
    if (associated(dummy)) then
-      val = int(dummy, tf_i4)
       if (dummy <= huge(val) .and. dummy >= -huge(val)-1) then
+         val = int(dummy, tf_i4)
          info = toml_stat%success
       else
+         val = 0_tf_i4
          info = toml_stat%conversion_error
       end if
    else
@@ -290,7 +293,7 @@ end subroutine get_value_integer_i8
 subroutine get_value_bool(self, val, stat, origin)
 
    !> Instance of the key-value pair
-   class(toml_keyval), intent(in) :: self
+   class(toml_keyval), intent(in), target :: self
 
    !> Boolean value
    logical, intent(out) :: val
@@ -321,7 +324,7 @@ end subroutine get_value_bool
 subroutine get_value_datetime(self, val, stat, origin)
 
    !> Instance of the key-value pair
-   class(toml_keyval), intent(in) :: self
+   class(toml_keyval), intent(in), target :: self
 
    !> Datetime value
    type(toml_datetime), intent(out) :: val
