@@ -1422,18 +1422,21 @@ subroutine token_float_fuzz(error)
 
    integer :: it
    type(toml_lexer) :: lexer
-   real(tfr) :: val1, val2
+   real(tfr) :: val1, val2, rnd(3)
    character(128) :: buffer
 
    do it = 1, 200
-      call random_number(val1)
-      call random_number(val2)
-      val1 = (val1 - 0.5_tfr) ** nint(it * abs(val2))
+      call random_number(rnd)
+      ! Mantissa in [1, 2) with a random sign and a decimal exponent in [-150, 150];
+      ! this keeps every value well inside the double range, so the generator never
+      ! underflows and the relative comparison below is always meaningful.
+      val1 = sign(1.0_tfr + rnd(1), rnd(2) - 0.5_tfr) &
+         & * 10.0_tfr ** nint((rnd(3) - 0.5_tfr) * 300)
       write(buffer, *) val1
 
       call new_lexer_from_string(lexer, buffer)
       call lexer%extract(toml_token(token_kind%float, 1, len_trim(buffer)), val2)
-      call check(error, val2, val1, thr=2*epsilon(val1))
+      call check(error, val2, val1, thr=2*epsilon(val1), rel=.true.)
       if (allocated(error)) exit
    end do
 end subroutine token_float_fuzz
