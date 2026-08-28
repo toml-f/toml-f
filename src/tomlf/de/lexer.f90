@@ -1292,7 +1292,7 @@ subroutine extract_integer(lexer, token, val)
    !> Integer value of token
    integer(tfi), intent(out) :: val
 
-   integer :: first, base, it, tmp
+   integer :: first, base, it, tmp, shift
    logical :: minus
    character(1, tfc) :: ch
    character(*, tfc), parameter :: num = "0123456789abcdef"
@@ -1323,13 +1323,35 @@ subroutine extract_integer(lexer, token, val)
 
    minus = match(lexer, token%first, char_kind%minus)
 
+   ! Bases 2, 8 and 16 accumulate the bit pattern by shifting: literals with
+   ! the sign bit set are defined to wrap into two's complement, which a
+   ! multiply cannot do without overflowing the accumulator.
+   select case(base)
+   case(2)
+      shift = 1
+   case(8)
+      shift = 3
+   case(16)
+      shift = 4
+   case default
+      shift = 0
+   end select
+
    do it = first, token%last
       ch = peek(lexer, it)
       if ("A" <= ch .and. ch <= "Z") ch = achar(iachar(ch) - iachar("A") + iachar("a"))
       tmp = scan(num(:abs(base)), ch) - 1
       if (tmp < 0) cycle
-      val = val * base + merge(-tmp, tmp, minus)
+      if (shift > 0) then
+         val = ior(ishft(val, shift), int(tmp, tfi))
+      else
+         val = val * base + merge(-tmp, tmp, minus)
+      end if
    end do
+
+   ! Negating the accumulated bit pattern is out of range only for the minimum
+   ! integer, which is its own two's complement negation.
+   if (shift > 0 .and. minus .and. val /= -huge(val)-1) val = -val
 end subroutine extract_integer
 
 !> Extract floating point value of token

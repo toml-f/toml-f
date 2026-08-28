@@ -95,15 +95,15 @@ contains
 
       if (low < high) then
 
-         call swap(idx(low), idx((low + high)/2))
+         call swap(idx, low, (low + high)/2)
          last = low
          do i = low + 1, high
             if (less(list(idx(i)), list(idx(low)))) then
                last = last + 1
-               call swap(idx(last), idx(i))
+               call swap(idx, last, i)
             end if
          end do
-         call swap(idx(low), idx(last))
+         call swap(idx, low, last)
          pivot = last
 
          call quicksort(list, idx, low, pivot - 1, less)
@@ -113,16 +113,16 @@ contains
    end subroutine quicksort
 
 
-   !> Swap two integer values
-   pure subroutine swap(lhs, rhs)
-      integer, intent(inout) :: lhs
-      integer, intent(inout) :: rhs
+   !> Swap two elements of an index array
+   pure subroutine swap(idx, lhs, rhs)
+      integer, intent(inout) :: idx(:)
+      integer, intent(in) :: lhs, rhs
 
       integer :: tmp
 
-      tmp = lhs
-      lhs = rhs
-      rhs = tmp
+      tmp = idx(lhs)
+      idx(lhs) = idx(rhs)
+      idx(rhs) = tmp
 
    end subroutine swap
 
