@@ -14,6 +14,10 @@ source-dir = "src"
 [build]
 auto-tests = false
 
+# test-drive ships a .F90 with #ifdef blocks but declares no preprocessor;
+# only gfortran auto-preprocesses .F90, so nagfor needs this to build it.
+[preprocess.cpp]
+
 [[test]]
 name = "tftest"
 source-dir = "test/unit"

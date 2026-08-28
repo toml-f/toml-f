@@ -117,7 +117,7 @@ recursive subroutine merge_table(lhs, rhs, config)
    type(toml_key), allocatable :: list(:)
    class(toml_value), pointer :: ptr1, ptr2
    class(toml_keyval), pointer :: kv
-   class(toml_value), allocatable :: tmp
+   class(toml_value), allocatable, target :: tmp
    logical :: has_key
    integer :: i, n, stat
 
