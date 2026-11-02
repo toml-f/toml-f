@@ -85,6 +85,7 @@ subroutine collect_parser(testsuite)
       ! new_unittest("dotted-key-array", dotted_key_array, should_fail=.true.), &
       & new_unittest("parse-escaped-key", parse_escaped_key), &
       & new_unittest("parse-multiline-string", parse_multiline_string), &
+      & new_unittest("parse-unicode-escape-widths", parse_unicode_escape_widths), &
       & new_unittest("parse-multiline-string-blank-lines", parse_multiline_string_blank_lines), &
       & new_unittest("empty", empty)]
 
@@ -105,6 +106,42 @@ subroutine parse_escaped_key(error)
 
    call check(error, allocated(table), "Escaped newline key should parse")
 end subroutine parse_escaped_key
+
+!> \uXXXX and \UXXXXXXXX escapes of every UTF-8 width up to four bytes in one
+!> string. The length check matters: `==` pads with blanks, so a decoded value
+!> with trailing garbage blanks (nvfortran 26.5 on a four-byte escape built by
+!> concatenating achar results) would still compare equal.
+subroutine parse_unicode_escape_widths(error)
+   use tomlf_constants, only : tfc
+   !> Error handling
+   type(error_type), allocatable, intent(out) :: error
+
+   type(toml_table), allocatable :: table
+   type(toml_error), allocatable :: toml_err
+   character(:), allocatable :: value
+   character(:), allocatable :: expected
+   integer :: stat
+
+   ! x, U+00C0 (2 bytes), y, U+20AC (3 bytes), z, U+1F600 (4 bytes), w
+   expected = "x" // achar(int(z"C3"), kind=tfc) // achar(int(z"80"), kind=tfc) // "y" // &
+      & achar(int(z"E2"), kind=tfc) // achar(int(z"82"), kind=tfc) // achar(int(z"AC"), kind=tfc) // "z" // &
+      & achar(int(z"F0"), kind=tfc) // achar(int(z"9F"), kind=tfc) // achar(int(z"98"), kind=tfc) // &
+      & achar(int(z"80"), kind=tfc) // "w"
+
+   call toml_loads(table, 'a = "x' // achar(92) // 'u00C0y' // achar(92) // 'u20ACz' // achar(92) // &
+      & 'U0001F600w"', error=toml_err)
+   if (allocated(toml_err)) then
+      call test_failed(error, toml_err%message)
+      return
+   end if
+
+   call get_value(table, "a", value, stat=stat)
+   call check(error, stat == 0, "Unicode escapes should decode")
+   if (allocated(error)) return
+   call check(error, len(value), len(expected))
+   if (allocated(error)) return
+   call check(error, value == expected, "Unicode escapes should decode to their UTF-8 bytes")
+end subroutine parse_unicode_escape_widths
 
 subroutine parse_multiline_string(error)
    !> Error handling
