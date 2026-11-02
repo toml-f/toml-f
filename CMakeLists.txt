@@ -47,6 +47,11 @@ set_target_properties(
   SOVERSION "${PROJECT_VERSION_MAJOR}"
   Fortran_MODULE_DIRECTORY "${PROJECT_BINARY_DIR}/include"
 )
+target_compile_options(
+  "${PROJECT_NAME}-lib"
+  PRIVATE
+  ${fortran-flags}
+)
 target_include_directories(
   "${PROJECT_NAME}-lib"
   PUBLIC

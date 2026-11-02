@@ -25,6 +25,13 @@ set(
 )
 set(module-dir "${module-dir}" PARENT_SCOPE)
 
+# Compiler specific flags, NVHPC treats backslashes as escape characters by default
+set(fortran-flags)
+if(CMAKE_Fortran_COMPILER_ID MATCHES "^(NVHPC|PGI)$")
+  list(APPEND fortran-flags "-Mbackslash" "-Mallocatable=03")
+endif()
+set(fortran-flags "${fortran-flags}" PARENT_SCOPE)
+
 # Set build type as CMake does not provide defaults
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(

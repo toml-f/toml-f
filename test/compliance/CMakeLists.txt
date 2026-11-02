@@ -22,6 +22,11 @@ target_link_libraries(
   PRIVATE
   "${PROJECT_NAME}-lib"
 )
+target_compile_options(
+  toml2json
+  PRIVATE
+  ${fortran-flags}
+)
 
 # Deserializer for a specific JSON format suitable for the validator suite
 add_executable(
@@ -34,4 +39,9 @@ target_link_libraries(
   json2toml
   PRIVATE
   "${PROJECT_NAME}-lib"
+)
+target_compile_options(
+  json2toml
+  PRIVATE
+  ${fortran-flags}
 )
