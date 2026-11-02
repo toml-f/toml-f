@@ -1574,44 +1574,36 @@ function convert_ucs(escape) result(str)
    character(*, tfc), intent(in) :: escape
    character(:, tfc), allocatable :: str
    integer(tfi) :: code
+   integer :: i, nbytes
+   integer(tfi), parameter :: lead(6) = [int(z"00", tfi), int(z"c0", tfi), int(z"e0", tfi), &
+      & int(z"f0", tfi), int(z"f8", tfi), int(z"fc", tfi)]
 
    code = hex_to_int(escape)
 
    select case(code)
    case(int(z"00000000", tfi):int(z"0000007f", tfi))
-      str = achar(code, kind=tfc)
+      nbytes = 1
    case(int(z"00000080", tfi):int(z"000007ff", tfi))
-      str = &
-         achar(ior(int(z"c0", tfi), ishft(code, -6)), kind=tfc) // &
-         achar(ior(int(z"80", tfi), iand(code, int(z"3f", tfi))), kind=tfc)
+      nbytes = 2
    case(int(z"00000800", tfi):int(z"0000ffff", tfi))
-      str = &
-         achar(ior(int(z"e0", tfi), ishft(code, -12)), kind=tfc) // &
-         achar(ior(int(z"80", tfi), iand(ishft(code, -6), int(z"3f", tfi))), kind=tfc) // &
-         achar(ior(int(z"80", tfi), iand(code, int(z"3f", tfi))), kind=tfc)
+      nbytes = 3
    case(int(z"00010000", tfi):int(z"001fffff", tfi))
-      str = &
-         achar(ior(int(z"f0", tfi), ishft(code, -18)), kind=tfc) // &
-         achar(ior(int(z"80", tfi), iand(ishft(code, -12), int(z"3f", tfi))), kind=tfc) // &
-         achar(ior(int(z"80", tfi), iand(ishft(code, -6), int(z"3f", tfi))), kind=tfc) // &
-         achar(ior(int(z"80", tfi), iand(code, int(z"3f", tfi))), kind=tfc)
+      nbytes = 4
    case(int(z"00200000", tfi):int(z"03ffffff", tfi))
-      str = &
-         achar(ior(int(z"f8", tfi), ishft(code, -24)), kind=tfc) // &
-         achar(ior(int(z"80", tfi), iand(ishft(code, -18), int(z"3f", tfi))), kind=tfc) // &
-         achar(ior(int(z"80", tfi), iand(ishft(code, -12), int(z"3f", tfi))), kind=tfc) // &
-         achar(ior(int(z"80", tfi), iand(ishft(code, -6), int(z"3f", tfi))), kind=tfc) // &
-         achar(ior(int(z"80", tfi), iand(code, int(z"3f", tfi))), kind=tfc)
+      nbytes = 5
    case(int(z"04000000", tfi):int(z"7fffffff", tfi))
-      str = &
-         achar(ior(int(z"fc", tfi), ishft(code, -30)), kind=tfc) // &
-         achar(ior(int(z"80", tfi), iand(ishft(code, -24), int(z"3f", tfi))), kind=tfc) // &
-         achar(ior(int(z"80", tfi), iand(ishft(code, -18), int(z"3f", tfi))), kind=tfc) // &
-         achar(ior(int(z"80", tfi), iand(ishft(code, -12), int(z"3f", tfi))), kind=tfc) // &
-         achar(ior(int(z"80", tfi), iand(ishft(code, -6), int(z"3f", tfi))), kind=tfc) // &
-         achar(ior(int(z"80", tfi), iand(code, int(z"3f", tfi))), kind=tfc)
+      nbytes = 6
    case default
+      return
    end select
+
+   ! Fill the string byte by byte, as concatenating achar results with non-constant
+   ! arguments yields strings of wrong length with some compilers (nvfortran)
+   allocate(character(nbytes, tfc) :: str)
+   str(1:1) = achar(ior(lead(nbytes), ishft(code, -6*(nbytes-1))), kind=tfc)
+   do i = 2, nbytes
+      str(i:i) = achar(ior(int(z"80", tfi), iand(ishft(code, -6*(nbytes-i)), int(z"3f", tfi))), kind=tfc)
+   end do
 end function convert_ucs
 
 
