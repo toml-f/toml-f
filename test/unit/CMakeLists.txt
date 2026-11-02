@@ -36,6 +36,11 @@ target_link_libraries(
   "${PROJECT_NAME}-lib"
   "test-drive::test-drive"
 )
+target_compile_options(
+  tftester
+  PRIVATE
+  ${fortran-flags}
+)
 add_test(
   "tftest"
   tftester
